@@ -2,7 +2,7 @@
     "name": "ibuildings/qa-php",
     "description": "Ibuildings standard QA for PHP",
     "require": {
-        "php": ">=5.3.3",
+        "php": ">=5.3.3"
     },
     "require-dev": {
         "fabpot/php-cs-fixer": "*",
