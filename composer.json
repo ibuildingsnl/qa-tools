@@ -2,15 +2,13 @@
     "name": "ibuildings/qa-php",
     "description": "Ibuildings standard QA for PHP",
     "require": {
-        "php": ">=5.3.3"
-    },
-    "require-dev": {
+        "php": ">=5.3.3",
         "fabpot/php-cs-fixer": "*",
         "phpunit/phpunit": "3.7.*",
         "squizlabs/php_codesniffer": "*",
-        "matthijsvandenbos/ant-composer": "*",
+        "matthijsvandenbos/ant-composer": "dev-master",
         "phpmd/phpmd": "*",
-        "phploc/phploc": "dev-master"
+        "pdepend/pdepend": "dev-master"
     },
     "repositories": [
         {
