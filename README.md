@@ -1,4 +1,4 @@
 qa-php
 ======
 
-(Experimental) Future home of the PHP specific QA tools
+Home of the PHP specific QA tools
