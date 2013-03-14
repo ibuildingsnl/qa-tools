@@ -1,12 +1,17 @@
 {
     "name": "ibuildings/qa-php",
     "description": "Ibuildings standard QA for PHP",
-    "version": "1.0.0-dev",
     "require": {
         "php": ">=5.3.3",
         "squizlabs/php_codesniffer": "1.4.4",
-        "phpmd/phpmd" : "1.4.1",
-        "pdepend/pdepend" : "1.1.0"
-    }
+        "phpmd/phpmd": "1.4.1",
+        "pdepend/pdepend": "1.1.0"
+    },
+    "bin": [
+        "bin/phpdocumentor",
+        "bin/phpunit",
+        "bin/scrutinizer",
+        "bin/php-cs-fixer"
+    ]
 }
 
