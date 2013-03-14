@@ -24,5 +24,10 @@
         "post-install-cmd": [
             "Ibuildings\\QA\\Tools\\PHP\\Setup::postInstall"
         ]
+    },
+    "autoload" : {
+        "psr-0": {
+            "Ibuildings": "src/"
+        }
     }
 }
