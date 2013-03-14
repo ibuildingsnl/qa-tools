@@ -8,14 +8,8 @@
         "squizlabs/php_codesniffer": "*",
         "matthijsvandenbos/ant-composer": "dev-master",
         "phpmd/phpmd": "*",
-        "pdepend/pdepend": "dev-master"
-    },
-    "repositories": [
-        {
-            "type": "composer",
-            "url": "***REMOVED***"
-        }
-    ],
-    "bin": ["bin/phpdocumentor", "bin/phpDocumentor.phar"]
+        "pdepend/pdepend": "dev-master",
+        "phpdocumentor/phpdocumentor": "dev-develop"
+    }
 }
 
