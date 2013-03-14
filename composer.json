@@ -19,5 +19,10 @@
         "branch-alias": {
             "dev-master": "1.0.x-dev"
         }
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "Ibuildings\\QA\\Tools\\PHP\\Setup::postInstall"
+        ]
     }
 }
