@@ -1,15 +1,12 @@
 {
     "name": "ibuildings/qa-php",
     "description": "Ibuildings standard QA for PHP",
+    "version": "1.0.0-dev",
     "require": {
         "php": ">=5.3.3",
-        "fabpot/php-cs-fixer": "*",
-        "phpunit/phpunit": "3.7.*",
-        "squizlabs/php_codesniffer": "*",
-        "matthijsvandenbos/ant-composer": "dev-master",
-        "phpmd/phpmd": "*",
-        "pdepend/pdepend": "dev-master",
-        "phpdocumentor/phpdocumentor": "dev-develop"
+        "squizlabs/php_codesniffer": "1.4.4",
+        "phpmd/phpmd" : "1.4.1",
+        "pdepend/pdepend" : "1.1.0"
     }
 }
 
