@@ -1,7 +1,6 @@
 {
     "name": "ibuildings/qa-php",
     "description": "Ibuildings standard QA for PHP",
-    "version": "1.0.0-dev",
     "require": {
         "php": ">=5.3.3",
         "squizlabs/php_codesniffer": "1.4.4",
@@ -13,5 +12,10 @@
         "bin/phpunit",
         "bin/scrutinizer",
         "bin/php-cs-fixer"
-    ]
+    ],
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0.x-dev"
+        }
+    }
 }
