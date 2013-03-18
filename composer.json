@@ -14,7 +14,7 @@
         "bin/phpunit",
         "bin/scrutinizer",
         "bin/php-cs-fixer",
-        "bin/setup"
+        "bin/console"
     ],
     "extra": {
         "branch-alias": {

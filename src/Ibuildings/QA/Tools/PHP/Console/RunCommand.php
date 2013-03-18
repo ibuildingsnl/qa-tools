@@ -20,12 +20,20 @@ class RunCommand extends Command
         $this
             ->setName('run')
             ->setDescription('Run the Ibuildings QA Tools for PHP')
-            ->setHelp('Runs all configured tools with Scrutinizer and PHPUnit');
+            ->setHelp('Runs all configured tools with Scrutinizer and PHPUnit')
+            ->addOption('only-phpunit', 'op', InputOption::VALUE_OPTIONAL)
+            ->addOption('only-scrutinizer', 'os', InputOption::VALUE_OPTIONAL);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        passthru(BASE_DIR . '/bin/scrutinizer run ' . BASE_DIR);
-        passthru(BASE_DIR . '/bin/phpunit -c ' . BASE_DIR . '/phpunit.xml');
+        if ($input->getOption('only-phpunit')) {
+            passthru(BASE_DIR . '/bin/phpunit -c ' . BASE_DIR . '/phpunit.xml');
+        } elseif ($input->getOption('only-scrutinizer')) {
+            passthru(BASE_DIR . '/bin/scrutinizer run ' . BASE_DIR);
+        } else {
+            passthru(BASE_DIR . '/bin/scrutinizer run ' . BASE_DIR);
+            passthru(BASE_DIR . '/bin/phpunit -c ' . BASE_DIR . '/phpunit.xml');
+        }
     }
 }
