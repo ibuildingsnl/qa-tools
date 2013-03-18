@@ -12,6 +12,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Process\Process;
 
 class RunCommand extends Command
 {
@@ -25,15 +26,52 @@ class RunCommand extends Command
             ->addOption('only-scrutinizer', 'os', InputOption::VALUE_OPTIONAL);
     }
 
+    public function outputBuffer($type, $buffer)
+    {
+        echo $buffer;
+    }
+
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $phpUnitReturnCode = 0;
+        $scrutinizerReturnCode = 0;
+
+        $scrutinizerOutputFile = BASE_DIR . '/build/artifacts/scrutinizer.txt';
+
+        $phpUnitCommand = 'php ' . PACKAGE_BASE_DIR . '/bin/phpunit.phar -c ' . BASE_DIR . '/phpunit.xml';
+        $scrutinizerCommand = 'php ' . PACKAGE_BASE_DIR . '/bin/scrutinizer.phar run ' .
+            '--output-file=' . $scrutinizerOutputFile . ' ' . BASE_DIR;
+
+        $phpUnitProcess = new Process($phpUnitCommand);
+        $scrutinizerProcess = new Process($scrutinizerCommand);
+
         if ($input->getOption('only-phpunit')) {
-            passthru('php ' . PACKAGE_BASE_DIR . '/bin/phpunit.phar -c ' . BASE_DIR . '/phpunit.xml');
+            $phpUnitProcess->run(array($this, 'outputBuffer'));
         } elseif ($input->getOption('only-scrutinizer')) {
-            passthru('php ' . PACKAGE_BASE_DIR . '/bin/scrutinizer.phar run ' . BASE_DIR);
+            $output->writeln("\nRunning Scrutinizer...\n");
+            $scrutinizerProcess->run(array($this, 'outputBuffer'));
         } else {
-            passthru('php ' . PACKAGE_BASE_DIR . '/bin/scrutinizer.phar run ' . BASE_DIR);
-            passthru('php ' . PACKAGE_BASE_DIR . '/bin/phpunit.phar -c ' . BASE_DIR . '/phpunit.xml');
+            $phpUnitProcess->run(array($this, 'outputBuffer'));
+
+            $output->writeln("\nRunning Scrutinizer...\n");
+            $scrutinizerProcess->run(array($this, 'outputBuffer'));
         }
+
+        // if scrutinizer ran, show its output
+        if (!$input->getOption('only-phpunit')) {
+            $result = file_get_contents($scrutinizerOutputFile);
+            echo $result;
+
+            // brittle hack: if there were more than one comments, we set the the exit code to 1
+            if (false === strpos($result, 'Comments: 0')) {
+                $scrutinizerReturnCode = 1;
+            }
+        }
+
+        if (!$input->getOption('only-phpunit')) {
+            $phpUnitReturnCode = $phpUnitProcess->getExitCode();
+        }
+
+        exit((int) ($phpUnitReturnCode || $scrutinizerReturnCode));
     }
 }

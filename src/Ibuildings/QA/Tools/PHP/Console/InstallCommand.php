@@ -210,6 +210,7 @@ class InstallCommand extends Command
 
             @mkdir(BASE_DIR . $settings['buildArtifactsPath'], 0755, true);
             @mkdir(BASE_DIR . $settings['buildArtifactsPath'] . '/coverage-report', 0755, true);
+            $output->writeln("Build artifacts directory created");
         }
     }
 }
