@@ -1,24 +1,24 @@
 inherit:              false 
-# Allows you to filter which files are included in the review; by default, all files.
-filter:               
-    paths:                [{{ src-dir }}/*, {{ tests-dir }}/*]
 tools:
-
     # Runs the PHP CS Fixer (http://http://cs.sensiolabs.org/).
     php_cs_fixer:
         extensions:
             - php
         command:              ./vendor/bin/php-cs-fixer
-        enabled:              {{ enable-fixer }}
+        filter:
+            paths:                [{{ srcPath }}/*, {{ testsPath }}/*]
+        enabled:              {{ enablePhpCsFixer|bool }}
         config:
-            level:                all # Allowed Values: "psr0", "psr1", "psr2", "all"
+            level:              {{ phpCsFixerLevel|default('all') }} # Allowed Values: "psr0", "psr1", "psr2", "all"
 
     # Runs the PHP Mess Detector (http://phpmd.org).
     php_mess_detector:    
         extensions:           
             - php
         command:              ./vendor/bin/phpmd
-        enabled:              {{ enable-phpmd }}
+        filter:
+            paths:                [{{ srcPath }}/*, {{ testsPath }}/*]
+        enabled:              {{ enablePhpMessDetector|bool }}
         config:
             rulesets:             
                 - codesize
@@ -27,28 +27,22 @@ tools:
     php_analyzer:         
         extensions:           
             - php
-        enabled:              {{ enable-analyzer }}
+        enabled:              {{ enablePhpAnalyzer|bool }}
+        filter:
+            paths:                [{{ srcPath }}/*, {{ testsPath }}/*]
 
     # Runs PHP Code Sniffer
     php_code_sniffer:     
         extensions:           
             - php
         command:              ./vendor/bin/phpcs
-        enabled:              {{ enable-sniffer }}
+        enabled:              {{ enablePhpCodeSniffer|bool }}
+        filter:
+            paths:                [{{ srcPath }}/*, {{ testsPath }}/*]
         config:
             # Built-in standards: PEAR, PHPCS, PSR1, PSR2, Squiz, Zend
-            standard:             PSR2
+            standard:             {{ phpCodeSnifferCodingStyle|default('PSR2') }}
 
     # Checks your dependencies against sensiolabs's security advisory database.
     sensiolabs_security_checker:  
-        enabled:              true
-
-    # Collects code coverage information about the changeset.
-    php_code_coverage:    
-        config_path:          ~ 
-        test_command:         ./vendor/bin/phpunit
-        only_changesets:      false
-        enabled:              {{ enable-phpunit }}
-        filter:
-            paths:                [{{ src-dir }}/*]
-            excluded_paths:       []
+        enabled:              {{ enablePhpSecurityChecker|bool }}

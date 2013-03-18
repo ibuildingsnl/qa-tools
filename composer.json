@@ -7,24 +7,19 @@
         "phpmd/phpmd": "1.4.1",
         "pdepend/pdepend": "1.1.0",
         "symfony/console": "v2.2.0",
-        "symfony/finder": "v2.2.0",
         "twig/twig": "v1.12.2"
     },
     "bin": [
         "bin/phpdocumentor",
         "bin/phpunit",
         "bin/scrutinizer",
-        "bin/php-cs-fixer"
+        "bin/php-cs-fixer",
+        "bin/setup"
     ],
     "extra": {
         "branch-alias": {
             "dev-master": "1.0.x-dev"
         }
-    },
-    "scripts": {
-        "post-install-cmd": [
-            "Ibuildings\\QA\\Tools\\PHP\\Setup::postInstall"
-        ]
     },
     "autoload" : {
         "psr-0": {

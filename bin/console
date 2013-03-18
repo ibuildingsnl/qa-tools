@@ -1,0 +1,13 @@
+#!/usr/bin/env php
+<?php
+/**
+ * @author Matthijs van den Bos <matthijs@vandenbos.org>
+ * @copyright 2013 Matthijs van den Bos
+ */
+define('BASE_DIR', realpath(__DIR__ . '/../'));
+require_once BASE_DIR . '/vendor/autoload.php';
+
+$application = new \Symfony\Component\Console\Application('Ibuildings QA Tools for PHP Setup', '1.0.0-dev');
+$application->add(new \Ibuildings\QA\Tools\PHP\Console\InstallCommand());
+$application->add(new \Ibuildings\QA\Tools\PHP\Console\RunCommand());
+$application->run();
