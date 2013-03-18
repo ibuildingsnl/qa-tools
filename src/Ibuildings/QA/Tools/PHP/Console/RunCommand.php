@@ -28,12 +28,12 @@ class RunCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         if ($input->getOption('only-phpunit')) {
-            passthru(BASE_DIR . '/bin/phpunit -c ' . BASE_DIR . '/phpunit.xml');
+            passthru('php ' . PACKAGE_BASE_DIR . '/bin/phpunit.phar -c ' . BASE_DIR . '/phpunit.xml');
         } elseif ($input->getOption('only-scrutinizer')) {
-            passthru(BASE_DIR . '/bin/scrutinizer run ' . BASE_DIR);
+            passthru('php ' . PACKAGE_BASE_DIR . '/bin/scrutinizer.phar run ' . BASE_DIR);
         } else {
-            passthru(BASE_DIR . '/bin/scrutinizer run ' . BASE_DIR);
-            passthru(BASE_DIR . '/bin/phpunit -c ' . BASE_DIR . '/phpunit.xml');
+            passthru('php ' . PACKAGE_BASE_DIR . '/bin/scrutinizer.phar run ' . BASE_DIR);
+            passthru('php ' . PACKAGE_BASE_DIR . '/bin/phpunit.phar -c ' . BASE_DIR . '/phpunit.xml');
         }
     }
 }

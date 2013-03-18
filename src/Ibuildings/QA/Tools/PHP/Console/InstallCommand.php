@@ -164,7 +164,7 @@ class InstallCommand extends Command
                 }
             }
 
-            $loader = new \Twig_Loader_Filesystem(BASE_DIR . '/config-dist');
+            $loader = new \Twig_Loader_Filesystem(PACKAGE_BASE_DIR . '/config-dist');
             $twig = new \Twig_Environment($loader);
             $filter = new \Twig_SimpleFilter(
                 'bool',
