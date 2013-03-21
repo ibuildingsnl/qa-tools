@@ -1,0 +1,23 @@
+{
+    "passfail": false,
+    "maxerr": 100,
+
+
+    "browser": true,
+
+    "jquery": true,
+    "prototypejs": false,
+    "mootools": false,
+    "dojo": false,
+
+    "predef": [
+        "google",
+        "Android"
+    ],
+
+    "debug": false,
+    "devel": false,
+    "globals": {
+        "alert": false
+    }
+}

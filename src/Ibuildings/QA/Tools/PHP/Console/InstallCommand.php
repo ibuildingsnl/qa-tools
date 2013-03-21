@@ -62,10 +62,15 @@ class InstallCommand extends Command
     private function enableDefaultSettings()
     {
         $this->settings['buildArtifactsPath'] = 'build/artifacts';
+
         $this->settings['enablePhpCsFixer'] = false;
         $this->settings['enablePhpMessDetector'] = false;
         $this->settings['enablePhpCopyPasteDetection'] = false;
         $this->settings['enablePhpCodeSniffer'] = false;
+        $this->settings['enablePhpUnit'] = false;
+        $this->settings['enablePhpLint'] = false;
+
+        $this->settings['enableJsHint'] = false;
 
         return $this;
     }
@@ -198,6 +203,34 @@ class InstallCommand extends Command
         );
     }
 
+    protected function configureJsHint(InputInterface $input, OutputInterface $output)
+    {
+        $this->settings['enableJsHint'] = $this->dialog->askConfirmation(
+            $output,
+            "Do you want to enable JSHint? [Y/n] ",
+            true
+        );
+    }
+
+    protected function configureJavaScriptSrcPath(InputInterface $input, OutputInterface $output)
+    {
+        if ($this->settings['enableJsHint']) {
+            $this->settings['javaScriptSrcPath'] = $this->dialog->askAndValidate(
+                $output,
+                "What is the path to the JavaScript source code? [src] ",
+                function ($data) {
+                    if (file_exists(BASE_DIR . '/' . $data)) {
+                        return $data;
+                    }
+                    throw new \Exception("That path doesn't exist");
+                },
+                false,
+                'src'
+            );
+        }
+    }
+
+
     protected function configurePhpSrcPath(InputInterface $input, OutputInterface $output)
     {
         if ($this->settings['enablePhpCsFixer']
@@ -274,6 +307,7 @@ class InstallCommand extends Command
             || $this->settings['enablePhpCodeSniffer']
             || $this->settings['enablePhpUnit']
             || $this->settings['enablePhpLint']
+            || $this->settings['enableJsHint']
         ) {
             $fh = fopen(BASE_DIR . '/build.xml', 'w');
             fwrite(
@@ -302,7 +336,23 @@ class InstallCommand extends Command
                 )
             );
             fclose($fh);
-            $output->writeln("<info>Config file for PHPUnit written</info>");
+            $output->writeln("\n<info>Config file for PHPUnit written</info>");
+        }
+    }
+
+    protected function writeJsHintConfig(InputInterface $input, OutputInterface $output)
+    {
+        if ($this->settings['enableJsHint']) {
+            $fh = fopen(BASE_DIR . '/.jshintrc', 'w');
+            fwrite(
+                $fh,
+                $this->twig->render(
+                    '.jshintrc.dist',
+                    $this->settings
+                )
+            );
+            fclose($fh);
+            $output->writeln("\n<info>Config file for JSHint written</info>");
         }
     }
 
@@ -336,6 +386,7 @@ class InstallCommand extends Command
             $this->configurePhpCodeSniffer($input, $output);
             $this->configurePhpCopyPasteDetection($input, $output);
             $this->configurePhpSecurityChecker($input, $output);
+
             $this->configurePhpSrcPath($input, $output);
 
             $this->configurePhpUnit($input, $output);
@@ -348,7 +399,10 @@ class InstallCommand extends Command
             "\n<comment>Do you want to install the QA tools for Javascript? [Y/n] </comment>",
             true
         )) {
+            $this->configureJsHint($input, $output);
+            $this->configureJavaScriptSrcPath($input, $output);
 
+            $this->writeJsHintConfig($input, $output);
         }
 
         $this->writeAntBuildXml($input, $output);

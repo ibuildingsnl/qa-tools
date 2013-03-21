@@ -52,6 +52,16 @@
     </target>
     {% endif %}
 
+    {% if enableJsHint %}
+    <target name="jshint">
+        <exec executable="node" failonerror="true">
+            <arg value="vendor/bin/jshint" />
+            <arg value="--config=.jshintrc" />
+            <arg value="{{ javaScriptSrcPath }}"/>
+        </exec>
+    </target>
+    {% endif %}
+
     {% if enablePhpSecurityChecker %}
     <target name="php-security-checker" description="Check your composer dependencies for insecure components">
         <exec executable="vendor/bin/security-checker" failonerror="true">
