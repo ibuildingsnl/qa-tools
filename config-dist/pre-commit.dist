@@ -7,7 +7,8 @@ exitCode=$?
 # If exit code is not 0 then there was a failure
 if [ 0 -ne $exitCode ]
 then
-    echo "\n\033[01;31mCommit stopped: build failed\033[00m"
+    echo "\n\033[01;31mCommit aborted: build failed\033[00m"
+    echo "\nIf you want to commit anyway, use --no-verify"
     exit 1
 fi
 

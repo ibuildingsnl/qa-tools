@@ -75,6 +75,11 @@ class InstallCommand extends Command
         return $this;
     }
 
+    private function commandExists($cmd) {
+        $returnVal = shell_exec("command -v $cmd");
+        return (empty($returnVal) ? false : true);
+    }
+
     protected function configureBuildArtifactsPath(InputInterface $input, OutputInterface $output)
     {
         $this->settings['buildArtifactsPath'] = $this->dialog->askAndValidate(
@@ -231,6 +236,11 @@ class InstallCommand extends Command
             "Do you want to enable JSHint? [Y/n] ",
             true
         );
+
+        if (!$this->commandExists('node')) {
+            $output->writeln("\n<error>You don't have Node.js installed. Not enabling JSHint.</error>");
+            $this->settings['enableJsHint'] = false;
+        }
     }
 
     protected function configureJavaScriptSrcPath(InputInterface $input, OutputInterface $output)
@@ -389,7 +399,7 @@ class InstallCommand extends Command
                 )
             );
             fclose($fh);
-            chmod(BASE_DIR . '/.git/hooks/pre-commit', "a+x");
+            chmod(BASE_DIR . '/.git/hooks/pre-commit', 0755);
             $output->writeln("\n<info>Commit hook written</info>");
         }
     }
@@ -398,6 +408,11 @@ class InstallCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $output->writeln("<info>Starting setup of Ibuildings QA Tools for PHP<info>");
+
+        if (!$this->commandExists('ant')) {
+            $output->writeln("\n<error>You don't have Apache Ant installed. Exiting.</error>");
+            return;
+        }
 
         if (!$this->dialog->askConfirmation(
             $output,
