@@ -5,7 +5,7 @@
             depends="prepare{% if enablePhpLint %},php-lint{% endif %}{% if enablePhpCsFixer %},php-cs-fixer{% endif %},dev-tools-parallel{% if enablePhpUnit %},phpunit{% endif %}"/>
 
     <target name="dev-tools-parallel" description="the dev tools that can be run in parallel">
-        <parallel threadCount="4">
+        <parallel threadCount="4" failonany="true">
             {% if enablePhpMessDetector %}
             <antcall target="phpmd"/>
             {% endif %}
@@ -54,8 +54,9 @@
 
     {% if enablePhpSecurityChecker %}
     <target name="php-security-checker" description="Check your composer dependencies for insecure components">
-        <exec executable="vendor/bin/security-checker">
+        <exec executable="vendor/bin/security-checker" failonerror="true">
             <arg value="security:check" />
+            <arg value="--verbose" />
             <arg value="composer.lock" />
         </exec>
     </target>
@@ -66,6 +67,7 @@
     <target name="php-cs-fixer" description="Fix coding style automatically">
         <exec executable="vendor/bin/php-cs-fixer">
             <arg value="fix" />
+            <arg value="--verbose" />
             <arg value="--level={{ phpCsFixerLevel|default('all') }}" />
             <arg path="{{ phpSrcPath }}" />
         </exec>
@@ -75,17 +77,19 @@
     {% if enablePhpMessDetector %}
     <target name="phpmd"
             description="Perform project mess detection using PHPMD and print human readable output. Intended for usage on the command line before committing.">
-        <exec executable="vendor/bin/phpmd">
+        <exec executable="vendor/bin/phpmd" failonerror="true">
             <arg path="{{ phpSrcPath }}" />
             <arg value="text" />
+            <arg value="--verbose" />
             <arg value="codesize,controversial,design,naming,unusedcode" />
         </exec>
     </target>
 
     <target name="phpmd-ci" description="Perform project mess detection using PHPMD creating a log file for the continuous integration server">
-        <exec executable="vendor/bin/phpmd">
+        <exec executable="vendor/bin/phpmd" failonerror="true">
             <arg path="{{ phpSrcPath }}" />
             <arg value="xml" />
+            <arg value="--verbose" />
             <arg value="codesize,controversial,design,naming,unusedcode" />
                 <arg value="--reportfile" />
             <arg value="{{ buildArtifactsPath }}/logs/pmd.xml" />
@@ -96,17 +100,19 @@
     {% if enablePhpCodeSniffer %}
     <target name="phpcs"
             description="Find coding standard violations using PHP_CodeSniffer and print human readable output. Intended for usage on the command line before committing.">
-        <exec executable="vendor/bin/phpcs">
+        <exec executable="vendor/bin/phpcs" failonerror="true">
             <arg value="--standard={{ phpCodeSnifferCodingStyle|default('PSR2') }}" />
+            <arg value="--verbose" />
             <arg path="{{ phpSrcPath }}" />
         </exec>
     </target>
 
     <target name="phpcs-ci" description="Find coding standard violations using PHP_CodeSniffer creating a log file for the continuous integration server">
-        <exec executable="vendor/bin/phpcs" output="/dev/null">
+        <exec executable="vendor/bin/phpcs" output="/dev/null" failonerror="true">
             <arg value="--report=checkstyle" />
             <arg value="--report-file={{ buildArtifactsPath }}/logs/checkstyle.xml" />
             <arg value="--standard={{ phpCodeSnifferCodingStyle|default('PSR2') }}" />
+            <arg value="--verbose" />
             <arg path="{{ phpSrcPath }}" />
         </exec>
     </target>
@@ -114,10 +120,11 @@
 
     {% if enablePhpCopyPasteDetection %}
     <target name="phpcpd" description="Find duplicate code using PHPCPD">
-        <exec executable="vendor/bin/phpcpd">
+        <exec executable="vendor/bin/phpcpd" failonerror="true">
             <arg value="--log-pmd" />
             <arg value="{{ buildArtifactsPath }}/logs/pmd-cpd.xml" />
             <arg path="{{ phpSrcPath }}" />
+            <arg value="--verbose" />
         </exec>
     </target>
     {% endif %}
