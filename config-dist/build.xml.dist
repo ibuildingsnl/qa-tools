@@ -80,7 +80,6 @@
         <exec executable="vendor/bin/phpmd" failonerror="true">
             <arg path="{{ phpSrcPath }}" />
             <arg value="text" />
-            <arg value="--verbose" />
             <arg value="codesize,controversial,design,naming,unusedcode" />
         </exec>
     </target>
@@ -89,9 +88,8 @@
         <exec executable="vendor/bin/phpmd" failonerror="true">
             <arg path="{{ phpSrcPath }}" />
             <arg value="xml" />
-            <arg value="--verbose" />
             <arg value="codesize,controversial,design,naming,unusedcode" />
-                <arg value="--reportfile" />
+            <arg value="--reportfile" />
             <arg value="{{ buildArtifactsPath }}/logs/pmd.xml" />
         </exec>
     </target>
@@ -101,18 +99,18 @@
     <target name="phpcs"
             description="Find coding standard violations using PHP_CodeSniffer and print human readable output. Intended for usage on the command line before committing.">
         <exec executable="vendor/bin/phpcs" failonerror="true">
+            <arg value="-v" />
             <arg value="--standard={{ phpCodeSnifferCodingStyle|default('PSR2') }}" />
-            <arg value="--verbose" />
             <arg path="{{ phpSrcPath }}" />
         </exec>
     </target>
 
     <target name="phpcs-ci" description="Find coding standard violations using PHP_CodeSniffer creating a log file for the continuous integration server">
         <exec executable="vendor/bin/phpcs" output="/dev/null" failonerror="true">
+            <arg value="-v" />
             <arg value="--report=checkstyle" />
             <arg value="--report-file={{ buildArtifactsPath }}/logs/checkstyle.xml" />
             <arg value="--standard={{ phpCodeSnifferCodingStyle|default('PSR2') }}" />
-            <arg value="--verbose" />
             <arg path="{{ phpSrcPath }}" />
         </exec>
     </target>
