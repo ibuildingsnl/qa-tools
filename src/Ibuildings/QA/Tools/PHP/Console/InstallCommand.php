@@ -111,6 +111,26 @@ class InstallCommand extends Command
         }
     }
 
+    protected function configureProjectName(InputInterface $input, OutputInterface $output)
+    {
+        $dirName = dirname(BASE_DIR);
+        $guessedName = ucfirst(str_replace(array('-', '_'), ' ', $dirName));
+
+        $this->settings['projectName'] = $this->dialog->askAndValidate(
+            $output,
+            "What is the name of the project? [$guessedName] ",
+            function ($data) {
+                if (preg_match('/[\w\s]/', $data)) {
+                    return $data;
+                }
+                throw new \Exception("The project name may only contain 'a-zA-Z0-9_ '");
+            },
+            false,
+            $guessedName
+        );
+    }
+
+
     protected function configurePhpMessDetector(InputInterface $input, OutputInterface $output)
     {
         $this->settings['enablePhpMessDetector'] = $this->dialog->askConfirmation(
@@ -284,6 +304,8 @@ class InstallCommand extends Command
         if (!$this->dialog->askConfirmation($output, "Do you want to continue? [Y/n] ", true)) {
             return;
         }
+
+        $this->configureProjectName($input, $output);
 
         $this->configurePhpLint($input, $output);
         $this->configurePhpCsFixer($input, $output);

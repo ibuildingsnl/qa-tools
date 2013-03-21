@@ -119,10 +119,10 @@
     {% if enablePhpCopyPasteDetection %}
     <target name="phpcpd" description="Find duplicate code using PHPCPD">
         <exec executable="vendor/bin/phpcpd" failonerror="true">
+            <arg value="--verbose" />
             <arg value="--log-pmd" />
             <arg value="{{ buildArtifactsPath }}/logs/pmd-cpd.xml" />
             <arg path="{{ phpSrcPath }}" />
-            <arg value="--verbose" />
         </exec>
     </target>
     {% endif %}
