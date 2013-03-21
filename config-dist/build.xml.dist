@@ -62,12 +62,11 @@
     </target>
 
     <target name="jshint-ci">
-        <exec executable="node" failonerror="true">
+        <exec executable="node" failonerror="true" output="{{ buildArtifactsPath }}/logs/checkstyle-jshint.xml">
             <arg value="vendor/bin/jshint" />
             <arg value="--config=.jshintrc" />
             <arg value="--reporter=checkstyle" />
             <arg value="{{ javaScriptSrcPath }}"/>
-            <arg value="> {{ buildArtifactsPath }}/logs/checkstyle-jshint.xml" />
         </exec>
     </target>
     {% endif %}
