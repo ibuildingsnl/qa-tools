@@ -35,7 +35,10 @@ class InstallCommand extends Command
             ->setName('install')
             ->setDescription('Setup for Ibuildings QA Tools for PHP')
             ->setHelp('Installs all tools and config files');
+    }
 
+    protected function initialize(InputInterface $input, OutputInterface $output)
+    {
         $this->enableDefaultSettings();
 
         $this->dialog = $this->getHelperSet()->get('dialog');
@@ -54,6 +57,7 @@ class InstallCommand extends Command
         );
         $this->twig->addFilter($filter);
     }
+
 
     private function enableDefaultSettings()
     {

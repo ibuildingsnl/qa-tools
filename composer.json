@@ -10,9 +10,7 @@
         "twig/twig": "v1.12.2"
     },
     "bin": [
-        "bin/phpdocumentor",
         "bin/phpunit",
-        "bin/scrutinizer",
         "bin/php-cs-fixer",
         "bin/console"
     ],
