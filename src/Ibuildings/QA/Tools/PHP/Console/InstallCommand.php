@@ -75,11 +75,18 @@ class InstallCommand extends Command
         $this->settings['buildArtifactsPath'] = $this->dialog->askAndValidate(
             $output,
             "Where do you want to store the build artifacts? [".$this->settings['buildArtifactsPath']."] ",
-            function ($data) {
-                if (file_exists(BASE_DIR . '/' . $data)) {
-                    return $data;
+            function ($data) use ($output) {
+                if (!file_exists(BASE_DIR . '/' . $data)) {
+                    if ($this->dialog->askConfirmation(
+                        $output,
+                        "  - Are you sure? The path doesn't exist and will be created. [Y/n] ",
+                        true
+                    )) {
+                        return $data;
+                    }
+
                 }
-                throw new \Exception("That path doesn't exist");
+                throw new \Exception("Not using path '" . $this->settings['buildArtifactsPath'] . " ', trying again...");
             },
             false,
             $this->settings['buildArtifactsPath']
@@ -98,7 +105,7 @@ class InstallCommand extends Command
         if ($this->settings['enablePhpCsFixer']) {
             $this->settings['phpCsFixerLevel'] = $this->dialog->askAndValidate(
                 $output,
-                "What fixer level do you want to use? (psr0, psr1, psr2, all) [all] ",
+                "  - What fixer level do you want to use? (psr0, psr1, psr2, all) [all] ",
                 function ($data) {
                     if (in_array($data, array("psr0", "psr1", "psr2", "all"))) {
                         return $data;
@@ -113,14 +120,14 @@ class InstallCommand extends Command
 
     protected function configureProjectName(InputInterface $input, OutputInterface $output)
     {
-        $dirName = dirname(BASE_DIR);
-        $guessedName = ucfirst(str_replace(array('-', '_'), ' ', $dirName));
+        $dirName = basename(BASE_DIR);
+        $guessedName = ucwords(str_replace(array('-', '_'), ' ', $dirName));
 
         $this->settings['projectName'] = $this->dialog->askAndValidate(
             $output,
             "What is the name of the project? [$guessedName] ",
             function ($data) {
-                if (preg_match('/[\w\s]/', $data)) {
+                if (preg_match('/^[\w\s]+$/', $data)) {
                     return $data;
                 }
                 throw new \Exception("The project name may only contain 'a-zA-Z0-9_ '");
@@ -151,7 +158,7 @@ class InstallCommand extends Command
         if ($this->settings['enablePhpCodeSniffer']) {
             $this->settings['phpCodeSnifferCodingStyle'] = $this->dialog->askAndValidate(
                 $output,
-                "Wich coding standard do you want to use? (PEAR, PHPCS, PSR1, PSR2, Squiz, Zend) [PSR2] ",
+                "  - Which coding standard do you want to use? (PEAR, PHPCS, PSR1, PSR2, Squiz, Zend) [PSR2] ",
                 function ($data) {
                     if (in_array($data, array("PEAR", "PHPCS", "PSR1", "PSR2", "Squiz", "Zend"))) {
                         return $data;
@@ -215,6 +222,7 @@ class InstallCommand extends Command
 
     protected function configurePhpUnit(InputInterface $input, OutputInterface $output)
     {
+        $output->writeln("\n<info>Configuring PHPUnit</info>\n");
         $this->settings['enablePhpUnit'] = $this->dialog->askConfirmation(
             $output,
             "Do you want to enable PHPunit tests? [Y/n] ",
@@ -276,7 +284,9 @@ class InstallCommand extends Command
                 )
             );
             fclose($fh);
-            $output->writeln("Ant build file written");
+            $output->writeln("\n<info>Ant build file written</info>");
+        } else {
+            $output->writeln("\n<info>No QA tools enabled. No configuration written</info>");
         }
     }
 
@@ -292,33 +302,55 @@ class InstallCommand extends Command
                 )
             );
             fclose($fh);
-            $output->writeln("Config file for PHPUnit written");
+            $output->writeln("<info>Config file for PHPUnit written</info>");
         }
     }
 
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $output->writeln("Starting setup of Ibuildings QA Tools for PHP");
+        $output->writeln("<info>Starting setup of Ibuildings QA Tools for PHP<info>");
 
-        if (!$this->dialog->askConfirmation($output, "Do you want to continue? [Y/n] ", true)) {
+        if (!$this->dialog->askConfirmation(
+            $output,
+            "\n<comment>If you already have a build config, it will be overwritten. Do you want to continue? [Y/n] </comment>",
+            true
+        )) {
             return;
         }
 
+        $output->writeln("\n");
         $this->configureProjectName($input, $output);
-
-        $this->configurePhpLint($input, $output);
-        $this->configurePhpCsFixer($input, $output);
-        $this->configurePhpMessDetector($input, $output);
-        $this->configurePhpCodeSniffer($input, $output);
-        $this->configurePhpCopyPasteDetection($input, $output);
-        $this->configurePhpSecurityChecker($input, $output);
-        $this->configurePhpSrcPath($input, $output);
-        $this->configurePhpUnit($input, $output);
-
         $this->configureBuildArtifactsPath($input, $output);
 
-        $this->writePhpUnitXml($input, $output);
+        if ($this->dialog->askConfirmation(
+            $output,
+            "\n<comment>Do you want to install the QA tools for PHP? [Y/n] </comment>",
+            true
+        )) {
+            $output->writeln("\n<info>Configuring PHP inspections</info>\n");
+
+            $this->configurePhpLint($input, $output);
+            $this->configurePhpCsFixer($input, $output);
+            $this->configurePhpMessDetector($input, $output);
+            $this->configurePhpCodeSniffer($input, $output);
+            $this->configurePhpCopyPasteDetection($input, $output);
+            $this->configurePhpSecurityChecker($input, $output);
+            $this->configurePhpSrcPath($input, $output);
+
+            $this->configurePhpUnit($input, $output);
+
+            $this->writePhpUnitXml($input, $output);
+        }
+
+        if ($this->dialog->askConfirmation(
+            $output,
+            "\n<comment>Do you want to install the QA tools for Javascript? [Y/n] </comment>",
+            true
+        )) {
+
+        }
+
         $this->writeAntBuildXml($input, $output);
     }
 }
