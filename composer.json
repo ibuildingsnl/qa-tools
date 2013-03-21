@@ -5,7 +5,6 @@
         "php": ">=5.3.3",
         "squizlabs/php_codesniffer": "1.4.4",
         "phpmd/phpmd": "1.4.1",
-        "pdepend/pdepend": "1.1.0",
         "symfony/console": "v2.2.0",
         "symfony/process": "v2.2.0",
         "twig/twig": "v1.12.2"

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="{{ projectName }}" default="build">
+    <target name="dev" description="The dev tools to run before commit"
+            depends="prepare,lint,dev-tools-parallel,phpunit"/>
+
+    <target name="dev-tools-parallel" description="the dev tools that can be run in parallel    ">
+        <parallel threadCount="3">
+            {% if enablePhpMessDetector %}
+            <antcall target="phpmd"/>
+            {% endif %}
+            {% if enablePhpCsFixer %}
+            <antcall target="phpcs"/>
+            {% endif %}
+            {% if enablePhpCsFixer %}
+            <antcall target="phpcpd"/>
+            {% endif %}
+        </parallel>
+    </target>
+
+    <target name="build"
+            depends="prepare,lint,phpmd-ci,phpcs-ci,phpcpd,phpunit"/>
+
+    <target name="clean" description="Cleanup build artifacts">
+        <delete dir="{{ buildPath }}/coverage"/>
+        <delete dir="{{ buildPath }}/logs"/>
+    </target>
+
+    <target name="prepare" depends="clean" description="Prepare for build">
+        <mkdir dir="{{ buildPath }}/coverage"/>
+        <mkdir dir="{{ buildPath }}/logs"/>
+    </target>
+
+    <target name="lint" description="Perform syntax check of sourcecode files">
+        <apply executable="php" failonerror="true">
+            <arg value="-l" />
+
+            <fileset dir="{{ phpSrcPath }}">
+                <include name="**/*.php" />
+                <modified />
+            </fileset>
+
+            <fileset dir="{{ phpTestsPath }}">
+                <include name="**/*.php" />
+                <modified />
+            </fileset>
+        </apply>
+    </target>
+
+    <target name="php-cs-fixer" description="Fix coding style automatically">
+        <exec executable="vendor/bin/php-cs-fixer">
+            <arg value="fix" />
+            <arg value="--level={{ phpCsFixerLevel|default('all') }}" />
+            <arg path="{{ phpSrcPath }}" />
+        </exec>
+    </target>
+
+    <target name="phpmd"
+            description="Perform project mess detection using PHPMD and print human readable output. Intended for usage on the command line before committing.">
+        <exec executable="phpmd">
+            <arg path="{{ phpSrcPath }}" />
+            <arg value="text" />
+            <arg value="codesize,controversial,design,naming,unusedcode" />
+        </exec>
+    </target>
+
+    <target name="phpmd-ci" description="Perform project mess detection using PHPMD creating a log file for the continuous integration server">
+        <exec executable="phpmd">
+            <arg path="{{ phpSrcPath }}" />
+            <arg value="xml" />
+            <arg value="codesize,controversial,design,naming,unusedcode" />
+                <arg value="--reportfile" />
+            <arg value="{{ buildPath }}/logs/pmd.xml" />
+        </exec>
+    </target>
+
+    <target name="phpcs"
+            description="Find coding standard violations using PHP_CodeSniffer and print human readable output. Intended for usage on the command line before committing.">
+        <exec executable="phpcs">
+            <arg value="--standard={{ phpCodeSnifferCodingStyle|default('PSR2') }}" />
+            <arg path="{{ phpSrcPath }}" />
+        </exec>
+    </target>
+
+    <target name="phpcs-ci" description="Find coding standard violations using PHP_CodeSniffer creating a log file for the continuous integration server">
+        <exec executable="phpcs" output="/dev/null">
+            <arg value="--report=checkstyle" />
+            <arg value="--report-file={{ buildPath }}/logs/checkstyle.xml" />
+            <arg value="--standard={{ phpCodeSnifferCodingStyle|default('PSR2') }}" />
+            <arg path="{{ phpSrcPath }}" />
+        </exec>
+    </target>
+
+    <target name="phpcpd" description="Find duplicate code using PHPCPD">
+        <exec executable="phpcpd">
+            <arg value="--log-pmd" />
+            <arg value="{{ buildPath }}/logs/pmd-cpd.xml" />
+            <arg path="{{ phpSrcPath }}" />
+        </exec>
+    </target>
+
+    <target name="phpunit" description="Run unit tests with PHPUnit">
+        <exec executable="phpunit" failonerror="true"/>
+    </target>
+</project>
