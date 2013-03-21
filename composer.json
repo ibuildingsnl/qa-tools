@@ -11,6 +11,7 @@
     },
     "bin": [
         "bin/phpunit",
+        "bin/phpcpd",
         "bin/php-cs-fixer",
         "bin/console"
     ],
