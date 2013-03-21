@@ -285,6 +285,7 @@ class InstallCommand extends Command
             return;
         }
 
+        $this->configurePhpLint($input, $output);
         $this->configurePhpCsFixer($input, $output);
         $this->configurePhpMessDetector($input, $output);
         $this->configurePhpCodeSniffer($input, $output);

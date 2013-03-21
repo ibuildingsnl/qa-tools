@@ -12,7 +12,7 @@
          bootstrap="{{ phpTestsAutoloadPath }}">
     <testsuites>
         <testsuite name="Test Suite">
-            <directory>{{ testsPath }}</directory>
+            <directory>{{ phpTestsPath }}</directory>
         </testsuite>
     </testsuites>
     <logging>
@@ -24,7 +24,7 @@
     </logging>
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">
-            <directory>{{ srcPath }}</directory>
+            <directory>{{ phpSrcPath }}</directory>
         </whitelist>
     </filter>
 </phpunit>
