@@ -22,7 +22,7 @@
     </target>
 
     <target name="build"
-            depends="prepare{% if enablePhpLint %},php-lint{% endif %}{% if enableJsHint %},jshint{% endif %}{% if enablePhpCsFixer %},php-cs-fixer{% endif %}{% if enablePhpMessDetector %},phpmd-ci{% endif %}{% if enablePhpCodeSniffer %},phpcs-ci{% endif %}{% if enablePhpCopyPasteDetection %},phpcpd{% endif %}{% if enablePhpSecurityChecker %},php-security-checker{% endif %}{% if enablePhpUnit %},phpunit{% endif %}"/>
+            depends="prepare{% if enablePhpLint %},php-lint{% endif %}{% if enableJsHint %},jshint-ci{% endif %}{% if enablePhpCsFixer %},php-cs-fixer{% endif %}{% if enablePhpMessDetector %},phpmd-ci{% endif %}{% if enablePhpCodeSniffer %},phpcs-ci{% endif %}{% if enablePhpCopyPasteDetection %},phpcpd{% endif %}{% if enablePhpSecurityChecker %},php-security-checker{% endif %}{% if enablePhpUnit %},phpunit{% endif %}"/>
 
     <target name="clean" description="Cleanup build artifacts">
         <delete dir="{{ buildArtifactsPath }}/coverage"/>
@@ -60,6 +60,16 @@
             <arg value="{{ javaScriptSrcPath }}"/>
         </exec>
     </target>
+
+    <target name="jshint-ci">
+        <exec executable="node" failonerror="true">
+            <arg value="vendor/bin/jshint" />
+            <arg value="--config=.jshintrc" />
+            <arg value="--reporter=checkstyle" />
+            <arg value="> {{ buildArtifactsPath }}/logs/checkstyle-jshint.xml" />
+            <arg value="{{ javaScriptSrcPath }}"/>
+        </exec>
+    </target>
     {% endif %}
 
     {% if enablePhpSecurityChecker %}
@@ -71,7 +81,6 @@
         </exec>
     </target>
     {% endif %}
-
 
     {% if enablePhpCsFixer %}
     <target name="php-cs-fixer" description="Fix coding style automatically">
@@ -119,7 +128,7 @@
         <exec executable="vendor/bin/phpcs" output="/dev/null" failonerror="true">
             <arg value="-v" />
             <arg value="--report=checkstyle" />
-            <arg value="--report-file={{ buildArtifactsPath }}/logs/checkstyle.xml" />
+            <arg value="--report-file={{ buildArtifactsPath }}/logs/checkstyle-php.xml" />
             <arg value="--standard={{ phpCodeSnifferCodingStyle|default('PSR2') }}" />
             <arg path="{{ phpSrcPath }}" />
         </exec>
