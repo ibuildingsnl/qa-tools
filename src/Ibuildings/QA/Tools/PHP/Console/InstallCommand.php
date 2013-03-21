@@ -89,9 +89,9 @@ class InstallCommand extends Command
                     )) {
                         return $data;
                     }
-
+                    throw new \Exception("Not using path '" . $this->settings['buildArtifactsPath'] . " ', trying again...");
                 }
-                throw new \Exception("Not using path '" . $this->settings['buildArtifactsPath'] . " ', trying again...");
+                return $data;
             },
             false,
             $this->settings['buildArtifactsPath']
