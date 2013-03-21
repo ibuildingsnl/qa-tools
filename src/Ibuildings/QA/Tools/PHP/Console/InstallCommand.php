@@ -203,6 +203,27 @@ class InstallCommand extends Command
         );
     }
 
+    protected function configurePreCommitHook(InputInterface $input, OutputInterface $output)
+    {
+        $this->settings['enablePreCommitHook'] = $this->dialog->askConfirmation(
+            $output,
+            "\n<comment>Do you want to enable the git pre-commit hook? It will run the QA tools on every commit [Y/n] </comment>",
+            true
+        );
+
+        $gitHooksDirExists = is_dir(BASE_DIR . '/.git/hooks');
+        if ($this->settings['enablePreCommitHook'] && !$gitHooksDirExists) {
+            $output->writeln("<error>You don't have an initialized git repo or hooks directory. Not setting pre-commit hook.</error>");
+            $this->settings['enablePreCommitHook'] = false;
+        }
+
+        $gitPreCommitHookExists = file_exists(BASE_DIR . '/.git/hooks/pre-commit');
+        if ($gitPreCommitHookExists) {
+            $output->writeln("<error>You already have a git pre-commit hook. Not overwriting it.</error>");
+            $this->settings['enablePreCommitHook'] = false;
+        }
+    }
+
     protected function configureJsHint(InputInterface $input, OutputInterface $output)
     {
         $this->settings['enableJsHint'] = $this->dialog->askConfirmation(
@@ -356,6 +377,23 @@ class InstallCommand extends Command
         }
     }
 
+    protected function writePreCommitHook(InputInterface $input, OutputInterface $output)
+    {
+        if ($this->settings['enablePreCommitHook']) {
+            $fh = fopen(BASE_DIR . '/.git/hooks/pre-commit', 'w');
+            fwrite(
+                $fh,
+                $this->twig->render(
+                    'pre-commit.dist',
+                    $this->settings
+                )
+            );
+            fclose($fh);
+            chmod(BASE_DIR . '/.git/hooks/pre-commit', "a+x");
+            $output->writeln("\n<info>Commit hook written</info>");
+        }
+    }
+
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -404,6 +442,9 @@ class InstallCommand extends Command
 
             $this->writeJsHintConfig($input, $output);
         }
+
+        $this->configurePreCommitHook($input, $output);
+        $this->writePreCommitHook($input, $output);
 
         $this->writeAntBuildXml($input, $output);
     }

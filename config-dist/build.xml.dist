@@ -66,8 +66,8 @@
             <arg value="vendor/bin/jshint" />
             <arg value="--config=.jshintrc" />
             <arg value="--reporter=checkstyle" />
-            <arg value="> {{ buildArtifactsPath }}/logs/checkstyle-jshint.xml" />
             <arg value="{{ javaScriptSrcPath }}"/>
+            <arg value="> {{ buildArtifactsPath }}/logs/checkstyle-jshint.xml" />
         </exec>
     </target>
     {% endif %}

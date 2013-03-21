@@ -3,14 +3,23 @@ qa-php
 
 Home of the Ibuildings QA Tools for PHP
 
+# Requirements
+To run the tools, you need to have Apache Ant installed on your system.
+If you want to run JSHint, you also need Node.js installed.
+
 # Included tools
- - PHP CS Fixer (0.2)
- - PHP Documentor (2.0.0a12)
- - PHPUnit (3.7.17)
- - Scrutinizer (0.1)
+## Inspections
+ - PHP Lint
+ - PHP Copy/Paste Detector (1.4.0)
  - PHP Codesniffer (1.4.4)
  - PHP Mess Detector (1.4.1)
- - PHP Depend (1.1.0)
- - PHP Security Checker (1.2-dev)
+ - JSHint (1.0.0)
+
+## Testing
+ - PHPUnit (3.7.17)
+
+## Other
+ - PHP CS Fixer (0.2)
+ - Sensiolabs Security Checker (1.2-dev)
 
 # Usage
