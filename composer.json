@@ -13,7 +13,8 @@
         "bin/phpunit",
         "bin/phpcpd",
         "bin/php-cs-fixer",
-        "bin/console"
+        "bin/console",
+        "bin/jshint"
     ],
     "extra": {
         "branch-alias": {
