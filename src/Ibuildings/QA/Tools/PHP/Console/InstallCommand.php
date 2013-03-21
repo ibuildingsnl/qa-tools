@@ -238,7 +238,7 @@ class InstallCommand extends Command
         );
 
         if (!$this->commandExists('node')) {
-            $output->writeln("\n<error>You don't have Node.js installed. Not enabling JSHint.</error>");
+            $output->writeln("<error>You don't have Node.js installed. Not enabling JSHint.</error>");
             $this->settings['enableJsHint'] = false;
         }
     }
