@@ -1,4 +1,4 @@
-qa-php
+qa-tools
 ======
 
 Home of the Ibuildings QA Tools
@@ -36,7 +36,7 @@ It can be installed with Composer.
 Add the following to your composer.json
 ```json
     "require": {
-        "ibuildings/qa-php": "1.0.x-dev"
+        "ibuildings/qa-tools": "1.0.x-dev"
     },
     "repositories": [
         {
