@@ -1,0 +1,14 @@
+#! /bin/sh
+
+# Run the dev build
+ant dev 
+exitCode=$?
+
+# If exit code is not 0 then there was a failure
+if [ 0 -ne $exitCode ]
+then
+    echo "\n\033[01;31mCommit stopped: build failed\033[00m"
+    exit 1
+fi
+
+exit 0
