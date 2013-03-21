@@ -6,6 +6,10 @@ Home of the Ibuildings QA Tools
 # What is it?
 A set of QA tools with an installer script that sets up the build configuration for you.
 
+It is meant to provide you with a decent base build setup, that conforms to the Ibuildings standards.
+It is not meant to provide a solution for every use case. If you want a more complex setup, you can use the
+output of this script as a base and configure it manually.
+
 # Included tools
 ## Inspections
  - PHP Lint
@@ -46,5 +50,6 @@ And run `composer install`
 
 # Usage
 After installation, you can run `vendor/bin/console install`. This script will ask you which tools you want to enable and writes the build.xml file that can be used for Jenkins.
-If you want more options or some config that this script doesn't provide, you can simply edit the generated build.xml and config files to suit your needs.
 In Jenkins, use the QA-Tools template for you project, or base your project on it manually.
+> If you want more options or some config that this script doesn't provide, you can simply edit the generated build.xml and config files to suit your needs. An example would be when your sources are in many different directories or when you need to exclude specific files for specific tools
+
