@@ -76,7 +76,7 @@ var JSHINT = (function () {
 			couch       : true, // if CouchDB globals should be predefined
 			curly       : true, // if curly braces around all blocks should be required
 			debug       : true, // if debugger statements should be allowed
-			devel       : true, // if logging globals should be predefined (console, alert, etc.)
+			devel       : true, // if logging globals should be predefined (qa-tools, alert, etc.)
 			dojo        : true, // if Dojo Toolkit globals should be predefined
 			eqeqeq      : true, // if === should be required
 			eqnull      : true, // if == null comparisons should be tolerated

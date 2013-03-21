@@ -8,6 +8,6 @@ define('BASE_DIR', realpath(__DIR__ . '/../../../../'));
 define('PACKAGE_BASE_DIR', realpath(__DIR__ . '/../'));
 require_once BASE_DIR . '/vendor/autoload.php';
 
-$application = new \Symfony\Component\Console\Application('Ibuildings QA Tools for PHP Setup', '1.0.0-dev');
+$application = new \Symfony\Component\Console\Application('Ibuildings QA Tools Setup', '1.0.0-dev');
 $application->add(new \Ibuildings\QA\Tools\PHP\Console\InstallCommand());
 $application->run();

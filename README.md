@@ -35,7 +35,7 @@ It can be installed with Composer.
 
 Add the following to your composer.json
 ```json
-    "require": {
+    "require-dev": {
         "ibuildings/qa-tools": "1.0.x-dev"
     },
     "repositories": [
@@ -46,10 +46,13 @@ Add the following to your composer.json
     ],
 ```
 
-And run `composer install`
+And run `composer install --dev`
+
+Why `require-dev`? Because you only want the QA tools on your dev environment.
+On test and production environments, you should run composer install without --dev so that the qa-tools don't get installed.
 
 # Usage
-After installation, you can run `vendor/bin/console install`. This script will ask you which tools you want to enable and writes the build.xml file that can be used for Jenkins.
+After installation, you can run `vendor/bin/qa-tools install`. This script will ask you which tools you want to enable and writes the build.xml file that can be used for Jenkins.
 In Jenkins, use the QA-Tools template for you project, or base your project on it manually.
 > If you want more options or some config that this script doesn't provide, you can simply edit the generated build.xml and config files to suit your needs. An example would be when your sources are in many different directories or when you need to exclude specific files for specific tools
 
