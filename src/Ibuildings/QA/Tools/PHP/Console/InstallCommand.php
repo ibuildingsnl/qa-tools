@@ -240,7 +240,7 @@ class InstallCommand extends Command
             fwrite(
                 $fh,
                 $this->twig->render(
-                    '.build.xml.dist',
+                    'build.xml.dist',
                     $this->settings
                 )
             );
