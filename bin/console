@@ -10,5 +10,4 @@ require_once BASE_DIR . '/vendor/autoload.php';
 
 $application = new \Symfony\Component\Console\Application('Ibuildings QA Tools for PHP Setup', '1.0.0-dev');
 $application->add(new \Ibuildings\QA\Tools\PHP\Console\InstallCommand());
-$application->add(new \Ibuildings\QA\Tools\PHP\Console\RunCommand());
 $application->run();

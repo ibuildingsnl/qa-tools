@@ -6,8 +6,8 @@
         "squizlabs/php_codesniffer": "1.4.4",
         "phpmd/phpmd": "1.4.1",
         "symfony/console": "v2.2.0",
-        "symfony/process": "v2.2.0",
-        "twig/twig": "v1.12.2"
+        "twig/twig": "v1.12.2",
+        "sensiolabs/security-checker": "v1.1"
     },
     "bin": [
         "bin/phpunit",

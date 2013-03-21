@@ -162,6 +162,15 @@ class InstallCommand extends Command
         );
     }
 
+    protected function configurePhpLint(InputInterface $input, OutputInterface $output)
+    {
+        $this->settings['enablePhpLint'] = $this->dialog->askConfirmation(
+            $output,
+            "Do you want to enable PHP Lint? [Y/n] ",
+            true
+        );
+    }
+
     protected function configurePhpSrcPath(InputInterface $input, OutputInterface $output)
     {
         if ($this->settings['enablePhpCsFixer']
@@ -235,6 +244,8 @@ class InstallCommand extends Command
             || $this->settings['enablePhpMessDetector']
             || $this->settings['enablePhpCopyPasteDetection']
             || $this->settings['enablePhpCodeSniffer']
+            || $this->settings['enablePhpUnit']
+            || $this->settings['enablePhpLint']
         ) {
             $fh = fopen(BASE_DIR . '/build.xml', 'w');
             fwrite(

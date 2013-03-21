@@ -2,36 +2,40 @@
 
 <project name="{{ projectName }}" default="build">
     <target name="dev" description="The dev tools to run before commit"
-            depends="prepare,lint,dev-tools-parallel,phpunit"/>
+            depends="prepare{% if enablePhpLint %},php-lint{% endif %}{% if enablePhpCsFixer %},php-cs-fixer{% endif %},dev-tools-parallel{% if enablePhpUnit %},phpunit{% endif %}"/>
 
-    <target name="dev-tools-parallel" description="the dev tools that can be run in parallel    ">
-        <parallel threadCount="3">
+    <target name="dev-tools-parallel" description="the dev tools that can be run in parallel">
+        <parallel threadCount="4">
             {% if enablePhpMessDetector %}
             <antcall target="phpmd"/>
             {% endif %}
-            {% if enablePhpCsFixer %}
+            {% if enablePhpCodeSniffer %}
             <antcall target="phpcs"/>
             {% endif %}
-            {% if enablePhpCsFixer %}
+            {% if enablePhpCopyPasteDetection %}
             <antcall target="phpcpd"/>
+            {% endif %}
+            {% if enablePhpSecurityChecker %}
+            <antcall target="php-security-checker"/>
             {% endif %}
         </parallel>
     </target>
 
     <target name="build"
-            depends="prepare,lint,phpmd-ci,phpcs-ci,phpcpd,phpunit"/>
+            depends="prepare{% if enablePhpLint %},php-lint{% endif %}{% if enablePhpCsFixer %},php-cs-fixer{% endif %}{% if enablePhpMessDetector %},phpmd-ci{% endif %}{% if enablePhpCodeSniffer %},phpcs-ci{% endif %}{% if enablePhpCopyPasteDetection %},phpcpd{% endif %}{% if enablePhpSecurityChecker %},php-security-checker{% endif %}{% if enablePhpUnit %},phpunit{% endif %}"/>
 
     <target name="clean" description="Cleanup build artifacts">
-        <delete dir="{{ buildPath }}/coverage"/>
-        <delete dir="{{ buildPath }}/logs"/>
+        <delete dir="{{ buildArtifactsPath }}/coverage"/>
+        <delete dir="{{ buildArtifactsPath }}/logs"/>
     </target>
 
     <target name="prepare" depends="clean" description="Prepare for build">
-        <mkdir dir="{{ buildPath }}/coverage"/>
-        <mkdir dir="{{ buildPath }}/logs"/>
+        <mkdir dir="{{ buildArtifactsPath }}/coverage"/>
+        <mkdir dir="{{ buildArtifactsPath }}/logs"/>
     </target>
 
-    <target name="lint" description="Perform syntax check of sourcecode files">
+    {% if enablePhpLint %}
+    <target name="php-lint" description="Perform syntax check of sourcecode files">
         <apply executable="php" failonerror="true">
             <arg value="-l" />
 
@@ -46,7 +50,19 @@
             </fileset>
         </apply>
     </target>
+    {% endif %}
 
+    {% if enablePhpSecurityChecker %}
+    <target name="php-security-checker" description="Check your composer dependencies for insecure components">
+        <exec executable="vendor/bin/security-checker">
+            <arg value="security:check" />
+            <arg value="composer.lock" />
+        </exec>
+    </target>
+    {% endif %}
+
+
+    {% if enablePhpCsFixer %}
     <target name="php-cs-fixer" description="Fix coding style automatically">
         <exec executable="vendor/bin/php-cs-fixer">
             <arg value="fix" />
@@ -54,10 +70,12 @@
             <arg path="{{ phpSrcPath }}" />
         </exec>
     </target>
+    {% endif %}
 
+    {% if enablePhpMessDetector %}
     <target name="phpmd"
             description="Perform project mess detection using PHPMD and print human readable output. Intended for usage on the command line before committing.">
-        <exec executable="phpmd">
+        <exec executable="vendor/bin/phpmd">
             <arg path="{{ phpSrcPath }}" />
             <arg value="text" />
             <arg value="codesize,controversial,design,naming,unusedcode" />
@@ -65,41 +83,48 @@
     </target>
 
     <target name="phpmd-ci" description="Perform project mess detection using PHPMD creating a log file for the continuous integration server">
-        <exec executable="phpmd">
+        <exec executable="vendor/bin/phpmd">
             <arg path="{{ phpSrcPath }}" />
             <arg value="xml" />
             <arg value="codesize,controversial,design,naming,unusedcode" />
                 <arg value="--reportfile" />
-            <arg value="{{ buildPath }}/logs/pmd.xml" />
+            <arg value="{{ buildArtifactsPath }}/logs/pmd.xml" />
         </exec>
     </target>
+    {% endif %}
 
+    {% if enablePhpCodeSniffer %}
     <target name="phpcs"
             description="Find coding standard violations using PHP_CodeSniffer and print human readable output. Intended for usage on the command line before committing.">
-        <exec executable="phpcs">
+        <exec executable="vendor/bin/phpcs">
             <arg value="--standard={{ phpCodeSnifferCodingStyle|default('PSR2') }}" />
             <arg path="{{ phpSrcPath }}" />
         </exec>
     </target>
 
     <target name="phpcs-ci" description="Find coding standard violations using PHP_CodeSniffer creating a log file for the continuous integration server">
-        <exec executable="phpcs" output="/dev/null">
+        <exec executable="vendor/bin/phpcs" output="/dev/null">
             <arg value="--report=checkstyle" />
-            <arg value="--report-file={{ buildPath }}/logs/checkstyle.xml" />
+            <arg value="--report-file={{ buildArtifactsPath }}/logs/checkstyle.xml" />
             <arg value="--standard={{ phpCodeSnifferCodingStyle|default('PSR2') }}" />
             <arg path="{{ phpSrcPath }}" />
         </exec>
     </target>
+    {% endif %}
 
+    {% if enablePhpCopyPasteDetection %}
     <target name="phpcpd" description="Find duplicate code using PHPCPD">
-        <exec executable="phpcpd">
+        <exec executable="vendor/bin/phpcpd">
             <arg value="--log-pmd" />
-            <arg value="{{ buildPath }}/logs/pmd-cpd.xml" />
+            <arg value="{{ buildArtifactsPath }}/logs/pmd-cpd.xml" />
             <arg path="{{ phpSrcPath }}" />
         </exec>
     </target>
+    {% endif %}
 
+    {% if enablePhpUnit %}
     <target name="phpunit" description="Run unit tests with PHPUnit">
-        <exec executable="phpunit" failonerror="true"/>
+        <exec executable="vendor/bin/phpunit" failonerror="true"/>
     </target>
+    {% endif %}
 </project>
