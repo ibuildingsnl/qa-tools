@@ -3,11 +3,11 @@
     "description": "Ibuildings standard QA Tools",
     "require": {
         "php": ">=5.3.3",
-        "squizlabs/php_codesniffer": "1.4.4",
-        "phpmd/phpmd": "1.4.1",
-        "symfony/console": "v2.2.0",
-        "twig/twig": "v1.12.2",
-        "sensiolabs/security-checker": "v1.1"
+        "squizlabs/php_codesniffer": "~1.4",
+        "phpmd/phpmd": "~1.4",
+        "symfony/console": "~2.1",
+        "twig/twig": "~1.12",
+        "sensiolabs/security-checker": "~1.1"
     },
     "bin": [
         "bin/phpunit",
