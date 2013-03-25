@@ -65,7 +65,7 @@
         <exec executable="node" failonerror="true" output="{{ buildArtifactsPath }}/logs/checkstyle-jshint.xml">
             <arg value="vendor/bin/jshint" />
             <arg value="--config=.jshintrc" />
-            <arg value="--reporter=checkstyle" />
+            <arg value="--reporter=jslint" />
             <arg value="{{ javaScriptSrcPath }}"/>
         </exec>
     </target>
