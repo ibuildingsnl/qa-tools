@@ -19,7 +19,6 @@ fi
 
 # Unstash changes to the working tree that we had stashed
 echo "\n\033[01;32mUnstashing changes to the working tree that we had stashed...\033[00m\n"
-git reset --hard
 git stash pop --quiet --index
 
 exit $exitCode
