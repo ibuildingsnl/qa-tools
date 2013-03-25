@@ -2,7 +2,7 @@
 
 <project name="{{ projectName }}" default="build">
     <target name="dev" description="The dev tools to run before commit"
-            depends="prepare{% if enablePhpLint %},php-lint{% endif %}{% if enableJsHint %},jshint{% endif %}{% if enablePhpCsFixer %},php-cs-fixer{% endif %},dev-tools-parallel{% if enablePhpUnit %},phpunit{% endif %}"/>
+            depends="prepare,composer-setup{% if enablePhpLint %},php-lint{% endif %}{% if enableJsHint %},jshint{% endif %}{% if enablePhpCsFixer %},php-cs-fixer{% endif %},dev-tools-parallel{% if enablePhpUnit %},phpunit{% endif %}"/>
 
     <target name="dev-tools-parallel" description="the dev tools that can be run in parallel">
         <parallel threadCount="4" failonany="true">
@@ -22,7 +22,7 @@
     </target>
 
     <target name="build"
-            depends="prepare{% if enablePhpLint %},php-lint{% endif %}{% if enableJsHint %},jshint-ci{% endif %}{% if enablePhpCsFixer %},php-cs-fixer{% endif %}{% if enablePhpMessDetector %},phpmd-ci{% endif %}{% if enablePhpCodeSniffer %},phpcs-ci{% endif %}{% if enablePhpCopyPasteDetection %},phpcpd{% endif %}{% if enablePhpSecurityChecker %},php-security-checker{% endif %}{% if enablePhpUnit %},phpunit{% endif %}"/>
+            depends="prepare,composer-setup{% if enablePhpLint %},php-lint{% endif %}{% if enableJsHint %},jshint-ci{% endif %}{% if enablePhpCsFixer %},php-cs-fixer{% endif %}{% if enablePhpMessDetector %},phpmd-ci{% endif %}{% if enablePhpCodeSniffer %},phpcs-ci{% endif %}{% if enablePhpCopyPasteDetection %},phpcpd{% endif %}{% if enablePhpSecurityChecker %},php-security-checker{% endif %}{% if enablePhpUnit %},phpunit{% endif %}"/>
 
     <target name="clean" description="Cleanup build artifacts">
         <delete dir="{{ buildArtifactsPath }}/coverage"/>
@@ -32,6 +32,16 @@
     <target name="prepare" depends="clean" description="Prepare for build">
         <mkdir dir="{{ buildArtifactsPath }}/coverage"/>
         <mkdir dir="{{ buildArtifactsPath }}/logs"/>
+    </target>
+
+    <target name="composer-setup" depends="composer-install, composer-run-install" />
+    <target name="composer-install">
+        <get src="http://getcomposer.org/composer.phar" dest="composer.phar"/>
+    </target>
+    <target name="composer-run-install">
+        <exec executable="php" failonerror="true">
+            <arg line="composer.phar install --dev" />
+        </exec>
     </target>
 
     {% if enablePhpLint %}
@@ -126,7 +136,6 @@
 
     <target name="phpcs-ci" description="Find coding standard violations using PHP_CodeSniffer creating a log file for the continuous integration server">
         <exec executable="vendor/bin/phpcs" output="/dev/null" failonerror="true">
-            <arg value="-v" />
             <arg value="--report=checkstyle" />
             <arg value="--report-file={{ buildArtifactsPath }}/logs/checkstyle-php.xml" />
             <arg value="--standard={{ phpCodeSnifferCodingStyle|default('PSR2') }}" />
