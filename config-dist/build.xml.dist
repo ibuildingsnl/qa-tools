@@ -36,12 +36,14 @@
         <exec executable="php" failonerror="true">
             <arg line="composer.phar install --dev"/>
         </exec>
+        <delete file="composer.phar" />
     </target>
 
     <target name="composer-run-update">
         <exec executable="php" failonerror="true">
             <arg line="composer.phar update"/>
         </exec>
+        <delete file="composer.phar" />
     </target>
 
     {% if enablePhpLint %}<target name="php-lint" description="Perform syntax check of sourcecode files">
