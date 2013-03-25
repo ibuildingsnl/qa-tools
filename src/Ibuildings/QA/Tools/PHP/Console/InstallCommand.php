@@ -286,8 +286,15 @@ class InstallCommand extends Command
 
         $gitPreCommitHookExists = file_exists(BASE_DIR . '/.git/hooks/pre-commit');
         if ($gitPreCommitHookExists) {
-            $output->writeln("<error>You already have a git pre-commit hook. Not overwriting it.</error>");
-            $this->settings['enablePreCommitHook'] = false;
+            $output->writeln("<error>You already have a git pre-commit hook.</error>");
+            $overwritePreCommitHook = $this->dialog->askConfirmation(
+                $output,
+                "  - Do you want to overwrite your current pre-commit hook? [y/N] ",
+                false
+            );
+            if (!$overwritePreCommitHook) {
+                $this->settings['enablePreCommitHook'] = false;
+            }
         }
     }
 
