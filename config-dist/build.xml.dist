@@ -2,7 +2,7 @@
 
 <project name="{{ projectName }}" default="build">
     <target name="dev" description="The dev tools to run before commit"
-            depends="prepare,composer-setup{% if enablePhpLint %},php-lint{% endif %}{% if enableJsHint %},jshint{% endif %}{% if enablePhpCsFixer %},php-cs-fixer{% endif %},dev-tools-parallel{% if enablePhpUnit %},phpunit{% endif %}"/>
+            depends="prepare,composer-install,composer-run-update{% if enablePhpLint %},php-lint{% endif %}{% if enableJsHint %},jshint{% endif %}{% if enablePhpCsFixer %},php-cs-fixer{% endif %},dev-tools-parallel{% if enablePhpUnit %},phpunit{% endif %}"/>
 
     <target name="dev-tools-parallel" description="the dev tools that can be run in parallel">
         <parallel threadCount="4" failonany="true">
@@ -16,7 +16,7 @@
     </target>
 
     <target name="build"
-            depends="prepare,composer-setup{% if enablePhpLint %},php-lint{% endif %}{% if enableJsHint %},jshint-ci{% endif %}{% if enablePhpCsFixer %},php-cs-fixer{% endif %}{% if enablePhpMessDetector %},phpmd-ci{% endif %}{% if enablePhpCodeSniffer %},phpcs-ci{% endif %}{% if enablePhpCopyPasteDetection %},phpcpd{% endif %}{% if enablePhpSecurityChecker %},php-security-checker{% endif %}{% if enablePhpUnit %},phpunit{% endif %}"/>
+            depends="prepare,composer-install,composer-run-install{% if enablePhpLint %},php-lint{% endif %}{% if enableJsHint %},jshint-ci{% endif %}{% if enablePhpCsFixer %},php-cs-fixer{% endif %}{% if enablePhpMessDetector %},phpmd-ci{% endif %}{% if enablePhpCodeSniffer %},phpcs-ci{% endif %}{% if enablePhpCopyPasteDetection %},phpcpd{% endif %}{% if enablePhpSecurityChecker %},php-security-checker{% endif %}{% if enablePhpUnit %},phpunit{% endif %}"/>
 
     <target name="clean" description="Cleanup build artifacts">
         <delete dir="{{ buildArtifactsPath }}/coverage"/>
@@ -28,13 +28,19 @@
         <mkdir dir="{{ buildArtifactsPath }}/logs"/>
     </target>
 
-    <target name="composer-setup" depends="composer-install, composer-run-install"/>
     <target name="composer-install">
         <get src="http://getcomposer.org/composer.phar" dest="composer.phar"/>
     </target>
+
     <target name="composer-run-install">
         <exec executable="php" failonerror="true">
             <arg line="composer.phar install --dev"/>
+        </exec>
+    </target>
+
+    <target name="composer-run-update">
+        <exec executable="php" failonerror="true">
+            <arg line="composer.phar update"/>
         </exec>
     </target>
 

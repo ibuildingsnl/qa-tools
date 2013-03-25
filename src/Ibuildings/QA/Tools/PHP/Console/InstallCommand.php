@@ -420,6 +420,8 @@ class InstallCommand extends Command
             fclose($fh);
 
             $this->addToGitIgnore('build');
+            $this->addToGitIgnore('composer.phar');
+
             $output->writeln("\n<info>Ant build file written</info>");
         } else {
             $output->writeln("\n<info>No QA tools enabled. No configuration written</info>");
