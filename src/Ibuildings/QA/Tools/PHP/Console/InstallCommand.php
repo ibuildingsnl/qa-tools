@@ -58,6 +58,64 @@ class InstallCommand extends Command
         $this->twig->addFilter($filter);
     }
 
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        $output->writeln("<info>Starting setup of Ibuildings QA Tools for PHP<info>");
+
+        if (!$this->commandExists('ant')) {
+            $output->writeln("\n<error>You don't have Apache Ant installed. Exiting.</error>");
+            return;
+        }
+
+        if (!$this->dialog->askConfirmation(
+            $output,
+            "\n<comment>If you already have a build config, it will be overwritten. Do you want to continue? [Y/n] </comment>",
+            true
+        )) {
+            return;
+        }
+
+        $output->writeln("\n");
+        $this->configureProjectName($input, $output);
+        $this->configureBuildArtifactsPath($input, $output);
+
+        if ($this->dialog->askConfirmation(
+            $output,
+            "\n<comment>Do you want to install the QA tools for PHP? [Y/n] </comment>",
+            true
+        )) {
+            $output->writeln("\n<info>Configuring PHP inspections</info>\n");
+
+            $this->configurePhpLint($input, $output);
+            $this->configurePhpCsFixer($input, $output);
+            $this->configurePhpMessDetector($input, $output);
+            $this->configurePhpCodeSniffer($input, $output);
+            $this->configurePhpCopyPasteDetection($input, $output);
+            $this->configurePhpSecurityChecker($input, $output);
+
+            $this->configurePhpSrcPath($input, $output);
+
+            $this->configurePhpUnit($input, $output);
+
+            $this->writePhpUnitXml($input, $output);
+        }
+
+        if ($this->dialog->askConfirmation(
+            $output,
+            "\n<comment>Do you want to install the QA tools for Javascript? [Y/n] </comment>",
+            true
+        )) {
+            $this->configureJsHint($input, $output);
+            $this->configureJavaScriptSrcPath($input, $output);
+
+            $this->writeJsHintConfig($input, $output);
+        }
+
+        $this->configurePreCommitHook($input, $output);
+        $this->writePreCommitHook($input, $output);
+
+        $this->writeAntBuildXml($input, $output);
+    }
 
     private function enableDefaultSettings()
     {
@@ -101,7 +159,6 @@ class InstallCommand extends Command
             false,
             $this->settings['buildArtifactsPath']
         );
-
     }
 
     protected function configurePhpCsFixer(InputInterface $input, OutputInterface $output)
@@ -206,6 +263,11 @@ class InstallCommand extends Command
             "Do you want to enable PHP Lint? [Y/n] ",
             true
         );
+
+        // if it is enabled we add its side effects to .gitignore
+        if ($this->settings['enablePhpLint']) {
+            $this->addToGitIgnore('cache.properties');
+        }
     }
 
     protected function configurePreCommitHook(InputInterface $input, OutputInterface $output)
@@ -349,9 +411,43 @@ class InstallCommand extends Command
                 )
             );
             fclose($fh);
+
+            $this->addToGitIgnore('build');
             $output->writeln("\n<info>Ant build file written</info>");
         } else {
             $output->writeln("\n<info>No QA tools enabled. No configuration written</info>");
+        }
+    }
+
+    protected function addToGitIgnore($pattern)
+    {
+        if (file_exists(BASE_DIR . '/.gitignore')) {
+            // check if pattern already in there, else add
+            $lines = file(BASE_DIR . '/.gitignore');
+            $alreadyIgnored = false;
+            foreach ($lines as $line) {
+                if (trim($line) === $pattern) {
+                    $alreadyIgnored = true;
+                    break;
+                }
+            }
+
+            if (!$alreadyIgnored) {
+                $fh = fopen(BASE_DIR . '/.gitignore', 'a');
+                fwrite(
+                    $fh,
+                    $pattern . "\n"
+                );
+                fclose($fh);
+            }
+        } else {
+            $fh = fopen(BASE_DIR . '/.gitignore', 'w');
+            fwrite(
+                $fh,
+                $pattern . "\n"
+            );
+            fclose($fh);
+
         }
     }
 
@@ -402,65 +498,5 @@ class InstallCommand extends Command
             chmod(BASE_DIR . '/.git/hooks/pre-commit', 0755);
             $output->writeln("\n<info>Commit hook written</info>");
         }
-    }
-
-
-    protected function execute(InputInterface $input, OutputInterface $output)
-    {
-        $output->writeln("<info>Starting setup of Ibuildings QA Tools for PHP<info>");
-
-        if (!$this->commandExists('ant')) {
-            $output->writeln("\n<error>You don't have Apache Ant installed. Exiting.</error>");
-            return;
-        }
-
-        if (!$this->dialog->askConfirmation(
-            $output,
-            "\n<comment>If you already have a build config, it will be overwritten. Do you want to continue? [Y/n] </comment>",
-            true
-        )) {
-            return;
-        }
-
-        $output->writeln("\n");
-        $this->configureProjectName($input, $output);
-        $this->configureBuildArtifactsPath($input, $output);
-
-        if ($this->dialog->askConfirmation(
-            $output,
-            "\n<comment>Do you want to install the QA tools for PHP? [Y/n] </comment>",
-            true
-        )) {
-            $output->writeln("\n<info>Configuring PHP inspections</info>\n");
-
-            $this->configurePhpLint($input, $output);
-            $this->configurePhpCsFixer($input, $output);
-            $this->configurePhpMessDetector($input, $output);
-            $this->configurePhpCodeSniffer($input, $output);
-            $this->configurePhpCopyPasteDetection($input, $output);
-            $this->configurePhpSecurityChecker($input, $output);
-
-            $this->configurePhpSrcPath($input, $output);
-
-            $this->configurePhpUnit($input, $output);
-
-            $this->writePhpUnitXml($input, $output);
-        }
-
-        if ($this->dialog->askConfirmation(
-            $output,
-            "\n<comment>Do you want to install the QA tools for Javascript? [Y/n] </comment>",
-            true
-        )) {
-            $this->configureJsHint($input, $output);
-            $this->configureJavaScriptSrcPath($input, $output);
-
-            $this->writeJsHintConfig($input, $output);
-        }
-
-        $this->configurePreCommitHook($input, $output);
-        $this->writePreCommitHook($input, $output);
-
-        $this->writeAntBuildXml($input, $output);
     }
 }
