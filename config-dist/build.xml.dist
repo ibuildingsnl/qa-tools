@@ -119,6 +119,7 @@
         <exec executable="vendor/bin/phpcs" failonerror="true">
             <arg value="-v" />
             <arg value="--standard={{ phpCodeSnifferCodingStyle|default('PSR2') }}" />
+            <arg value="--extensions=php" />
             <arg path="{{ phpSrcPath }}" />
         </exec>
     </target>
@@ -129,6 +130,7 @@
             <arg value="--report=checkstyle" />
             <arg value="--report-file={{ buildArtifactsPath }}/logs/checkstyle-php.xml" />
             <arg value="--standard={{ phpCodeSnifferCodingStyle|default('PSR2') }}" />
+            <arg value="--extensions=php" />
             <arg path="{{ phpSrcPath }}" />
         </exec>
     </target>
