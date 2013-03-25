@@ -56,6 +56,9 @@ After installation, you can run `vendor/bin/qa-tools install`. This script will 
 In Jenkins, use the QA-Tools template for you project, or base your project on it manually.
 > If you want more options or some config that this script doesn't provide, you can simply edit the generated build.xml and config files to suit your needs. An example would be when your sources are in many different directories or when you need to exclude specific files for specific tools
 
+# Notes
+Important note: the pre-commit runs on the source you actually staged for commit with `git add` everything else is ignored. This is to make sure that succesfull or failing builds reflect what is actually being committed.
+
 # Contributing
 If something is broken or you have a feature request, please create an issue here on the github repo. 
 Better yet, create a feature branch, fix it and create a pull request! Please **do not** push directly to master or to a release branch.

@@ -1,7 +1,12 @@
 #! /bin/sh
 
+# Stash any changes to the working tree that are not going to be committed
+echo "\n\033[01;32mStashing any changes to the working tree that are not going to be committed...\033[00m\n"
+git stash -u --keep-index
+
 # Run the dev build
-ant dev 
+echo "\n\033[01;32mStarting build...\033[00m\n"
+ant dev
 exitCode=$?
 
 # If exit code is not 0 then there was a failure
@@ -9,7 +14,12 @@ if [ 0 -ne $exitCode ]
 then
     echo "\n\033[01;31mCommit aborted: build failed\033[00m"
     echo "\nIf you want to commit anyway, use --no-verify"
-    exit 1
+    exitCode=1
 fi
 
-exit 0
+# Unstash changes to the working tree that we had stashed
+echo "\n\033[01;32mUnstashing changes to the working tree that we had stashed...\033[00m\n"
+git reset --hard
+git stash pop --quiet --index
+
+exit $exitCode
