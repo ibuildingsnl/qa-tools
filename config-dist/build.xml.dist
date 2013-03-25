@@ -33,6 +33,7 @@
     </target>
 
     <target name="composer-run-install">
+        <delete dir="vendor"/>
         <exec executable="php" failonerror="true">
             <arg line="composer.phar install --dev"/>
         </exec>
