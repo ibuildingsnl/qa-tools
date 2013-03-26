@@ -2,7 +2,7 @@
 
 <project name="{{ projectName }}" default="build">
     <target name="dev" description="The dev tools to run before commit"
-            depends="prepare{% if enablePhpLint %},php-lint{% endif %}{% if enableJsHint %},jshint{% endif %}{% if enablePhpCsFixer %},php-cs-fixer{% endif %},dev-tools-parallel{% if enablePhpUnit %},phpunit{% endif %}"/>
+            depends="prepare-dev{% if enablePhpLint %},php-lint{% endif %}{% if enableJsHint %},jshint{% endif %}{% if enablePhpCsFixer %},php-cs-fixer{% endif %},dev-tools-parallel{% if enablePhpUnit %},phpunit{% endif %}"/>
 
     <target name="dev-tools-parallel" description="the dev tools that can be run in parallel">
         <parallel threadCount="4" failonany="true">
@@ -12,8 +12,6 @@
             <antcall target="phpcs"/>
             {% endif %}{% if enablePhpCopyPasteDetection %}
             <antcall target="phpcpd"/>
-            {% endif %}{% if enablePhpSecurityChecker %}
-            <antcall target="php-security-checker"/>
             {% endif %}
 
         </parallel>
@@ -25,6 +23,9 @@
     <target name="clean" description="Cleanup build artifacts">
         <delete dir="{{ buildArtifactsPath }}/coverage"/>
         <delete dir="{{ buildArtifactsPath }}/logs"/>
+    </target>
+
+    <target name="prepare-dev" description="Prepare for dev build">
     </target>
 
     <target name="prepare" depends="clean" description="Prepare for build">
