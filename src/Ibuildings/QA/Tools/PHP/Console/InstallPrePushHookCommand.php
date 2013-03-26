@@ -85,6 +85,35 @@ class InstallPrePushHookCommand extends Command
             true
         );
 
+        if (!$this->settings['enablePrePushHook']) {
+            return;
+        }
+
+        $output->writeln(
+            "<info>Please specify a path where the pre-push build sources can be extracted to. ".
+            "\nIt is best not to use a temporary path so that build caches can be retained. ".
+            "\nThis reduces subsequent build times greatly</info>"
+        );
+        $this->settings['prePushBuildPath'] = $this->dialog->askAndValidate(
+            $output,
+            "Specify a pre-push build path [". getenv('TMPDIR') ."] ",
+            function ($data) use ($output) {
+                if (!file_exists(BASE_DIR . '/' . $data)) {
+                    if ($this->dialog->askConfirmation(
+                        $output,
+                        "  - Are you sure? The path doesn't exist and will be created. [Y/n] ",
+                        true
+                    )) {
+                        return $data;
+                    }
+                    throw new \Exception("Not using path '" . $this->settings['prePushBuildPath'] . " ', trying again...");
+                }
+                return $data;
+            },
+            false,
+            getenv('TMPDIR')
+        );
+
         $gitHooksDirExists = is_dir(BASE_DIR . '/.git/hooks');
         if ($this->settings['enablePrePushHook'] && !$gitHooksDirExists) {
             $output->writeln(

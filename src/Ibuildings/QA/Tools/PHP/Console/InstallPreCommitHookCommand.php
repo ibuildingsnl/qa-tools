@@ -85,6 +85,10 @@ class InstallPreCommitHookCommand extends Command
             true
         );
 
+        if (!$this->settings['enablePreCommitHook']) {
+            return;
+        }
+
         $gitHooksDirExists = is_dir(BASE_DIR . '/.git/hooks');
         if ($this->settings['enablePreCommitHook'] && !$gitHooksDirExists) {
             $output->writeln(
