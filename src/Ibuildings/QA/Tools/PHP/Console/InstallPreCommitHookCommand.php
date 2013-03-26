@@ -69,6 +69,12 @@ class InstallPreCommitHookCommand extends Command
         $this->writePreCommitHook($input, $output);
     }
 
+    private function commandExists($cmd)
+    {
+        $returnVal = shell_exec("command -v $cmd");
+        return (empty($returnVal) ? false : true);
+    }
+
     protected function configurePreCommitHook(InputInterface $input, OutputInterface $output)
     {
         $this->settings['enablePreCommitHook'] = $this->dialog->askConfirmation(
@@ -79,7 +85,9 @@ class InstallPreCommitHookCommand extends Command
 
         $gitHooksDirExists = is_dir(BASE_DIR . '/.git/hooks');
         if ($this->settings['enablePreCommitHook'] && !$gitHooksDirExists) {
-            $output->writeln("<error>You don't have an initialized git repo or hooks directory. Not setting pre-commit hook.</error>");
+            $output->writeln(
+                "<error>You don't have an initialized git repo or hooks directory. Not setting pre-commit hook.</error>"
+            );
             $this->settings['enablePreCommitHook'] = false;
         }
 
