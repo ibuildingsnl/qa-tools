@@ -38,14 +38,14 @@
     </target>
 
     <target name="composer-run-install">
-        <delete dir="vendor"/>
         <exec executable="php" failonerror="true">
             <arg line="composer.phar install --dev"/>
         </exec>
         <delete file="composer.phar"/>
     </target>
 
-    {% if enablePhpLint %}<target name="php-lint" description="Perform syntax check of sourcecode files">
+    {% if enablePhpLint %}
+    <target name="php-lint" description="Perform syntax check of sourcecode files">
         <apply executable="php" failonerror="true">
             <arg value="-l"/>
             <fileset dir="{{ phpSrcPath }}">
@@ -56,7 +56,8 @@
     </target>
     {% endif %}
 
-    {% if enableJsHint %}<target name="jshint">
+    {% if enableJsHint %}
+    <target name="jshint">
         <exec executable="node" failonerror="true">
             <arg value="vendor/bin/jshint"/>
             <arg value="--config=.jshintrc"/>
@@ -74,7 +75,8 @@
     </target>
     {% endif %}
 
-    {% if enablePhpSecurityChecker %}<target name="php-security-checker" description="Check your composer dependencies for insecure components">
+    {% if enablePhpSecurityChecker %}
+    <target name="php-security-checker" description="Check your composer dependencies for insecure components">
         <exec executable="vendor/bin/security-checker" failonerror="true">
             <arg value="security:check"/>
             <arg value="--verbose"/>
@@ -83,7 +85,8 @@
     </target>
     {% endif %}
 
-    {% if enablePhpCsFixer %}<target name="php-cs-fixer" description="Fix coding style automatically">
+    {% if enablePhpCsFixer %}
+    <target name="php-cs-fixer" description="Fix coding style automatically">
         <exec executable="vendor/bin/php-cs-fixer">
             <arg value="fix"/>
             <arg value="--verbose"/>
@@ -93,7 +96,8 @@
     </target>
     {% endif %}
 
-    {% if enablePhpMessDetector %}<target name="phpmd"
+    {% if enablePhpMessDetector %}
+    <target name="phpmd"
             description="Perform project mess detection using PHPMD and print human readable output. Intended for usage on the command line before committing.">
         <exec executable="vendor/bin/phpmd" failonerror="true">
             <arg path="{{ phpSrcPath }}"/>
@@ -114,7 +118,8 @@
     </target>
     {% endif %}
 
-    {% if enablePhpCodeSniffer %}<target name="phpcs"
+    {% if enablePhpCodeSniffer %}
+    <target name="phpcs"
             description="Find coding standard violations using PHP_CodeSniffer and print human readable output. Intended for usage on the command line before committing.">
         <exec executable="vendor/bin/phpcs" failonerror="true">
             <arg value="--standard=phpcs.xml"/>
@@ -135,8 +140,10 @@
     </target>
     {% endif %}
 
-    {% if enablePhpCopyPasteDetection %}<target name="phpcpd" description="Find duplicate code using PHPCPD">
+    {% if enablePhpCopyPasteDetection %}
+    <target name="phpcpd" description="Find duplicate code using PHPCPD">
         <exec executable="vendor/bin/phpcpd" failonerror="true">
+            <arg value="--verbose"/>
             <arg path="{{ phpSrcPath }}"/>
         </exec>
     </target>
@@ -149,18 +156,19 @@
     </target>
     {% endif %}
 
-    {% if enablePhpUnit %}<target name="phpunit" description="Run unit tests with PHPUnit">
+    {% if enablePhpUnit %}
+    <target name="phpunit" description="Run unit tests with PHPUnit">
         <exec executable="vendor/bin/phpunit" failonerror="true">
-            <arg line="--configuration={{ phpUnitConfigPath }}" />
+            <arg line="--configuration={{ phpUnitConfigPath }}"/>
         </exec>
     </target>
 
     <target name="phpunit-ci" description="Run unit tests with PHPUnit">
         <exec executable="vendor/bin/phpunit" failonerror="true">
-            <arg line="--configuration={{ phpUnitConfigPath }}" />
-            <arg line="--coverage-html={{ buildArtifactsPath }}/coverage" />
-            <arg line="--log-junit={{ buildArtifactsPath }}/logs/junit.xml" />
-            <arg line="--coverage-clover={{ buildArtifactsPath }}/logs/clover.xml" />
+            <arg line="--configuration={{ phpUnitConfigPath }}"/>
+            <arg line="--coverage-html={{ buildArtifactsPath }}/coverage"/>
+            <arg line="--log-junit={{ buildArtifactsPath }}/logs/junit.xml"/>
+            <arg line="--coverage-clover={{ buildArtifactsPath }}/logs/clover.xml"/>
         </exec>
     </target>
     {% endif %}
