@@ -48,13 +48,7 @@
     {% if enablePhpLint %}<target name="php-lint" description="Perform syntax check of sourcecode files">
         <apply executable="php" failonerror="true">
             <arg value="-l"/>
-
             <fileset dir="{{ phpSrcPath }}">
-                <include name="**/*.php"/>
-                <modified/>
-            </fileset>
-
-            <fileset dir="{{ phpTestsPath }}">
                 <include name="**/*.php"/>
                 <modified/>
             </fileset>
