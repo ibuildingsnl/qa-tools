@@ -1,8 +1,15 @@
 #! /bin/sh
 
-# Stash any changes to the working tree that are not going to be committed
+# Stash any changes to the working tree that are not going to be committed.
 echo "\n\033[01;32mStashing any changes to the working tree that are not going to be committed...\033[00m\n"
-git stash -u --keep-index
+stash_output=`git stash -u --keep-index`
+needle='No local changes to save'
+doStashPop=1;
+
+if [[ "$stash_output" == *"$needle"* ]]
+then
+  doStashPop=0;
+fi
 
 # Run the dev build
 echo "\n\033[01;32mStarting build...\033[00m\n"
@@ -17,8 +24,12 @@ then
     exitCode=1
 fi
 
-# Unstash changes to the working tree that we had stashed
-echo "\n\033[01;32mUnstashing changes to the working tree that we had stashed...\033[00m\n"
-git stash pop --quiet --index
+# only do a stash pop if we actually stashed anything
+if [ 1 -eq $doStashPop ]
+then
+    # Unstash changes to the working tree that we had stashed
+    echo "\n\033[01;32mUnstashing changes to the working tree that we had stashed...\033[00m\n"
+    git stash pop --quiet --index
+fi
 
 exit $exitCode
