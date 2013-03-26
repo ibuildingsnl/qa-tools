@@ -13,7 +13,7 @@ fi
 
 # Run the dev build
 echo "\n\033[01;32mStarting build...\033[00m\n"
-ant dev
+ant pre-commit
 exitCode=$?
 
 # If exit code is not 0 then there was a failure

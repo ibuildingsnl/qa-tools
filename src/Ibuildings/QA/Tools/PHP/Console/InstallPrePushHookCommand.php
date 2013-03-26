@@ -19,7 +19,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @SuppressWarnings(PHPMD)
  */
-class InstallPreCommitHookCommand extends Command
+class InstallPrePushHookCommand extends Command
 {
     protected $settings = array();
 
@@ -32,9 +32,9 @@ class InstallPreCommitHookCommand extends Command
     protected function configure()
     {
         $this
-            ->setName('install:pre-commit')
-            ->setDescription('Sets up the pre-commit hook for the Ibuildings QA Tools')
-            ->setHelp('Sets up the pre-commit hook for the Ibuildings QA Tools');
+            ->setName('install:pre-push')
+            ->setDescription('Sets up the pre-push hook for the Ibuildings QA Tools')
+            ->setHelp('Sets up the pre-push hook for the Ibuildings QA Tools');
     }
 
     protected function initialize(InputInterface $input, OutputInterface $output)
@@ -60,15 +60,15 @@ class InstallPreCommitHookCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $output->writeln("<info>Starting setup of the pre-commit hook for the Ibuildings QA Tools<info>");
+        $output->writeln("<info>Starting setup of the pre-push hook for the Ibuildings QA Tools<info>");
 
         if (!$this->commandExists('ant')) {
             $output->writeln("\n<error>You don't have Apache Ant installed. Exiting.</error>");
             return;
         }
 
-        $this->configurePreCommitHook($input, $output);
-        $this->writePreCommitHook($input, $output);
+        $this->configurePrePushHook($input, $output);
+        $this->writePrePushHook($input, $output);
     }
 
     private function commandExists($cmd)
@@ -77,50 +77,50 @@ class InstallPreCommitHookCommand extends Command
         return (empty($returnVal) ? false : true);
     }
 
-    protected function configurePreCommitHook(InputInterface $input, OutputInterface $output)
+    protected function configurePrePushHook(InputInterface $input, OutputInterface $output)
     {
-        $this->settings['enablePreCommitHook'] = $this->dialog->askConfirmation(
+        $this->settings['enablePrePushHook'] = $this->dialog->askConfirmation(
             $output,
-            "\n<comment>Do you want to enable the git pre-commit hook? It will run the QA tools on every commit [Y/n] </comment>",
+            "\n<comment>Do you want to enable the git pre-push hook? It will run the QA tools on every push [Y/n] </comment>",
             true
         );
 
         $gitHooksDirExists = is_dir(BASE_DIR . '/.git/hooks');
-        if ($this->settings['enablePreCommitHook'] && !$gitHooksDirExists) {
+        if ($this->settings['enablePrePushHook'] && !$gitHooksDirExists) {
             $output->writeln(
-                "<error>You don't have an initialized git repo or hooks directory. Not setting pre-commit hook.</error>"
+                "<error>You don't have an initialized git repo or hooks directory. Not setting pre-push hook.</error>"
             );
-            $this->settings['enablePreCommitHook'] = false;
+            $this->settings['enablePrePushHook'] = false;
         }
 
-        $gitPreCommitHookExists = file_exists(BASE_DIR . '/.git/hooks/pre-commit');
-        if ($gitPreCommitHookExists) {
-            $output->writeln("<error>You already have a git pre-commit hook.</error>");
-            $overwritePreCommitHook = $this->dialog->askConfirmation(
+        $gitPrePushHookExists = file_exists(BASE_DIR . '/.git/hooks/pre-push');
+        if ($gitPrePushHookExists) {
+            $output->writeln("<error>You already have a git pre-push hook.</error>");
+            $overwritePrePushHook = $this->dialog->askConfirmation(
                 $output,
-                "  - Do you want to overwrite your current pre-commit hook? [y/N] ",
+                "  - Do you want to overwrite your current pre-push hook? [y/N] ",
                 false
             );
-            if (!$overwritePreCommitHook) {
-                $this->settings['enablePreCommitHook'] = false;
+            if (!$overwritePrePushHook) {
+                $this->settings['enablePrePushHook'] = false;
             }
         }
     }
 
-    protected function writePreCommitHook(InputInterface $input, OutputInterface $output)
+    protected function writePrePushHook(InputInterface $input, OutputInterface $output)
     {
-        if ($this->settings['enablePreCommitHook']) {
-            $fh = fopen(BASE_DIR . '/.git/hooks/pre-commit', 'w');
+        if ($this->settings['enablePrePushHook']) {
+            $fh = fopen(BASE_DIR . '/.git/hooks/pre-push', 'w');
             fwrite(
                 $fh,
                 $this->twig->render(
-                    'pre-commit.dist',
+                    'pre-push.dist',
                     $this->settings
                 )
             );
             fclose($fh);
-            chmod(BASE_DIR . '/.git/hooks/pre-commit', 0755);
-            $output->writeln("\n<info>Commit hook written</info>");
+            chmod(BASE_DIR . '/.git/hooks/pre-push', 0755);
+            $output->writeln("\n<info>Push hook written</info>");
         }
     }
 }

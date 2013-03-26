@@ -1,0 +1,24 @@
+#! /bin/sh
+
+echo "\n\033[01;32mCreating temporary copy of latest commit on current branch...\033[00m\n"
+git archive --format=tar --prefix=pre-push-ant/{{ dirname }}/ HEAD | (cd $TMPDIR && tar xf -)
+
+if [ "$?" != "0" ]; then
+    echo "\n\033[01;31mPush aborted: temporary copy failed\033[00m"
+    exit 1
+fi
+
+# Run the dev build
+echo "\n\033[01;32mStarting build...\033[00m\n"
+ant -buildfile "$TMPDIR/pre-push-ant/{{ dirname }}/build.xml" pre-push
+exitCode=$?
+
+# If exit code is not 0 then there was a failure
+if [ 0 -ne $exitCode ]
+then
+    echo "\n\033[01;31mPush aborted: build failed\033[00m"
+    echo "\nIf you want to push anyway, use --no-verify"
+    exitCode=1
+fi
+
+exit $exitCode

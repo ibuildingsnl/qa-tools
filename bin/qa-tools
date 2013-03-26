@@ -11,4 +11,5 @@ require_once BASE_DIR . '/vendor/autoload.php';
 $application = new \Symfony\Component\Console\Application('Ibuildings QA Tools Setup', '1.0.0-dev');
 $application->add(new \Ibuildings\QA\Tools\PHP\Console\InstallCommand());
 $application->add(new \Ibuildings\QA\Tools\PHP\Console\InstallPreCommitHookCommand());
+$application->add(new \Ibuildings\QA\Tools\PHP\Console\InstallPrePushHookCommand());
 $application->run();

@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <project name="{{ projectName }}" default="build">
-    <target name="dev" description="The dev tools to run before commit"
+    <target name="dev" depends="pre-commit"/>
+
+    <target name="pre-commit" description="The dev tools to run before commit"
             depends="prepare-dev{% if enablePhpLint %},php-lint{% endif %}{% if enableJsHint %},jshint{% endif %}{% if enablePhpCsFixer %},php-cs-fixer{% endif %},dev-tools-parallel{% if enablePhpUnit %},phpunit{% endif %}"/>
+
+    <target name="pre-push" description="The dev tools to run before push"
+            depends="prepare-dev,composer-run-install{% if enablePhpLint %},php-lint{% endif %}{% if enableJsHint %},jshint{% endif %}{% if enablePhpCsFixer %},php-cs-fixer{% endif %},dev-tools-parallel{% if enablePhpUnit %},phpunit{% endif %}"/>
 
     <target name="dev-tools-parallel" description="the dev tools that can be run in parallel">
         <parallel threadCount="4" failonany="true">
