@@ -97,7 +97,7 @@ class InstallPrePushHookCommand extends Command
         );
         $this->settings['prePushBuildPath'] = $this->dialog->askAndValidate(
             $output,
-            "Specify a pre-push build path [build/tmp] ",
+            "Specify a pre-push build path [build/ant-cache] ",
             function ($data) use ($output) {
                 if (1 === strpos($data, '/')) {
                     $isDir = is_dir($data);
@@ -118,7 +118,7 @@ class InstallPrePushHookCommand extends Command
                 return $data;
             },
             false,
-            'build/tmp'
+            'build/ant-cache'
         );
 
         $gitHooksDirExists = is_dir(BASE_DIR . '/.git/hooks');
