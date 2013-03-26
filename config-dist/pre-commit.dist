@@ -21,6 +21,7 @@ if [ 0 -ne $exitCode ]
 then
     echo "\n\033[01;31mCommit aborted: build failed\033[00m"
     echo "\nIf you want to commit anyway, use --no-verify"
+    rm -f phpcs-full.tmp
     exitCode=1
 fi
 

@@ -87,7 +87,6 @@ class InstallCommand extends Command
             $output->writeln("\n<info>Configuring PHP inspections</info>\n");
 
             $this->configurePhpLint($input, $output);
-            $this->configurePhpCsFixer($input, $output);
             $this->configurePhpMessDetector($input, $output);
             $this->configurePhpCodeSniffer($input, $output);
             $this->configurePhpCopyPasteDetection($input, $output);
@@ -124,7 +123,6 @@ class InstallCommand extends Command
     {
         $this->settings['buildArtifactsPath'] = 'build/artifacts';
 
-        $this->settings['enablePhpCsFixer'] = false;
         $this->settings['enablePhpMessDetector'] = false;
         $this->settings['enablePhpCopyPasteDetection'] = false;
         $this->settings['enablePhpCodeSniffer'] = false;
@@ -165,30 +163,6 @@ class InstallCommand extends Command
             false,
             $this->settings['buildArtifactsPath']
         );
-    }
-
-    protected function configurePhpCsFixer(InputInterface $input, OutputInterface $output)
-    {
-        $this->settings['enablePhpCsFixer'] = $this->dialog->askConfirmation(
-            $output,
-            "Do you want to enable the PHP CS Fixer? [Y/n] ",
-            true
-        );
-
-        if ($this->settings['enablePhpCsFixer']) {
-            $this->settings['phpCsFixerLevel'] = $this->dialog->askAndValidate(
-                $output,
-                "  - What fixer level do you want to use? (psr0, psr1, psr2, all) [all] ",
-                function ($data) {
-                    if (in_array($data, array("psr0", "psr1", "psr2", "all"))) {
-                        return $data;
-                    }
-                    throw new \Exception("That fixer level is not supported");
-                },
-                false,
-                'all'
-            );
-        }
     }
 
     protected function configureProjectName(InputInterface $input, OutputInterface $output)
@@ -306,8 +280,7 @@ class InstallCommand extends Command
 
     protected function configurePhpSrcPath(InputInterface $input, OutputInterface $output)
     {
-        if ($this->settings['enablePhpCsFixer']
-            || $this->settings['enablePhpMessDetector']
+        if ($this->settings['enablePhpMessDetector']
             || $this->settings['enablePhpCodeSniffer']
             || $this->settings['enablePhpCopyPasteDetection']
         ) {
@@ -395,8 +368,7 @@ class InstallCommand extends Command
 
     protected function writeAntBuildXml(InputInterface $input, OutputInterface $output)
     {
-        if ($this->settings['enablePhpCsFixer']
-            || $this->settings['enablePhpMessDetector']
+        if ($this->settings['enablePhpMessDetector']
             || $this->settings['enablePhpCopyPasteDetection']
             || $this->settings['enablePhpCodeSniffer']
             || $this->settings['enablePhpUnit']

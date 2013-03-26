@@ -4,10 +4,10 @@
     <target name="dev" depends="pre-commit"/>
 
     <target name="pre-commit" description="The dev tools to run before commit"
-            depends="prepare-dev{% if enablePhpLint %},php-lint{% endif %}{% if enableJsHint %},jshint{% endif %}{% if enablePhpCsFixer %},php-cs-fixer{% endif %},dev-tools-parallel{% if enablePhpUnit %},phpunit{% endif %}"/>
+            depends="prepare-dev{% if enablePhpLint %},php-lint{% endif %}{% if enableJsHint %},jshint{% endif %},dev-tools-parallel{% if enablePhpUnit %},phpunit{% endif %}"/>
 
     <target name="pre-push" description="The dev tools to run before push"
-            depends="prepare-dev,composer-run-install{% if enablePhpLint %},php-lint{% endif %}{% if enableJsHint %},jshint{% endif %}{% if enablePhpCsFixer %},php-cs-fixer{% endif %},dev-tools-parallel{% if enablePhpUnit %},phpunit{% endif %}"/>
+            depends="prepare-dev,composer-run-install{% if enablePhpLint %},php-lint{% endif %}{% if enableJsHint %},jshint{% endif %},dev-tools-parallel{% if enablePhpUnit %},phpunit{% endif %}"/>
 
     <target name="dev-tools-parallel" description="the dev tools that can be run in parallel">
         <parallel threadCount="4" failonany="true">
@@ -23,7 +23,7 @@
     </target>
 
     <target name="build"
-            depends="prepare,composer-run-install{% if enablePhpLint %},php-lint{% endif %}{% if enableJsHint %},jshint-ci{% endif %}{% if enablePhpCsFixer %},php-cs-fixer{% endif %}{% if enablePhpMessDetector %},phpmd-ci{% endif %}{% if enablePhpCodeSniffer %},phpcs-ci{% endif %}{% if enablePhpCopyPasteDetection %},phpcpd-ci{% endif %}{% if enablePhpSecurityChecker %},php-security-checker{% endif %}{% if enablePhpUnit %},phpunit-ci{% endif %}"/>
+            depends="prepare,composer-run-install{% if enablePhpLint %},php-lint{% endif %}{% if enableJsHint %},jshint-ci{% endif %}{% if enablePhpMessDetector %},phpmd-ci{% endif %}{% if enablePhpCodeSniffer %},phpcs-ci{% endif %}{% if enablePhpCopyPasteDetection %},phpcpd-ci{% endif %}{% if enablePhpSecurityChecker %},php-security-checker{% endif %}{% if enablePhpUnit %},phpunit-ci{% endif %}"/>
 
     <target name="clean" description="Cleanup build artifacts">
         <delete dir="{{ buildArtifactsPath }}/coverage"/>
@@ -89,17 +89,6 @@
             <arg value="security:check"/>
             <arg value="--verbose"/>
             <arg value="composer.lock"/>
-        </exec>
-    </target>
-    {% endif %}
-
-    {% if enablePhpCsFixer %}
-    <target name="php-cs-fixer" description="Fix coding style automatically">
-        <exec executable="vendor/bin/php-cs-fixer">
-            <arg value="fix"/>
-            <arg value="--verbose"/>
-            <arg value="--level={{ phpCsFixerLevel|default('all') }}"/>
-            <arg path="{{ phpSrcPath }}"/>
         </exec>
     </target>
     {% endif %}
