@@ -440,6 +440,7 @@ class InstallCommand extends Command
             fclose($fh);
 
             $this->addToGitIgnore('build');
+            $this->addToGitIgnore('cache.properties');
 
             $output->writeln("\n<info>Ant build file written</info>");
         } else {
