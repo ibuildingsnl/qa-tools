@@ -117,7 +117,7 @@
     {% if enablePhpCodeSniffer %}<target name="phpcs"
             description="Find coding standard violations using PHP_CodeSniffer and print human readable output. Intended for usage on the command line before committing.">
         <exec executable="vendor/bin/phpcs" failonerror="true">
-            <arg value="--standard={{ phpCodeSnifferCodingStyle|default('PSR2') }}"/>
+            <arg value="--standard=phpcs.xml"/>
             <arg value="--extensions=php"/>
             <arg value="--report=full"/>
             <arg path="{{ phpSrcPath }}"/>
@@ -128,7 +128,7 @@
             description="Find coding standard violations using PHP_CodeSniffer creating a log file for the continuous integration server">
         <exec executable="vendor/bin/phpcs" output="/dev/null" failonerror="true">
             <arg value="--report-checkstyle={{ buildArtifactsPath }}/logs/checkstyle-php.xml"/>
-            <arg value="--standard={{ phpCodeSnifferCodingStyle|default('PSR2') }}"/>
+            <arg value="--standard=phpcs.xml"/>
             <arg value="--extensions=php"/>
             <arg path="{{ phpSrcPath }}"/>
         </exec>

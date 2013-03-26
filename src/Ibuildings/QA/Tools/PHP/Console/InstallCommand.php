@@ -98,6 +98,7 @@ class InstallCommand extends Command
             $this->configurePhpUnit($input, $output);
 
             $this->writePhpUnitXml($input, $output);
+            $this->writePhpCsConfig($input, $output);
         }
 
         if ($this->dialog->askConfirmation(
@@ -266,11 +267,6 @@ class InstallCommand extends Command
             "Do you want to enable PHP Lint? [Y/n] ",
             true
         );
-
-        // if it is enabled we add its side effects to .gitignore
-        if ($this->settings['enablePhpLint']) {
-            $this->addToGitIgnore('cache.properties');
-        }
     }
 
     protected function configurePreCommitHook(InputInterface $input, OutputInterface $output)
@@ -444,7 +440,6 @@ class InstallCommand extends Command
             fclose($fh);
 
             $this->addToGitIgnore('build');
-            $this->addToGitIgnore('composer.phar');
 
             $output->writeln("\n<info>Ant build file written</info>");
         } else {
@@ -513,6 +508,22 @@ class InstallCommand extends Command
             );
             fclose($fh);
             $output->writeln("\n<info>Config file for JSHint written</info>");
+        }
+    }
+
+    protected function writePhpCsConfig(InputInterface $input, OutputInterface $output)
+    {
+        if ($this->settings['enablePhpCodeSniffer']) {
+            $fh = fopen(BASE_DIR . '/phpcs.xml', 'w');
+            fwrite(
+                $fh,
+                $this->twig->render(
+                    'phpcs.xml.dist',
+                    $this->settings
+                )
+            );
+            fclose($fh);
+            $output->writeln("\n<info>Config file for PHPCS written</info>");
         }
     }
 
