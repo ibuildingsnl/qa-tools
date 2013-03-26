@@ -115,7 +115,7 @@ class InstallCommand extends Command
 
         $command = $this->getApplication()->find('install:pre-push');
         $command->run($input, $output);
-        
+
         $command = $this->getApplication()->find('install:pre-commit');
         $command->run($input, $output);
     }
@@ -150,7 +150,7 @@ class InstallCommand extends Command
             $output,
             "Where do you want to store the build artifacts? [".$this->settings['buildArtifactsPath']."] ",
             function ($data) use ($output) {
-                if (!file_exists(BASE_DIR . '/' . $data)) {
+                if (!is_dir(BASE_DIR . '/' . $data)) {
                     if ($this->dialog->askConfirmation(
                         $output,
                         "  - Are you sure? The path doesn't exist and will be created. [Y/n] ",
@@ -158,7 +158,7 @@ class InstallCommand extends Command
                     )) {
                         return $data;
                     }
-                    throw new \Exception("Not using path '" . $this->settings['buildArtifactsPath'] . " ', trying again...");
+                    throw new \Exception("Not using path '" . $data . " ', trying again...");
                 }
                 return $data;
             },
@@ -292,7 +292,7 @@ class InstallCommand extends Command
                 $output,
                 "What is the path to the JavaScript source code? [src] ",
                 function ($data) {
-                    if (file_exists(BASE_DIR . '/' . $data)) {
+                    if (is_dir(BASE_DIR . '/' . $data)) {
                         return $data;
                     }
                     throw new \Exception("That path doesn't exist");
@@ -315,7 +315,7 @@ class InstallCommand extends Command
                 $output,
                 "What is the path to the PHP source code? [src] ",
                 function ($data) {
-                    if (file_exists(BASE_DIR . '/' . $data)) {
+                    if (is_dir(BASE_DIR . '/' . $data)) {
                         return $data;
                     }
                     throw new \Exception("That path doesn't exist");
@@ -360,7 +360,7 @@ class InstallCommand extends Command
                     $output,
                     "What is the path to the PHPUnit tests? [tests] ",
                     function ($data) {
-                        if (file_exists(BASE_DIR . '/' . $data)) {
+                        if (is_dir(BASE_DIR . '/' . $data)) {
                             return $data;
                         }
                         throw new \Exception("That path doesn't exist");

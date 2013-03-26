@@ -99,7 +99,12 @@ class InstallPrePushHookCommand extends Command
             $output,
             "Specify a pre-push build path [". getenv('TMPDIR') ."] ",
             function ($data) use ($output) {
-                if (!file_exists(BASE_DIR . '/' . $data)) {
+                if (1 === strpos($data, '/')) {
+                    $isDir = is_dir($data);
+                } else {
+                    $isDir = is_dir(BASE_DIR . '/' . $data);
+                }
+                if (!$isDir) {
                     if ($this->dialog->askConfirmation(
                         $output,
                         "  - Are you sure? The path doesn't exist and will be created. [Y/n] ",
@@ -107,7 +112,7 @@ class InstallPrePushHookCommand extends Command
                     )) {
                         return $data;
                     }
-                    throw new \Exception("Not using path '" . $this->settings['prePushBuildPath'] . " ', trying again...");
+                    throw new \Exception("Not using path '" . $data . " ', trying again...");
                 }
                 return $data;
             },
