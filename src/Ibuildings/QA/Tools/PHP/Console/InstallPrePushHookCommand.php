@@ -97,7 +97,7 @@ class InstallPrePushHookCommand extends Command
         );
         $this->settings['prePushBuildPath'] = $this->dialog->askAndValidate(
             $output,
-            "Specify a pre-push build path [". getenv('TMPDIR') ."] ",
+            "Specify a pre-push build path [build/tmp] ",
             function ($data) use ($output) {
                 if (1 === strpos($data, '/')) {
                     $isDir = is_dir($data);
@@ -110,7 +110,7 @@ class InstallPrePushHookCommand extends Command
                         "  - Are you sure? The path '$data' doesn't exist and will be created. [Y/n] ",
                         true
                     )) {
-                        mkdir($data, 0644, true);
+                        mkdir($data, 0755, true);
                         return $data;
                     }
                     throw new \Exception("Not using path '" . $data . " ', trying again...");
@@ -118,7 +118,7 @@ class InstallPrePushHookCommand extends Command
                 return $data;
             },
             false,
-            getenv('TMPDIR')
+            'build/tmp'
         );
 
         $gitHooksDirExists = is_dir(BASE_DIR . '/.git/hooks');
