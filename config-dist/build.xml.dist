@@ -160,7 +160,12 @@
 
     {% if enablePhpUnit %}
     <target name="phpunit" description="Run unit tests with PHPUnit">
-        <exec executable="vendor/bin/phpunit" failonerror="true"/>
+        <exec executable="vendor/bin/phpunit" failonerror="true">
+            <arg line="--configuration={{ phpUnitConfigPath }}" />
+            <arg line="--coverage-html={{ buildArtifactsPath }}/coverage" />
+            <arg line="--log-junit={{ buildArtifactsPath }}/logs/junit.xml" />
+            <arg line="--coverage-clover={{ buildArtifactsPath }}/logs/clover.xml" />
+        </exec>
     </target>
     {% endif %}
 

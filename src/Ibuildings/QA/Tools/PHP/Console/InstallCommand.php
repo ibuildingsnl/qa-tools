@@ -128,6 +128,9 @@ class InstallCommand extends Command
         $this->settings['enablePhpUnit'] = false;
         $this->settings['enablePhpLint'] = false;
 
+        $this->settings['customPhpUnitXml'] = false;
+        $this->settings['phpUnitConfigPath'] = BASE_DIR;
+
         $this->settings['enableJsHint'] = false;
 
         return $this;
@@ -362,10 +365,16 @@ class InstallCommand extends Command
             true
         );
 
-        if ($this->settings['enablePhpUnit']) {
-            $this->settings['phpTestsPath'] = $this->dialog->askAndValidate(
+        $this->settings['customPhpUnitXml'] = $this->dialog->askConfirmation(
+            $output,
+            "Do you have a custom PHPUnit config? (for example, Symfony has one in 'app/phpunit.xml.dist') [y/N] ",
+            false
+        );
+
+        if ($this->settings['customPhpUnitXml']) {
+            $this->settings['phpUnitConfigPath'] = $this->dialog->askAndValidate(
                 $output,
-                "What is the path to the PHPUnit tests? [tests] ",
+                "What is the path to the custom PHPUnit config? [app/phpunit.xml.dist] ",
                 function ($data) {
                     if (file_exists(BASE_DIR . '/' . $data)) {
                         return $data;
@@ -373,19 +382,13 @@ class InstallCommand extends Command
                     throw new \Exception("That path doesn't exist");
                 },
                 false,
-                'tests'
+                'app/phpunit.xml.dist'
             );
-
-            $this->settings['enablePhpUnitAutoload'] = $this->dialog->askConfirmation(
-                $output,
-                "Do you want to enable an autoload script for PHPUnit? [Y/n] ",
-                true
-            );
-
-            if ($this->settings['enablePhpUnitAutoload']) {
-                $this->settings['phpTestsAutoloadPath'] = $this->dialog->askAndValidate(
+        } else {
+            if ($this->settings['enablePhpUnit']) {
+                $this->settings['phpTestsPath'] = $this->dialog->askAndValidate(
                     $output,
-                    "What is the path to the autoload script for PHPUnit? [vendor/autoload.php] ",
+                    "What is the path to the PHPUnit tests? [tests] ",
                     function ($data) {
                         if (file_exists(BASE_DIR . '/' . $data)) {
                             return $data;
@@ -393,8 +396,29 @@ class InstallCommand extends Command
                         throw new \Exception("That path doesn't exist");
                     },
                     false,
-                    'vendor/autoload.php'
+                    'tests'
                 );
+
+                $this->settings['enablePhpUnitAutoload'] = $this->dialog->askConfirmation(
+                    $output,
+                    "Do you want to enable an autoload script for PHPUnit? [Y/n] ",
+                    true
+                );
+
+                if ($this->settings['enablePhpUnitAutoload']) {
+                    $this->settings['phpTestsAutoloadPath'] = $this->dialog->askAndValidate(
+                        $output,
+                        "What is the path to the autoload script for PHPUnit? [vendor/autoload.php] ",
+                        function ($data) {
+                            if (file_exists(BASE_DIR . '/' . $data)) {
+                                return $data;
+                            }
+                            throw new \Exception("That path doesn't exist");
+                        },
+                        false,
+                        'vendor/autoload.php'
+                    );
+                }
             }
         }
     }
@@ -462,7 +486,7 @@ class InstallCommand extends Command
 
     protected function writePhpUnitXml(InputInterface $input, OutputInterface $output)
     {
-        if ($this->settings['enablePhpUnit']) {
+        if ($this->settings['enablePhpUnit'] && !$this->settings['customPhpUnitXml']) {
             $fh = fopen(BASE_DIR . '/phpunit.xml', 'w');
             fwrite(
                 $fh,
