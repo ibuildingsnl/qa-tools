@@ -18,7 +18,7 @@
     </target>
 
     <target name="build"
-            depends="prepare,composer-install,composer-run-install{% if enablePhpLint %},php-lint{% endif %}{% if enableJsHint %},jshint-ci{% endif %}{% if enablePhpCsFixer %},php-cs-fixer{% endif %}{% if enablePhpMessDetector %},phpmd-ci{% endif %}{% if enablePhpCodeSniffer %},phpcs-ci{% endif %}{% if enablePhpCopyPasteDetection %},phpcpd{% endif %}{% if enablePhpSecurityChecker %},php-security-checker{% endif %}{% if enablePhpUnit %},phpunit{% endif %}"/>
+            depends="prepare,composer-install,composer-run-install{% if enablePhpLint %},php-lint{% endif %}{% if enableJsHint %},jshint-ci{% endif %}{% if enablePhpCsFixer %},php-cs-fixer{% endif %}{% if enablePhpMessDetector %},phpmd-ci{% endif %}{% if enablePhpCodeSniffer %},phpcs-ci{% endif %}{% if enablePhpCopyPasteDetection %},phpcpd{% endif %}{% if enablePhpSecurityChecker %},php-security-checker{% endif %}{% if enablePhpUnit %},phpunit-ci{% endif %}"/>
 
     <target name="clean" description="Cleanup build artifacts">
         <delete dir="{{ buildArtifactsPath }}/coverage"/>
@@ -152,6 +152,12 @@
     {% endif %}
 
     {% if enablePhpUnit %}<target name="phpunit" description="Run unit tests with PHPUnit">
+        <exec executable="vendor/bin/phpunit" failonerror="true">
+            <arg line="--configuration={{ phpUnitConfigPath }}" />
+        </exec>
+    </target>
+
+    <target name="phpunit-ci" description="Run unit tests with PHPUnit">
         <exec executable="vendor/bin/phpunit" failonerror="true">
             <arg line="--configuration={{ phpUnitConfigPath }}" />
             <arg line="--coverage-html={{ buildArtifactsPath }}/coverage" />
