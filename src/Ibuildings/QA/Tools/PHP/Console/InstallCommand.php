@@ -129,7 +129,7 @@ class InstallCommand extends Command
         $this->settings['enablePhpLint'] = false;
 
         $this->settings['customPhpUnitXml'] = false;
-        $this->settings['phpUnitConfigPath'] = BASE_DIR;
+        $this->settings['phpUnitConfigPath'] = '${basedir}';
 
         $this->settings['enableJsHint'] = false;
 
