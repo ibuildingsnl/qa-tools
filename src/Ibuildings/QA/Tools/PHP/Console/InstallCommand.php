@@ -33,7 +33,7 @@ class InstallCommand extends Command
     {
         $this
             ->setName('install')
-            ->setDescription('Setup for Ibuildings QA Tools for PHP')
+            ->setDescription('Setup for Ibuildings QA Tools')
             ->setHelp('Installs all tools and config files');
     }
 
@@ -60,7 +60,7 @@ class InstallCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $output->writeln("<info>Starting setup of Ibuildings QA Tools for PHP<info>");
+        $output->writeln("<info>Starting setup of Ibuildings QA Tools<info>");
 
         if (!$this->commandExists('ant')) {
             $output->writeln("\n<error>You don't have Apache Ant installed. Exiting.</error>");
@@ -111,11 +111,10 @@ class InstallCommand extends Command
 
             $this->writeJsHintConfig($input, $output);
         }
-
-        $this->configurePreCommitHook($input, $output);
-        $this->writePreCommitHook($input, $output);
-
         $this->writeAntBuildXml($input, $output);
+
+        $command = $this->getApplication()->find('install:pre-commit');
+        $command->run($input, $output);
     }
 
     private function enableDefaultSettings()
@@ -267,34 +266,6 @@ class InstallCommand extends Command
             "Do you want to enable PHP Lint? [Y/n] ",
             true
         );
-    }
-
-    protected function configurePreCommitHook(InputInterface $input, OutputInterface $output)
-    {
-        $this->settings['enablePreCommitHook'] = $this->dialog->askConfirmation(
-            $output,
-            "\n<comment>Do you want to enable the git pre-commit hook? It will run the QA tools on every commit [Y/n] </comment>",
-            true
-        );
-
-        $gitHooksDirExists = is_dir(BASE_DIR . '/.git/hooks');
-        if ($this->settings['enablePreCommitHook'] && !$gitHooksDirExists) {
-            $output->writeln("<error>You don't have an initialized git repo or hooks directory. Not setting pre-commit hook.</error>");
-            $this->settings['enablePreCommitHook'] = false;
-        }
-
-        $gitPreCommitHookExists = file_exists(BASE_DIR . '/.git/hooks/pre-commit');
-        if ($gitPreCommitHookExists) {
-            $output->writeln("<error>You already have a git pre-commit hook.</error>");
-            $overwritePreCommitHook = $this->dialog->askConfirmation(
-                $output,
-                "  - Do you want to overwrite your current pre-commit hook? [y/N] ",
-                false
-            );
-            if (!$overwritePreCommitHook) {
-                $this->settings['enablePreCommitHook'] = false;
-            }
-        }
     }
 
     protected function configureJsHint(InputInterface $input, OutputInterface $output)
@@ -525,23 +496,6 @@ class InstallCommand extends Command
             );
             fclose($fh);
             $output->writeln("\n<info>Config file for PHPCS written</info>");
-        }
-    }
-
-    protected function writePreCommitHook(InputInterface $input, OutputInterface $output)
-    {
-        if ($this->settings['enablePreCommitHook']) {
-            $fh = fopen(BASE_DIR . '/.git/hooks/pre-commit', 'w');
-            fwrite(
-                $fh,
-                $this->twig->render(
-                    'pre-commit.dist',
-                    $this->settings
-                )
-            );
-            fclose($fh);
-            chmod(BASE_DIR . '/.git/hooks/pre-commit', 0755);
-            $output->writeln("\n<info>Commit hook written</info>");
         }
     }
 }
