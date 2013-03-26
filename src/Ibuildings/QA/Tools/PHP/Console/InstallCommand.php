@@ -113,6 +113,9 @@ class InstallCommand extends Command
         }
         $this->writeAntBuildXml($input, $output);
 
+        $command = $this->getApplication()->find('install:pre-push');
+        $command->run($input, $output);
+        
         $command = $this->getApplication()->find('install:pre-commit');
         $command->run($input, $output);
     }
