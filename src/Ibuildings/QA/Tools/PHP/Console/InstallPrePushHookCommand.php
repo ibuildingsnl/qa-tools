@@ -92,7 +92,8 @@ class InstallPrePushHookCommand extends Command
         $output->writeln(
             "<info>Please specify a path where the pre-push build sources can be extracted to. ".
             "\nIt is best not to use a temporary path so that build caches can be retained. ".
-            "\nThis reduces subsequent build times greatly</info>"
+            "\nThis reduces subsequent build times greatly. ".
+            "\n\nNote: a path NOT starting with '/' is treated as relative to '".BASE_DIR."'.</info>"
         );
         $this->settings['prePushBuildPath'] = $this->dialog->askAndValidate(
             $output,
