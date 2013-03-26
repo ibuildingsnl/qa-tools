@@ -39,8 +39,6 @@ class InstallPreCommitHookCommand extends Command
 
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
-        $this->enableDefaultSettings();
-
         $this->dialog = $this->getHelperSet()->get('dialog');
 
         $loader = new \Twig_Loader_Filesystem(PACKAGE_BASE_DIR . '/config-dist');
