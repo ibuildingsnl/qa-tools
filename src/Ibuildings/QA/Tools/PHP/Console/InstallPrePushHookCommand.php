@@ -107,9 +107,10 @@ class InstallPrePushHookCommand extends Command
                 if (!$isDir) {
                     if ($this->dialog->askConfirmation(
                         $output,
-                        "  - Are you sure? The path doesn't exist and will be created. [Y/n] ",
+                        "  - Are you sure? The path '$data' doesn't exist and will be created. [Y/n] ",
                         true
                     )) {
+                        mkdir($data, 0644, true);
                         return $data;
                     }
                     throw new \Exception("Not using path '" . $data . " ', trying again...");
