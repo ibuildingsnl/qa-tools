@@ -98,6 +98,7 @@ class InstallCommand extends Command
 
             $this->writePhpUnitXml($input, $output);
             $this->writePhpCsConfig($input, $output);
+            $this->writePhpMdConfig($input, $output);
         }
 
         if ($this->dialog->askConfirmation(
@@ -470,7 +471,23 @@ class InstallCommand extends Command
                 )
             );
             fclose($fh);
-            $output->writeln("\n<info>Config file for PHPCS written</info>");
+            $output->writeln("\n<info>Config file for PHP Code Sniffer written</info>");
+        }
+    }
+
+    protected function writePhpMdConfig(InputInterface $input, OutputInterface $output)
+    {
+        if ($this->settings['enablePhpMessDetector']) {
+            $fh = fopen(BASE_DIR . '/phpmd.xml', 'w');
+            fwrite(
+                $fh,
+                $this->twig->render(
+                    'phpmd.xml.dist',
+                    $this->settings
+                )
+            );
+            fclose($fh);
+            $output->writeln("\n<info>Config file for PHP Mess Detector written</info>");
         }
     }
 }
