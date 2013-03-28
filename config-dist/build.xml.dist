@@ -98,8 +98,7 @@
     </target>
     {% endif %}
 
-    {% if enableJsHint %}
-    <target name="jshint" depends="get-pre-commit-changeset-js" if="${git.changeset.js.notempty}">
+    {% if enableJsHint %}<target name="jshint" depends="get-pre-commit-changeset-js" if="${git.changeset.js.notempty}">
         <exec executable="node" failonerror="true">
             <arg value="vendor/bin/jshint"/>
             <arg value="--config=.jshintrc"/>
@@ -117,8 +116,7 @@
     </target>
     {% endif %}
 
-    {% if enablePhpSecurityChecker %}
-    <target name="php-security-checker" description="Check your composer dependencies for insecure components">
+    {% if enablePhpSecurityChecker %}<target name="php-security-checker" description="Check your composer dependencies for insecure components">
         <exec executable="vendor/bin/security-checker" failonerror="true">
             <arg value="security:check"/>
             <arg value="--verbose"/>
@@ -127,8 +125,7 @@
     </target>
     {% endif %}
 
-    {% if enablePhpMessDetector %}
-    <target name="phpmd" depends="get-pre-commit-changeset-php" if="${git.changeset.php.notempty}"
+    {% if enablePhpMessDetector %}<target name="phpmd" depends="get-pre-commit-changeset-php" if="${git.changeset.php.notempty}"
             description="Perform project mess detection using PHPMD and print human readable output. Intended for usage on the command line before committing.">
         <exec executable="vendor/bin/phpmd" failonerror="true">
             <arg value="${git.changeset.php.commasep}"/>
@@ -149,8 +146,7 @@
     </target>
     {% endif %}
 
-    {% if enablePhpCodeSniffer %}
-    <target name="phpcs" depends="get-pre-commit-changeset-php" if="${git.changeset.php.notempty}"
+    {% if enablePhpCodeSniffer %}<target name="phpcs" depends="get-pre-commit-changeset-php" if="${git.changeset.php.notempty}"
             description="Find coding standard violations using PHP_CodeSniffer and print human readable output. Intended for usage on the command line before committing.">
         <exec executable="vendor/bin/phpcs" failonerror="true">
             <arg value="--standard=phpcs.xml"/>
@@ -172,8 +168,7 @@
     </target>
     {% endif %}
 
-    {% if enablePhpCopyPasteDetection %}
-    <target name="phpcpd-ci" description="Find duplicate code using PHPCPD">
+    {% if enablePhpCopyPasteDetection %}<target name="phpcpd-ci" description="Find duplicate code using PHPCPD">
         <exec executable="vendor/bin/phpcpd" failonerror="true">
             <arg value="--log-pmd"/>
             <arg value="{{ buildArtifactsPath }}/logs/pmd-cpd.xml"/>
@@ -182,8 +177,7 @@
     </target>
     {% endif %}
 
-    {% if enablePhpUnit %}
-    <target name="phpunit" description="Run unit tests with PHPUnit">
+    {% if enablePhpUnit %}<target name="phpunit" description="Run unit tests with PHPUnit">
         <exec executable="vendor/bin/phpunit" failonerror="true">
             <arg line="--configuration={{ phpUnitConfigPath }}"/>
         </exec>
