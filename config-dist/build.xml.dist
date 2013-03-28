@@ -1,27 +1,57 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <project name="{{ projectName }}" default="build">
+    <target name="get-pre-commit-changeset" depends="get-pre-commit-changeset-js,echo-js-changeset,get-pre-commit-changeset-php,echo-php-changeset"/>
+
+    <target name="get-pre-commit-changeset-php" unless="${git.changeset.php.executed}">
+        <property name="git.changeset.php.executed" value="true" />
+        <exec executable="${basedir}/vendor/bin/qa-tools" outputProperty="git.pre-commit.changeset.php.spacesep">
+            <arg line="changeset:pre-commit --filter-path={{ phpSrcPath }} --filter-ext=php --separator=' '"/>
+        </exec>
+        <property name="git.changeset.php.spacesep" value="${git.pre-commit.changeset.php.spacesep}" />
+        <condition property="git.changeset.php.notempty">
+            <not>
+                <equals arg1="${git.changeset.php.spacesep}" arg2="" trim="true" />
+            </not>
+        </condition>
+
+        <exec executable="${basedir}/vendor/bin/qa-tools" outputProperty="git.pre-commit.changeset.php.commasep">
+            <arg line="changeset:pre-commit --filter-path={{ phpSrcPath }} --filter-ext=php --separator=','"/>
+        </exec>
+        <property name="git.changeset.php.commasep" value="${git.pre-commit.changeset.php.commasep}" />
+    </target>
+
+    <target name="echo-php-changeset" if="${git.changeset.php.notempty}">
+        <echo message="PHP Changeset: ${git.changeset.php.spacesep}"/>
+    </target>
+
+    <target name="get-pre-commit-changeset-js" unless="${git.changeset.js.executed}">
+        <property name="git.changeset.js.executed" value="true" />
+        <exec executable="${basedir}/vendor/bin/qa-tools" outputProperty="git.pre-commit.changeset.js">
+            <arg line="changeset:pre-commit --filter-path={{ javaScriptSrcPath }} --filter-ext=js --separator=' '"/>
+        </exec>
+        <property name="git.changeset.js" value="${git.pre-commit.changeset.js}" />
+        <condition property="git.changeset.js.notempty">
+            <not>
+                <equals arg1="${git.changeset.js}" arg2="" trim="true" />
+            </not>
+        </condition>
+    </target>
+
+    <target name="echo-js-changeset" if="${git.changeset.js.notempty}">
+        <echo message="js Changeset: ${git.changeset.js}"/>
+    </target>
+
     <target name="dev" depends="pre-commit"/>
 
     <target name="pre-commit" description="The dev tools to run before commit"
-            depends="prepare-dev{% if enablePhpLint %},php-lint{% endif %}{% if enableJsHint %},jshint{% endif %},dev-tools-parallel{% if enablePhpUnit %},phpunit{% endif %}"/>
+            depends="prepare-dev,get-pre-commit-changeset{% if enablePhpLint %},php-lint{% endif %}{% if enableJsHint %},jshint{% endif %}{% if enablePhpMessDetector %},phpmd{% endif %}{% if enablePhpCodeSniffer %}phpcs{% endif %}{% if enablePhpUnit %},phpunit{% endif %}"/>
 
-    <target name="pre-push" description="The dev tools to run before push"
-            depends="prepare-dev,composer-run-install{% if enablePhpLint %},php-lint{% endif %}{% if enableJsHint %},jshint{% endif %},dev-tools-parallel{% if enablePhpUnit %},phpunit{% endif %}"/>
-
-    <target name="dev-tools-parallel" description="the dev tools that can be run in parallel">
-        <parallel threadCount="4" failonany="true">
-            {% if enablePhpMessDetector %}
-            <antcall target="phpmd"/>
-            {% endif %}{% if enablePhpCodeSniffer %}
-            <antcall target="phpcs"/>
-            {% endif %}
-
-        </parallel>
-    </target>
+    <!--<target name="pre-push" description="The dev tools to run before push"-->
+            <!--depends="prepare-dev,composer-run-install{% if enablePhpLint %},php-lint{% endif %}{% if enableJsHint %},jshint{% endif %},dev-tools-parallel{% if enablePhpUnit %},phpunit{% endif %}"/>-->
 
     <target name="build"
-            depends="prepare,composer-run-install{% if enablePhpLint %},php-lint{% endif %}{% if enableJsHint %},jshint-ci{% endif %}{% if enablePhpMessDetector %},phpmd-ci{% endif %}{% if enablePhpCodeSniffer %},phpcs-ci{% endif %}{% if enablePhpCopyPasteDetection %},phpcpd-ci{% endif %}{% if enablePhpSecurityChecker %},php-security-checker{% endif %}{% if enablePhpUnit %},phpunit-ci{% endif %}"/>
+            depends="prepare,composer-run-install{% if enablePhpLint %},php-lint-ci{% endif %}{% if enableJsHint %},jshint-ci{% endif %}{% if enablePhpMessDetector %},phpmd-ci{% endif %}{% if enablePhpCodeSniffer %},phpcs-ci{% endif %}{% if enablePhpCopyPasteDetection %},phpcpd-ci{% endif %}{% if enablePhpSecurityChecker %},php-security-checker{% endif %}{% if enablePhpUnit %},phpunit-ci{% endif %}"/>
 
     <target name="clean" description="Cleanup build artifacts">
         <delete dir="{{ buildArtifactsPath }}/coverage"/>
@@ -50,8 +80,14 @@
         </exec>
     </target>
 
-    {% if enablePhpLint %}
-    <target name="php-lint" description="Perform syntax check of sourcecode files">
+    {% if enablePhpLint %}<target name="php-lint" description="Perform syntax check of sourcecode files">
+        <exec executable="sh" failonerror="true">
+            <arg value="-c" />
+            <arg value="${basedir}/vendor/bin/qa-tools changeset:pre-commit --filter-path={{ phpSrcPath }} --filter-ext=php | xargs -n1 -P8 php -l 1>/dev/null" />
+        </exec>
+    </target>
+
+    <target name="php-lint-ci" description="Perform syntax check of sourcecode files">
         <apply executable="php" failonerror="true">
             <arg value="-l"/>
             <fileset dir="{{ phpSrcPath }}">
@@ -63,11 +99,11 @@
     {% endif %}
 
     {% if enableJsHint %}
-    <target name="jshint">
+    <target name="jshint" depends="get-pre-commit-changeset-js" if="${git.changeset.js.notempty}">
         <exec executable="node" failonerror="true">
             <arg value="vendor/bin/jshint"/>
             <arg value="--config=.jshintrc"/>
-            <arg value="{{ javaScriptSrcPath }}"/>
+            <arg line="${git.changeset.js}"/>
         </exec>
     </target>
 
@@ -92,12 +128,12 @@
     {% endif %}
 
     {% if enablePhpMessDetector %}
-    <target name="phpmd"
+    <target name="phpmd" depends="get-pre-commit-changeset-php" if="${git.changeset.php.notempty}"
             description="Perform project mess detection using PHPMD and print human readable output. Intended for usage on the command line before committing.">
         <exec executable="vendor/bin/phpmd" failonerror="true">
-            <arg path="{{ phpSrcPath }}"/>
+            <arg value="${git.changeset.php.commasep}"/>
             <arg value="text"/>
-            <arg value="codesize,controversial,design,naming,unusedcode"/>
+            <arg value="phpmd.xml"/>
         </exec>
     </target>
 
@@ -106,7 +142,7 @@
         <exec executable="vendor/bin/phpmd" failonerror="true">
             <arg path="{{ phpSrcPath }}"/>
             <arg value="xml"/>
-            <arg value="codesize,controversial,design,naming,unusedcode"/>
+            <arg value="phpmd.xml"/>
             <arg value="--reportfile"/>
             <arg value="{{ buildArtifactsPath }}/logs/pmd.xml"/>
         </exec>
@@ -114,13 +150,14 @@
     {% endif %}
 
     {% if enablePhpCodeSniffer %}
-    <target name="phpcs"
+    <target name="phpcs" depends="get-pre-commit-changeset-php" if="${git.changeset.php.notempty}"
             description="Find coding standard violations using PHP_CodeSniffer and print human readable output. Intended for usage on the command line before committing.">
         <exec executable="vendor/bin/phpcs" failonerror="true">
             <arg value="--standard=phpcs.xml"/>
+            <arg value="--warning-severity=0"/> <!-- Don't show warnings-->
             <arg value="--extensions=php"/>
             <arg value="--report=full"/>
-            <arg path="{{ phpSrcPath }}"/>
+            <arg line="${git.changeset.php.spacesep}"/>
         </exec>
     </target>
 
