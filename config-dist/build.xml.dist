@@ -45,7 +45,7 @@
     <target name="dev" depends="pre-commit"/>
 
     <target name="pre-commit" description="The dev tools to run before commit"
-            depends="prepare-dev,get-pre-commit-changeset{% if enablePhpLint %},php-lint{% endif %}{% if enableJsHint %},jshint{% endif %}{% if enablePhpMessDetector %},phpmd{% endif %}{% if enablePhpCodeSniffer %}phpcs{% endif %}{% if enablePhpUnit %},phpunit{% endif %}"/>
+            depends="prepare-dev,get-pre-commit-changeset{% if enablePhpLint %},php-lint{% endif %}{% if enableJsHint %},jshint{% endif %}{% if enablePhpMessDetector %},phpmd{% endif %}{% if enablePhpCodeSniffer %},phpcs{% endif %}{% if enablePhpUnit %},phpunit{% endif %}"/>
 
     <!--<target name="pre-push" description="The dev tools to run before push"-->
             <!--depends="prepare-dev,composer-run-install{% if enablePhpLint %},php-lint{% endif %}{% if enableJsHint %},jshint{% endif %},dev-tools-parallel{% if enablePhpUnit %},phpunit{% endif %}"/>-->
