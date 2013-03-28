@@ -12,4 +12,5 @@ $application = new \Symfony\Component\Console\Application('Ibuildings QA Tools S
 $application->add(new \Ibuildings\QA\Tools\PHP\Console\InstallCommand());
 $application->add(new \Ibuildings\QA\Tools\PHP\Console\InstallPreCommitHookCommand());
 $application->add(new \Ibuildings\QA\Tools\PHP\Console\InstallPrePushHookCommand());
+$application->add(new \Ibuildings\QA\Tools\PHP\Console\ChangeSetPreCommitCommand());
 $application->run();

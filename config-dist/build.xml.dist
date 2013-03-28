@@ -15,8 +15,6 @@
             <antcall target="phpmd"/>
             {% endif %}{% if enablePhpCodeSniffer %}
             <antcall target="phpcs"/>
-            {% endif %}{% if enablePhpCopyPasteDetection %}
-            <antcall target="phpcpd"/>
             {% endif %}
 
         </parallel>
@@ -138,12 +136,6 @@
     {% endif %}
 
     {% if enablePhpCopyPasteDetection %}
-    <target name="phpcpd" description="Find duplicate code using PHPCPD">
-        <exec executable="vendor/bin/phpcpd" failonerror="true">
-            <arg value="--verbose"/>
-            <arg path="{{ phpSrcPath }}"/>
-        </exec>
-    </target>
     <target name="phpcpd-ci" description="Find duplicate code using PHPCPD">
         <exec executable="vendor/bin/phpcpd" failonerror="true">
             <arg value="--log-pmd"/>
