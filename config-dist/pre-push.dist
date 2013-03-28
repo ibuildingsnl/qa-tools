@@ -10,7 +10,7 @@ fi
 
 # Run the dev build
 echo "\n\033[01;32mStarting build...\033[00m\n"
-ant -buildfile "{{ prePushBuildPath }}/pre-push-build/{{ dirname }}/build.xml" pre-push
+ant -e -logger org.apache.tools.ant.NoBannerLogger -buildfile "{{ prePushBuildPath }}/pre-push-build/{{ dirname }}/build.xml" pre-push
 exitCode=$?
 
 # If exit code is not 0 then there was a failure

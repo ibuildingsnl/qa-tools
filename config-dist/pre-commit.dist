@@ -1,8 +1,8 @@
 #! /bin/sh
 
 # Stash any changes to the working tree that are not going to be committed.
-echo "\n\033[01;32mStashing any changes to the working tree that are not going to be committed...\033[00m\n"
-stash_output=`git stash -u --keep-index`
+echo "\n\033[01;32mStashing any changes to the working tree that are not going to be committed...\033[00m"
+stash_output=`git stash save -u --keep-index --quiet 'pre-commit stash by QA Tools'`
 needle='No local changes to save'
 doStashPop=1;
 
@@ -13,7 +13,7 @@ fi
 
 # Run the dev build
 echo "\n\033[01;32mStarting build...\033[00m\n"
-ant pre-commit
+ant -e -logger org.apache.tools.ant.NoBannerLogger pre-commit
 exitCode=$?
 
 # If exit code is not 0 then there was a failure
@@ -28,8 +28,13 @@ fi
 # only do a stash pop if we actually stashed anything
 if [ 1 -eq $doStashPop ]
 then
+    # Because we unstash with --index, to also restore the index, we can and
+    # have to reset the working tree and the index to the previous HEAD before
+    # applying the stash
+    git reset --hard --quiet
+
     # Unstash changes to the working tree that we had stashed
-    echo "\n\033[01;32mUnstashing changes to the working tree that we had stashed...\033[00m\n"
+    echo "\n\033[01;32mUnstashing changes to the working tree that we had stashed...\033[00m"
     git stash pop --quiet --index
 fi
 
