@@ -8,6 +8,7 @@ doStashPop=1;
 
 if [[ "$stash_output" == *"$needle"* ]]
 then
+  echo "\n\033[01;32mNothing to stash\033[00m"
   doStashPop=0;
 fi
 
