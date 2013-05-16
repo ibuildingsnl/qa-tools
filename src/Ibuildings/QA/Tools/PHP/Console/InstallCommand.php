@@ -6,12 +6,17 @@
 
 namespace Ibuildings\QA\Tools\PHP\Console;
 
+use Installer\Exception;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+
+use Composer\Config\JsonConfigSource;
+use Composer\Config;
+use Composer\Json\JsonFile;
 
 /**
  * Class InstallCommand
@@ -29,6 +34,9 @@ class InstallCommand extends Command
     /** @var \Twig_Environment */
     protected $twig;
 
+    /** @var  Config */
+    protected $composerConfig;
+
     protected function configure()
     {
         $this
@@ -39,8 +47,6 @@ class InstallCommand extends Command
 
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
-        $this->enableDefaultSettings();
-
         $this->dialog = $this->getHelperSet()->get('dialog');
 
         $loader = new \Twig_Loader_Filesystem(PACKAGE_BASE_DIR . '/config-dist');
@@ -56,6 +62,16 @@ class InstallCommand extends Command
             }
         );
         $this->twig->addFilter($filter);
+
+        $this->composerConfig = new Config();
+
+        $file = new JsonFile(BASE_DIR . DIRECTORY_SEPARATOR . 'composer.json');
+        if ($file->exists()) {
+            $this->composerConfig->merge($file->read());
+        }
+        $this->composerConfig->setConfigSource(new JsonConfigSource($file));
+
+        $this->enableDefaultSettings();
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -134,6 +150,12 @@ class InstallCommand extends Command
         $this->settings['phpUnitConfigPath'] = '${basedir}';
 
         $this->settings['enableJsHint'] = false;
+
+        if (!$this->composerConfig instanceof Config) {
+            throw new \Exception('Could not determine Composer config. Aborting...');
+        }
+
+        $this->settings['composerBinDir'] = $this->composerConfig->get('bin-dir');
 
         return $this;
     }
