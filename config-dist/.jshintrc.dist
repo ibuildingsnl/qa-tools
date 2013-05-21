@@ -28,7 +28,7 @@
     "maxdepth"      : 5,        // {int} Max depth of nested blocks (within functions)
     "maxstatements" : 50,       // {int} Max number statements per function
     "maxcomplexity" : 3,        // {int} Max cyclomatic complexity per function
-    "maxlen"        : 120,      // {int} Max number of characters per line
+    "maxlen"        : 150,      // {int} Max number of characters per line
 
     // Environments
     "devel"         : false,     // Development/debugging (alert, confirm, etc)
