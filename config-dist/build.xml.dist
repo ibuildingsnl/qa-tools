@@ -66,9 +66,23 @@
         <mkdir dir="{{ buildArtifactsPath }}/logs"/>
     </target>
 
-    <target name="composer-run-install">
+    <target name="check-composer">
+        <available file="composer.phar" property="composer.installed"/>
+    </target>
+
+    <target name="composer-install" depends="check-composer" unless="composer.installed">
+        <get src="http://getcomposer.org/composer.phar" dest="composer.phar"/>
+    </target>
+
+    <target name="composer-update" depends="composer-install">
         <exec executable="php" failonerror="true">
-            <arg line="${basedir}/{{ composerBinDir }}/composer install --dev"/>
+            <arg line="composer.phar self-update"/>
+        </exec>
+    </target>
+
+    <target name="composer-run-install" depends="composer-update">
+        <exec executable="php" failonerror="true">
+            <arg line="composer.phar install --dev"/>
         </exec>
     </target>
 
