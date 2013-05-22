@@ -14,10 +14,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-use Composer\Config\JsonConfigSource;
-use Composer\Config;
-use Composer\Json\JsonFile;
-
 /**
  * Class InstallCommand
  * @package Ibuildings\QA\Tools\PHP\Console
@@ -34,7 +30,7 @@ class InstallCommand extends Command
     /** @var \Twig_Environment */
     protected $twig;
 
-    /** @var  Config */
+    /** @var  array */
     protected $composerConfig;
 
     protected function configure()
@@ -63,15 +59,32 @@ class InstallCommand extends Command
         );
         $this->twig->addFilter($filter);
 
-        $this->composerConfig = new Config();
+        $this->parseComposerConfig();
 
-        $file = new JsonFile(BASE_DIR . DIRECTORY_SEPARATOR . 'composer.json');
-        if ($file->exists()) {
-            $this->composerConfig->merge($file->read());
-        }
-        $this->composerConfig->setConfigSource(new JsonConfigSource($file));
 
         $this->enableDefaultSettings();
+    }
+
+    /**
+     * @throws \Exception
+     * @return array
+     */
+    protected function parseComposerConfig()
+    {
+        if (!file_exists(BASE_DIR . DIRECTORY_SEPARATOR . 'composer.json')) {
+            throw new \Exception("Could not find composer.json in project root dir '" . BASE_DIR . "'");
+        }
+
+        $file = file_get_contents(BASE_DIR . DIRECTORY_SEPARATOR . 'composer.json');
+
+        $config = json_decode($file);
+
+        if ($config === null) {
+            throw new \Exception("Could not read composer.json. Is it valid JSON?");
+        }
+
+        $this->composerConfig = $config;
+
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -129,8 +142,8 @@ class InstallCommand extends Command
         }
         $this->writeAntBuildXml($input, $output);
 
-//        $command = $this->getApplication()->find('install:pre-push');
-//        $command->run($input, $output);
+        //        $command = $this->getApplication()->find('install:pre-push');
+        //        $command->run($input, $output);
 
         $command = $this->getApplication()->find('install:pre-commit');
         $command->run($input, $output);
@@ -151,16 +164,17 @@ class InstallCommand extends Command
 
         $this->settings['enableJsHint'] = false;
 
-        if (!$this->composerConfig instanceof Config) {
+        if (!is_array($this->composerConfig)) {
             throw new \Exception('Could not determine Composer config. Aborting...');
         }
 
-        $this->settings['composerBinDir'] = $this->composerConfig->get('bin-dir');
+        $this->settings['composerBinDir'] = $this->composerConfig['bin-dir'];
 
         return $this;
     }
 
-    private function commandExists($cmd) {
+    private function commandExists($cmd)
+    {
         $returnVal = shell_exec("command -v $cmd");
         return (empty($returnVal) ? false : true);
     }
