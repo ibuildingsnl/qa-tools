@@ -76,13 +76,17 @@ class InstallCommand extends Command
 
         $file = file_get_contents(BASE_DIR . DIRECTORY_SEPARATOR . 'composer.json');
 
-        $config = json_decode($file, true);
+        $parsedFile = json_decode($file, true);
 
-        if ($config === null) {
+        if ($parsedFile === null) {
             throw new \Exception("Could not read composer.json. Is it valid JSON?");
         }
 
-        $this->composerConfig = $config;
+        $this->composerConfig = array();
+
+        if (array_key_exists('config', $parsedFile)) {
+            $this->composerConfig = $parsedFile['config'];
+        }
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -165,6 +169,8 @@ class InstallCommand extends Command
         if (!is_array($this->composerConfig)) {
             throw new \Exception('Could not determine Composer config. Aborting...');
         }
+
+        var_dump($this->composerConfig);
 
         if (array_key_exists('bin-dir', $this->composerConfig)) {
             $this->settings['composerBinDir'] = $this->composerConfig['bin-dir'];
