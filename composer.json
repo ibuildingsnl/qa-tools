@@ -7,8 +7,7 @@
         "phpmd/phpmd": "~1.4",
         "symfony/console": "~2.1",
         "twig/twig": "~1.12",
-        "sensiolabs/security-checker": "~1.1",
-        "composer/composer": "1.0.*@dev"
+        "sensiolabs/security-checker": "~1.1"
     },
     "bin": [
         "bin/phpunit",
@@ -25,6 +24,5 @@
         "psr-0": {
             "Ibuildings": "src/"
         }
-    },
-    "minimum-stability": "dev"
+    }
 }
