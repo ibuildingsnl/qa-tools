@@ -170,8 +170,6 @@ class InstallCommand extends Command
             throw new \Exception('Could not determine Composer config. Aborting...');
         }
 
-        var_dump($this->composerConfig);
-
         if (array_key_exists('bin-dir', $this->composerConfig)) {
             $this->settings['composerBinDir'] = $this->composerConfig['bin-dir'];
         } else {
