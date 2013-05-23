@@ -6,7 +6,6 @@
 
 namespace Ibuildings\QA\Tools\PHP\Console;
 
-use Installer\Exception;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Input\InputArgument;
@@ -89,68 +88,6 @@ class InstallCommand extends Command
         }
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
-    {
-        $output->writeln("<info>Starting setup of Ibuildings QA Tools<info>");
-
-        if (!$this->commandExists('ant')) {
-            $output->writeln("\n<error>You don't have Apache Ant installed. Exiting.</error>");
-            return;
-        }
-
-        if (!$this->dialog->askConfirmation(
-            $output,
-            "\n<comment>If you already have a build config, it will be overwritten. Do you want to continue? [Y/n] </comment>",
-            true
-        )) {
-            return;
-        }
-
-        $output->writeln("\n");
-        $this->configureProjectName($input, $output);
-        $this->configureBuildArtifactsPath($input, $output);
-
-        if ($this->dialog->askConfirmation(
-            $output,
-            "\n<comment>Do you want to install the QA tools for PHP? [Y/n] </comment>",
-            true
-        )) {
-            $output->writeln("\n<info>Configuring PHP inspections</info>\n");
-
-            $this->configurePhpLint($input, $output);
-            $this->configurePhpMessDetector($input, $output);
-            $this->configurePhpCodeSniffer($input, $output);
-            $this->configurePhpCopyPasteDetection($input, $output);
-            $this->configurePhpSecurityChecker($input, $output);
-
-            $this->configurePhpSrcPath($input, $output);
-
-            $this->configurePhpUnit($input, $output);
-
-            $this->writePhpUnitXml($input, $output);
-            $this->writePhpCsConfig($input, $output);
-            $this->writePhpMdConfig($input, $output);
-        }
-
-        if ($this->dialog->askConfirmation(
-            $output,
-            "\n<comment>Do you want to install the QA tools for Javascript? [Y/n] </comment>",
-            true
-        )) {
-            $this->configureJsHint($input, $output);
-            $this->configureJavaScriptSrcPath($input, $output);
-
-            $this->writeJsHintConfig($input, $output);
-        }
-        $this->writeAntBuildXml($input, $output);
-
-        //        $command = $this->getApplication()->find('install:pre-push');
-        //        $command->run($input, $output);
-
-        $command = $this->getApplication()->find('install:pre-commit');
-        $command->run($input, $output);
-    }
-
     private function enableDefaultSettings()
     {
         $this->settings['buildArtifactsPath'] = 'build/artifacts';
@@ -179,33 +116,75 @@ class InstallCommand extends Command
         return $this;
     }
 
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        $output->writeln("<info>Starting setup of Ibuildings QA Tools<info>");
+
+        if (!$this->commandExists('ant')) {
+            $output->writeln("\n<error>You don't have Apache Ant installed. Exiting.</error>");
+            return;
+        }
+
+        if (!$this->dialog->askConfirmation(
+            $output,
+            "\n<comment>If you already have a build config, it will be overwritten. Do you want to continue? [Y/n] </comment>",
+            true
+        )
+        ) {
+            return;
+        }
+
+        $output->writeln("\n");
+        $this->configureProjectName($input, $output);
+        $this->configureBuildArtifactsPath($input, $output);
+
+        if ($this->dialog->askConfirmation(
+            $output,
+            "\n<comment>Do you want to install the QA tools for PHP? [Y/n] </comment>",
+            true
+        )
+        ) {
+            $output->writeln("\n<info>Configuring PHP inspections</info>\n");
+
+            $this->configurePhpLint($input, $output);
+            $this->configurePhpMessDetector($input, $output);
+            $this->configurePhpCodeSniffer($input, $output);
+            $this->configurePhpCopyPasteDetection($input, $output);
+            $this->configurePhpSecurityChecker($input, $output);
+
+            $this->configurePhpSrcPath($input, $output);
+
+            $this->configurePhpUnit($input, $output);
+
+            $this->writePhpUnitXml($input, $output);
+            $this->writePhpCsConfig($input, $output);
+            $this->writePhpMdConfig($input, $output);
+        }
+
+        if ($this->dialog->askConfirmation(
+            $output,
+            "\n<comment>Do you want to install the QA tools for Javascript? [Y/n] </comment>",
+            true
+        )
+        ) {
+            $this->configureJsHint($input, $output);
+            $this->configureJavaScriptSrcPath($input, $output);
+
+            $this->writeJsHintConfig($input, $output);
+        }
+        $this->writeAntBuildXml($input, $output);
+
+        //        $command = $this->getApplication()->find('install:pre-push');
+        //        $command->run($input, $output);
+
+        $command = $this->getApplication()->find('install:pre-commit');
+        $command->run($input, $output);
+    }
+
     private function commandExists($cmd)
     {
         $returnVal = shell_exec("command -v $cmd");
         return (empty($returnVal) ? false : true);
-    }
-
-    protected function configureBuildArtifactsPath(InputInterface $input, OutputInterface $output)
-    {
-        $this->settings['buildArtifactsPath'] = $this->dialog->askAndValidate(
-            $output,
-            "Where do you want to store the build artifacts? [".$this->settings['buildArtifactsPath']."] ",
-            function ($data) use ($output) {
-                if (!is_dir(BASE_DIR . '/' . $data)) {
-                    if ($this->dialog->askConfirmation(
-                        $output,
-                        "  - Are you sure? The path doesn't exist and will be created. [Y/n] ",
-                        true
-                    )) {
-                        return $data;
-                    }
-                    throw new \Exception("Not using path '" . $data . " ', trying again...");
-                }
-                return $data;
-            },
-            false,
-            $this->settings['buildArtifactsPath']
-        );
     }
 
     protected function configureProjectName(InputInterface $input, OutputInterface $output)
@@ -227,6 +206,38 @@ class InstallCommand extends Command
         );
     }
 
+    protected function configureBuildArtifactsPath(InputInterface $input, OutputInterface $output)
+    {
+        $this->settings['buildArtifactsPath'] = $this->dialog->askAndValidate(
+            $output,
+            "Where do you want to store the build artifacts? [" . $this->settings['buildArtifactsPath'] . "] ",
+            function ($data) use ($output) {
+                if (!is_dir(BASE_DIR . '/' . $data)) {
+                    if ($this->dialog->askConfirmation(
+                        $output,
+                        "  - Are you sure? The path doesn't exist and will be created. [Y/n] ",
+                        true
+                    )
+                    ) {
+                        return $data;
+                    }
+                    throw new \Exception("Not using path '" . $data . " ', trying again...");
+                }
+                return $data;
+            },
+            false,
+            $this->settings['buildArtifactsPath']
+        );
+    }
+
+    protected function configurePhpLint(InputInterface $input, OutputInterface $output)
+    {
+        $this->settings['enablePhpLint'] = $this->dialog->askConfirmation(
+            $output,
+            "Do you want to enable PHP Lint? [Y/n] ",
+            true
+        );
+    }
 
     protected function configurePhpMessDetector(InputInterface $input, OutputInterface $output)
     {
@@ -278,48 +289,6 @@ class InstallCommand extends Command
             true
         );
     }
-
-    protected function configurePhpLint(InputInterface $input, OutputInterface $output)
-    {
-        $this->settings['enablePhpLint'] = $this->dialog->askConfirmation(
-            $output,
-            "Do you want to enable PHP Lint? [Y/n] ",
-            true
-        );
-    }
-
-    protected function configureJsHint(InputInterface $input, OutputInterface $output)
-    {
-        $this->settings['enableJsHint'] = $this->dialog->askConfirmation(
-            $output,
-            "Do you want to enable JSHint? [Y/n] ",
-            true
-        );
-
-        if (!$this->commandExists('node')) {
-            $output->writeln("<error>You don't have Node.js installed. Not enabling JSHint.</error>");
-            $this->settings['enableJsHint'] = false;
-        }
-    }
-
-    protected function configureJavaScriptSrcPath(InputInterface $input, OutputInterface $output)
-    {
-        if ($this->settings['enableJsHint']) {
-            $this->settings['javaScriptSrcPath'] = $this->dialog->askAndValidate(
-                $output,
-                "What is the path to the JavaScript source code? [src] ",
-                function ($data) {
-                    if (is_dir(BASE_DIR . '/' . $data)) {
-                        return $data;
-                    }
-                    throw new \Exception("That path doesn't exist");
-                },
-                false,
-                'src'
-            );
-        }
-    }
-
 
     protected function configurePhpSrcPath(InputInterface $input, OutputInterface $output)
     {
@@ -409,6 +378,102 @@ class InstallCommand extends Command
         }
     }
 
+    protected function writePhpUnitXml(InputInterface $input, OutputInterface $output)
+    {
+        if ($this->settings['enablePhpUnit'] && !$this->settings['customPhpUnitXml']) {
+            $fh = fopen(BASE_DIR . '/phpunit.xml', 'w');
+            fwrite(
+                $fh,
+                $this->twig->render(
+                    'phpunit.xml.dist',
+                    $this->settings
+                )
+            );
+            fclose($fh);
+            $output->writeln("\n<info>Config file for PHPUnit written</info>");
+        }
+    }
+
+    protected function writePhpCsConfig(InputInterface $input, OutputInterface $output)
+    {
+        if ($this->settings['enablePhpCodeSniffer']) {
+            $fh = fopen(BASE_DIR . '/phpcs.xml', 'w');
+            fwrite(
+                $fh,
+                $this->twig->render(
+                    'phpcs.xml.dist',
+                    $this->settings
+                )
+            );
+            fclose($fh);
+            $output->writeln("\n<info>Config file for PHP Code Sniffer written</info>");
+        }
+    }
+
+    protected function writePhpMdConfig(InputInterface $input, OutputInterface $output)
+    {
+        if ($this->settings['enablePhpMessDetector']) {
+            $fh = fopen(BASE_DIR . '/phpmd.xml', 'w');
+            fwrite(
+                $fh,
+                $this->twig->render(
+                    'phpmd.xml.dist',
+                    $this->settings
+                )
+            );
+            fclose($fh);
+            $output->writeln("\n<info>Config file for PHP Mess Detector written</info>");
+        }
+    }
+
+    protected function configureJsHint(InputInterface $input, OutputInterface $output)
+    {
+        $this->settings['enableJsHint'] = $this->dialog->askConfirmation(
+            $output,
+            "Do you want to enable JSHint? [Y/n] ",
+            true
+        );
+
+        if (!$this->commandExists('node')) {
+            $output->writeln("<error>You don't have Node.js installed. Not enabling JSHint.</error>");
+            $this->settings['enableJsHint'] = false;
+        }
+    }
+
+    protected function configureJavaScriptSrcPath(InputInterface $input, OutputInterface $output)
+    {
+        if ($this->settings['enableJsHint']) {
+            $this->settings['javaScriptSrcPath'] = $this->dialog->askAndValidate(
+                $output,
+                "What is the path to the JavaScript source code? [src] ",
+                function ($data) {
+                    if (is_dir(BASE_DIR . '/' . $data)) {
+                        return $data;
+                    }
+                    throw new \Exception("That path doesn't exist");
+                },
+                false,
+                'src'
+            );
+        }
+    }
+
+    protected function writeJsHintConfig(InputInterface $input, OutputInterface $output)
+    {
+        if ($this->settings['enableJsHint']) {
+            $fh = fopen(BASE_DIR . '/.jshintrc', 'w');
+            fwrite(
+                $fh,
+                $this->twig->render(
+                    '.jshintrc.dist',
+                    $this->settings
+                )
+            );
+            fclose($fh);
+            $output->writeln("\n<info>Config file for JSHint written</info>");
+        }
+    }
+
     protected function writeAntBuildXml(InputInterface $input, OutputInterface $output)
     {
         if ($this->settings['enablePhpMessDetector']
@@ -466,70 +531,6 @@ class InstallCommand extends Command
             );
             fclose($fh);
 
-        }
-    }
-
-    protected function writePhpUnitXml(InputInterface $input, OutputInterface $output)
-    {
-        if ($this->settings['enablePhpUnit'] && !$this->settings['customPhpUnitXml']) {
-            $fh = fopen(BASE_DIR . '/phpunit.xml', 'w');
-            fwrite(
-                $fh,
-                $this->twig->render(
-                    'phpunit.xml.dist',
-                    $this->settings
-                )
-            );
-            fclose($fh);
-            $output->writeln("\n<info>Config file for PHPUnit written</info>");
-        }
-    }
-
-    protected function writeJsHintConfig(InputInterface $input, OutputInterface $output)
-    {
-        if ($this->settings['enableJsHint']) {
-            $fh = fopen(BASE_DIR . '/.jshintrc', 'w');
-            fwrite(
-                $fh,
-                $this->twig->render(
-                    '.jshintrc.dist',
-                    $this->settings
-                )
-            );
-            fclose($fh);
-            $output->writeln("\n<info>Config file for JSHint written</info>");
-        }
-    }
-
-    protected function writePhpCsConfig(InputInterface $input, OutputInterface $output)
-    {
-        if ($this->settings['enablePhpCodeSniffer']) {
-            $fh = fopen(BASE_DIR . '/phpcs.xml', 'w');
-            fwrite(
-                $fh,
-                $this->twig->render(
-                    'phpcs.xml.dist',
-                    $this->settings
-                )
-            );
-            fclose($fh);
-            $output->writeln("\n<info>Config file for PHP Code Sniffer written</info>");
-        }
-    }
-
-    protected function writePhpMdConfig(InputInterface $input, OutputInterface $output)
-    {
-        if ($this->settings['enablePhpMessDetector']) {
-            $fh = fopen(BASE_DIR . '/phpmd.xml', 'w');
-            fwrite(
-                $fh,
-                $this->twig->render(
-                    'phpmd.xml.dist',
-                    $this->settings
-                )
-            );
-            fclose($fh);
-            $output->writeln("\n<info>Config file for PHP Mess Detector written</info>");
         }
     }
 }
