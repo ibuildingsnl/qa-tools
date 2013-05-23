@@ -1,3 +1,11 @@
 #!/bin/sh
-BASEDIR=$(dirname $0)
-php $BASEDIR/../ibuildings/qa-tools/bin/phpcpd.phar $@
+
+# Current path
+CURRENTDIR=$(dirname $0)
+
+# Absolute path to this script, e.g. /home/user/bin/foo.sh
+SCRIPT=$(readlink $0)
+
+COMBINED_PATH="$CURRENTDIR/$SCRIPT.phar"
+
+php $COMBINED_PATH $@
