@@ -36,7 +36,7 @@ It can be installed with Composer.
 Add the following to your composer.json
 ```json
     "require-dev": {
-        "ibuildings/qa-tools": "1.0.x-dev"
+        "ibuildings/qa-tools": "~1.0"
     },
     "repositories": [
         {
