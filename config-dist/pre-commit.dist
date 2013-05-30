@@ -1,15 +1,29 @@
 #! /bin/sh
 
-# Stash any changes to the working tree that are not going to be committed.
-echo "\n\033[01;32mStashing any changes to the working tree that are not going to be committed...\033[00m"
-stash_output=`git stash save -u --keep-index 'pre-commit stash by QA Tools'`
-needle='No local changes to save'
-doStashPop=1;
-
-if [[ "$stash_output" == *"$needle"* ]]
+# If we are committing a merge, we assume a clean working tree.
+# We do not use the stashing logic: it was causing problems in the case of
+# committing conflict merges
+doStash=1;
+if [ -e ".git/MERGE_HEAD" ]
 then
-  echo "\n\033[01;32mNothing to stash\033[00m"
-  doStashPop=0;
+    echo "\n\033[01;32mCommitting a merge: assuming a clean working tree and not stashing changes...\033[00m"
+    doStash=0;
+    doStashPop=0;
+fi
+
+# Stash any changes to the working tree that are not going to be committed.
+if [ 1 -eq $doStash ]
+then
+    echo "\n\033[01;32mStashing any changes to the working tree that are not going to be committed...\033[00m"
+    stash_output=`git stash save -u --keep-index 'pre-commit stash by QA Tools'`
+    doStashPop=1;
+
+    needle='No local changes to save'
+    if [[ "$stash_output" == *"$needle"* ]]
+    then
+      echo "\n\033[01;32mNothing to stash\033[00m"
+      doStashPop=0;
+    fi
 fi
 
 # Run the dev build
