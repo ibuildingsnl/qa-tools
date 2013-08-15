@@ -123,7 +123,7 @@
     {% endif %}
 
     {% if enablePhpSecurityChecker %}<target name="php-security-checker" description="Check your composer dependencies for insecure components">
-    <exec executable="{{ composerBinDir }}/security-checker" failonerror="true">
+    <exec executable="{{ composerBinDir }}/security-checker" failonerror="false">
         <arg value="security:check"/>
         <arg value="--verbose"/>
         <arg value="composer.lock"/>
