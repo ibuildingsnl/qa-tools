@@ -13,16 +13,15 @@ output of this script as a base and configure it manually.
 # Included tools
 ## Inspections
  - PHP Lint
- - PHP Copy/Paste Detector (1.4.0)
- - PHP Codesniffer (1.4.4)
- - PHP Mess Detector (1.4.1)
+ - PHP Copy/Paste Detector (1.4.*)
+ - PHP Codesniffer (1.4.*)
+ - PHP Mess Detector (1.5.*)
  - JSHint (1.0.0)
 
 ## Testing
- - PHPUnit (3.7.17)
+ - PHPUnit (3.7.*)
 
 ## Other
- - PHP CS Fixer (0.2)
  - Sensiolabs Security Checker (1.2-dev)
  - Git Pre-Commit Hook
 
