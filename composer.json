@@ -4,14 +4,14 @@
     "require": {
         "php": ">=5.3.3",
         "squizlabs/php_codesniffer": "~1.4",
-        "phpmd/phpmd": "~1.4",
+        "phpmd/phpmd": "~1.5",
         "symfony/console": "~2.1",
         "twig/twig": "~1.12",
-        "sensiolabs/security-checker": "~1.1"
+        "sensiolabs/security-checker": "~1.1",
+        "phpunit/phpunit": "~3.7",
+        "sebastian/phpcpd": "~1.4"
     },
     "bin": [
-        "bin/phpunit",
-        "bin/phpcpd",
         "bin/qa-tools",
         "bin/jshint"
     ],
