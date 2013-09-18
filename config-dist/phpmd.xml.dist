@@ -10,13 +10,26 @@
         Ibuildings QA Tools Default Ruleset
     </description>
 
-    <rule ref="rulesets/cleancode.xml" />
-    <rule ref="rulesets/unusedcode.xml" />
+    <rule ref="rulesets/cleancode.xml">
+        <exclude name="BooleanArgumentFlag" />
+        <exclude name="ElseExpression" />
+        <exclude name="StaticAccess" />
+    </rule>
+
+    <rule ref="rulesets/unusedcode.xml">
+        <!-- we turn this back on as soon as an exception for inherited/implemented methods is available-->
+        <exclude name="UnusedFormalParameter"/>
+    </rule>
+
     <rule ref="rulesets/codesize.xml" />
+
     <rule ref="rulesets/controversial.xml" />
+
     <rule ref="rulesets/design.xml" />
+
     <rule ref="rulesets/naming.xml">
         <exclude name="ShortVariable" />
         <exclude name="LongVariable" />
     </rule>
+
 </ruleset>
