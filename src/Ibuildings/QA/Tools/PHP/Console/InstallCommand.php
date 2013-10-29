@@ -496,18 +496,12 @@ class InstallCommand extends Command
      */
     protected function configureBehat(InputInterface $input, OutputInterface $output)
     {
-//        if (!$this->commandExists('behat')) {
-//            $output->writeln("<error>You don't have Behat installed. Not enabling Behat.</error>");
-//            $this->settings['enableBehat'] = false;
-//            return;
-//        }
-
         $this->settings['enableBehat'] = true;
         $this->settings['featuresDir'] = BASE_DIR .'/features';
     }
 
     /**
-     * Install some feature examples.
+     * Install Behat yaml files.
      *
      * @param InputInterface $input
      * @param OutputInterface $output
