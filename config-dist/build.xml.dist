@@ -199,4 +199,23 @@
     </target>
     {% endif %}
 
+
+    {% if enableBehat %}
+    <!-- Running Behat on jenkins -->
+    <target name="behat-ci">
+        <exec executable="php" failonerror="false">
+            <arg line="./vendor/bin/behat --config ./behat.yml --profile ci ${basedir}/features --tags=~skip" />
+        </exec>
+    </target>
+
+    <!-- Running Behat on your development environment -->
+
+    <target name="behat" >
+        <exec executable="php" failonerror="true">
+            <arg line="./vendor/bin/behat --config ./behat.yml --ansi --profile dev ${basedir}/features --tags=~skip" />
+        </exec>
+    </target>
+
+    {% endif %}
+
 </project>

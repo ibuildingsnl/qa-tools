@@ -6,12 +6,14 @@
 
 namespace Ibuildings\QA\Tools\PHP\Console;
 
+use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * Class InstallCommand
@@ -172,6 +174,18 @@ class InstallCommand extends Command
 
             $this->writeJsHintConfig($input, $output);
         }
+
+        if ($this->dialog->askConfirmation(
+            $output,
+            "\n<comment>Do you want to install the Behat framework? [Y/n] </comment>",
+            true
+        )
+        ) {
+            $this->configureBehat($input, $output);
+            $this->writeBehatYamlFiles($input, $output);
+            $this->writeBehatExamples($input, $output);
+        }
+
         $this->writeAntBuildXml($input, $output);
 
         //        $command = $this->getApplication()->find('install:pre-push');
@@ -473,6 +487,128 @@ class InstallCommand extends Command
             $output->writeln("\n<info>Config file for JSHint written</info>");
         }
     }
+
+    /**
+     * Enable in the settings if Behat is available.
+     *
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     */
+    protected function configureBehat(InputInterface $input, OutputInterface $output)
+    {
+//        if (!$this->commandExists('behat')) {
+//            $output->writeln("<error>You don't have Behat installed. Not enabling Behat.</error>");
+//            $this->settings['enableBehat'] = false;
+//            return;
+//        }
+
+        $this->settings['enableBehat'] = true;
+        $this->settings['featuresDir'] = BASE_DIR .'/features';
+    }
+
+    /**
+     * Install some feature examples.
+     *
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     */
+    protected function writeBehatYamlFiles(InputInterface $input, OutputInterface $output)
+    {
+        if (!$this->settings['enableBehat']) {
+            return;
+        }
+
+        $this->settings['baseUrl'] = $this->dialog->askAndValidate(
+            $output,
+            "What is base url of your application? [http://www.ibuildings.nl] ",
+            function ($data) {
+                if (substr($data, 0, 4) == 'http') {
+                    return $data;
+                }
+                throw new \Exception("Url needs to start with http");
+            },
+            false,
+            'http://www.ibuildings.nl'
+        );
+
+        $this->settings['baseUrlCi'] = $this->dialog->askAndValidate(
+            $output,
+            "What is base url of the ci environment? [http://www.ci.ibuildings.nl] ",
+            function ($data) {
+                if (substr($data, 0, 4) == 'http') {
+                    return $data;
+                }
+                throw new \Exception("Url needs to start with http");
+            },
+            false,
+            'http://www.ci.ibuildings.nl'
+        );
+
+        $this->settings['baseUrlDev'] = $this->dialog->askAndValidate(
+            $output,
+            "What is base url of your dev environment? [http://www.dev.ibuildings.nl] ",
+            function ($data) {
+                if (substr($data, 0, 4) == 'http') {
+                    return $data;
+                }
+                throw new \Exception("Url needs to start with http");
+            },
+            false,
+            'http://www.dev.ibuildings.nl'
+        );
+
+        // copy behat.yml
+        $fh = fopen(BASE_DIR . '/behat.yml', 'w');
+        fwrite(
+            $fh,
+            $this->twig->render(
+                'behat.yml.dist',
+                $this->settings
+            )
+        );
+        fclose($fh);
+
+        // copy behat.yml
+        $fh = fopen(BASE_DIR . '/behat.dev.yml', 'w');
+        fwrite(
+            $fh,
+            $this->twig->render(
+                'behat.dev.yml.dist',
+                $this->settings
+            )
+        );
+        fclose($fh);
+
+        $this->addToGitIgnore('behat.dev.yml');
+    }
+
+
+    /**
+     * Install some feature examples.
+     *
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     */
+    protected function writeBehatExamples(InputInterface $input, OutputInterface $output)
+    {
+        if (!$this->settings['enableBehat']) {
+            return;
+        }
+
+        if (is_dir($this->settings['featuresDir'])) {
+            $output->writeln("<error>Features directory already present. No example features are installed.</error>");
+            return;
+        }
+
+        try {
+            $filesystem = new Filesystem();
+            $filesystem->mirror(PACKAGE_BASE_DIR . '/config-dist/features', $this->settings['featuresDir']);
+        } catch (Exception $e) {
+            $output->writeln("<error>Something went wrong when creating the features directory".$e->getMessage()."</error>");
+            return;
+        }
+    }
+
 
     protected function writeAntBuildXml(InputInterface $input, OutputInterface $output)
     {
