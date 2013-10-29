@@ -51,7 +51,7 @@
     <!--depends="prepare-dev,composer-run-install{% if enablePhpLint %},php-lint{% endif %}{% if enableJsHint %},jshint{% endif %},dev-tools-parallel{% if enablePhpUnit %},phpunit{% endif %}"/>-->
 
     <target name="build"
-            depends="prepare,composer-run-install{% if enablePhpLint %},php-lint-ci{% endif %}{% if enableJsHint %},jshint-ci{% endif %}{% if enablePhpMessDetector %},phpmd-ci{% endif %}{% if enablePhpCodeSniffer %},phpcs-ci{% endif %}{% if enablePhpCopyPasteDetection %},phpcpd-ci{% endif %}{% if enablePhpSecurityChecker %},php-security-checker{% endif %}{% if enablePhpUnit %},phpunit-ci{% endif %}"/>
+            depends="prepare,composer-run-install{% if enablePhpLint %},php-lint-ci{% endif %}{% if enableJsHint %},jshint-ci{% endif %}{% if enablePhpMessDetector %},phpmd-ci{% endif %}{% if enablePhpCodeSniffer %},phpcs-ci{% endif %}{% if enablePhpCopyPasteDetection %},phpcpd-ci{% endif %}{% if enablePhpSecurityChecker %},php-security-checker{% endif %}{% if enablePhpUnit %},phpunit-ci{% endif %}{% if enableBehat %},behat-ci{% endif %}"/>
 
     <target name="clean" description="Cleanup build artifacts">
         <delete dir="{{ buildArtifactsPath }}/coverage"/>
