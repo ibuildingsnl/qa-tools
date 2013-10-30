@@ -501,6 +501,36 @@ class InstallCommand extends Command
     }
 
     /**
+     * Suggest a new domain based on the 'main url' and a subdomain string.
+     *
+     * @param string $url the main domain
+     * @param string $part the subdomain string
+     *
+     * @return string
+     */
+    protected function suggestDomain($url, $part)
+    {
+        $urlParts = parse_url($url);
+
+        $scheme = $urlParts['scheme'];
+        $host = $urlParts['host'];
+
+        if (strrpos($host, 'www') !== false) {
+            return $scheme.'://'.str_replace('www',$part,$host);
+        }
+
+        $hostParts = explode('.', $host);
+        if (count($hostParts) > 2) {
+            // change first part of the hostname
+            $hostParts[0] = $part;
+            return $scheme.'://'.implode('.', $hostParts);
+        } else {
+            // prefix hostname
+            return $scheme.'://'.$part.'.'.implode('.', $hostParts);
+        }
+    }
+
+    /**
      * Install Behat yaml files.
      *
      * @param InputInterface $input
@@ -525,9 +555,11 @@ class InstallCommand extends Command
             'http://www.ibuildings.nl'
         );
 
+        $baseUrlCi = $this->suggestDomain($this->settings['baseUrl'], 'ci');
+
         $this->settings['baseUrlCi'] = $this->dialog->askAndValidate(
             $output,
-            "What is base url of the ci environment? [http://www.ci.ibuildings.nl] ",
+            "What is base url of the ci environment? [$baseUrlCi] ",
             function ($data) {
                 if (substr($data, 0, 4) == 'http') {
                     return $data;
@@ -535,12 +567,14 @@ class InstallCommand extends Command
                 throw new \Exception("Url needs to start with http");
             },
             false,
-            'http://www.ci.ibuildings.nl'
+            $baseUrlCi
         );
+
+        $baseUrlDev = $this->suggestDomain($this->settings['baseUrl'], 'dev');
 
         $this->settings['baseUrlDev'] = $this->dialog->askAndValidate(
             $output,
-            "What is base url of your dev environment? [http://www.dev.ibuildings.nl] ",
+            "What is base url of your dev environment? [$baseUrlDev] ",
             function ($data) {
                 if (substr($data, 0, 4) == 'http') {
                     return $data;
@@ -548,7 +582,7 @@ class InstallCommand extends Command
                 throw new \Exception("Url needs to start with http");
             },
             false,
-            'http://www.dev.ibuildings.nl'
+            $baseUrlDev
         );
 
         // copy behat.yml
@@ -578,7 +612,7 @@ class InstallCommand extends Command
 
 
     /**
-     * Install some feature examples.
+     * Install a Behat feature example.
      *
      * @param InputInterface $input
      * @param OutputInterface $output
