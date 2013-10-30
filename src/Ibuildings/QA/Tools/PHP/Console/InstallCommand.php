@@ -606,8 +606,6 @@ class InstallCommand extends Command
             )
         );
         fclose($fh);
-
-        $this->addToGitIgnore('behat.dev.yml');
     }
 
 
