@@ -7,6 +7,7 @@
 namespace Ibuildings\QA\Tools\PHP\Console;
 
 use Ibuildings\QA\Tools\Common\DependencyInjection\Twig;
+use Ibuildings\QA\Tools\Common\PHP\Configurator\PhpCodeSnifferConfigurator;
 use Ibuildings\QA\Tools\Common\PHP\Configurator\PhpMessDetectorConfigurator;
 use Ibuildings\QA\Tools\Common\Settings;
 
@@ -92,7 +93,6 @@ class InstallCommand extends Command
         $this->settings['buildArtifactsPath'] = 'build/artifacts';
 
         $this->settings['enablePhpCopyPasteDetection'] = false;
-        $this->settings['enablePhpCodeSniffer'] = false;
         $this->settings['enablePhpUnit'] = false;
 
         $this->settings['customPhpUnitXml'] = false;
@@ -147,9 +147,8 @@ class InstallCommand extends Command
             $configuratorRegistry = new Registry();
             $configuratorRegistry->register(new PhpLintConfigurator($output, $this->dialog, $this->settings));
             $configuratorRegistry->register(new PhpMessDetectorConfigurator($output, $this->dialog, $this->settings));
+            $configuratorRegistry->register(new PhpCodeSnifferConfigurator($output, $this->dialog, $this->settings));
             $configuratorRegistry->executeConfigurators();
-
-            $this->configurePhpCodeSniffer($input, $output);
             $this->configurePhpCopyPasteDetection($input, $output);
             $this->configurePhpSecurityChecker($input, $output);
 
@@ -230,30 +229,6 @@ class InstallCommand extends Command
             false,
             $this->settings['buildArtifactsPath']
         );
-    }
-
-    protected function configurePhpCodeSniffer(InputInterface $input, OutputInterface $output)
-    {
-        $this->settings['enablePhpCodeSniffer'] = $this->dialog->askConfirmation(
-            $output,
-            "Do you want to enable the PHP Code Sniffer? [Y/n] ",
-            true
-        );
-
-        if ($this->settings['enablePhpCodeSniffer']) {
-            $this->settings['phpCodeSnifferCodingStyle'] = $this->dialog->askAndValidate(
-                $output,
-                "  - Which coding standard do you want to use? (PEAR, PHPCS, PSR1, PSR2, Squiz, Zend) [PSR2] ",
-                function ($data) {
-                    if (in_array($data, array("PEAR", "PHPCS", "PSR1", "PSR2", "Squiz", "Zend"))) {
-                        return $data;
-                    }
-                    throw new \Exception("That coding style is not supported");
-                },
-                false,
-                'PSR2'
-            );
-        }
     }
 
     protected function configurePhpCopyPasteDetection(InputInterface $input, OutputInterface $output)
