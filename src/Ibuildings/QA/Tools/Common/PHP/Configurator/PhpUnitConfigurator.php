@@ -20,17 +20,17 @@ class PhpUnitConfigurator
     /**
      * @var OutputInterface
      */
-    private $output;
+    protected $output;
 
     /**
      * @var DialogHelper
      */
-    private $dialog;
+    protected $dialog;
 
     /**
      * @var Settings
      */
-    private $settings;
+    protected $settings;
 
     /**
      * @param OutputInterface $output
