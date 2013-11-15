@@ -94,7 +94,6 @@ class InstallCommand extends Command
         $this->settings['enablePhpCopyPasteDetection'] = false;
         $this->settings['enablePhpCodeSniffer'] = false;
         $this->settings['enablePhpUnit'] = false;
-        $this->settings['enablePhpLint'] = false;
 
         $this->settings['customPhpUnitXml'] = false;
         $this->settings['phpUnitConfigPath'] = '${basedir}';
@@ -148,6 +147,7 @@ class InstallCommand extends Command
             $configuratorRegistry = new Registry();
             $configuratorRegistry->register(new PhpLintConfigurator($output, $this->dialog, $this->settings));
             $configuratorRegistry->executeConfigurators();
+
             $this->configurePhpMessDetector($input, $output);
             $this->configurePhpCodeSniffer($input, $output);
             $this->configurePhpCopyPasteDetection($input, $output);

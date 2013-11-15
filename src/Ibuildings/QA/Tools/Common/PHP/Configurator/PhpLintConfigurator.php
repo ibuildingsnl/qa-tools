@@ -46,6 +46,8 @@ class PhpLintConfigurator
         $this->output = $output;
         $this->dialog = $dialog;
         $this->settings = $settings;
+
+        $this->settings['enablePhpLint'] = false;
     }
 
     /**
