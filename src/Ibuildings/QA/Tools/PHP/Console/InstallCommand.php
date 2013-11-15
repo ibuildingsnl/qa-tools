@@ -11,6 +11,7 @@ use Ibuildings\QA\Tools\Common\PHP\Configurator\PhpCodeSnifferConfigurator;
 use Ibuildings\QA\Tools\Common\PHP\Configurator\PhpCopyPasteDetectorConfigurator;
 use Ibuildings\QA\Tools\Common\PHP\Configurator\PhpMessDetectorConfigurator;
 use Ibuildings\QA\Tools\Common\PHP\Configurator\PhpSecurityCheckerConfigurator;
+use Ibuildings\QA\Tools\Common\PHP\Configurator\PhpSourcePathConfigurator;
 use Ibuildings\QA\Tools\Common\Settings;
 
 use Ibuildings\QA\Tools\Common\Configurator\Registry;
@@ -151,9 +152,8 @@ class InstallCommand extends Command
             $configuratorRegistry->register(new PhpCodeSnifferConfigurator($output, $this->dialog, $this->settings));
             $configuratorRegistry->register(new PhpCopyPasteDetectorConfigurator($output, $this->dialog, $this->settings));
             $configuratorRegistry->register(new PhpSecurityCheckerConfigurator($output, $this->dialog, $this->settings));
+            $configuratorRegistry->register(new PhpSourcePathConfigurator($output, $this->dialog, $this->settings));
             $configuratorRegistry->executeConfigurators();
-
-            $this->configurePhpSrcPath($input, $output);
 
             $this->configurePhpUnit($input, $output);
 
@@ -230,27 +230,6 @@ class InstallCommand extends Command
             false,
             $this->settings['buildArtifactsPath']
         );
-    }
-
-    protected function configurePhpSrcPath(InputInterface $input, OutputInterface $output)
-    {
-        if ($this->settings['enablePhpMessDetector']
-            || $this->settings['enablePhpCodeSniffer']
-            || $this->settings['enablePhpCopyPasteDetection']
-        ) {
-            $this->settings['phpSrcPath'] = $this->dialog->askAndValidate(
-                $output,
-                "What is the path to the PHP source code? [src] ",
-                function ($data) {
-                    if (is_dir(BASE_DIR . '/' . $data)) {
-                        return $data;
-                    }
-                    throw new \Exception("That path doesn't exist");
-                },
-                false,
-                'src'
-            );
-        }
     }
 
     protected function configurePhpUnit(InputInterface $input, OutputInterface $output)
