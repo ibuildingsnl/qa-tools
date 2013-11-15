@@ -30,5 +30,22 @@ class Registry
         foreach ($this->configurators as $configurator) {
             $configurator->configure();
         }
+
+        $this->writeConfig();
+    }
+
+    /**
+     * Writes config
+     */
+    private function writeConfig()
+    {
+        /**
+         * @var ConfiguratorInterface
+         */
+        foreach ($this->configurators as $configurator) {
+            if (method_exists($configurator, 'writeConfig')) {
+                $configurator->writeConfig();
+            }
+        }
     }
 }

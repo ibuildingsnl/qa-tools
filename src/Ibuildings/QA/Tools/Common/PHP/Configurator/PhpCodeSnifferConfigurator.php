@@ -81,11 +81,9 @@ class PhpCodeSnifferConfigurator
                 'PSR2'
             );
         }
-
-        $this->writeConfig();
     }
 
-    protected function writeConfig()
+    public function writeConfig()
     {
         if ($this->settings['enablePhpCodeSniffer']) {
             $fh = fopen(BASE_DIR . '/phpcs.xml', 'w');

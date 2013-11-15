@@ -127,11 +127,9 @@ class PhpUnitConfigurator
                 }
             }
         }
-
-        $this->writePhpUnitXml();
     }
 
-    protected function writePhpUnitXml()
+    public function writeConfig()
     {
         if ($this->settings['enablePhpUnit'] && !$this->settings['customPhpUnitXml']) {
             $fh = fopen(BASE_DIR . '/phpunit.xml', 'w');

@@ -66,11 +66,9 @@ class PhpMessDetectorConfigurator
             "Do you want to enable the PHP Mess Detector? [Y/n] ",
             true
         );
-
-        $this->writeConfig();
     }
 
-    protected function writeConfig()
+    public function writeConfig()
     {
         if ($this->settings['enablePhpMessDetector']) {
             $fh = fopen(BASE_DIR . '/phpmd.xml', 'w');
