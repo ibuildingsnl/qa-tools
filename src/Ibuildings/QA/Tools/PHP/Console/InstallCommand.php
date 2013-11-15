@@ -7,6 +7,7 @@
 namespace Ibuildings\QA\Tools\PHP\Console;
 
 use Ibuildings\QA\Tools\Common\DependencyInjection\Twig;
+use Ibuildings\QA\Tools\Common\PHP\Configurator\PhpMessDetectorConfigurator;
 use Ibuildings\QA\Tools\Common\Settings;
 
 use Ibuildings\QA\Tools\Common\Configurator\Registry;
@@ -90,7 +91,6 @@ class InstallCommand extends Command
     {
         $this->settings['buildArtifactsPath'] = 'build/artifacts';
 
-        $this->settings['enablePhpMessDetector'] = false;
         $this->settings['enablePhpCopyPasteDetection'] = false;
         $this->settings['enablePhpCodeSniffer'] = false;
         $this->settings['enablePhpUnit'] = false;
@@ -146,9 +146,9 @@ class InstallCommand extends Command
             // Register configurators
             $configuratorRegistry = new Registry();
             $configuratorRegistry->register(new PhpLintConfigurator($output, $this->dialog, $this->settings));
+            $configuratorRegistry->register(new PhpMessDetectorConfigurator($output, $this->dialog, $this->settings));
             $configuratorRegistry->executeConfigurators();
 
-            $this->configurePhpMessDetector($input, $output);
             $this->configurePhpCodeSniffer($input, $output);
             $this->configurePhpCopyPasteDetection($input, $output);
             $this->configurePhpSecurityChecker($input, $output);
@@ -229,15 +229,6 @@ class InstallCommand extends Command
             },
             false,
             $this->settings['buildArtifactsPath']
-        );
-    }
-
-    protected function configurePhpMessDetector(InputInterface $input, OutputInterface $output)
-    {
-        $this->settings['enablePhpMessDetector'] = $this->dialog->askConfirmation(
-            $output,
-            "Do you want to enable the PHP Mess Detector? [Y/n] ",
-            true
         );
     }
 
