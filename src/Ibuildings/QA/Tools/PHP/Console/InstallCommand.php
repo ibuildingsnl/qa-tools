@@ -149,10 +149,9 @@ class InstallCommand extends Command
             $configuratorRegistry->register(new PhpCopyPasteDetectorConfigurator($output, $this->dialog, $this->settings));
             $configuratorRegistry->register(new PhpSecurityCheckerConfigurator($output, $this->dialog, $this->settings));
             $configuratorRegistry->register(new PhpSourcePathConfigurator($output, $this->dialog, $this->settings));
-            $configuratorRegistry->register(new PhpUnitConfigurator($output, $this->dialog, $this->settings));
+            $configuratorRegistry->register(new PhpUnitConfigurator($output, $this->dialog, $this->settings, $this->twig));
             $configuratorRegistry->executeConfigurators();
 
-            $this->writePhpUnitXml($input, $output);
             $this->writePhpCsConfig($input, $output);
             $this->writePhpMdConfig($input, $output);
         }
@@ -227,21 +226,7 @@ class InstallCommand extends Command
         );
     }
 
-    protected function writePhpUnitXml(InputInterface $input, OutputInterface $output)
-    {
-        if ($this->settings['enablePhpUnit'] && !$this->settings['customPhpUnitXml']) {
-            $fh = fopen(BASE_DIR . '/phpunit.xml', 'w');
-            fwrite(
-                $fh,
-                $this->twig->render(
-                    'phpunit.xml.dist',
-                    $this->settings->toArray()
-                )
-            );
-            fclose($fh);
-            $output->writeln("\n<info>Config file for PHPUnit written</info>");
-        }
-    }
+
 
     protected function writePhpCsConfig(InputInterface $input, OutputInterface $output)
     {
