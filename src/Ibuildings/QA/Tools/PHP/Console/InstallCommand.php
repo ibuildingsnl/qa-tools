@@ -8,6 +8,7 @@ namespace Ibuildings\QA\Tools\PHP\Console;
 
 use Ibuildings\QA\Tools\Common\DependencyInjection\Twig;
 use Ibuildings\QA\Tools\Common\PHP\Configurator\PhpCodeSnifferConfigurator;
+use Ibuildings\QA\Tools\Common\PHP\Configurator\PhpCopyPasteDetectorConfigurator;
 use Ibuildings\QA\Tools\Common\PHP\Configurator\PhpMessDetectorConfigurator;
 use Ibuildings\QA\Tools\Common\Settings;
 
@@ -92,7 +93,6 @@ class InstallCommand extends Command
     {
         $this->settings['buildArtifactsPath'] = 'build/artifacts';
 
-        $this->settings['enablePhpCopyPasteDetection'] = false;
         $this->settings['enablePhpUnit'] = false;
 
         $this->settings['customPhpUnitXml'] = false;
@@ -148,8 +148,8 @@ class InstallCommand extends Command
             $configuratorRegistry->register(new PhpLintConfigurator($output, $this->dialog, $this->settings));
             $configuratorRegistry->register(new PhpMessDetectorConfigurator($output, $this->dialog, $this->settings));
             $configuratorRegistry->register(new PhpCodeSnifferConfigurator($output, $this->dialog, $this->settings));
+            $configuratorRegistry->register(new PhpCopyPasteDetectorConfigurator($output, $this->dialog, $this->settings));
             $configuratorRegistry->executeConfigurators();
-            $this->configurePhpCopyPasteDetection($input, $output);
             $this->configurePhpSecurityChecker($input, $output);
 
             $this->configurePhpSrcPath($input, $output);
@@ -228,15 +228,6 @@ class InstallCommand extends Command
             },
             false,
             $this->settings['buildArtifactsPath']
-        );
-    }
-
-    protected function configurePhpCopyPasteDetection(InputInterface $input, OutputInterface $output)
-    {
-        $this->settings['enablePhpCopyPasteDetection'] = $this->dialog->askConfirmation(
-            $output,
-            "Do you want to enable PHP Copy Paste Detection? [Y/n] ",
-            true
         );
     }
 
