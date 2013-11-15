@@ -10,6 +10,7 @@ use Ibuildings\QA\Tools\Common\DependencyInjection\Twig;
 use Ibuildings\QA\Tools\Common\PHP\Configurator\PhpCodeSnifferConfigurator;
 use Ibuildings\QA\Tools\Common\PHP\Configurator\PhpCopyPasteDetectorConfigurator;
 use Ibuildings\QA\Tools\Common\PHP\Configurator\PhpMessDetectorConfigurator;
+use Ibuildings\QA\Tools\Common\PHP\Configurator\PhpSecurityCheckerConfigurator;
 use Ibuildings\QA\Tools\Common\Settings;
 
 use Ibuildings\QA\Tools\Common\Configurator\Registry;
@@ -149,8 +150,8 @@ class InstallCommand extends Command
             $configuratorRegistry->register(new PhpMessDetectorConfigurator($output, $this->dialog, $this->settings));
             $configuratorRegistry->register(new PhpCodeSnifferConfigurator($output, $this->dialog, $this->settings));
             $configuratorRegistry->register(new PhpCopyPasteDetectorConfigurator($output, $this->dialog, $this->settings));
+            $configuratorRegistry->register(new PhpSecurityCheckerConfigurator($output, $this->dialog, $this->settings));
             $configuratorRegistry->executeConfigurators();
-            $this->configurePhpSecurityChecker($input, $output);
 
             $this->configurePhpSrcPath($input, $output);
 
@@ -228,15 +229,6 @@ class InstallCommand extends Command
             },
             false,
             $this->settings['buildArtifactsPath']
-        );
-    }
-
-    protected function configurePhpSecurityChecker(InputInterface $input, OutputInterface $output)
-    {
-        $this->settings['enablePhpSecurityChecker'] = $this->dialog->askConfirmation(
-            $output,
-            "Do you want to enable the Sensiolabs Security Checker? [Y/n] ",
-            true
         );
     }
 
