@@ -6,6 +6,12 @@
 
 namespace Ibuildings\QA\Tools\PHP\Console;
 
+use Ibuildings\QA\Tools\Common\DependencyInjection\Twig;
+use Ibuildings\QA\Tools\Common\Settings;
+
+use Ibuildings\QA\Tools\Common\Configurator\Registry;
+use Ibuildings\QA\Tools\Common\PHP\Configurator\PhpLintConfigurator;
+
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Input\InputArgument;
@@ -21,7 +27,8 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class InstallCommand extends Command
 {
-    protected $settings = array();
+    /** @var  Settings */
+    protected $settings;
 
     /** @var DialogHelper */
     protected $dialog;
@@ -42,21 +49,12 @@ class InstallCommand extends Command
 
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
+        $this->settings = new Settings();
+
         $this->dialog = $this->getHelperSet()->get('dialog');
 
-        $loader = new \Twig_Loader_Filesystem(PACKAGE_BASE_DIR . '/config-dist');
-        $this->twig = new \Twig_Environment($loader);
-        $filter = new \Twig_SimpleFilter(
-            'bool',
-            function ($value) {
-                if ($value) {
-                    return 'true';
-                } else {
-                    return 'false';
-                }
-            }
-        );
-        $this->twig->addFilter($filter);
+        $twigBuilder = new Twig();
+        $this->twig = $twigBuilder->create();
 
         $this->parseComposerConfig();
 
@@ -146,7 +144,10 @@ class InstallCommand extends Command
         ) {
             $output->writeln("\n<info>Configuring PHP inspections</info>\n");
 
-            $this->configurePhpLint($input, $output);
+            // Register configurators
+            $configuratorRegistry = new Registry();
+            $configuratorRegistry->register(new PhpLintConfigurator($output, $this->dialog, $this->settings));
+            $configuratorRegistry->executeConfigurators();
             $this->configurePhpMessDetector($input, $output);
             $this->configurePhpCodeSniffer($input, $output);
             $this->configurePhpCopyPasteDetection($input, $output);
@@ -228,15 +229,6 @@ class InstallCommand extends Command
             },
             false,
             $this->settings['buildArtifactsPath']
-        );
-    }
-
-    protected function configurePhpLint(InputInterface $input, OutputInterface $output)
-    {
-        $this->settings['enablePhpLint'] = $this->dialog->askConfirmation(
-            $output,
-            "Do you want to enable PHP Lint? [Y/n] ",
-            true
         );
     }
 
@@ -387,7 +379,7 @@ class InstallCommand extends Command
                 $fh,
                 $this->twig->render(
                     'phpunit.xml.dist',
-                    $this->settings
+                    $this->settings->toArray()
                 )
             );
             fclose($fh);
@@ -403,7 +395,7 @@ class InstallCommand extends Command
                 $fh,
                 $this->twig->render(
                     'phpcs.xml.dist',
-                    $this->settings
+                    $this->settings->toArray()
                 )
             );
             fclose($fh);
@@ -419,7 +411,7 @@ class InstallCommand extends Command
                 $fh,
                 $this->twig->render(
                     'phpmd.xml.dist',
-                    $this->settings
+                    $this->settings->toArray()
                 )
             );
             fclose($fh);
@@ -467,7 +459,7 @@ class InstallCommand extends Command
                 $fh,
                 $this->twig->render(
                     '.jshintrc.dist',
-                    $this->settings
+                    $this->settings->toArray()
                 )
             );
             fclose($fh);
@@ -489,7 +481,7 @@ class InstallCommand extends Command
                 $fh,
                 $this->twig->render(
                     'build.xml.dist',
-                    $this->settings
+                    $this->settings->toArray()
                 )
             );
             fclose($fh);
@@ -531,7 +523,6 @@ class InstallCommand extends Command
                 $pattern . "\n"
             );
             fclose($fh);
-
         }
     }
 }
