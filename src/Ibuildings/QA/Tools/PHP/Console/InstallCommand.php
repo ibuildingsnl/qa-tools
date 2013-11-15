@@ -145,14 +145,13 @@ class InstallCommand extends Command
             $configuratorRegistry = new Registry();
             $configuratorRegistry->register(new PhpLintConfigurator($output, $this->dialog, $this->settings));
             $configuratorRegistry->register(new PhpMessDetectorConfigurator($output, $this->dialog, $this->settings));
-            $configuratorRegistry->register(new PhpCodeSnifferConfigurator($output, $this->dialog, $this->settings));
+            $configuratorRegistry->register(new PhpCodeSnifferConfigurator($output, $this->dialog, $this->settings, $this->twig));
             $configuratorRegistry->register(new PhpCopyPasteDetectorConfigurator($output, $this->dialog, $this->settings));
             $configuratorRegistry->register(new PhpSecurityCheckerConfigurator($output, $this->dialog, $this->settings));
             $configuratorRegistry->register(new PhpSourcePathConfigurator($output, $this->dialog, $this->settings));
             $configuratorRegistry->register(new PhpUnitConfigurator($output, $this->dialog, $this->settings, $this->twig));
             $configuratorRegistry->executeConfigurators();
 
-            $this->writePhpCsConfig($input, $output);
             $this->writePhpMdConfig($input, $output);
         }
 
@@ -224,24 +223,6 @@ class InstallCommand extends Command
             false,
             $this->settings['buildArtifactsPath']
         );
-    }
-
-
-
-    protected function writePhpCsConfig(InputInterface $input, OutputInterface $output)
-    {
-        if ($this->settings['enablePhpCodeSniffer']) {
-            $fh = fopen(BASE_DIR . '/phpcs.xml', 'w');
-            fwrite(
-                $fh,
-                $this->twig->render(
-                    'phpcs.xml.dist',
-                    $this->settings->toArray()
-                )
-            );
-            fclose($fh);
-            $output->writeln("\n<info>Config file for PHP Code Sniffer written</info>");
-        }
     }
 
     protected function writePhpMdConfig(InputInterface $input, OutputInterface $output)
