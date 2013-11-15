@@ -144,15 +144,13 @@ class InstallCommand extends Command
             // Register configurators
             $configuratorRegistry = new Registry();
             $configuratorRegistry->register(new PhpLintConfigurator($output, $this->dialog, $this->settings));
-            $configuratorRegistry->register(new PhpMessDetectorConfigurator($output, $this->dialog, $this->settings));
+            $configuratorRegistry->register(new PhpMessDetectorConfigurator($output, $this->dialog, $this->settings, $this->twig));
             $configuratorRegistry->register(new PhpCodeSnifferConfigurator($output, $this->dialog, $this->settings, $this->twig));
             $configuratorRegistry->register(new PhpCopyPasteDetectorConfigurator($output, $this->dialog, $this->settings));
             $configuratorRegistry->register(new PhpSecurityCheckerConfigurator($output, $this->dialog, $this->settings));
             $configuratorRegistry->register(new PhpSourcePathConfigurator($output, $this->dialog, $this->settings));
             $configuratorRegistry->register(new PhpUnitConfigurator($output, $this->dialog, $this->settings, $this->twig));
             $configuratorRegistry->executeConfigurators();
-
-            $this->writePhpMdConfig($input, $output);
         }
 
         if ($this->dialog->askConfirmation(
@@ -223,22 +221,6 @@ class InstallCommand extends Command
             false,
             $this->settings['buildArtifactsPath']
         );
-    }
-
-    protected function writePhpMdConfig(InputInterface $input, OutputInterface $output)
-    {
-        if ($this->settings['enablePhpMessDetector']) {
-            $fh = fopen(BASE_DIR . '/phpmd.xml', 'w');
-            fwrite(
-                $fh,
-                $this->twig->render(
-                    'phpmd.xml.dist',
-                    $this->settings->toArray()
-                )
-            );
-            fclose($fh);
-            $output->writeln("\n<info>Config file for PHP Mess Detector written</info>");
-        }
     }
 
     protected function configureJsHint(InputInterface $input, OutputInterface $output)
