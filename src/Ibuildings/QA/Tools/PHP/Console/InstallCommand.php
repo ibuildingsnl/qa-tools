@@ -208,12 +208,13 @@ class InstallCommand extends Command
 
     protected function configureBuildArtifactsPath(InputInterface $input, OutputInterface $output)
     {
+        $dialog = $this->dialog;
         $this->settings['buildArtifactsPath'] = $this->dialog->askAndValidate(
             $output,
             "Where do you want to store the build artifacts? [" . $this->settings['buildArtifactsPath'] . "] ",
-            function ($data) use ($output) {
+            function ($data) use ($output, $dialog) {
                 if (!is_dir(BASE_DIR . '/' . $data)) {
-                    if ($this->dialog->askConfirmation(
+                    if ($dialog->askConfirmation(
                         $output,
                         "  - Are you sure? The path doesn't exist and will be created. [Y/n] ",
                         true
