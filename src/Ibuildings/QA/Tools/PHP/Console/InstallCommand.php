@@ -12,6 +12,7 @@ use Ibuildings\QA\Tools\Common\PHP\Configurator\PhpCopyPasteDetectorConfigurator
 use Ibuildings\QA\Tools\Common\PHP\Configurator\PhpMessDetectorConfigurator;
 use Ibuildings\QA\Tools\Common\PHP\Configurator\PhpSecurityCheckerConfigurator;
 use Ibuildings\QA\Tools\Common\PHP\Configurator\PhpSourcePathConfigurator;
+use Ibuildings\QA\Tools\Common\PHP\Configurator\PhpUnitConfigurator;
 use Ibuildings\QA\Tools\Common\Settings;
 
 use Ibuildings\QA\Tools\Common\Configurator\Registry;
@@ -95,11 +96,6 @@ class InstallCommand extends Command
     {
         $this->settings['buildArtifactsPath'] = 'build/artifacts';
 
-        $this->settings['enablePhpUnit'] = false;
-
-        $this->settings['customPhpUnitXml'] = false;
-        $this->settings['phpUnitConfigPath'] = '${basedir}';
-
         $this->settings['enableJsHint'] = false;
 
         if (!is_array($this->composerConfig)) {
@@ -153,9 +149,8 @@ class InstallCommand extends Command
             $configuratorRegistry->register(new PhpCopyPasteDetectorConfigurator($output, $this->dialog, $this->settings));
             $configuratorRegistry->register(new PhpSecurityCheckerConfigurator($output, $this->dialog, $this->settings));
             $configuratorRegistry->register(new PhpSourcePathConfigurator($output, $this->dialog, $this->settings));
+            $configuratorRegistry->register(new PhpUnitConfigurator($output, $this->dialog, $this->settings));
             $configuratorRegistry->executeConfigurators();
-
-            $this->configurePhpUnit($input, $output);
 
             $this->writePhpUnitXml($input, $output);
             $this->writePhpCsConfig($input, $output);
@@ -230,73 +225,6 @@ class InstallCommand extends Command
             false,
             $this->settings['buildArtifactsPath']
         );
-    }
-
-    protected function configurePhpUnit(InputInterface $input, OutputInterface $output)
-    {
-        $output->writeln("\n<info>Configuring PHPUnit</info>\n");
-        $this->settings['enablePhpUnit'] = $this->dialog->askConfirmation(
-            $output,
-            "Do you want to enable PHPunit tests? [Y/n] ",
-            true
-        );
-
-        $this->settings['customPhpUnitXml'] = $this->dialog->askConfirmation(
-            $output,
-            "Do you have a custom PHPUnit config? (for example, Symfony has one in 'app/phpunit.xml.dist') [y/N] ",
-            false
-        );
-
-        if ($this->settings['customPhpUnitXml']) {
-            $this->settings['phpUnitConfigPath'] = $this->dialog->askAndValidate(
-                $output,
-                "What is the path to the custom PHPUnit config? [app/phpunit.xml.dist] ",
-                function ($data) {
-                    if (file_exists(BASE_DIR . '/' . $data)) {
-                        return $data;
-                    }
-                    throw new \Exception("That path doesn't exist");
-                },
-                false,
-                'app/phpunit.xml.dist'
-            );
-        } else {
-            if ($this->settings['enablePhpUnit']) {
-                $this->settings['phpTestsPath'] = $this->dialog->askAndValidate(
-                    $output,
-                    "What is the path to the PHPUnit tests? [tests] ",
-                    function ($data) {
-                        if (is_dir(BASE_DIR . '/' . $data)) {
-                            return $data;
-                        }
-                        throw new \Exception("That path doesn't exist");
-                    },
-                    false,
-                    'tests'
-                );
-
-                $this->settings['enablePhpUnitAutoload'] = $this->dialog->askConfirmation(
-                    $output,
-                    "Do you want to enable an autoload script for PHPUnit? [Y/n] ",
-                    true
-                );
-
-                if ($this->settings['enablePhpUnitAutoload']) {
-                    $this->settings['phpTestsAutoloadPath'] = $this->dialog->askAndValidate(
-                        $output,
-                        "What is the path to the autoload script for PHPUnit? [vendor/autoload.php] ",
-                        function ($data) {
-                            if (file_exists(BASE_DIR . '/' . $data)) {
-                                return $data;
-                            }
-                            throw new \Exception("That path doesn't exist");
-                        },
-                        false,
-                        'vendor/autoload.php'
-                    );
-                }
-            }
-        }
     }
 
     protected function writePhpUnitXml(InputInterface $input, OutputInterface $output)
