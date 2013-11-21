@@ -163,6 +163,7 @@ class InstallCommand extends Command
             $this->writePhpMdConfig($input, $output);
         }
 
+        $this->settings['enableJsTools'] = false;
         if ($this->dialog->askConfirmation(
             $output,
             "\n<comment>Do you want to install the QA tools for Javascript? [Y/n] </comment>",
@@ -448,6 +449,10 @@ class InstallCommand extends Command
             "Do you want to enable JSHint? [Y/n] ",
             true
         );
+
+        if($this->settings['enableJsHint']) {
+            $this->settings['enableJsTools'] = true;
+        }
 
         if (!$this->commandExists('node')) {
             $output->writeln("<error>You don't have Node.js installed. Not enabling JSHint.</error>");
