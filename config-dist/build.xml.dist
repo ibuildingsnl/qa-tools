@@ -5,20 +5,30 @@
 
     <target name="get-pre-commit-changeset-php" unless="${git.changeset.php.executed}">
         <property name="git.changeset.php.executed" value="true" />
-        <exec executable="${basedir}/{{ composerBinDir }}/qa-tools" outputProperty="git.pre-commit.changeset.php.spacesep">
-            <arg line="changeset:pre-commit --filter-path={{ phpSrcPath }} --filter-ext=php --separator=' '"/>
+
+        <!-- Get changeset separated by comma -->
+        <exec executable="${basedir}/vendor/bin/qa-tools" outputProperty="git.pre-commit.changeset.php.commasep">
+            <arg line="changeset:pre-commit --filter-path=src --filter-ext=php --separator=','"/>
         </exec>
-        <property name="git.changeset.php.spacesep" value="${git.pre-commit.changeset.php.spacesep}" />
+        <property name="git.changeset.php.commasep" value="${git.pre-commit.changeset.php.commasep}" />
+
+        <!-- Check if changeset contains values -->
         <condition property="git.changeset.php.notempty">
             <not>
-                <equals arg1="${git.changeset.php.spacesep}" arg2="" trim="true" />
+                <equals arg1="${git.changeset.php.commasep}" arg2="" trim="true" />
             </not>
         </condition>
 
-        <exec executable="${basedir}/{{ composerBinDir }}/qa-tools" outputProperty="git.pre-commit.changeset.php.commasep">
-            <arg line="changeset:pre-commit --filter-path={{ phpSrcPath }} --filter-ext=php --separator=','"/>
-        </exec>
-        <property name="git.changeset.php.commasep" value="${git.pre-commit.changeset.php.commasep}" />
+        <!-- Convert space separated to space separated -->
+        <loadresource property="git.changeset.php.spacesep">
+            <propertyresource name="git.changeset.php.commasep"/>
+            <filterchain>
+                <tokenfilter>
+                    <filetokenizer/>
+                    <replacestring from="," to=" "/>
+                </tokenfilter>
+            </filterchain>
+        </loadresource>
     </target>
 
     <target name="echo-php-changeset" if="${git.changeset.php.notempty}">
@@ -88,12 +98,13 @@
         </exec>
     </target>
 
-    {% if enablePhpLint %}<target name="php-lint" description="Perform syntax check of sourcecode files">
-    <exec executable="sh" failonerror="true">
-        <arg value="-c" />
-        <arg value="${basedir}/{{ composerBinDir }}/qa-tools changeset:pre-commit --filter-path={{ phpSrcPath }} --filter-ext=php | xargs -n1 -P8 php -l 1>/dev/null" />
-    </exec>
-</target>
+    {% if enablePhpLint %}<!-- Since Ant cannot loop over csv values as a workaround, pass the changeset as includes so phplint will only be applied to changed files -->
+    <target name="php-lint" description="Perform syntax check of sourcecode files" depends="get-pre-commit-changeset-php">
+        <apply executable="php" failonerror="true">
+            <arg value="-l" />
+            <fileset dir="." includes="${git.changeset.php.commasep}" />
+        </apply>
+    </target>
 
     <target name="php-lint-ci" description="Perform syntax check of sourcecode files">
         <apply executable="php" failonerror="true">
