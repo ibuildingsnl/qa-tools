@@ -1,0 +1,24 @@
+# behat.yml
+default:
+    paths:
+        features: features
+        bootstrap: %behat.paths.features%/bootstrap
+
+    extensions:
+        Behat\MinkExtension\Extension:
+            base_url: {{baseUrl}}
+            default_session: goutte 
+            browser_name: "firefox"
+            goutte: ~
+            selenium2:
+              wd_host: "http://localhost:4444/wd/hub"
+              capabilities: { "browser": "firefox", "version": "14"}
+
+ci:
+    extensions:
+        Behat\MinkExtension\Extension:
+            base_url: {{baseUrlCi}}
+
+# The dev
+imports:
+    - behat.dev.yml

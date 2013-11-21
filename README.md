@@ -24,6 +24,7 @@ output of this script as a base and configure it manually.
 ## Other
  - Sensiolabs Security Checker (1.2-dev)
  - Git Pre-Commit Hook
+ - Behat Framework setup
 
 # Requirements
 To run the tools, you need to have Apache Ant installed on your system.
@@ -51,12 +52,18 @@ Why `require-dev`? Because you only want the QA tools on your dev environment.
 On test and production environments, you should run composer install without --dev so that the qa-tools don't get installed.
 
 # Usage
-After installation, you can run `vendor/bin/qa-tools install`. This script will ask you which tools you want to enable and writes the build.xml file that can be used for Jenkins.
+After installation, you can run `$ vendor/bin/qa-tools install`. This script will ask you which tools you want to enable and writes the build.xml file that can be used for Jenkins.
 In Jenkins, use the QA-Tools template for you project, or base your project on it manually.
 > If you want more options or some config that this script doesn't provide, you can simply edit the generated build.xml and config files to suit your needs. An example would be when your sources are in many different directories or when you need to exclude specific files for specific tools
 
+## Behat
+You can run your Behat features with `$ ant behat`.
+
+### Phantomjs
+Start using phantomjs web driver using: `$ phantomjs --webdriver=4444`
+
 # Notes
-Important note: the pre-commit runs on the source you actually staged for commit with `git add` everything else is ignored. This is to make sure that succesfull or failing builds reflect what is actually being committed.
+Important note: the pre-commit runs on the source you actually staged for commit with `$ git add` everything else is ignored. This is to make sure that succesfull or failing builds reflect what is actually being committed.
 
 # Contributing
 If something is broken or you have a feature request, please create an issue here on the github repo. 
