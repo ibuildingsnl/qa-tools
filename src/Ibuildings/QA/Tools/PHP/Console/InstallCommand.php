@@ -6,6 +6,18 @@
 
 namespace Ibuildings\QA\Tools\PHP\Console;
 
+use Ibuildings\QA\Tools\Common\DependencyInjection\Twig;
+use Ibuildings\QA\Tools\Common\PHP\Configurator\PhpCodeSnifferConfigurator;
+use Ibuildings\QA\Tools\Common\PHP\Configurator\PhpCopyPasteDetectorConfigurator;
+use Ibuildings\QA\Tools\Common\PHP\Configurator\PhpMessDetectorConfigurator;
+use Ibuildings\QA\Tools\Common\PHP\Configurator\PhpSecurityCheckerConfigurator;
+use Ibuildings\QA\Tools\Common\PHP\Configurator\PhpSourcePathConfigurator;
+use Ibuildings\QA\Tools\Common\PHP\Configurator\PhpUnitConfigurator;
+use Ibuildings\QA\Tools\Common\Settings;
+
+use Ibuildings\QA\Tools\Common\Configurator\Registry;
+use Ibuildings\QA\Tools\Common\PHP\Configurator\PhpLintConfigurator;
+
 use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\DialogHelper;
@@ -23,7 +35,8 @@ use Symfony\Component\Filesystem\Filesystem;
  */
 class InstallCommand extends Command
 {
-    protected $settings = array();
+    /** @var  Settings */
+    protected $settings;
 
     /** @var DialogHelper */
     protected $dialog;
@@ -44,21 +57,12 @@ class InstallCommand extends Command
 
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
+        $this->settings = new Settings();
+
         $this->dialog = $this->getHelperSet()->get('dialog');
 
-        $loader = new \Twig_Loader_Filesystem(PACKAGE_BASE_DIR . '/config-dist');
-        $this->twig = new \Twig_Environment($loader);
-        $filter = new \Twig_SimpleFilter(
-            'bool',
-            function ($value) {
-                if ($value) {
-                    return 'true';
-                } else {
-                    return 'false';
-                }
-            }
-        );
-        $this->twig->addFilter($filter);
+        $twigBuilder = new Twig();
+        $this->twig = $twigBuilder->create();
 
         $this->parseComposerConfig();
 
@@ -93,15 +97,6 @@ class InstallCommand extends Command
     private function enableDefaultSettings()
     {
         $this->settings['buildArtifactsPath'] = 'build/artifacts';
-
-        $this->settings['enablePhpMessDetector'] = false;
-        $this->settings['enablePhpCopyPasteDetection'] = false;
-        $this->settings['enablePhpCodeSniffer'] = false;
-        $this->settings['enablePhpUnit'] = false;
-        $this->settings['enablePhpLint'] = false;
-
-        $this->settings['customPhpUnitXml'] = false;
-        $this->settings['phpUnitConfigPath'] = '${basedir}';
 
         $this->settings['enableJsHint'] = false;
 
@@ -148,19 +143,16 @@ class InstallCommand extends Command
         ) {
             $output->writeln("\n<info>Configuring PHP inspections</info>\n");
 
-            $this->configurePhpLint($input, $output);
-            $this->configurePhpMessDetector($input, $output);
-            $this->configurePhpCodeSniffer($input, $output);
-            $this->configurePhpCopyPasteDetection($input, $output);
-            $this->configurePhpSecurityChecker($input, $output);
-
-            $this->configurePhpSrcPath($input, $output);
-
-            $this->configurePhpUnit($input, $output);
-
-            $this->writePhpUnitXml($input, $output);
-            $this->writePhpCsConfig($input, $output);
-            $this->writePhpMdConfig($input, $output);
+            // Register configurators
+            $configuratorRegistry = new Registry();
+            $configuratorRegistry->register(new PhpLintConfigurator($output, $this->dialog, $this->settings));
+            $configuratorRegistry->register(new PhpMessDetectorConfigurator($output, $this->dialog, $this->settings, $this->twig));
+            $configuratorRegistry->register(new PhpCodeSnifferConfigurator($output, $this->dialog, $this->settings, $this->twig));
+            $configuratorRegistry->register(new PhpCopyPasteDetectorConfigurator($output, $this->dialog, $this->settings));
+            $configuratorRegistry->register(new PhpSecurityCheckerConfigurator($output, $this->dialog, $this->settings));
+            $configuratorRegistry->register(new PhpSourcePathConfigurator($output, $this->dialog, $this->settings));
+            $configuratorRegistry->register(new PhpUnitConfigurator($output, $this->dialog, $this->settings, $this->twig));
+            $configuratorRegistry->executeConfigurators();
         }
 
         $this->settings['enableJsTools'] = false;
@@ -246,202 +238,6 @@ class InstallCommand extends Command
         );
     }
 
-    protected function configurePhpLint(InputInterface $input, OutputInterface $output)
-    {
-        $this->settings['enablePhpLint'] = $this->dialog->askConfirmation(
-            $output,
-            "Do you want to enable PHP Lint? [Y/n] ",
-            true
-        );
-    }
-
-    protected function configurePhpMessDetector(InputInterface $input, OutputInterface $output)
-    {
-        $this->settings['enablePhpMessDetector'] = $this->dialog->askConfirmation(
-            $output,
-            "Do you want to enable the PHP Mess Detector? [Y/n] ",
-            true
-        );
-    }
-
-    protected function configurePhpCodeSniffer(InputInterface $input, OutputInterface $output)
-    {
-        $this->settings['enablePhpCodeSniffer'] = $this->dialog->askConfirmation(
-            $output,
-            "Do you want to enable the PHP Code Sniffer? [Y/n] ",
-            true
-        );
-
-        if ($this->settings['enablePhpCodeSniffer']) {
-            $this->settings['phpCodeSnifferCodingStyle'] = $this->dialog->askAndValidate(
-                $output,
-                "  - Which coding standard do you want to use? (PEAR, PHPCS, PSR1, PSR2, Squiz, Zend) [PSR2] ",
-                function ($data) {
-                    if (in_array($data, array("PEAR", "PHPCS", "PSR1", "PSR2", "Squiz", "Zend"))) {
-                        return $data;
-                    }
-                    throw new \Exception("That coding style is not supported");
-                },
-                false,
-                'PSR2'
-            );
-        }
-    }
-
-    protected function configurePhpCopyPasteDetection(InputInterface $input, OutputInterface $output)
-    {
-        $this->settings['enablePhpCopyPasteDetection'] = $this->dialog->askConfirmation(
-            $output,
-            "Do you want to enable PHP Copy Paste Detection? [Y/n] ",
-            true
-        );
-    }
-
-    protected function configurePhpSecurityChecker(InputInterface $input, OutputInterface $output)
-    {
-        $this->settings['enablePhpSecurityChecker'] = $this->dialog->askConfirmation(
-            $output,
-            "Do you want to enable the Sensiolabs Security Checker? [Y/n] ",
-            true
-        );
-    }
-
-    protected function configurePhpSrcPath(InputInterface $input, OutputInterface $output)
-    {
-        if ($this->settings['enablePhpMessDetector']
-            || $this->settings['enablePhpCodeSniffer']
-            || $this->settings['enablePhpCopyPasteDetection']
-        ) {
-            $this->settings['phpSrcPath'] = $this->dialog->askAndValidate(
-                $output,
-                "What is the path to the PHP source code? [src] ",
-                function ($data) {
-                    if (is_dir(BASE_DIR . '/' . $data)) {
-                        return $data;
-                    }
-                    throw new \Exception("That path doesn't exist");
-                },
-                false,
-                'src'
-            );
-        }
-    }
-
-    protected function configurePhpUnit(InputInterface $input, OutputInterface $output)
-    {
-        $output->writeln("\n<info>Configuring PHPUnit</info>\n");
-        $this->settings['enablePhpUnit'] = $this->dialog->askConfirmation(
-            $output,
-            "Do you want to enable PHPunit tests? [Y/n] ",
-            true
-        );
-
-        $this->settings['customPhpUnitXml'] = $this->dialog->askConfirmation(
-            $output,
-            "Do you have a custom PHPUnit config? (for example, Symfony has one in 'app/phpunit.xml.dist') [y/N] ",
-            false
-        );
-
-        if ($this->settings['customPhpUnitXml']) {
-            $this->settings['phpUnitConfigPath'] = $this->dialog->askAndValidate(
-                $output,
-                "What is the path to the custom PHPUnit config? [app/phpunit.xml.dist] ",
-                function ($data) {
-                    if (file_exists(BASE_DIR . '/' . $data)) {
-                        return $data;
-                    }
-                    throw new \Exception("That path doesn't exist");
-                },
-                false,
-                'app/phpunit.xml.dist'
-            );
-        } else {
-            if ($this->settings['enablePhpUnit']) {
-                $this->settings['phpTestsPath'] = $this->dialog->askAndValidate(
-                    $output,
-                    "What is the path to the PHPUnit tests? [tests] ",
-                    function ($data) {
-                        if (is_dir(BASE_DIR . '/' . $data)) {
-                            return $data;
-                        }
-                        throw new \Exception("That path doesn't exist");
-                    },
-                    false,
-                    'tests'
-                );
-
-                $this->settings['enablePhpUnitAutoload'] = $this->dialog->askConfirmation(
-                    $output,
-                    "Do you want to enable an autoload script for PHPUnit? [Y/n] ",
-                    true
-                );
-
-                if ($this->settings['enablePhpUnitAutoload']) {
-                    $this->settings['phpTestsAutoloadPath'] = $this->dialog->askAndValidate(
-                        $output,
-                        "What is the path to the autoload script for PHPUnit? [vendor/autoload.php] ",
-                        function ($data) {
-                            if (file_exists(BASE_DIR . '/' . $data)) {
-                                return $data;
-                            }
-                            throw new \Exception("That path doesn't exist");
-                        },
-                        false,
-                        'vendor/autoload.php'
-                    );
-                }
-            }
-        }
-    }
-
-    protected function writePhpUnitXml(InputInterface $input, OutputInterface $output)
-    {
-        if ($this->settings['enablePhpUnit'] && !$this->settings['customPhpUnitXml']) {
-            $fh = fopen(BASE_DIR . '/phpunit.xml', 'w');
-            fwrite(
-                $fh,
-                $this->twig->render(
-                    'phpunit.xml.dist',
-                    $this->settings
-                )
-            );
-            fclose($fh);
-            $output->writeln("\n<info>Config file for PHPUnit written</info>");
-        }
-    }
-
-    protected function writePhpCsConfig(InputInterface $input, OutputInterface $output)
-    {
-        if ($this->settings['enablePhpCodeSniffer']) {
-            $fh = fopen(BASE_DIR . '/phpcs.xml', 'w');
-            fwrite(
-                $fh,
-                $this->twig->render(
-                    'phpcs.xml.dist',
-                    $this->settings
-                )
-            );
-            fclose($fh);
-            $output->writeln("\n<info>Config file for PHP Code Sniffer written</info>");
-        }
-    }
-
-    protected function writePhpMdConfig(InputInterface $input, OutputInterface $output)
-    {
-        if ($this->settings['enablePhpMessDetector']) {
-            $fh = fopen(BASE_DIR . '/phpmd.xml', 'w');
-            fwrite(
-                $fh,
-                $this->twig->render(
-                    'phpmd.xml.dist',
-                    $this->settings
-                )
-            );
-            fclose($fh);
-            $output->writeln("\n<info>Config file for PHP Mess Detector written</info>");
-        }
-    }
-
     protected function configureJsHint(InputInterface $input, OutputInterface $output)
     {
         $this->settings['enableJsHint'] = $this->dialog->askConfirmation(
@@ -486,7 +282,7 @@ class InstallCommand extends Command
                 $fh,
                 $this->twig->render(
                     '.jshintrc.dist',
-                    $this->settings
+                    $this->settings->toArray()
                 )
             );
             fclose($fh);
@@ -597,7 +393,7 @@ class InstallCommand extends Command
             $fh,
             $this->twig->render(
                 'behat.yml.dist',
-                $this->settings
+                $this->settings->toArray()
             )
         );
         fclose($fh);
@@ -608,7 +404,7 @@ class InstallCommand extends Command
             $fh,
             $this->twig->render(
                 'behat.dev.yml.dist',
-                $this->settings
+                $this->settings->toArray()
             )
         );
         fclose($fh);
@@ -656,7 +452,7 @@ class InstallCommand extends Command
                 $fh,
                 $this->twig->render(
                     'build.xml.dist',
-                    $this->settings
+                    $this->settings->toArray()
                 )
             );
             fclose($fh);
@@ -698,7 +494,6 @@ class InstallCommand extends Command
                 $pattern . "\n"
             );
             fclose($fh);
-
         }
     }
 }
