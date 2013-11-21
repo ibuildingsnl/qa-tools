@@ -3,7 +3,7 @@
 <project name="{{ projectName }}" default="build">
     <target name="get-pre-commit-changeset" depends="get-pre-commit-changeset-js,echo-js-changeset,get-pre-commit-changeset-php,echo-php-changeset"/>
 
-    <target name="get-pre-commit-changeset-php" unless="${git.changeset.php.executed}">
+    <target name="get-pre-commit-changeset-php" unless="git.changeset.php.executed">
         <property name="git.changeset.php.executed" value="true" />
 
         <!-- Get changeset separated by comma -->
@@ -31,12 +31,12 @@
         </loadresource>
     </target>
 
-    <target name="echo-php-changeset" if="${git.changeset.php.notempty}">
+    <target name="echo-php-changeset" if="git.changeset.php.notempty">
         <echo message="PHP Changeset: ${git.changeset.php.spacesep}"/>
     </target>
 
     {% if enableJsTools %}
-    <target name="get-pre-commit-changeset-js" unless="${git.changeset.js.executed}">
+    <target name="get-pre-commit-changeset-js" unless="git.changeset.js.executed">
         <property name="git.changeset.js.executed" value="true" />
         <exec executable="${basedir}/{{ composerBinDir }}/qa-tools" outputProperty="git.pre-commit.changeset.js">
             <arg line="changeset:pre-commit --filter-path={{ javaScriptSrcPath }} --filter-ext=js --separator=' '"/>
@@ -49,7 +49,7 @@
         </condition>
     </target>
 
-    <target name="echo-js-changeset" if="${git.changeset.js.notempty}">
+    <target name="echo-js-changeset" if="git.changeset.js.notempty">
         <echo message="js Changeset: ${git.changeset.js}"/>
     </target>
     {% endif %}
@@ -117,7 +117,7 @@
     </target>
     {% endif %}
 
-    {% if enableJsHint %}<target name="jshint" depends="get-pre-commit-changeset-js" if="${git.changeset.js.notempty}">
+    {% if enableJsHint %}<target name="jshint" depends="get-pre-commit-changeset-js" if="git.changeset.js.notempty">
     <exec executable="node" failonerror="true">
         <arg value="{{ composerBinDir }}/jshint"/>
         <arg value="--config=.jshintrc"/>
@@ -144,7 +144,7 @@
 </target>
     {% endif %}
 
-    {% if enablePhpMessDetector %}<target name="phpmd" depends="get-pre-commit-changeset-php" if="${git.changeset.php.notempty}"
+    {% if enablePhpMessDetector %}<target name="phpmd" depends="get-pre-commit-changeset-php" if="git.changeset.php.notempty"
                                           description="Perform project mess detection using PHPMD and print human readable output. Intended for usage on the command line before committing.">
     <exec executable="{{ composerBinDir }}/phpmd" failonerror="true">
         <arg value="${git.changeset.php.commasep}"/>
@@ -165,7 +165,7 @@
     </target>
     {% endif %}
 
-    {% if enablePhpCodeSniffer %}<target name="phpcs" depends="get-pre-commit-changeset-php" if="${git.changeset.php.notempty}"
+    {% if enablePhpCodeSniffer %}<target name="phpcs" depends="get-pre-commit-changeset-php" if="git.changeset.php.notempty"
                                          description="Find coding standard violations using PHP_CodeSniffer and print human readable output. Intended for usage on the command line before committing.">
     <exec executable="{{ composerBinDir }}/phpcs" failonerror="true">
         <arg value="--standard=phpcs.xml"/>
