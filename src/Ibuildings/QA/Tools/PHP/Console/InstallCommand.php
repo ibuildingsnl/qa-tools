@@ -6,17 +6,16 @@
 
 namespace Ibuildings\QA\Tools\PHP\Console;
 
+use Ibuildings\QA\Tools\Common\Settings;
+use Ibuildings\QA\Tools\Common\Configurator\Registry;
 use Ibuildings\QA\Tools\Common\DependencyInjection\Twig;
 use Ibuildings\QA\Tools\Common\PHP\Configurator\PhpCodeSnifferConfigurator;
 use Ibuildings\QA\Tools\Common\PHP\Configurator\PhpCopyPasteDetectorConfigurator;
+use Ibuildings\QA\Tools\Common\PHP\Configurator\PhpLintConfigurator;
 use Ibuildings\QA\Tools\Common\PHP\Configurator\PhpMessDetectorConfigurator;
 use Ibuildings\QA\Tools\Common\PHP\Configurator\PhpSecurityCheckerConfigurator;
 use Ibuildings\QA\Tools\Common\PHP\Configurator\PhpSourcePathConfigurator;
 use Ibuildings\QA\Tools\Common\PHP\Configurator\PhpUnitConfigurator;
-use Ibuildings\QA\Tools\Common\Settings;
-
-use Ibuildings\QA\Tools\Common\Configurator\Registry;
-use Ibuildings\QA\Tools\Common\PHP\Configurator\PhpLintConfigurator;
 
 use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\Console\Command\Command;
