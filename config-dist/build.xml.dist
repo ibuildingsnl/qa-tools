@@ -181,6 +181,7 @@
         <exec executable="{{ composerBinDir }}/phpcs" output="/dev/null" failonerror="true">
             <arg value="--report-checkstyle={{ buildArtifactsPath }}/logs/checkstyle-php.xml"/>
             <arg value="--standard=phpcs.xml"/>
+            <arg value="--warning-severity=0"/> <!-- Don't show warnings-->
             <arg value="--extensions=php"/>
             <arg path="{{ phpSrcPath }}"/>
         </exec>
