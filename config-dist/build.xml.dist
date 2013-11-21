@@ -196,7 +196,7 @@
 </target>
     {% endif %}
 
-    {% if enablePhpUnit %}<target name="phpunit" description="Run unit tests with PHPUnit">
+    {% if enablePhpUnit %}<target name="phpunit" description="Run unit tests with PHPUnit" depends="get-pre-commit-changeset-php" if="git.changeset.php.notempty">
     <exec executable="{{ composerBinDir }}/phpunit" failonerror="true">
         <arg line="--configuration={{ phpUnitConfigPath }}"/>
     </exec>
