@@ -5,9 +5,11 @@
         By default it is less stringent about long lines than other coding standards
     </description>
 
-    <!-- Use this to exclude paths. You can have multiple patterns -->
-    <!--<exclude-pattern>*/tests/*</exclude-pattern>-->
-    <!--<exclude-pattern>*/other/*</exclude-pattern>-->
+{% if phpCsExcludePattern %}
+{% for phpCsExcludePattern in phpCsExcludePatterns %}
+    <exclude-pattern>{{ phpCsExcludePattern }}</exclude-pattern>
+{% endfor %}
+{% endif %}
 
     <!-- This is the rule we inherit from. If you want to exlude some specific rules, see the docs on how to do that -->
     <rule ref="{{ phpCodeSnifferCodingStyle|default('PSR2') }}"/>

@@ -160,7 +160,7 @@ class InstallCommand extends Command
             $configuratorRegistry = new Registry();
             $configuratorRegistry->register(new PhpLintConfigurator($output, $this->dialog, $this->settings));
             $configuratorRegistry->register(new PhpMessDetectorConfigurator($output, $this->dialog, $this->settings, $this->twig));
-            $configuratorRegistry->register(new PhpCodeSnifferConfigurator($output, $this->dialog, $this->settings, $this->twig));
+            $configuratorRegistry->register(new PhpCodeSnifferConfigurator($output, $this->dialog, $multiplePathHelper, $this->settings, $this->twig));
             $configuratorRegistry->register(new PhpCopyPasteDetectorConfigurator($output, $this->dialog, $multiplePathHelper, $this->settings));
             $configuratorRegistry->register(new PhpSecurityCheckerConfigurator($output, $this->dialog, $this->settings));
             $configuratorRegistry->register(new PhpSourcePathConfigurator($output, $this->dialog, $this->settings));
