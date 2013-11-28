@@ -36,7 +36,7 @@ class InstalledProgramChecker
 
         $versionParameter = '--version';
         $nameParts = explode(' ', $name);
-        if (count($nameParts) > 2) {
+        if (count($nameParts) > 1) {
             $programName = $nameParts[0];
             $versionParameter = $nameParts[1];
         } else {
