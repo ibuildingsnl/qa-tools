@@ -50,7 +50,7 @@ then
 
     # Unstash changes to the working tree that we had stashed
     echo "\n\033[01;32mUnstashing changes to the working tree that we had stashed...\033[00m"
-    git stash pop --quiet --index
+    git stash pop --quiet --index --whitespace=nowarn
 fi
 
 exit $exitCode
