@@ -10,9 +10,9 @@ use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Can configure setting for PHP code sniffer
+ * Can configure settings for PHP Code Sniffer
  *
- * Class PhpLintConfigurator
+ * Class PhpCodeSnifferConfigurator
  * @package Ibuildings\QA\Tools\Common\PHP\Configurator
  */
 class PhpCodeSnifferConfigurator

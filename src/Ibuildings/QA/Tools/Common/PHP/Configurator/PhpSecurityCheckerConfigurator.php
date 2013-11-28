@@ -9,9 +9,9 @@ use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Can configure setting for PHP mess detector
+ * Can configure setting for PHP Security Checker
  *
- * Class PhpLintConfigurator
+ * Class PhpSecurityCheckerConfigurator
  * @package Ibuildings\QA\Tools\Common\PHP\Configurator
  */
 class PhpSecurityCheckerConfigurator

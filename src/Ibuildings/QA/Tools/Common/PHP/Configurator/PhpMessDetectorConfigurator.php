@@ -10,9 +10,9 @@ use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Can configure setting for PHP mess detector
+ * Can configure setting for PHP Mess Detector
  *
- * Class PhpLintConfigurator
+ * Class PhpMessDetectorConfigurator
  * @package Ibuildings\QA\Tools\Common\PHP\Configurator
  */
 class PhpMessDetectorConfigurator

@@ -9,9 +9,9 @@ use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Can configure setting for PHP copy paste detector
+ * Can configure setting for PHP Copy Paste Detector
  *
- * Class PhpLintConfigurator
+ * Class PhpCopyPasteDetectorConfigurator
  * @package Ibuildings\QA\Tools\Common\PHP\Configurator
  */
 class PhpCopyPasteDetectorConfigurator
