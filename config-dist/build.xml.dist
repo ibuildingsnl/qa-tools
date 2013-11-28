@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <project name="{{ projectName }}" default="build">
-    <target name="get-pre-commit-changeset" depends="get-pre-commit-changeset-js,echo-js-changeset,get-pre-commit-changeset-php,echo-php-changeset"/>
+    <target name="get-pre-commit-changeset" depends="{% if enableJsTools %}get-pre-commit-changeset-js,echo-js-changeset,{% endif %}get-pre-commit-changeset-php,echo-php-changeset"/>
 
     <target name="get-pre-commit-changeset-php" unless="git.changeset.php.executed">
         <property name="git.changeset.php.executed" value="true" />
