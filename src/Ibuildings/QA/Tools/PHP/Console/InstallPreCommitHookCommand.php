@@ -6,6 +6,7 @@
 
 namespace Ibuildings\QA\Tools\PHP\Console;
 
+use Ibuildings\QA\Tools\Common\InstalledProgramChecker;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Input\InputArgument;
@@ -21,6 +22,9 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class InstallPreCommitHookCommand extends Command
 {
+    /* Minimal version of git that is required, note that version stashing untracked files was not possible */
+    const MINIMAL_VERSION_GIT = '1.7.8';
+
     protected $settings = array();
 
     /** @var DialogHelper */
@@ -88,6 +92,10 @@ class InstallPreCommitHookCommand extends Command
         if (!$this->settings['enablePreCommitHook']) {
             return;
         }
+
+        // Test if correct git version is installed
+        $installedProgramChecker = new InstalledProgramChecker();
+        $installedProgramChecker->requireProgram('git', self::MINIMAL_VERSION_GIT);
 
         $gitHooksDirExists = is_dir(BASE_DIR . '/.git/hooks');
         if ($this->settings['enablePreCommitHook'] && !$gitHooksDirExists) {
