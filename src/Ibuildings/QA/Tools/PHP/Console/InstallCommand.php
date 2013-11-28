@@ -6,6 +6,8 @@
 
 namespace Ibuildings\QA\Tools\PHP\Console;
 
+use Ibuildings\QA\Tools\Common\Configurator\Helper\MultiplePathHelper;
+use Ibuildings\QA\Tools\Common\PHP\Configurator\PhpExcludePathsConfigurator;
 use Ibuildings\QA\Tools\Common\Settings;
 use Ibuildings\QA\Tools\Common\Configurator\Registry;
 use Ibuildings\QA\Tools\Common\DependencyInjection\Twig;
@@ -152,12 +154,14 @@ class InstallCommand extends Command
         ) {
             $output->writeln("\n<info>Configuring PHP inspections</info>\n");
 
+            $multiplePathHelper = new MultiplePathHelper($output, $this->dialog, BASE_DIR);
+
             // Register configurators
             $configuratorRegistry = new Registry();
             $configuratorRegistry->register(new PhpLintConfigurator($output, $this->dialog, $this->settings));
             $configuratorRegistry->register(new PhpMessDetectorConfigurator($output, $this->dialog, $this->settings, $this->twig));
             $configuratorRegistry->register(new PhpCodeSnifferConfigurator($output, $this->dialog, $this->settings, $this->twig));
-            $configuratorRegistry->register(new PhpCopyPasteDetectorConfigurator($output, $this->dialog, $this->settings));
+            $configuratorRegistry->register(new PhpCopyPasteDetectorConfigurator($output, $this->dialog, $multiplePathHelper, $this->settings));
             $configuratorRegistry->register(new PhpSecurityCheckerConfigurator($output, $this->dialog, $this->settings));
             $configuratorRegistry->register(new PhpSourcePathConfigurator($output, $this->dialog, $this->settings));
             $configuratorRegistry->register(new PhpUnitConfigurator($output, $this->dialog, $this->settings, $this->twig));

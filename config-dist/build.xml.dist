@@ -188,13 +188,20 @@
     </target>
     {% endif %}
 
-    {% if enablePhpCopyPasteDetection %}<target name="phpcpd-ci" description="Find duplicate code using PHPCPD">
-    <exec executable="{{ composerBinDir }}/phpcpd" failonerror="true">
-        <arg value="--log-pmd"/>
-        <arg value="{{ buildArtifactsPath }}/logs/pmd-cpd.xml"/>
-        <arg path="{{ phpSrcPath }}"/>
-    </exec>
-</target>
+    {% if enablePhpCopyPasteDetection %}
+    <target name="phpcpd-ci" description="Find duplicate code using PHPCPD">
+        <exec executable="bin/phpcpd" failonerror="true">
+            <arg value="--log-pmd"/>
+            <arg value="tools/build/artifacts/logs/pmd-cpd.xml"/>
+{% if phpCpdExcludePatterns %}
+{% for phpCpdExcludePattern in phpCpdExcludePatterns %}
+            <arg value="--exclude"/>
+            <arg value="{{ phpCpdExcludePattern }}"/>
+{% endfor %}
+{% endif %}
+            <arg path="{{ phpSrcPath }}"/>
+        </exec>
+    </target>
     {% endif %}
 
     {% if enablePhpUnit %}<target name="phpunit" description="Run unit tests with PHPUnit" depends="get-pre-commit-changeset-php" if="git.changeset.php.notempty">
