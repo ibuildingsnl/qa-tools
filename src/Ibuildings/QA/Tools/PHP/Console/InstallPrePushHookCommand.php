@@ -6,6 +6,8 @@
 
 namespace Ibuildings\QA\Tools\PHP\Console;
 
+use Ibuildings\QA\Tools\Common\CommandExistenceChecker;
+
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Input\InputArgument;
@@ -62,19 +64,15 @@ class InstallPrePushHookCommand extends Command
     {
         $output->writeln("<info>Starting setup of the pre-push hook for the Ibuildings QA Tools<info>");
 
-        if (!$this->commandExists('ant')) {
-            $output->writeln("\n<error>You don't have Apache Ant installed. Exiting.</error>");
+        // Test if correct ant version is installed
+        $commandExistenceChecker = new CommandExistenceChecker();
+        if (!$commandExistenceChecker->commandExists('ant -version', $message, self::MINIMAL_VERSION_ANT)) {
+            $output->writeln("\n<error>{$message} -> Exiting.</error>");
             return;
         }
 
         $this->configurePrePushHook($input, $output);
         $this->writePrePushHook($input, $output);
-    }
-
-    private function commandExists($cmd)
-    {
-        $returnVal = shell_exec("command -v $cmd");
-        return (empty($returnVal) ? false : true);
     }
 
     protected function configurePrePushHook(InputInterface $input, OutputInterface $output)

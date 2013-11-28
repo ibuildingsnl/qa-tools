@@ -6,7 +6,7 @@
 
 namespace Ibuildings\QA\Tools\PHP\Console;
 
-use Ibuildings\QA\Tools\Common\InstalledProgramChecker;
+use Ibuildings\QA\Tools\Common\CommandExistenceChecker;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Input\InputArgument;
@@ -66,19 +66,15 @@ class InstallPreCommitHookCommand extends Command
     {
         $output->writeln("<info>Starting setup of the pre-commit hook for the Ibuildings QA Tools<info>");
 
-        if (!$this->commandExists('ant')) {
-            $output->writeln("\n<error>You don't have Apache Ant installed. Exiting.</error>");
+        // Test if correct ant version is installed
+        $commandExistenceChecker = new CommandExistenceChecker();
+        if (!$commandExistenceChecker->commandExists('ant -version', $message, InstallCommand::MINIMAL_VERSION_ANT)) {
+            $output->writeln("\n<error>{$message} -> Exiting.</error>");
             return;
         }
 
         $this->configurePreCommitHook($input, $output);
         $this->writePreCommitHook($input, $output);
-    }
-
-    private function commandExists($cmd)
-    {
-        $returnVal = shell_exec("command -v $cmd");
-        return (empty($returnVal) ? false : true);
     }
 
     protected function configurePreCommitHook(InputInterface $input, OutputInterface $output)
@@ -94,8 +90,11 @@ class InstallPreCommitHookCommand extends Command
         }
 
         // Test if correct git version is installed
-        $installedProgramChecker = new InstalledProgramChecker();
-        $installedProgramChecker->requireProgram('git', self::MINIMAL_VERSION_GIT);
+        $commandExistenceChecker = new CommandExistenceChecker();
+        if (!$commandExistenceChecker->commandExists('git', $message, InstallCommand::MINIMAL_VERSION_ANT)) {
+            $output->writeln("\n<error>{$message} -> Exiting.</error>");
+            return;
+        }
 
         $gitHooksDirExists = is_dir(BASE_DIR . '/.git/hooks');
         if ($this->settings['enablePreCommitHook'] && !$gitHooksDirExists) {
