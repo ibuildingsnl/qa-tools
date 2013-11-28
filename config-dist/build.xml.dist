@@ -178,8 +178,9 @@
 
     <target name="phpcs-ci"
             description="Find coding standard violations using PHP_CodeSniffer creating a log file for the continuous integration server">
-        <exec executable="{{ composerBinDir }}/phpcs" output="/dev/null" failonerror="true">
+        <exec executable="{{ composerBinDir }}/phpcs" failonerror="true">
             <arg value="--report-checkstyle={{ buildArtifactsPath }}/logs/checkstyle-php.xml"/>
+            <arg value="--report=full"/>
             <arg value="--standard=phpcs.xml"/>
             <arg value="--warning-severity=0"/> <!-- Don't show warnings-->
             <arg value="--extensions=php"/>
