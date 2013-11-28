@@ -9,6 +9,7 @@ namespace Ibuildings\QA\Tools\PHP\Console;
 use Ibuildings\QA\Tools\Common\Settings;
 use Ibuildings\QA\Tools\Common\Configurator\Registry;
 use Ibuildings\QA\Tools\Common\DependencyInjection\Twig;
+use Ibuildings\QA\Tools\Common\InstalledProgramChecker;
 use Ibuildings\QA\Tools\Common\PHP\Configurator\PhpCodeSnifferConfigurator;
 use Ibuildings\QA\Tools\Common\PHP\Configurator\PhpCopyPasteDetectorConfigurator;
 use Ibuildings\QA\Tools\Common\PHP\Configurator\PhpLintConfigurator;
@@ -34,6 +35,13 @@ use Symfony\Component\Filesystem\Filesystem;
  */
 class InstallCommand extends Command
 {
+    /**
+     * Lowest version of ant on which QA Tools is known to work
+     * This could be increased to 1.8 since that makes it possible to use variables instead of property names for if/unless constructs
+     * see: https://ant.apache.org/manual/properties.html#if+unless
+     */
+    const MINIMAL_VERSION_ANT = '1.7.1';
+
     /** @var  Settings */
     protected $settings;
 
@@ -437,6 +445,10 @@ class InstallCommand extends Command
 
     protected function writeAntBuildXml(InputInterface $input, OutputInterface $output)
     {
+        // Test if correct ant version is installed
+        $installedProgramChecker = new InstalledProgramChecker();
+        $installedProgramChecker->requireProgram('ant -version', self::MINIMAL_VERSION_ANT);
+
         if ($this->settings['enablePhpMessDetector']
             || $this->settings['enablePhpCopyPasteDetection']
             || $this->settings['enablePhpCodeSniffer']
