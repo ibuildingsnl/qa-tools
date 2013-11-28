@@ -245,7 +245,7 @@ class InstallCommand extends Command
             true
         );
 
-        if($this->settings['enableJsHint']) {
+        if ($this->settings['enableJsHint']) {
             $this->settings['enableJsTools'] = true;
         }
 
@@ -298,7 +298,7 @@ class InstallCommand extends Command
     protected function configureBehat(InputInterface $input, OutputInterface $output)
     {
         $this->settings['enableBehat'] = true;
-        $this->settings['featuresDir'] = BASE_DIR .'/features';
+        $this->settings['featuresDir'] = BASE_DIR . '/features';
     }
 
     /**
@@ -317,17 +317,17 @@ class InstallCommand extends Command
         $host = $urlParts['host'];
 
         if (strrpos($host, 'www') !== false) {
-            return $scheme.'://'.str_replace('www',$part,$host);
+            return $scheme . '://' . str_replace('www', $part, $host);
         }
 
         $hostParts = explode('.', $host);
         if (count($hostParts) > 2) {
             // change first part of the hostname
             $hostParts[0] = $part;
-            return $scheme.'://'.implode('.', $hostParts);
+            return $scheme . '://' . implode('.', $hostParts);
         } else {
             // prefix hostname
-            return $scheme.'://'.$part.'.'.implode('.', $hostParts);
+            return $scheme . '://' . $part . '.' . implode('.', $hostParts);
         }
     }
 
@@ -409,7 +409,6 @@ class InstallCommand extends Command
         fclose($fh);
     }
 
-
     /**
      * Install a Behat feature example.
      *
@@ -431,11 +430,10 @@ class InstallCommand extends Command
             $filesystem = new Filesystem();
             $filesystem->mirror(PACKAGE_BASE_DIR . '/config-dist/features', $this->settings['featuresDir']);
         } catch (Exception $e) {
-            $output->writeln("<error>Something went wrong when creating the features directory".$e->getMessage()."</error>");
+            $output->writeln("<error>Something went wrong when creating the features directory" . $e->getMessage() . "</error>");
             return;
         }
     }
-
 
     protected function writeAntBuildXml(InputInterface $input, OutputInterface $output)
     {
