@@ -5,7 +5,7 @@
         By default it is less stringent about long lines than other coding standards
     </description>
 
-{% if phpCsExcludePattern %}
+{% if phpCsExcludePatterns %}
 {% for phpCsExcludePattern in phpCsExcludePatterns %}
     <exclude-pattern>{{ phpCsExcludePattern }}</exclude-pattern>
 {% endfor %}
