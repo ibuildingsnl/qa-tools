@@ -27,8 +27,8 @@ output of this script as a base and configure it manually.
  - Behat Framework setup
 
 # Requirements
-To run the tools, you need to have Apache Ant installed on your system.
-To use the pre-commit hook you need to have at least git 1.7.8 installed
+To run the tools, you need to have at leaste Apache Ant 1.7.1 installed.
+To use the pre-commit hook you need to have at least git 1.7.8 installed.
 If you want to run JSHint, you also need Node.js installed.
 
 # Installation
