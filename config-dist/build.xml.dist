@@ -6,35 +6,49 @@
     <target name="get-pre-commit-changeset-php" unless="git.changeset.php.executed">
         <property name="git.changeset.php.executed" value="true" />
 
-        <!-- Get changeset separated by comma -->
-        <exec executable="{{ composerBinDir }}/qa-tools" outputProperty="git.pre-commit.changeset.php.commasep">
-            <arg line="changeset:pre-commit --filter-path=src --filter-ext=php --separator=','"/>
+        <!-- Get changeset separated by newline -->
+        <exec executable="{{ composerBinDir }}/qa-tools" outputProperty="git.pre-commit.changeset.php.newlinesep">
+            <arg line="changeset:pre-commit --filter-path=src --filter-ext=php"/>
         </exec>
-        <property name="git.changeset.php.commasep" value="${git.pre-commit.changeset.php.commasep}" />
+        <property name="git.changeset.php.newlinesep" value="${git.pre-commit.changeset.php.newlinesep}" />
 
         <!-- Check if changeset contains values -->
         <condition property="git.changeset.php.notempty">
             <not>
-                <equals arg1="${git.changeset.php.commasep}" arg2="" trim="true" />
+                <equals arg1="${git.changeset.php.newlinesep}" arg2="" trim="true" />
             </not>
         </condition>
     </target>
 
-    <!-- Convert comma separated to space separated -->
-    <target name="get-pre-commit-changeset-php-spacesep" depends="get-pre-commit-changeset-php" if="${git.changeset.php.notempty}">
+    <!-- Convert newline separated to space separated -->
+    <target name="get-pre-commit-changeset-php-spacesep" depends="get-pre-commit-changeset-php" if="git.changeset.php.notempty">
         <loadresource property="git.changeset.php.spacesep">
-            <propertyresource name="git.changeset.php.commasep"/>
+            <propertyresource name="git.changeset.php.newlinesep"/>
             <filterchain>
                 <tokenfilter>
                     <filetokenizer/>
-                    <replacestring from="," to=" "/>
+                    <replaceregex pattern="\n" replace=" "/>
                 </tokenfilter>
             </filterchain>
         </loadresource>
     </target>
 
+    <!-- Convert newline separated to comma separated -->
+    <target name="get-pre-commit-changeset-php-commasep" depends="get-pre-commit-changeset-php" if="git.changeset.php.notempty">
+        <loadresource property="git.changeset.php.commasep">
+            <propertyresource name="git.changeset.php.newlinesep"/>
+            <filterchain>
+                <tokenfilter>
+                    <filetokenizer/>
+                    <replaceregex pattern="\n" replace=","/>
+                </tokenfilter>
+            </filterchain>
+        </loadresource>
+    </target>
+
+
     <target name="echo-php-changeset" if="git.changeset.php.notempty">
-        <echo message="PHP Changeset: ${git.changeset.php.commasep}"/>
+        <echo message="PHP Changeset: ${git.changeset.php.newlinesep}"/>
     </target>
 
     {% if enableJsTools %}
@@ -101,7 +115,7 @@
     </target>
 
     {% if enablePhpLint %}<!-- Since Ant cannot loop over csv values as a workaround, pass the changeset as includes so phplint will only be applied to changed files -->
-    <target name="php-lint" description="Perform syntax check of sourcecode files" depends="get-pre-commit-changeset-php" if="git.changeset.php.notempty">
+    <target name="php-lint" description="Perform syntax check of sourcecode files" depends="get-pre-commit-changeset-php-commasep" if="git.changeset.php.notempty">
         <apply executable="php" failonerror="true">
             <arg value="-l" />
             <fileset dir="{{ phpSrcPath }}" includes="${git.changeset.php.commasep}" />
@@ -146,7 +160,7 @@
 </target>
     {% endif %}
 
-    {% if enablePhpMessDetector %}<target name="phpmd" depends="get-pre-commit-changeset-php" if="git.changeset.php.notempty"
+    {% if enablePhpMessDetector %}<target name="phpmd" depends="get-pre-commit-changeset-php-commasep" if="git.changeset.php.notempty"
                                           description="Perform project mess detection using PHPMD and print human readable output. Intended for usage on the command line before committing.">
     <exec executable="{{ composerBinDir }}/phpmd" failonerror="true">
         <arg value="${git.changeset.php.commasep}"/>
