@@ -101,7 +101,7 @@
     </target>
 
     {% if enablePhpLint %}<!-- Since Ant cannot loop over csv values as a workaround, pass the changeset as includes so phplint will only be applied to changed files -->
-    <target name="php-lint" description="Perform syntax check of sourcecode files" depends="get-pre-commit-changeset-php">
+    <target name="php-lint" description="Perform syntax check of sourcecode files" depends="get-pre-commit-changeset-php" if="git.changeset.php.notempty">
         <apply executable="php" failonerror="true">
             <arg value="-l" />
             <fileset dir="{{ phpSrcPath }}" includes="${git.changeset.php.commasep}" />
