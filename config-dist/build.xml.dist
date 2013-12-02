@@ -18,8 +18,10 @@
                 <equals arg1="${git.changeset.php.commasep}" arg2="" trim="true" />
             </not>
         </condition>
+    </target>
 
-        <!-- Convert comma separated to space separated -->
+    <!-- Convert comma separated to space separated -->
+    <target name="get-pre-commit-changeset-php-spacesep" depends="get-pre-commit-changeset-php" if="${git.changeset.php.notempty}">
         <loadresource property="git.changeset.php.spacesep">
             <propertyresource name="git.changeset.php.commasep"/>
             <filterchain>
@@ -32,7 +34,7 @@
     </target>
 
     <target name="echo-php-changeset" if="git.changeset.php.notempty">
-        <echo message="PHP Changeset: ${git.changeset.php.spacesep}"/>
+        <echo message="PHP Changeset: ${git.changeset.php.commasep}"/>
     </target>
 
     {% if enableJsTools %}
@@ -165,7 +167,7 @@
     </target>
     {% endif %}
 
-    {% if enablePhpCodeSniffer %}<target name="phpcs" depends="get-pre-commit-changeset-php" if="git.changeset.php.notempty"
+    {% if enablePhpCodeSniffer %}<target name="phpcs" depends="get-pre-commit-changeset-php-spacesep" if="git.changeset.php.notempty"
                                          description="Find coding standard violations using PHP_CodeSniffer and print human readable output. Intended for usage on the command line before committing.">
     <exec executable="{{ composerBinDir }}/phpcs" failonerror="true">
         <arg value="--standard=phpcs.xml"/>
