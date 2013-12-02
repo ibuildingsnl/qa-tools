@@ -19,7 +19,7 @@
             </not>
         </condition>
 
-        <!-- Convert space separated to space separated -->
+        <!-- Convert comma separated to space separated -->
         <loadresource property="git.changeset.php.spacesep">
             <propertyresource name="git.changeset.php.commasep"/>
             <filterchain>
