@@ -7,7 +7,7 @@
         <property name="git.changeset.php.executed" value="true" />
 
         <!-- Get changeset separated by comma -->
-        <exec executable="${basedir}/vendor/bin/qa-tools" outputProperty="git.pre-commit.changeset.php.commasep">
+        <exec executable="{{ composerBinDir }}/qa-tools" outputProperty="git.pre-commit.changeset.php.commasep">
             <arg line="changeset:pre-commit --filter-path=src --filter-ext=php --separator=','"/>
         </exec>
         <property name="git.changeset.php.commasep" value="${git.pre-commit.changeset.php.commasep}" />
@@ -226,7 +226,7 @@
     <!-- Running Behat on jenkins -->
     <target name="behat-ci">
         <exec executable="php" failonerror="false">
-            <arg line="./vendor/bin/behat --config ./behat.yml --profile ci ${basedir}/features --tags=~skip" />
+            <arg line="{{ composerBinDir }}/behat --config ./behat.yml --profile ci ${basedir}/features --tags=~skip" />
         </exec>
     </target>
 
@@ -234,7 +234,7 @@
 
     <target name="behat" >
         <exec executable="php" failonerror="true">
-            <arg line="./vendor/bin/behat --config ./behat.yml --ansi --profile dev ${basedir}/features --tags=~skip" />
+            <arg line="{{ composerBinDir }}/behat --config ./behat.yml --ansi --profile dev ${basedir}/features --tags=~skip" />
         </exec>
     </target>
 
