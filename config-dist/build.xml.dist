@@ -118,7 +118,7 @@
     <target name="php-lint" description="Perform syntax check of sourcecode files" depends="get-pre-commit-changeset-php-commasep" if="git.changeset.php.notempty">
         <apply executable="php" failonerror="true">
             <arg value="-l" />
-            <fileset dir="{{ phpSrcPath }}" includes="${git.changeset.php.commasep}" />
+            <fileset dir="." includes="${git.changeset.php.commasep}" />
         </apply>
     </target>
 
