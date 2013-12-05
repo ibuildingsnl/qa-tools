@@ -58,7 +58,7 @@ class PhpUnitConfigurator
 
         $this->settings['enablePhpUnit'] = false;
         $this->settings['customPhpUnitXml'] = false;
-        $this->settings['phpUnitConfigPath'] = '${basedir}';
+        $this->settings['phpUnitConfigPath'] = '';
     }
 
     public function configure()

@@ -465,6 +465,20 @@ class InstallCommand extends Command
             );
             fclose($fh);
 
+            $output->writeln("\n<info>Ant build file written</info>");
+
+            $fh = fopen(BASE_DIR . '/build-pre-commit.xml', 'w');
+            fwrite(
+                $fh,
+                $this->twig->render(
+                    'build-pre-commit.xml.dist',
+                    $this->settings->toArray()
+                )
+            );
+            fclose($fh);
+
+            $output->writeln("\n<info>Ant pre commit build file written</info>");
+
             $this->addToGitIgnore('build');
             $this->addToGitIgnore('cache.properties');
 
