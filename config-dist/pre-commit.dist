@@ -1,34 +1,29 @@
 #! /bin/sh
 
-# If we are committing a merge, we assume a clean working tree.
-# We do not use the stashing logic: it was causing problems in the case of
-# committing conflict merges
-doStash=1;
-if [ -e ".git/MERGE_HEAD" ]
+DIFF=`git diff --cached --name-only`
+
+# If the diff is empty, we do nothing
+if [ -z $DIFF ]
 then
-    echo "\n\033[01;32mCommitting a merge: assuming a clean working tree and not stashing changes...\033[00m"
-    doStash=0;
-    doStashPop=0;
+    echo "\n\033[01;32mNothing to commit; not running qa-tools\033[00m"
+    echo "\nIf you want to commit anyway, use --no-verify"
+    exit 0;
 fi
 
-# Stash any changes to the working tree that are not going to be committed.
-if [ 1 -eq $doStash ]
-then
-    echo "\n\033[01;32mStashing any changes to the working tree that are not going to be committed...\033[00m"
-    stash_output=`git stash save -u --keep-index 'pre-commit stash by QA Tools'`
-    doStashPop=1;
+TIMESTAMP=`date +%s`
+MD5=`md5 -q -s $PWD/$TIMESTAMP`
+TMP_DIR=/tmp/qa-tools/$MD5;
 
-    needle='No local changes to save'
-    if [[ "$stash_output" == *"$needle"* ]]
-    then
-      echo "\n\033[01;32mNothing to stash\033[00m"
-      doStashPop=0;
-    fi
-fi
+echo "\n\033[01;32mCreating temporary commit state at $TMP_DIR\033[00m"
+# Checkout a copy of the current index into MIRROR
+`git checkout-index --prefix=$TMP_DIR/ -af`
+
+# Remove files from MIRROR which are no longer present in the index
+`git diff-index --cached --name-only --diff-filter=D -z HEAD | (cd $TMP_DIR && xargs -0 rm -f --)`
 
 # Run the dev build
 echo "\n\033[01;32mStarting build...\033[00m\n"
-ant -e -logger org.apache.tools.ant.NoBannerLogger pre-commit
+ant -e -f build-pre-commit.xml -logger org.apache.tools.ant.NoBannerLogger -Dtmp_dir=$TMP_DIR pre-commit
 exitCode=$?
 
 # If exit code is not 0 then there was a failure
@@ -40,17 +35,7 @@ then
     exitCode=1
 fi
 
-# only do a stash pop if we actually stashed anything
-if [ 1 -eq $doStashPop ]
-then
-    # Because we unstash with --index, to also restore the index, we can and
-    # have to reset the working tree and the index to the previous HEAD before
-    # applying the stash
-    git reset --hard --quiet
-
-    # Unstash changes to the working tree that we had stashed
-    echo "\n\033[01;32mUnstashing changes to the working tree that we had stashed...\033[00m"
-    git stash pop --quiet --index --whitespace=nowarn
-fi
+# Removing $TMP_DIR
+`rm -rf $TMP_DIR`
 
 exit $exitCode
