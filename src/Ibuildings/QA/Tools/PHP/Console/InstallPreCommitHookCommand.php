@@ -89,7 +89,15 @@ class InstallPreCommitHookCommand extends Command
             return;
         }
 
-        // Test if correct git version is installed
+        // Test if correct ant version is installed
+        $commandExistenceChecker = new CommandExistenceChecker();
+        if (!$commandExistenceChecker->commandExists(array('md5', 'md5sum'), $message, null, $foundCommand)) {
+            $output->writeln("\n<error>{$message} -> Exiting.</error>");
+            return;
+        }
+        $this->settings['md5Command'] = $foundCommand;
+
+        // Test if correct and version is installed
         $commandExistenceChecker = new CommandExistenceChecker();
         if (!$commandExistenceChecker->commandExists('git', $message, InstallCommand::MINIMAL_VERSION_ANT)) {
             $output->writeln("\n<error>{$message} -> Exiting.</error>");

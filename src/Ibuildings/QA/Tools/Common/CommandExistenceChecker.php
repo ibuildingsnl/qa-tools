@@ -14,11 +14,12 @@ class CommandExistenceChecker
      *
      * @param string $name
      * @param string|null $minimalVersion
+     * @param string $foundCommand
      * @throws \Exception if command is not installed
      */
-    public function requireCommand($name, $minimalVersion = null)
+    public function requireCommand($name, $minimalVersion = null, &$foundCommand = null)
     {
-        $result = $this->commandExists($name, $message, $minimalVersion);
+        $result = $this->commandExists($name, $message, $minimalVersion, $foundCommand);
         if ($result !== true) {
             throw new \Exception($message);
         }
@@ -27,12 +28,38 @@ class CommandExistenceChecker
     /**
      * Test if a given command is installed and optionally if the version is correct.
      *
-     * @param string $name, may include a parameter to get the version for commands that do not use --version
+     * When a command is not found or it's too old a warning message will be set. When multiple commands are passed and none
+     * is found warnings for each commmand will be returned.
+     *
+     * @param string|array $name, may include a parameter to get the version for commands that do not use --version. Multiple options can be tested by passing an array
      * @param string message return Message by reference
      * @param string|null $minimalVersion
+     * @param string|null $foundCommand
      * @return bool
+     * @todo refactor this to an object to which you can pass the optional version parameter and get the message and found command
+     *  instead of using optional parameters and parameters by reference
      */
-    public function commandExists($name, &$message, $minimalVersion = null)
+    public function commandExists($name, &$message, $minimalVersion = null, &$foundCommand = null)
+    {
+        if (!is_array($name)) {
+            $name = array($name);
+        }
+
+        $messages = array();
+        foreach($name as $option) {
+            $optionMessage = '';
+            if ($this->testIfCommandExists($option, $optionMessage, $minimalVersion)) {
+                $foundCommand = $option;
+                return true;
+            }
+            $messages[] = $optionMessage;
+        }
+
+        $message = implode(',', $messages);
+        return false;
+    }
+
+    private function testIfCommandExists($name, &$message, $minimalVersion = null)
     {
         $versionParameter = '--version';
         $nameParts = explode(' ', $name);
