@@ -67,5 +67,39 @@ abstract class AbstractCommand extends Command
         $this->twig->addFilter($filter);
 
         $this->settings['dirname'] = basename(BASE_DIR);
+        $this->settings['baseDir'] = BASE_DIR;
+
+        $this->parseComposerConfig();
+    }
+
+    /**
+     * @throws \Exception
+     * @return array
+     */
+    protected function parseComposerConfig()
+    {
+        if (!file_exists(BASE_DIR . DIRECTORY_SEPARATOR . 'composer.json')) {
+            throw new \Exception("Could not find composer.json in project root dir '" . BASE_DIR . "'");
+        }
+
+        $file = file_get_contents(BASE_DIR . DIRECTORY_SEPARATOR . 'composer.json');
+
+        $parsedFile = json_decode($file, true);
+
+        if ($parsedFile === null) {
+            throw new \Exception("Could not read composer.json. Is it valid JSON?");
+        }
+
+        $this->composerConfig = array();
+
+        if (array_key_exists('config', $parsedFile)) {
+            $this->composerConfig = $parsedFile['config'];
+        }
+
+        if (array_key_exists('bin-dir', $this->composerConfig)) {
+            $this->settings['composerBinDir'] = $this->composerConfig['bin-dir'];
+        } else {
+            $this->settings['composerBinDir'] = 'vendor/bin';
+        }
     }
 }

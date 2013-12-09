@@ -9,6 +9,7 @@ namespace Ibuildings\QA\Tools\Common\Console;
 use Ibuildings\QA\Tools\Common\CommandExistenceChecker;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -31,8 +32,15 @@ class RunCommand extends AbstractCommand
             ->addArgument(
                 'target',
                 InputArgument::OPTIONAL,
-                'The path to filter the changeset by. This option can be set multiple times',
+                'The tool to run',
                 static::DEFAULT_BUILD_TARGET
+            )
+            ->addOption(
+                'working-dir',
+                'w',
+                InputOption::VALUE_OPTIONAL,
+                'The working directory context in which to execute the individual tools',
+                ''
             );
     }
 
@@ -49,6 +57,16 @@ class RunCommand extends AbstractCommand
 
         $target = $input->getArgument('target');
 
-        passthru("ant -e -f build-pre-commit.xml -logger org.apache.tools.ant.NoBannerLogger $target");
+        $dirOption = '';
+        if ($input->getOption('working-dir')) {
+            $dirOption = '-Dworking-dir=' . $input->getOption('working-dir');
+        }
+
+        passthru(
+            "ant -e -f build-pre-commit.xml -logger org.apache.tools.ant.NoBannerLogger $target $dirOption",
+            $exitCode
+        );
+
+        exit($exitCode);
     }
 }

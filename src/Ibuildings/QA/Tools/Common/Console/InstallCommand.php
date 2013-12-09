@@ -53,34 +53,7 @@ class InstallCommand extends AbstractCommand
     {
         parent::initialize($input, $output);
 
-        $this->parseComposerConfig();
-
         $this->enableDefaultSettings();
-    }
-
-    /**
-     * @throws \Exception
-     * @return array
-     */
-    protected function parseComposerConfig()
-    {
-        if (!file_exists(BASE_DIR . DIRECTORY_SEPARATOR . 'composer.json')) {
-            throw new \Exception("Could not find composer.json in project root dir '" . BASE_DIR . "'");
-        }
-
-        $file = file_get_contents(BASE_DIR . DIRECTORY_SEPARATOR . 'composer.json');
-
-        $parsedFile = json_decode($file, true);
-
-        if ($parsedFile === null) {
-            throw new \Exception("Could not read composer.json. Is it valid JSON?");
-        }
-
-        $this->composerConfig = array();
-
-        if (array_key_exists('config', $parsedFile)) {
-            $this->composerConfig = $parsedFile['config'];
-        }
     }
 
     private function enableDefaultSettings()
@@ -88,16 +61,6 @@ class InstallCommand extends AbstractCommand
         $this->settings['buildArtifactsPath'] = 'build/artifacts';
 
         $this->settings['enableJsHint'] = false;
-
-        if (!is_array($this->composerConfig)) {
-            throw new \Exception('Could not determine Composer config. Aborting...');
-        }
-
-        if (array_key_exists('bin-dir', $this->composerConfig)) {
-            $this->settings['composerBinDir'] = $this->composerConfig['bin-dir'];
-        } else {
-            $this->settings['composerBinDir'] = 'vendor/bin';
-        }
 
         return $this;
     }

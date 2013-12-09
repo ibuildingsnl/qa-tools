@@ -96,8 +96,8 @@
 {% endif %}
 
     <target name="set-test-tree-location">
-        <condition value="${tmp_dir}" else="${basedir}" property="test-tree-location">
-            <isset property="tmp_dir"/>
+        <condition value="${working-dir}" else="${basedir}" property="test-tree-location">
+            <isset property="working-dir"/>
         </condition>
     </target>
 
