@@ -204,16 +204,16 @@ class InstallCommand extends Command
     protected function configureProjectName(InputInterface $input, OutputInterface $output)
     {
         $dirName = basename(BASE_DIR);
-        $guessedName = ucwords(str_replace(array('-', '_'), ' ', $dirName));
+        $guessedName = filter_var(ucwords(str_replace(array('-', '_'), ' ', $dirName)), FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW|FILTER_FLAG_STRIP_LOW);
 
         $this->settings['projectName'] = $this->dialog->askAndValidate(
             $output,
             "What is the name of the project? [$guessedName] ",
             function ($data) {
-                if (preg_match('/^[\w\s]+$/', $data)) {
+                if (preg_match('/^[\w\.\s]+$/', $data)) {
                     return $data;
                 }
-                throw new \Exception("The project name may only contain 'a-zA-Z0-9_ '");
+                throw new \Exception("The project name may only contain 'a-zA-Z0-9_. '");
             },
             false,
             $guessedName
