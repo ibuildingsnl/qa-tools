@@ -173,7 +173,7 @@
         PHPUnit always runs, regardless of there being changes in PHP src.
         This is because other changes, e.g. config, can also break tests
     -->
-    <target name="phpunit">
+    <target name="phpunit" depends="set-test-tree-location">
         <exec outputproperty="phpunit-output-raw" resultproperty="phpunit-exitcode"
               executable="${test-tree-location}/{{ composerBinDir }}/phpunit" failonerror="false">
             <arg line="--configuration=${test-tree-location}{{ phpUnitConfigPath }} --stop-on-failure"/>
@@ -190,7 +190,7 @@
     </target>
 {% endif %}
 
-    {% if enableBehat %}<target name="behat">
+    {% if enableBehat %}<target name="behat" depends="set-test-tree-location">
         <exec executable="php" failonerror="true">
             <arg line="${test-tree-location}/{{ composerBinDir }}/behat --config ./behat.yml --ansi --profile dev ${test-tree-location}/features --tags=~skip"/>
         </exec>
