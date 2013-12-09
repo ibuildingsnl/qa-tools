@@ -1,6 +1,6 @@
 <?php
 
-namespace Ibuildings\QA\Tools\Common\PHP\Configurator;
+namespace Ibuildings\QA\Tools\PHP\Configurator;
 
 use Ibuildings\QA\Tools\Common\Configurator\ConfiguratorInterface;
 use Ibuildings\QA\Tools\Common\Settings;
@@ -9,12 +9,12 @@ use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Can configure setting for PHPLint
+ * Can configure setting for PHP Security Checker
  *
- * Class PhpLintConfigurator
- * @package Ibuildings\QA\Tools\Common\PHP\Configurator
+ * Class PhpSecurityCheckerConfigurator
+ * @package Ibuildings\QA\Tools\PHP\Configurator
  */
-class PhpLintConfigurator
+class PhpSecurityCheckerConfigurator
     implements ConfiguratorInterface
 {
     /**
@@ -47,17 +47,14 @@ class PhpLintConfigurator
         $this->dialog = $dialog;
         $this->settings = $settings;
 
-        $this->settings['enablePhpLint'] = false;
+        $this->settings['enablePhpSecurityChecker'] = false;
     }
 
-    /**
-     *
-     */
     public function configure()
     {
-        $this->settings['enablePhpLint'] = $this->dialog->askConfirmation(
+        $this->settings['enablePhpSecurityChecker'] = $this->dialog->askConfirmation(
             $this->output,
-            "Do you want to enable PHP Lint? [Y/n] ",
+            "Do you want to enable the Sensiolabs Security Checker? [Y/n] ",
             true
         );
     }

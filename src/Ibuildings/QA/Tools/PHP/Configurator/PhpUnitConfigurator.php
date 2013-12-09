@@ -1,6 +1,6 @@
 <?php
 
-namespace Ibuildings\QA\Tools\Common\PHP\Configurator;
+namespace Ibuildings\QA\Tools\PHP\Configurator;
 
 use Ibuildings\QA\Tools\Common\Configurator\ConfiguratorInterface;
 use Ibuildings\QA\Tools\Common\DependencyInjection\Twig;
@@ -13,7 +13,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  * Can configure settings for PHPUnit
  *
  * Class PhpUnitConfigurator
- * @package Ibuildings\QA\Tools\Common\PHP\Configurator
+ * @package Ibuildings\QA\Tools\PHP\Configurator
  */
 class PhpUnitConfigurator
     implements ConfiguratorInterface

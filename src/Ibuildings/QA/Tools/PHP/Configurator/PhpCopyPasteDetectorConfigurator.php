@@ -1,6 +1,6 @@
 <?php
 
-namespace Ibuildings\QA\Tools\Common\PHP\Configurator;
+namespace Ibuildings\QA\Tools\PHP\Configurator;
 
 use Ibuildings\QA\Tools\Common\Configurator\ConfiguratorInterface;
 use Ibuildings\QA\Tools\Common\Settings;
@@ -13,7 +13,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  * Can configure setting for PHP Copy Paste Detector
  *
  * Class PhpCopyPasteDetectorConfigurator
- * @package Ibuildings\QA\Tools\Common\PHP\Configurator
+ * @package Ibuildings\QA\Tools\PHP\Configurator
  */
 class PhpCopyPasteDetectorConfigurator
     implements ConfiguratorInterface

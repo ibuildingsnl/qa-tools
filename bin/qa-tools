@@ -8,9 +8,11 @@ define('BASE_DIR', realpath(__DIR__ . '/../../../../'));
 define('PACKAGE_BASE_DIR', realpath(__DIR__ . '/../'));
 require_once BASE_DIR . '/vendor/autoload.php';
 
-$application = new \Symfony\Component\Console\Application('Ibuildings QA Tools Setup', '1.0.0-dev');
-$application->add(new \Ibuildings\QA\Tools\PHP\Console\InstallCommand());
-$application->add(new \Ibuildings\QA\Tools\PHP\Console\InstallPreCommitHookCommand());
-//$application->add(new \Ibuildings\QA\Tools\PHP\Console\InstallPrePushHookCommand());
-$application->add(new \Ibuildings\QA\Tools\PHP\Console\ChangeSetPreCommitCommand());
+$application = new \Symfony\Component\Console\Application('Ibuildings QA Tools Setup', '1.1.6');
+
+$application->add(new \Ibuildings\QA\Tools\Common\Console\InstallCommand());
+$application->add(new \Ibuildings\QA\Tools\Common\Console\InstallPreCommitHookCommand());
+$application->add(new \Ibuildings\QA\Tools\Common\Console\ChangeSetPreCommitCommand());
+$application->add(new \Ibuildings\QA\Tools\Common\Console\RunCommand());
+
 $application->run();

@@ -4,21 +4,21 @@
  * @copyright 2013 Matthijs van den Bos
  */
 
-namespace Ibuildings\QA\Tools\PHP\Console;
+namespace Ibuildings\QA\Tools\Common\Console;
 
 use Ibuildings\QA\Tools\Common\Configurator\Helper\MultiplePathHelper;
-use Ibuildings\QA\Tools\Common\PHP\Configurator\PhpExcludePathsConfigurator;
+use Ibuildings\QA\Tools\PHP\Configurator\PhpExcludePathsConfigurator;
 use Ibuildings\QA\Tools\Common\Settings;
 use Ibuildings\QA\Tools\Common\Configurator\Registry;
 use Ibuildings\QA\Tools\Common\DependencyInjection\Twig;
 use Ibuildings\QA\Tools\Common\CommandExistenceChecker;
-use Ibuildings\QA\Tools\Common\PHP\Configurator\PhpCodeSnifferConfigurator;
-use Ibuildings\QA\Tools\Common\PHP\Configurator\PhpCopyPasteDetectorConfigurator;
-use Ibuildings\QA\Tools\Common\PHP\Configurator\PhpLintConfigurator;
-use Ibuildings\QA\Tools\Common\PHP\Configurator\PhpMessDetectorConfigurator;
-use Ibuildings\QA\Tools\Common\PHP\Configurator\PhpSecurityCheckerConfigurator;
-use Ibuildings\QA\Tools\Common\PHP\Configurator\PhpSourcePathConfigurator;
-use Ibuildings\QA\Tools\Common\PHP\Configurator\PhpUnitConfigurator;
+use Ibuildings\QA\Tools\PHP\Configurator\PhpCodeSnifferConfigurator;
+use Ibuildings\QA\Tools\PHP\Configurator\PhpCopyPasteDetectorConfigurator;
+use Ibuildings\QA\Tools\PHP\Configurator\PhpLintConfigurator;
+use Ibuildings\QA\Tools\PHP\Configurator\PhpMessDetectorConfigurator;
+use Ibuildings\QA\Tools\PHP\Configurator\PhpSecurityCheckerConfigurator;
+use Ibuildings\QA\Tools\PHP\Configurator\PhpSourcePathConfigurator;
+use Ibuildings\QA\Tools\PHP\Configurator\PhpUnitConfigurator;
 
 use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\Console\Command\Command;
@@ -31,28 +31,13 @@ use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * Class InstallCommand
- * @package Ibuildings\QA\Tools\PHP\Console
+ *
+ * @package Ibuildings\QA\Tools\Common\Console
  *
  * @SuppressWarnings(PHPMD)
  */
-class InstallCommand extends Command
+class InstallCommand extends AbstractCommand
 {
-    /**
-     * Lowest version of ant on which QA Tools is known to work
-     * This could be increased to 1.8 since that makes it possible to use variables instead of property names for if/unless constructs
-     * see: https://ant.apache.org/manual/properties.html#if+unless
-     */
-    const MINIMAL_VERSION_ANT = '1.7.1';
-
-    /** @var  Settings */
-    protected $settings;
-
-    /** @var DialogHelper */
-    protected $dialog;
-
-    /** @var \Twig_Environment */
-    protected $twig;
-
     /** @var  array */
     protected $composerConfig;
 
@@ -66,41 +51,9 @@ class InstallCommand extends Command
 
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
-        $this->settings = new Settings();
-
-        $this->dialog = $this->getHelperSet()->get('dialog');
-
-        $twigBuilder = new Twig();
-        $this->twig = $twigBuilder->create();
-
-        $this->parseComposerConfig();
+        parent::initialize($input, $output);
 
         $this->enableDefaultSettings();
-    }
-
-    /**
-     * @throws \Exception
-     * @return array
-     */
-    protected function parseComposerConfig()
-    {
-        if (!file_exists(BASE_DIR . DIRECTORY_SEPARATOR . 'composer.json')) {
-            throw new \Exception("Could not find composer.json in project root dir '" . BASE_DIR . "'");
-        }
-
-        $file = file_get_contents(BASE_DIR . DIRECTORY_SEPARATOR . 'composer.json');
-
-        $parsedFile = json_decode($file, true);
-
-        if ($parsedFile === null) {
-            throw new \Exception("Could not read composer.json. Is it valid JSON?");
-        }
-
-        $this->composerConfig = array();
-
-        if (array_key_exists('config', $parsedFile)) {
-            $this->composerConfig = $parsedFile['config'];
-        }
     }
 
     private function enableDefaultSettings()
@@ -108,16 +61,6 @@ class InstallCommand extends Command
         $this->settings['buildArtifactsPath'] = 'build/artifacts';
 
         $this->settings['enableJsHint'] = false;
-
-        if (!is_array($this->composerConfig)) {
-            throw new \Exception('Could not determine Composer config. Aborting...');
-        }
-
-        if (array_key_exists('bin-dir', $this->composerConfig)) {
-            $this->settings['composerBinDir'] = $this->composerConfig['bin-dir'];
-        } else {
-            $this->settings['composerBinDir'] = 'vendor/bin';
-        }
 
         return $this;
     }
@@ -130,6 +73,7 @@ class InstallCommand extends Command
         $commandExistenceChecker = new CommandExistenceChecker();
         if (!$commandExistenceChecker->commandExists('ant -version', $message, InstallCommand::MINIMAL_VERSION_ANT)) {
             $output->writeln("\n<error>{$message} -> Exiting.</error>");
+
             return;
         }
 
@@ -159,12 +103,22 @@ class InstallCommand extends Command
             // Register configurators
             $configuratorRegistry = new Registry();
             $configuratorRegistry->register(new PhpLintConfigurator($output, $this->dialog, $this->settings));
-            $configuratorRegistry->register(new PhpMessDetectorConfigurator($output, $this->dialog, $this->settings, $this->twig));
-            $configuratorRegistry->register(new PhpCodeSnifferConfigurator($output, $this->dialog, $multiplePathHelper, $this->settings, $this->twig));
-            $configuratorRegistry->register(new PhpCopyPasteDetectorConfigurator($output, $this->dialog, $multiplePathHelper, $this->settings));
-            $configuratorRegistry->register(new PhpSecurityCheckerConfigurator($output, $this->dialog, $this->settings));
+            $configuratorRegistry->register(
+                new PhpMessDetectorConfigurator($output, $this->dialog, $this->settings, $this->twig)
+            );
+            $configuratorRegistry->register(
+                new PhpCodeSnifferConfigurator($output, $this->dialog, $multiplePathHelper, $this->settings, $this->twig)
+            );
+            $configuratorRegistry->register(
+                new PhpCopyPasteDetectorConfigurator($output, $this->dialog, $multiplePathHelper, $this->settings)
+            );
+            $configuratorRegistry->register(
+                new PhpSecurityCheckerConfigurator($output, $this->dialog, $this->settings)
+            );
             $configuratorRegistry->register(new PhpSourcePathConfigurator($output, $this->dialog, $this->settings));
-            $configuratorRegistry->register(new PhpUnitConfigurator($output, $this->dialog, $this->settings, $this->twig));
+            $configuratorRegistry->register(
+                new PhpUnitConfigurator($output, $this->dialog, $this->settings, $this->twig)
+            );
             $configuratorRegistry->executeConfigurators();
         }
 
@@ -204,7 +158,11 @@ class InstallCommand extends Command
     protected function configureProjectName(InputInterface $input, OutputInterface $output)
     {
         $dirName = basename(BASE_DIR);
-        $guessedName = filter_var(ucwords(str_replace(array('-', '_'), ' ', $dirName)), FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW|FILTER_FLAG_STRIP_LOW);
+        $guessedName = filter_var(
+            ucwords(str_replace(array('-', '_'), ' ', $dirName)),
+            FILTER_SANITIZE_STRING,
+            FILTER_FLAG_STRIP_LOW | FILTER_FLAG_STRIP_LOW
+        );
 
         $this->settings['projectName'] = $this->dialog->askAndValidate(
             $output,
@@ -238,6 +196,7 @@ class InstallCommand extends Command
                     }
                     throw new \Exception("Not using path '" . $data . " ', trying again...");
                 }
+
                 return $data;
             },
             false,
@@ -259,9 +218,10 @@ class InstallCommand extends Command
 
         // Test if node is installed
         $commandExistenceChecker = new CommandExistenceChecker();
-        if (!$commandExistenceChecker->commandExists('node', $message   )) {
+        if (!$commandExistenceChecker->commandExists('node', $message)) {
             $output->writeln("\n<error>{$message} -> Not enabling JSHint.</error>");
             $this->settings['enableJsHint'] = false;
+
             return;
         }
     }
@@ -310,36 +270,6 @@ class InstallCommand extends Command
     {
         $this->settings['enableBehat'] = true;
         $this->settings['featuresDir'] = BASE_DIR . '/features';
-    }
-
-    /**
-     * Suggest a new domain based on the 'main url' and a subdomain string.
-     *
-     * @param string $url the main domain
-     * @param string $part the subdomain string
-     *
-     * @return string
-     */
-    protected function suggestDomain($url, $part)
-    {
-        $urlParts = parse_url($url);
-
-        $scheme = $urlParts['scheme'];
-        $host = $urlParts['host'];
-
-        if (strrpos($host, 'www') !== false) {
-            return $scheme . '://' . str_replace('www', $part, $host);
-        }
-
-        $hostParts = explode('.', $host);
-        if (count($hostParts) > 2) {
-            // change first part of the hostname
-            $hostParts[0] = $part;
-            return $scheme . '://' . implode('.', $hostParts);
-        } else {
-            // prefix hostname
-            return $scheme . '://' . $part . '.' . implode('.', $hostParts);
-        }
     }
 
     /**
@@ -421,6 +351,37 @@ class InstallCommand extends Command
     }
 
     /**
+     * Suggest a new domain based on the 'main url' and a subdomain string.
+     *
+     * @param string $url the main domain
+     * @param string $part the subdomain string
+     *
+     * @return string
+     */
+    protected function suggestDomain($url, $part)
+    {
+        $urlParts = parse_url($url);
+
+        $scheme = $urlParts['scheme'];
+        $host = $urlParts['host'];
+
+        if (strrpos($host, 'www') !== false) {
+            return $scheme . '://' . str_replace('www', $part, $host);
+        }
+
+        $hostParts = explode('.', $host);
+        if (count($hostParts) > 2) {
+            // change first part of the hostname
+            $hostParts[0] = $part;
+
+            return $scheme . '://' . implode('.', $hostParts);
+        } else {
+            // prefix hostname
+            return $scheme . '://' . $part . '.' . implode('.', $hostParts);
+        }
+    }
+
+    /**
      * Install a Behat feature example.
      *
      * @param InputInterface $input
@@ -434,6 +395,7 @@ class InstallCommand extends Command
 
         if (is_dir($this->settings['featuresDir'])) {
             $output->writeln("<error>Features directory already present. No example features are installed.</error>");
+
             return;
         }
 
@@ -441,7 +403,10 @@ class InstallCommand extends Command
             $filesystem = new Filesystem();
             $filesystem->mirror(PACKAGE_BASE_DIR . '/config-dist/features', $this->settings['featuresDir']);
         } catch (Exception $e) {
-            $output->writeln("<error>Something went wrong when creating the features directory" . $e->getMessage() . "</error>");
+            $output->writeln(
+                "<error>Something went wrong when creating the features directory" . $e->getMessage() . "</error>"
+            );
+
             return;
         }
     }

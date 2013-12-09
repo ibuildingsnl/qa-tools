@@ -4,7 +4,7 @@
  * @copyright 2013 Matthijs van den Bos
  */
 
-namespace Ibuildings\QA\Tools\PHP\Console;
+namespace Ibuildings\QA\Tools\Common\Console;
 
 use Ibuildings\QA\Tools\Common\CommandExistenceChecker;
 use Symfony\Component\Console\Command\Command;
@@ -16,50 +16,18 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Class InstallCommand
- * @package Ibuildings\QA\Tools\PHP\Console
+ * @package Ibuildings\QA\Tools\Common\Console
  *
  * @SuppressWarnings(PHPMD)
  */
-class InstallPreCommitHookCommand extends Command
+class InstallPreCommitHookCommand extends AbstractCommand
 {
-    /* Minimal version of git that is required, note that version stashing untracked files was not possible */
-    const MINIMAL_VERSION_GIT = '1.7.8';
-
-    protected $settings = array();
-
-    /** @var DialogHelper */
-    protected $dialog;
-
-    /** @var \Twig_Environment */
-    protected $twig;
-
     protected function configure()
     {
         $this
             ->setName('install:pre-commit')
             ->setDescription('Sets up the pre-commit hook for the Ibuildings QA Tools')
             ->setHelp('Sets up the pre-commit hook for the Ibuildings QA Tools');
-    }
-
-    protected function initialize(InputInterface $input, OutputInterface $output)
-    {
-        $this->dialog = $this->getHelperSet()->get('dialog');
-
-        $loader = new \Twig_Loader_Filesystem(PACKAGE_BASE_DIR . '/config-dist');
-        $this->twig = new \Twig_Environment($loader);
-        $filter = new \Twig_SimpleFilter(
-            'bool',
-            function ($value) {
-                if ($value) {
-                    return 'true';
-                } else {
-                    return 'false';
-                }
-            }
-        );
-        $this->twig->addFilter($filter);
-
-        $this->settings['dirname'] = basename(BASE_DIR);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -134,7 +102,7 @@ class InstallPreCommitHookCommand extends Command
                 $fh,
                 $this->twig->render(
                     'pre-commit.dist',
-                    $this->settings
+                    $this->settings->toArray()
                 )
             );
             fclose($fh);
