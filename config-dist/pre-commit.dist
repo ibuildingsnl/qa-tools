@@ -22,7 +22,7 @@ TMP_DIR=/tmp/qa-tools/$MD5;
 
 echo "\n\033[01;32mCreating temporary commit state at $TMP_DIR\033[00m"
 # Checkout a copy of the current index into MIRROR
-`git checkout-index --prefix=$TMP_DIR/ -af`
+`git checkout-index --prefix=$TMP_DIR/ -af --`
 
 # Remove files from MIRROR which are no longer present in the index
 `git diff-index --cached --name-only --diff-filter=D -z HEAD | (cd $TMP_DIR && xargs -0 rm -f --)`
