@@ -32,25 +32,12 @@ use Symfony\Component\Filesystem\Filesystem;
 /**
  * Class InstallCommand
  *
- * @package Ibuildings\QA\Tools\PHP\Console
+ * @package Ibuildings\QA\Tools\Common\Console
  *
  * @SuppressWarnings(PHPMD)
  */
-class InstallCommand extends Command
+class InstallCommand extends AbstractCommand
 {
-    /**
-     * Lowest version of ant on which QA Tools is known to work
-     * This could be increased to 1.8 since that makes it possible to use variables
-     * instead of property names for if/unless constructs
-     * see: https://ant.apache.org/manual/properties.html#if+unless
-     */
-    const MINIMAL_VERSION_ANT = '1.7.1';
-    /** @var  Settings */
-    protected $settings;
-    /** @var DialogHelper */
-    protected $dialog;
-    /** @var \Twig_Environment */
-    protected $twig;
     /** @var  array */
     protected $composerConfig;
 
@@ -64,12 +51,7 @@ class InstallCommand extends Command
 
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
-        $this->settings = new Settings();
-
-        $this->dialog = $this->getHelperSet()->get('dialog');
-
-        $twigBuilder = new Twig();
-        $this->twig = $twigBuilder->create();
+        parent::initialize($input, $output);
 
         $this->parseComposerConfig();
 

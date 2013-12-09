@@ -15,14 +15,12 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Class ChangeSetPreCommitCommand
- * @package Ibuildings\QA\Tools\PHP\Console
+ * @package Ibuildings\QA\Tools\Common\Console
  *
  * @SuppressWarnings(PHPMD)
  */
-class ChangeSetPreCommitCommand extends Command
+class ChangeSetPreCommitCommand extends AbstractCommand
 {
-    protected $settings = array();
-
     protected function configure()
     {
         $this
