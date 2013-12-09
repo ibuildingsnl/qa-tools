@@ -35,11 +35,11 @@
     <!-- Assign changeset absolute filenames to property -->
     <target name="get-changeset.php-absolute.newlinesep" depends="get-changeset.php"
             if="changeset.php.notempty">
-        <loadresource quiet="true" property="changeset.php.absolute.newlinesep">
+        <loadresource property="changeset.php.absolute.newlinesep">
             <propertyresource name="changeset.php.newlinesep"/>
             <filterchain>
                 <tokenfilter>
-                    <filetokenizer/>
+                    <linetokenizer/>
                     <replaceregex pattern="^" replace="${test-tree-location}/"/>
                 </tokenfilter>
             </filterchain>
@@ -52,19 +52,13 @@
         <loadresource property="changeset.php.relative.spacesep">
             <propertyresource name="changeset.php.relative.newlinesep"/>
             <filterchain>
-                <tokenfilter>
-                    <filetokenizer/>
-                    <replaceregex pattern="\n" replace=" "/>
-                </tokenfilter>
+                <tokenfilter delimoutput=" "/>
             </filterchain>
         </loadresource>
         <loadresource property="changeset.php.absolute.spacesep">
             <propertyresource name="changeset.php.absolute.newlinesep"/>
             <filterchain>
-                <tokenfilter>
-                    <filetokenizer/>
-                    <replaceregex pattern="\n" replace=" "/>
-                </tokenfilter>
+                <tokenfilter delimoutput=" "/>
             </filterchain>
         </loadresource>
     </target>
@@ -75,19 +69,13 @@
         <loadresource property="changeset.php.relative.commasep">
             <propertyresource name="changeset.php.relative.newlinesep"/>
             <filterchain>
-                <tokenfilter>
-                    <filetokenizer/>
-                    <replaceregex pattern="\n" replace=","/>
-                </tokenfilter>
+                <tokenfilter delimoutput=","/>
             </filterchain>
         </loadresource>
         <loadresource property="changeset.php.absolute.commasep">
             <propertyresource name="changeset.php.absolute.newlinesep"/>
             <filterchain>
-                <tokenfilter>
-                    <filetokenizer/>
-                    <replaceregex pattern="\n" replace=","/>
-                </tokenfilter>
+                <tokenfilter delimoutput=","/>
             </filterchain>
         </loadresource>
     </target>
