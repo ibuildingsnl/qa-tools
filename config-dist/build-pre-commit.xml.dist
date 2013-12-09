@@ -21,9 +21,6 @@
             <arg line="changeset:pre-commit --filter-path=src --filter-ext=php"/>
         </exec>
 
-        <!-- Assign changeset relative filenames to property -->
-        <property name="changeset.php.relative.newlinesep" value="${changeset.php.newlinesep}"/>
-
         <!-- Check if changeset contains values -->
         <condition property="changeset.php.notempty">
             <not>
@@ -32,7 +29,7 @@
         </condition>
     </target>
 
-    <!-- Assign changeset absolute filenames to property -->
+    <!-- Assign changeset absolute filenames to property and quote filenames -->
     <target name="get-changeset.php-absolute.newlinesep" depends="get-changeset.php"
             if="changeset.php.notempty">
         <loadresource property="changeset.php.absolute.newlinesep">
@@ -40,14 +37,30 @@
             <filterchain>
                 <tokenfilter>
                     <linetokenizer/>
-                    <replaceregex pattern="^" replace="${test-tree-location}/"/>
+                    <replaceregex pattern="^" replace='"${test-tree-location}/'/>
+                    <replaceregex pattern="$" replace='"'/>
+                </tokenfilter>
+            </filterchain>
+        </loadresource>
+    </target>
+
+    <!-- Assign changeset relative and quote filenames -->
+    <target name="get-changeset.php-relative.newlinesep" depends="get-changeset.php"
+            if="changeset.php.notempty">
+        <loadresource property="changeset.php.relative.newlinesep">
+            <propertyresource name="changeset.php.newlinesep"/>
+            <filterchain>
+                <tokenfilter>
+                    <linetokenizer/>
+                    <replaceregex pattern="^" replace='"'/>
+                    <replaceregex pattern="$" replace='"'/>
                 </tokenfilter>
             </filterchain>
         </loadresource>
     </target>
 
     <!-- Convert newline separated to space separated -->
-    <target name="get-changeset.php-spacesep" depends="get-changeset.php-absolute.newlinesep"
+    <target name="get-changeset.php-spacesep" depends="get-changeset.php-relative.newlinesep,get-changeset.php-absolute.newlinesep"
             if="changeset.php.notempty">
         <loadresource property="changeset.php.relative.spacesep">
             <propertyresource name="changeset.php.relative.newlinesep"/>
@@ -64,7 +77,7 @@
     </target>
 
     <!-- Convert newline separated to comma separated -->
-    <target name="get-changeset.php-commasep" depends="get-changeset.php-absolute.newlinesep"
+    <target name="get-changeset.php-commasep" depends="get-changeset.php-relative.newlinesep,get-changeset.php-absolute.newlinesep"
             if="changeset.php.notempty">
         <loadresource property="changeset.php.relative.commasep">
             <propertyresource name="changeset.php.relative.newlinesep"/>
@@ -118,14 +131,13 @@
         </exec>
     </target>
 
-    {% if enablePhpLint%}{# Since Ant cannot loop over csv values as a workaround, pass the changeset as includes so phplint will only be applied to changed files
-    #}<target name="php-lint"
-            depends="get-changeset.php-commasep"
+    {% if enablePhpLint%}<target name="php-lint"
+            depends="get-changeset.php-absolute.newlinesep"
             if="changeset.php.notempty">
-        <apply executable="php" output="/dev/null" logError="true" failonerror="true">
-            <arg value="-l"/>
-            <fileset dir="${test-tree-location}" includes="${changeset.php.relative.commasep}"/>
-        </apply>
+        <exec executable="sh" failonerror="true">
+            <arg value="-c"/>
+            <arg value="echo '${changeset.php.absolute.newlinesep}' | xargs -n 1 -P 4 php -l 1>/dev/null"/>
+        </exec>
         <echo message="OK"/>
     </target>
 {% endif %}
@@ -146,9 +158,7 @@
             depends="get-changeset.php-commasep"
             if="changeset.php.notempty">
         <exec executable="${test-tree-location}/{{ composerBinDir }}/phpmd" failonerror="true">
-            <arg value="${changeset.php.absolute.commasep}"/>
-            <arg value="text"/>
-            <arg value="${test-tree-location}/phpmd.xml"/>
+            <arg line="${changeset.php.absolute.commasep} text ${test-tree-location}/phpmd.xml"/>
         </exec>
         <echo message="OK"/>
     </target>
@@ -159,8 +169,7 @@
             if="changeset.php.notempty">
         <exec executable="${test-tree-location}/{{ composerBinDir }}/phpcs" failonerror="true">
             <arg value="--standard=${test-tree-location}/phpcs.xml"/>
-            <!-- Don't show warnings-->
-            <arg value="--warning-severity=0"/>
+            <arg value="--warning-severity=0"/> <!-- Don't show warnings-->
             <arg value="--extensions=php"/>
             <arg value="--report=full"/>
             <arg line="${changeset.php.absolute.spacesep}"/>
