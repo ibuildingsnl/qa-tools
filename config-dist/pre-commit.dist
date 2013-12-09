@@ -3,7 +3,7 @@
 DIFF=`git diff --cached --name-only`
 
 # If the diff is empty, we do nothing
-if [ -z $DIFF ]
+if [ -z "$DIFF" ]
 then
     echo "\n\033[01;32mNothing to commit; not running qa-tools\033[00m"
     echo "\nIf you want to commit anyway, use --no-verify"
