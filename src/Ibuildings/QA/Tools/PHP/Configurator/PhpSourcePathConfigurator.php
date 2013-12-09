@@ -1,6 +1,6 @@
 <?php
 
-namespace Ibuildings\QA\Tools\Common\PHP\Configurator;
+namespace Ibuildings\QA\Tools\PHP\Configurator;
 
 use Ibuildings\QA\Tools\Common\Configurator\ConfiguratorInterface;
 use Ibuildings\QA\Tools\Common\Settings;
@@ -12,7 +12,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  * Can configure PHP source paths
  *
  * Class PhpSourcePathConfigurator
- * @package Ibuildings\QA\Tools\Common\PHP\Configurator
+ * @package Ibuildings\QA\Tools\PHP\Configurator
  */
 class PhpSourcePathConfigurator
     implements ConfiguratorInterface

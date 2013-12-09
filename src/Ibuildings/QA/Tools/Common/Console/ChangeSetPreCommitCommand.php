@@ -4,7 +4,7 @@
  * @copyright 2013 Matthijs van den Bos
  */
 
-namespace Ibuildings\QA\Tools\PHP\Console;
+namespace Ibuildings\QA\Tools\Common\Console;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\DialogHelper;

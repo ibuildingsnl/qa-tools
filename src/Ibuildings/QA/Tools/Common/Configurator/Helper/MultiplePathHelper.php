@@ -9,7 +9,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * Class MultiplePathHelper
  *
- * @package Ibuildings\QA\Tools\Common\PHP\Configurator\Helper
+ * @package Ibuildings\QA\Tools\PHP\Configurator\Helper
  */
 class MultiplePathHelper
 {
