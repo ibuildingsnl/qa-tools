@@ -62,8 +62,13 @@ class RunCommand extends AbstractCommand
             $dirOption = '-Dworking-dir=' . $input->getOption('working-dir');
         }
 
+        $verbose = '';
+        if (OutputInterface::VERBOSITY_VERBOSE === $output->getVerbosity()) {
+            $verbose = '-verbose ';
+        }
+
         passthru(
-            "ant -e -f build-pre-commit.xml -logger org.apache.tools.ant.NoBannerLogger $target $dirOption",
+            "ant $verbose -e -f build-pre-commit.xml -logger org.apache.tools.ant.NoBannerLogger $target $dirOption",
             $exitCode
         );
 

@@ -192,7 +192,7 @@
 
     {% if enableBehat %}<target name="behat" depends="set-test-tree-location">
         <exec executable="php" failonerror="true">
-            <arg line="${test-tree-location}/{{ composerBinDir }}/behat --config ./behat.yml --ansi --profile dev ${test-tree-location}/features --tags=~skip"/>
+            <arg line="${test-tree-location}/{{ composerBinDir }}/behat --config ${test-tree-location}/behat.yml --ansi --profile dev ${test-tree-location}/features --tags=~skip"/>
         </exec>
     </target>
 {% endif %}
