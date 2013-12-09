@@ -14,6 +14,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  * Can configure settings for PHP Code Sniffer
  *
  * Class PhpCodeSnifferConfigurator
+ *
  * @package Ibuildings\QA\Tools\Common\PHP\Configurator
  */
 class PhpCodeSnifferConfigurator
@@ -23,22 +24,18 @@ class PhpCodeSnifferConfigurator
      * @var OutputInterface
      */
     protected $output;
-
     /**
      * @var DialogHelper
      */
     protected $dialog;
-
     /**
      * @var MultiplePathHelper
      */
     protected $multiplePathHelper;
-
     /**
      * @var Settings
      */
     protected $settings;
-
     /**
      * @var \Twig_Environment
      */
@@ -57,8 +54,7 @@ class PhpCodeSnifferConfigurator
         MultiplePathHelper $multiplePathHelper,
         Settings $settings,
         \Twig_Environment $twig
-    )
-    {
+    ) {
         $this->output = $output;
         $this->dialog = $dialog;
         $this->multiplePathHelper = $multiplePathHelper;
@@ -91,26 +87,33 @@ class PhpCodeSnifferConfigurator
             );
         }
 
-        // @todo there should be a separate QA tools for symfony
         // Exclude symfony patterns
-        $symfonyDefaults = "../src/*/*Bundle/Resources," .
-            "../src/*/*Bundle/Tests," .
-            "../src/*/Bundle/*Bundle/Resources," .
-            "../src/*/Bundle/*Bundle/Tests";
-        $this->settings['phpCsExcludePatterns'] = $this->multiplePathHelper->askPatterns(
-            "Which Symfony patterns should be excluded for PHP Code Sniffer?",
-            $symfonyDefaults,
-            " Do you want to exclude some default Symfony patterns for PHP Code Sniffer?"
+        $symfonyPatterns = array();
+
+        $excludeSymfony = $this->dialog->askConfirmation(
+            $this->output,
+            "  - Do you want to exclude some default Symfony patterns for PHP Code Sniffer? [y/N] ",
+            false
         );
 
-        // Else exclude default patterns
-        if (empty($this->settings['phpCsExcludePatterns'])) {
-            $this->settings['phpCsExcludePatterns'] = $this->multiplePathHelper->askPatterns(
-                "Which patterns should be excluded for PHP Code Sniffer?",
-                '',
-                " Do you want to exclude some default patterns for PHP Code Sniffer?"
+        if ($excludeSymfony) {
+            $symfonyPatterns = array(
+                "src/*/*Bundle/Resources",
+                "src/*/*Bundle/Tests",
+                "src/*/Bundle/*Bundle/Resources",
+                "src/*/Bundle/*Bundle/Tests"
             );
         }
+
+        // Exclude default patterns
+        $customPatterns = $this->multiplePathHelper->askPatterns(
+            "  - Which patterns should be excluded for PHP Code Sniffer?",
+            '',
+            "  - Do you want to exclude some custom patterns for PHP Code Sniffer?",
+            false
+        );
+
+        $this->settings['phpCsExcludePatterns'] = array_merge($symfonyPatterns, $customPatterns);
     }
 
     public function writeConfig()

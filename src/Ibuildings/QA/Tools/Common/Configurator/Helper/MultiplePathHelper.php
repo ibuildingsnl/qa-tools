@@ -8,6 +8,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  * Helps to set multiple paths
  *
  * Class MultiplePathHelper
+ *
  * @package Ibuildings\QA\Tools\Common\PHP\Configurator\Helper
  */
 class MultiplePathHelper
@@ -16,12 +17,10 @@ class MultiplePathHelper
      * @var OutputInterface
      */
     protected $output;
-
     /**
      * @var DialogHelper
      */
     protected $dialog;
-
     /**
      * @var string
      */
@@ -36,8 +35,7 @@ class MultiplePathHelper
         OutputInterface $output,
         DialogHelper $dialog,
         $baseDir
-    )
-    {
+    ) {
         $this->output = $output;
         $this->dialog = $dialog;
         $this->baseDir = $baseDir;
@@ -49,18 +47,30 @@ class MultiplePathHelper
      * @param string $pathQuestion
      * @param string $defaultPaths
      * @param null $confirmationQuestion Optional question to ask if you want to set the value
+     * @param bool $defaultConfirmation
+     *
      * @return string
      */
     public function askPatterns(
         $pathQuestion,
         $defaultPaths,
-        $confirmationQuestion = null
-    )
-    {
+        $confirmationQuestion = null,
+        $defaultConfirmation = true
+    ) {
         $pathQuestion .= " [$defaultPaths]";
 
+        $defaultConfirmationText = ' [Y/n] ';
+        if ($defaultConfirmation === false) {
+            $defaultConfirmationText = ' [y/N] ';
+        }
+
         if ($confirmationQuestion) {
-            if (!$this->dialog->askConfirmation($this->output, $confirmationQuestion . ' [Y/n] ', true)) {
+            if (!$this->dialog->askConfirmation(
+                $this->output,
+                $confirmationQuestion . $defaultConfirmationText,
+                $defaultConfirmation
+            )
+            ) {
                 return array();
             }
         }
@@ -70,6 +80,7 @@ class MultiplePathHelper
             $pathQuestion,
             function ($data) {
                 $paths = explode(',', $data);
+
                 return $paths;
             },
             false,
@@ -83,18 +94,30 @@ class MultiplePathHelper
      * @param string $pathQuestion
      * @param string $defaultPaths
      * @param null $confirmationQuestion Optional question to ask if you want to set the value
+     * @param bool $defaultConfirmation
+     *
      * @return string
      */
     public function askPaths(
         $pathQuestion,
         $defaultPaths,
-        $confirmationQuestion = null
-    )
-    {
+        $confirmationQuestion = null,
+        $defaultConfirmation = true
+    ) {
         $pathQuestion .= " [$defaultPaths]";
 
+        $defaultConfirmationText = ' [Y/n] ';
+        if ($defaultConfirmation === false) {
+            $defaultConfirmationText = ' [y/N] ';
+        }
+
         if ($confirmationQuestion) {
-            if (!$this->dialog->askConfirmation($this->output, $confirmationQuestion . ' [Y/n] ', true)) {
+            if (!$this->dialog->askConfirmation(
+                $this->output,
+                $confirmationQuestion . $defaultConfirmationText,
+                $defaultConfirmation
+            )
+            ) {
                 return array();
             }
         }
@@ -111,6 +134,7 @@ class MultiplePathHelper
                         throw new \Exception("path '{$fullPath}' doesn't exist");
                     }
                 }
+
                 return $paths;
             },
             false,
