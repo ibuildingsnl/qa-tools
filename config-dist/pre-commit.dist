@@ -30,7 +30,6 @@ echo "\n\033[01;32mCreating temporary commit state at $TMP_DIR\033[00m"
 # Run the pre-commit build
 echo "\n\033[01;32mStarting build...\033[00m\n"
 php {{ baseDir }}/{{ composerBinDir }}/qa-tools run build --working-dir=$TMP_DIR
-#ant -e -f build-pre-commit.xml -logger org.apache.tools.ant.NoBannerLogger -Dtmp_dir=$TMP_DIR build
 exitCode=$?
 
 # If exit code is not 0 then there was a failure
