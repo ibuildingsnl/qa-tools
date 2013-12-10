@@ -100,7 +100,7 @@
     {% if enablePhpCopyPasteDetection %}<target name="phpcpd-ci" description="Find duplicate code using PHPCPD">
         <exec executable="{{ composerBinDir }}/phpcpd" failonerror="true">
             <arg value="--log-pmd"/>
-            <arg value="tools/build/artifacts/logs/pmd-cpd.xml"/>
+            <arg value="{{ buildArtifactsPath }}/logs/pmd-cpd.xml"/>
 {% if phpCpdExcludePatterns %}
 {% for phpCpdExcludePattern in phpCpdExcludePatterns %}
             <arg value="--exclude"/>
