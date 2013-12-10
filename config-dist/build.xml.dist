@@ -98,7 +98,7 @@
 {% endif %}
 
     {% if enablePhpCopyPasteDetection %}<target name="phpcpd-ci" description="Find duplicate code using PHPCPD">
-        <exec executable="{{ composerBinDir }}/phpcpd" failonerror="true">
+        <exec executable="{{ composerBinDir }}/phpcpd" failonerror="false">
             <arg value="--log-pmd"/>
             <arg value="{{ buildArtifactsPath }}/logs/pmd-cpd.xml"/>
 {% if phpCpdExcludePatterns %}
@@ -126,7 +126,7 @@
     {% if enableBehat %}
     <!-- Running Behat on jenkins -->
     <target name="behat-ci">
-        <exec executable="php" failonerror="false">
+        <exec executable="php" failonerror="true">
             <arg line="{{ composerBinDir }}/behat --config ./behat.yml --profile ci ${basedir}/features --tags=~skip" />
         </exec>
     </target>
