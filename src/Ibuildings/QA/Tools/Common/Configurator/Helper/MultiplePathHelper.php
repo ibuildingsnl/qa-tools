@@ -57,7 +57,9 @@ class MultiplePathHelper
         $confirmationQuestion = null,
         $defaultConfirmation = true
     ) {
-        $pathQuestion .= " [$defaultPaths]";
+        if ($defaultPaths) {
+            $pathQuestion .= " [$defaultPaths]";
+        }
 
         $defaultConfirmationText = ' [Y/n] ';
         if ($defaultConfirmation === false) {
@@ -77,11 +79,16 @@ class MultiplePathHelper
 
         return $this->dialog->askAndValidate(
             $this->output,
-            $pathQuestion,
+            $pathQuestion . ' (comma separated)',
             function ($data) {
                 $paths = explode(',', $data);
 
-                return $paths;
+                $trimmedPaths = array();
+                foreach ($paths as $path) {
+                    $trimmedPaths[] = trim($path);
+                }
+
+                return $trimmedPaths;
             },
             false,
             $defaultPaths
@@ -104,7 +111,10 @@ class MultiplePathHelper
         $confirmationQuestion = null,
         $defaultConfirmation = true
     ) {
-        $pathQuestion .= " [$defaultPaths]";
+        if ($defaultPaths) {
+            $pathQuestion .= " [$defaultPaths]";
+        }
+
 
         $defaultConfirmationText = ' [Y/n] ';
         if ($defaultConfirmation === false) {
@@ -124,18 +134,24 @@ class MultiplePathHelper
 
         return $this->dialog->askAndValidate(
             $this->output,
-            $pathQuestion,
+            $pathQuestion . ' (comma separated)',
             function ($data) {
                 $paths = explode(',', $data);
+                $trimmedPaths = array();
+
                 foreach ($paths as $path) {
-                    $fullPath = $this->baseDir . '/' . $path;
+                    $trimmedPath = trim($path);
+
                     // Check paths
+                    $fullPath = $this->baseDir . DIRECTORY_SEPARATOR . $trimmedPath;
                     if (!is_dir($fullPath)) {
                         throw new \Exception("path '{$fullPath}' doesn't exist");
                     }
+
+                    $trimmedPaths[] = $trimmedPath;
                 }
 
-                return $paths;
+                return $trimmedPaths;
             },
             false,
             $defaultPaths

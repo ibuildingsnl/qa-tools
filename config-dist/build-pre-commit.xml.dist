@@ -18,7 +18,7 @@
 
         <!-- Get changeset separated by newline -->
         <exec executable="${basedir}/{{ composerBinDir }}/qa-tools" outputProperty="changeset.php.newlinesep">
-            <arg line="changeset:pre-commit --filter-path=src --filter-ext=php"/>
+            <arg line="changeset:pre-commit --filter-path={{ phpSrcPath }} --filter-ext=php"/>
         </exec>
 
         <!-- Check if changeset contains values -->
@@ -185,7 +185,7 @@
     <target name="phpunit" depends="set-test-tree-location">
         <exec outputproperty="phpunit-output-raw" resultproperty="phpunit-exitcode"
               executable="${test-tree-location}/{{ composerBinDir }}/phpunit" failonerror="false">
-            <arg line="--configuration=${test-tree-location}{{ phpUnitConfigPath }} --stop-on-failure"/>
+            <arg line="--configuration=${test-tree-location}/{{ phpUnitConfigPath }} --stop-on-failure"/>
         </exec>
         <condition property="phpunit-output" value="${phpunit-output-raw}" else="OK">
             <isfailure code="${phpunit-exitcode}"/>
