@@ -32,7 +32,6 @@
 
     // Environments
     "devel"         : false,     // Development/debugging (alert, confirm, etc)
-    "jquery"        : true,
 
 
     // JSHint Default Configuration File (as on JSHint website)
