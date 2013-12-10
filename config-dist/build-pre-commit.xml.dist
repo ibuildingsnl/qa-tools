@@ -18,7 +18,7 @@
 
         <!-- Get changeset separated by newline -->
         <exec executable="${basedir}/{{ composerBinDir }}/qa-tools" outputProperty="changeset.php.newlinesep">
-            <arg line="changeset:pre-commit --filter-path=src --filter-ext=php"/>
+            <arg line="changeset:pre-commit --filter-path={{ phpSrcPath }} --filter-ext=php"/>
         </exec>
 
         <!-- Check if changeset contains values -->
