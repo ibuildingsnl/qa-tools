@@ -16,13 +16,13 @@ TIMESTAMP=`date +%s`
 {% if md5Command == 'md5' %}
 MD5=`{{ md5Command }} -q -s $PWD/$TIMESTAMP`
 {% else %}
-MD5=`echo $PWD/$TIMESTAMP | md5sum | sed 's/ -//'`
+MD5=`echo $PWD/$TIMESTAMP | md5sum | sed 's/[^0-9a-zA-Z]//g'`
 {% endif %}
 TMP_DIR=/tmp/qa-tools/$MD5;
 
 echo "\n\033[01;32mCreating temporary commit state at $TMP_DIR\033[00m"
 # Checkout a copy of the current index into MIRROR
-`git checkout-index --prefix=$TMP_DIR/ -af --`
+git checkout-index -af --prefix=$TMP_DIR/
 
 # Remove files from TMP_DIR which are no longer present in the index
 `git diff-index --cached --name-only --diff-filter=D -z HEAD | (cd $TMP_DIR && xargs -0 rm -f --)`
@@ -42,6 +42,6 @@ then
 fi
 
 # Removing $TMP_DIR
-`rm -rf $TMP_DIR`
+rm -r $TMP_DIR
 
 exit $exitCode
