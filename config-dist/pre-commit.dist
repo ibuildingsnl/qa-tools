@@ -1,6 +1,6 @@
-#! /bin/sh
+#!/bin/sh
 
-DIFF=`git diff --cached --name-only`
+DIFF=$(git diff --cached --name-only)
 
 # If the diff is empty, we do nothing
 if [ -z "$DIFF" ]
@@ -10,26 +10,26 @@ then
     exit 0;
 fi
 
-TIMESTAMP=`date +%s`
+TIMESTAMP=$(date +%s)
 
 {# use different command/parameters depending on the available command #}
 {% if md5Command == 'md5' %}
-MD5=`{{ md5Command }} -q -s $PWD/$TIMESTAMP`
+MD5=$({{ md5Command }} -q -s $PWD/$TIMESTAMP)
 {% else %}
-MD5=`echo $PWD/$TIMESTAMP | md5sum | sed 's/[^0-9a-zA-Z]//g'`
+MD5=$(echo $PWD/$TIMESTAMP | md5sum | sed 's/[^0-9a-zA-Z]//g')
 {% endif %}
 TMP_DIR=/tmp/qa-tools/$MD5;
 
 echo "\n\033[01;32mCreating temporary commit state at $TMP_DIR\033[00m"
 # Checkout a copy of the current index into MIRROR
-git checkout-index -af --prefix=$TMP_DIR/
+git checkout-index -af --prefix="$TMP_DIR/"
 
 # Remove files from TMP_DIR which are no longer present in the index
-`git diff-index --cached --name-only --diff-filter=D -z HEAD | (cd $TMP_DIR && xargs -0 rm -f --)`
+git diff-index --cached --name-only --diff-filter=D -z HEAD | (cd "$TMP_DIR" && xargs -0 rm -f --)
 
 # Run the pre-commit build
 echo "\n\033[01;32mStarting build...\033[00m\n"
-php {{ baseDir }}/{{ composerBinDir }}/qa-tools run build --working-dir=$TMP_DIR
+php "{{ baseDir }}/{{ composerBinDir }}/qa-tools" run build --working-dir="$TMP_DIR"
 exitCode=$?
 
 # If exit code is not 0 then there was a failure
@@ -42,6 +42,6 @@ then
 fi
 
 # Removing $TMP_DIR
-rm -r $TMP_DIR
+rm -r "$TMP_DIR"
 
 exit $exitCode
