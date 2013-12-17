@@ -1,9 +1,33 @@
 #!/bin/sh
 
+cleanup ()
+{
+    echo "\n\033[01;32mCleanup...\033[00m"
+
+    if [[ -d "$TMP_DIR" ]]
+    then
+        # Removing $TMP_DIR
+        rm -r "$TMP_DIR"
+    fi
+    echo "\033[01;32mDone\033[00m"
+    return $?
+}
+
+control_c ()
+# run if user hits control-c
+{
+    cleanup
+    exit $?
+}
+
+# Trap signals like ctrl-c. Execute cleanup
+trap control_c SIGHUP SIGINT SIGQUIT SIGTERM
+
+# Get a diff between the staged changes and HEAD
 DIFF=$(git diff --cached --name-only)
 
 # If the diff is empty, we do nothing
-if [ -z "$DIFF" ]
+if [[ -z "$DIFF" ]]
 then
     echo "\n\033[01;32mNothing to commit; not running qa-tools\033[00m"
     echo "\nIf you want to commit anyway, use --no-verify"
@@ -33,7 +57,7 @@ php "{{ baseDir }}/{{ composerBinDir }}/qa-tools" run build --working-dir="$TMP_
 exitCode=$?
 
 # If exit code is not 0 then there was a failure
-if [ 0 -ne $exitCode ]
+if [[ 0 -ne $exitCode ]]
 then
     echo "\n\033[01;31mCommit aborted: build failed\033[00m"
     echo "\nIf you want to commit anyway, use --no-verify"
@@ -41,7 +65,7 @@ then
     exitCode=1
 fi
 
-# Removing $TMP_DIR
-rm -r "$TMP_DIR"
+# Doing cleanup
+cleanup
 
 exit $exitCode
