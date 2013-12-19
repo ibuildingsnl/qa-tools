@@ -96,7 +96,7 @@
     {% if enableJsTools %}<target name="get-changeset.js"
             unless="changeset.js.executed">
         <property name="changeset.js.executed" value="true"/>
-        <exec executable="${basedir}/{{ composerBinDir }}/qa-tools" outputProperty="changeset.js">
+        <exec executable="${basedir}/{{ composerBinDir }}/qa-tools" outputProperty="changeset.js.spacesep">
             <arg line="changeset:pre-commit --filter-path={{ javaScriptSrcPath }} --filter-ext=js --separator=' '"/>
         </exec>
         <property name="changeset.js" value="${changeset.js}"/>
@@ -105,6 +105,21 @@
                 <equals arg1="${changeset.js}" arg2="" trim="true"/>
             </not>
         </condition>
+    </target>
+
+    <!-- Assign changeset absolute filenames to property and quote filenames -->
+    <target name="get-changeset.js-absolute.spacesep" depends="get-changeset.js"
+            if="changeset.js.notempty">
+        <loadresource property="changeset.js.absolute.spacesep">
+            <propertyresource name="changeset.js.spacesep"/>
+            <filterchain>
+                <tokenfilter>
+                    <linetokenizer/>
+                    <replaceregex pattern="^" replace='"${test-tree-location}/'/>
+                    <replaceregex pattern="$" replace='"'/>
+                </tokenfilter>
+            </filterchain>
+        </loadresource>
     </target>
 {% endif %}
 
@@ -143,12 +158,12 @@
 {% endif %}
 
     {% if enableJsHint %}<target name="jshint"
-            depends="set-test-tree-location,get-changeset.js"
+            depends="set-test-tree-location,get-changeset.js-absolute.spacesep"
             if="changeset.js.notempty">
         <exec executable="node" failonerror="true">
             <arg value="${test-tree-location}/{{ composerBinDir }}/jshint"/>
             <arg value="--config=${test-tree-location}/.jshintrc"/>
-            <arg line="${changeset.js}"/>
+            <arg line="${changeset.js.absolute.spacesep}"/>
         </exec>
         <echo message="OK"/>
     </target>
