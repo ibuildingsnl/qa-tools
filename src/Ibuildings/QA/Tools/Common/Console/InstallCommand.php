@@ -19,15 +19,14 @@ use Ibuildings\QA\Tools\PHP\Configurator\PhpMessDetectorConfigurator;
 use Ibuildings\QA\Tools\PHP\Configurator\PhpSecurityCheckerConfigurator;
 use Ibuildings\QA\Tools\PHP\Configurator\PhpSourcePathConfigurator;
 use Ibuildings\QA\Tools\PHP\Configurator\PhpUnitConfigurator;
+use Ibuildings\QA\Tools\Behat\Configurator\BehatConfigurator;
 
-use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * Class InstallCommand
@@ -119,6 +118,11 @@ class InstallCommand extends AbstractCommand
             $configuratorRegistry->register(
                 new PhpUnitConfigurator($output, $this->dialog, $this->settings, $this->twig)
             );
+
+            $configuratorRegistry->register(
+                new BehatConfigurator($output, $this->dialog, $this->settings, $this->twig)
+            );
+
             $configuratorRegistry->executeConfigurators();
         }
 
@@ -133,17 +137,6 @@ class InstallCommand extends AbstractCommand
             $this->configureJavaScriptSrcPath($input, $output);
 
             $this->writeJsHintConfig($input, $output);
-        }
-
-        if ($this->dialog->askConfirmation(
-            $output,
-            "\n<comment>Do you want to install the Behat framework? [Y/n] </comment>",
-            true
-        )
-        ) {
-            $this->configureBehat($input, $output);
-            $this->writeBehatYamlFiles($input, $output);
-            $this->writeBehatExamples($input, $output);
         }
 
         $this->writeAntBuildXml($input, $output);
@@ -257,157 +250,6 @@ class InstallCommand extends AbstractCommand
             );
             fclose($fh);
             $output->writeln("\n<info>Config file for JSHint written</info>");
-        }
-    }
-
-    /**
-     * Enable in the settings if Behat is available.
-     *
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     */
-    protected function configureBehat(InputInterface $input, OutputInterface $output)
-    {
-        $this->settings['enableBehat'] = true;
-        $this->settings['featuresDir'] = BASE_DIR . '/features';
-    }
-
-    /**
-     * Install Behat yaml files.
-     *
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     */
-    protected function writeBehatYamlFiles(InputInterface $input, OutputInterface $output)
-    {
-        if (!$this->settings['enableBehat']) {
-            return;
-        }
-
-        $this->settings['baseUrl'] = $this->dialog->askAndValidate(
-            $output,
-            "What is base url of your application? [http://www.ibuildings.nl] ",
-            function ($data) {
-                if (substr($data, 0, 4) == 'http') {
-                    return $data;
-                }
-                throw new \Exception("Url needs to start with http");
-            },
-            false,
-            'http://www.ibuildings.nl'
-        );
-
-        $baseUrlCi = $this->suggestDomain($this->settings['baseUrl'], 'ci');
-
-        $this->settings['baseUrlCi'] = $this->dialog->askAndValidate(
-            $output,
-            "What is base url of the ci environment? [$baseUrlCi] ",
-            function ($data) {
-                if (substr($data, 0, 4) == 'http') {
-                    return $data;
-                }
-                throw new \Exception("Url needs to start with http");
-            },
-            false,
-            $baseUrlCi
-        );
-
-        $baseUrlDev = $this->suggestDomain($this->settings['baseUrl'], 'dev');
-
-        $this->settings['baseUrlDev'] = $this->dialog->askAndValidate(
-            $output,
-            "What is base url of your dev environment? [$baseUrlDev] ",
-            function ($data) {
-                if (substr($data, 0, 4) == 'http') {
-                    return $data;
-                }
-                throw new \Exception("Url needs to start with http");
-            },
-            false,
-            $baseUrlDev
-        );
-
-        // copy behat.yml
-        $fh = fopen(BASE_DIR . '/behat.yml', 'w');
-        fwrite(
-            $fh,
-            $this->twig->render(
-                'behat.yml.dist',
-                $this->settings->toArray()
-            )
-        );
-        fclose($fh);
-
-        // copy behat.yml
-        $fh = fopen(BASE_DIR . '/behat.dev.yml', 'w');
-        fwrite(
-            $fh,
-            $this->twig->render(
-                'behat.dev.yml.dist',
-                $this->settings->toArray()
-            )
-        );
-        fclose($fh);
-    }
-
-    /**
-     * Suggest a new domain based on the 'main url' and a subdomain string.
-     *
-     * @param string $url the main domain
-     * @param string $part the subdomain string
-     *
-     * @return string
-     */
-    protected function suggestDomain($url, $part)
-    {
-        $urlParts = parse_url($url);
-
-        $scheme = $urlParts['scheme'];
-        $host = $urlParts['host'];
-
-        if (strrpos($host, 'www') !== false) {
-            return $scheme . '://' . str_replace('www', $part, $host);
-        }
-
-        $hostParts = explode('.', $host);
-        if (count($hostParts) > 2) {
-            // change first part of the hostname
-            $hostParts[0] = $part;
-
-            return $scheme . '://' . implode('.', $hostParts);
-        } else {
-            // prefix hostname
-            return $scheme . '://' . $part . '.' . implode('.', $hostParts);
-        }
-    }
-
-    /**
-     * Install a Behat feature example.
-     *
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     */
-    protected function writeBehatExamples(InputInterface $input, OutputInterface $output)
-    {
-        if (!$this->settings['enableBehat']) {
-            return;
-        }
-
-        if (is_dir($this->settings['featuresDir'])) {
-            $output->writeln("<error>Features directory already present. No example features are installed.</error>");
-
-            return;
-        }
-
-        try {
-            $filesystem = new Filesystem();
-            $filesystem->mirror(PACKAGE_BASE_DIR . '/config-dist/features', $this->settings['featuresDir']);
-        } catch (Exception $e) {
-            $output->writeln(
-                "<error>Something went wrong when creating the features directory" . $e->getMessage() . "</error>"
-            );
-
-            return;
         }
     }
 
