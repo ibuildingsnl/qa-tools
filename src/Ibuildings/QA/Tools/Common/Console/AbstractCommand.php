@@ -67,7 +67,16 @@ abstract class AbstractCommand extends Command
         $this->twig->addFilter($filter);
 
         $this->settings['dirname'] = basename(BASE_DIR);
+
+        if (!defined('BASE_DIR') || !is_dir(BASE_DIR)) {
+            throw new \Exception('BASE_DIR constant is not set or invalid');
+        }
         $this->settings['baseDir'] = BASE_DIR;
+
+        if (!defined('PACKAGE_BASE_DIR') || !is_dir(PACKAGE_BASE_DIR)) {
+            throw new \Exception('PACKAGE_BASE_DIR constant is not set or invalid');
+        }
+        $this->settings['packageBaseDir'] = PACKAGE_BASE_DIR;
 
         $this->parseComposerConfig();
     }
