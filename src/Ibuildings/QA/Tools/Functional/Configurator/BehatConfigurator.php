@@ -1,5 +1,5 @@
 <?php
-namespace Ibuildings\QA\Tools\Behat\Configurator;
+namespace Ibuildings\QA\Tools\Functional\Configurator;
 
 use Ibuildings\QA\Tools\Common\Configurator\ConfiguratorInterface;
 use Ibuildings\QA\Tools\Common\Settings;
@@ -12,7 +12,7 @@ use Symfony\Component\Filesystem\Filesystem;
  * Can configure settings for Behat.
  *
  * Class BehatConfigurator
- * @package Ibuildings\QA\Tools\Behat\Configurator
+ * @package Ibuildings\QA\Tools\Functional\Configurator
  */
 class BehatConfigurator
     implements ConfiguratorInterface

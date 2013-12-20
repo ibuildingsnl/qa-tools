@@ -26,7 +26,7 @@ use Ibuildings\QA\Tools\Javascript\Configurator\JavascriptConfigurator;
 use Ibuildings\QA\Tools\Javascript\Configurator\JsHintConfigurator;
 use Ibuildings\QA\Tools\Javascript\Configurator\JavascriptSourcePathConfigurator;
 
-use Ibuildings\QA\Tools\Behat\Configurator\BehatConfigurator;
+use Ibuildings\QA\Tools\Functional\Configurator\BehatConfigurator;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\DialogHelper;
