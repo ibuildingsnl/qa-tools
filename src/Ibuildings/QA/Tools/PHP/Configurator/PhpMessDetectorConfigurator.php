@@ -61,6 +61,10 @@ class PhpMessDetectorConfigurator
 
     public function configure()
     {
+        if (!$this->settings['enablePhpTools']) {
+            return false;
+        }
+
         $this->settings['enablePhpMessDetector'] = $this->dialog->askConfirmation(
             $this->output,
             "Do you want to enable the PHP Mess Detector? [Y/n] ",

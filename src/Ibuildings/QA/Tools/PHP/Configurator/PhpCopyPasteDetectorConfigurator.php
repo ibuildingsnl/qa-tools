@@ -61,6 +61,10 @@ class PhpCopyPasteDetectorConfigurator
 
     public function configure()
     {
+        if (!$this->settings['enablePhpTools']) {
+            return false;
+        }
+
         $this->settings['enablePhpCopyPasteDetection'] = $this->dialog->askConfirmation(
             $this->output,
             "Do you want to enable PHP Copy Paste Detection? [Y/n] ",

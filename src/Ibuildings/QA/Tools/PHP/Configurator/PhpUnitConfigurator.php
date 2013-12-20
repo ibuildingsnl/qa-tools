@@ -63,6 +63,10 @@ class PhpUnitConfigurator
 
     public function configure()
     {
+        if (!$this->settings['enablePhpTools']) {
+            return false;
+        }
+
         $output = $this->output;
         $output->writeln("\n<info>Configuring PHPUnit</info>\n");
         $this->settings['enablePhpUnit'] = $this->dialog->askConfirmation(
