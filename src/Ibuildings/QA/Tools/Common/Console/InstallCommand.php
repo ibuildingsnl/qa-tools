@@ -198,6 +198,7 @@ class InstallCommand extends AbstractCommand
             || $this->settings['enablePhpUnit']
             || $this->settings['enablePhpLint']
             || $this->settings['enableJsHint']
+            || $this->settings['enableBehat']
         ) {
             $fh = fopen(BASE_DIR . '/build.xml', 'w');
             fwrite(
