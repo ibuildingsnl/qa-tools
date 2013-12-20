@@ -52,6 +52,10 @@ class PhpSecurityCheckerConfigurator
 
     public function configure()
     {
+        if (!$this->settings['enablePhpTools']) {
+            return false;
+        }
+
         $this->settings['enablePhpSecurityChecker'] = $this->dialog->askConfirmation(
             $this->output,
             "Do you want to enable the Sensiolabs Security Checker? [Y/n] ",

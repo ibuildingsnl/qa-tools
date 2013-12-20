@@ -12,6 +12,8 @@ use Ibuildings\QA\Tools\Common\Settings;
 use Ibuildings\QA\Tools\Common\Configurator\Registry;
 use Ibuildings\QA\Tools\Common\DependencyInjection\Twig;
 use Ibuildings\QA\Tools\Common\CommandExistenceChecker;
+
+use Ibuildings\QA\Tools\PHP\Configurator\PhpConfigurator;
 use Ibuildings\QA\Tools\PHP\Configurator\PhpCodeSnifferConfigurator;
 use Ibuildings\QA\Tools\PHP\Configurator\PhpCopyPasteDetectorConfigurator;
 use Ibuildings\QA\Tools\PHP\Configurator\PhpLintConfigurator;
@@ -19,6 +21,11 @@ use Ibuildings\QA\Tools\PHP\Configurator\PhpMessDetectorConfigurator;
 use Ibuildings\QA\Tools\PHP\Configurator\PhpSecurityCheckerConfigurator;
 use Ibuildings\QA\Tools\PHP\Configurator\PhpSourcePathConfigurator;
 use Ibuildings\QA\Tools\PHP\Configurator\PhpUnitConfigurator;
+
+use Ibuildings\QA\Tools\Javascript\Configurator\JavascriptConfigurator;
+use Ibuildings\QA\Tools\Javascript\Configurator\JsHintConfigurator;
+use Ibuildings\QA\Tools\Javascript\Configurator\JavascriptSourcePathConfigurator;
+
 use Ibuildings\QA\Tools\Behat\Configurator\BehatConfigurator;
 
 use Symfony\Component\Console\Command\Command;
@@ -59,8 +66,6 @@ class InstallCommand extends AbstractCommand
     {
         $this->settings['buildArtifactsPath'] = 'build/artifacts';
 
-        $this->settings['enableJsHint'] = false;
-
         return $this;
     }
 
@@ -89,55 +94,43 @@ class InstallCommand extends AbstractCommand
         $this->configureProjectName($input, $output);
         $this->configureBuildArtifactsPath($input, $output);
 
-        if ($this->dialog->askConfirmation(
-            $output,
-            "\n<comment>Do you want to install the QA tools for PHP? [Y/n] </comment>",
-            true
-        )
-        ) {
-            $output->writeln("\n<info>Configuring PHP inspections</info>\n");
+        // Register configurators
+        $configuratorRegistry = new Registry();
 
-            $multiplePathHelper = new MultiplePathHelper($output, $this->dialog, BASE_DIR);
+        $multiplePathHelper = new MultiplePathHelper($output, $this->dialog, BASE_DIR);
 
-            // Register configurators
-            $configuratorRegistry = new Registry();
-            $configuratorRegistry->register(new PhpLintConfigurator($output, $this->dialog, $this->settings));
-            $configuratorRegistry->register(
-                new PhpMessDetectorConfigurator($output, $this->dialog, $this->settings, $this->twig)
-            );
-            $configuratorRegistry->register(
-                new PhpCodeSnifferConfigurator($output, $this->dialog, $multiplePathHelper, $this->settings, $this->twig)
-            );
-            $configuratorRegistry->register(
-                new PhpCopyPasteDetectorConfigurator($output, $this->dialog, $multiplePathHelper, $this->settings)
-            );
-            $configuratorRegistry->register(
-                new PhpSecurityCheckerConfigurator($output, $this->dialog, $this->settings)
-            );
-            $configuratorRegistry->register(new PhpSourcePathConfigurator($output, $this->dialog, $this->settings));
-            $configuratorRegistry->register(
-                new PhpUnitConfigurator($output, $this->dialog, $this->settings, $this->twig)
-            );
+        // PHP
+        $configuratorRegistry->register(new PhpConfigurator($output, $this->dialog, $this->settings));
+        $configuratorRegistry->register(new PhpLintConfigurator($output, $this->dialog, $this->settings));
+        $configuratorRegistry->register(
+            new PhpMessDetectorConfigurator($output, $this->dialog, $this->settings, $this->twig)
+        );
+        $configuratorRegistry->register(
+            new PhpCodeSnifferConfigurator($output, $this->dialog, $multiplePathHelper, $this->settings, $this->twig)
+        );
+        $configuratorRegistry->register(
+            new PhpCopyPasteDetectorConfigurator($output, $this->dialog, $multiplePathHelper, $this->settings)
+        );
+        $configuratorRegistry->register(
+            new PhpSecurityCheckerConfigurator($output, $this->dialog, $this->settings)
+        );
 
-            $configuratorRegistry->register(
-                new BehatConfigurator($output, $this->dialog, $this->settings, $this->twig)
-            );
+        $configuratorRegistry->register(new PhpSourcePathConfigurator($output, $this->dialog, $this->settings));
+        $configuratorRegistry->register(
+            new PhpUnitConfigurator($output, $this->dialog, $this->settings, $this->twig)
+        );
 
-            $configuratorRegistry->executeConfigurators();
-        }
+        // Javascript
+        $configuratorRegistry->register(new JavascriptConfigurator($output, $this->dialog, $this->settings));
+        $configuratorRegistry->register(new JsHintConfigurator($output, $this->dialog, $this->settings, $this->twig));
+        $configuratorRegistry->register(new JavascriptSourcePathConfigurator($output, $this->dialog, $this->settings));
 
-        $this->settings['enableJsTools'] = false;
-        if ($this->dialog->askConfirmation(
-            $output,
-            "\n<comment>Do you want to install the QA tools for Javascript? [Y/n] </comment>",
-            true
-        )
-        ) {
-            $this->configureJsHint($input, $output);
-            $this->configureJavaScriptSrcPath($input, $output);
+        // Functional testing
+        $configuratorRegistry->register(
+            new BehatConfigurator($output, $this->dialog, $this->settings, $this->twig)
+        );
 
-            $this->writeJsHintConfig($input, $output);
-        }
+        $configuratorRegistry->executeConfigurators();
 
         $this->writeAntBuildXml($input, $output);
 
@@ -195,62 +188,6 @@ class InstallCommand extends AbstractCommand
             false,
             $this->settings['buildArtifactsPath']
         );
-    }
-
-    protected function configureJsHint(InputInterface $input, OutputInterface $output)
-    {
-        $this->settings['enableJsHint'] = $this->dialog->askConfirmation(
-            $output,
-            "Do you want to enable JSHint? [Y/n] ",
-            true
-        );
-
-        if ($this->settings['enableJsHint']) {
-            $this->settings['enableJsTools'] = true;
-        }
-
-        // Test if node is installed
-        $commandExistenceChecker = new CommandExistenceChecker();
-        if (!$commandExistenceChecker->commandExists('node', $message)) {
-            $output->writeln("\n<error>{$message} -> Not enabling JSHint.</error>");
-            $this->settings['enableJsHint'] = false;
-
-            return;
-        }
-    }
-
-    protected function configureJavaScriptSrcPath(InputInterface $input, OutputInterface $output)
-    {
-        if ($this->settings['enableJsHint']) {
-            $this->settings['javaScriptSrcPath'] = $this->dialog->askAndValidate(
-                $output,
-                "What is the path to the JavaScript source code? [src] ",
-                function ($data) {
-                    if (is_dir(BASE_DIR . '/' . $data)) {
-                        return $data;
-                    }
-                    throw new \Exception("That path doesn't exist");
-                },
-                false,
-                'src'
-            );
-        }
-    }
-
-    protected function writeJsHintConfig(InputInterface $input, OutputInterface $output)
-    {
-        if ($this->settings['enableJsHint']) {
-            $fh = fopen(BASE_DIR . '/.jshintrc', 'w');
-            fwrite(
-                $fh,
-                $this->twig->render(
-                    '.jshintrc.dist',
-                    $this->settings->toArray()
-                )
-            );
-            fclose($fh);
-            $output->writeln("\n<info>Config file for JSHint written</info>");
-        }
     }
 
     protected function writeAntBuildXml(InputInterface $input, OutputInterface $output)
