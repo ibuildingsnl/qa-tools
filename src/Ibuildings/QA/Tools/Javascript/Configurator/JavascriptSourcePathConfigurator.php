@@ -1,6 +1,5 @@
 <?php
-
-namespace Ibuildings\QA\Tools\PHP\Configurator;
+namespace Ibuildings\QA\Tools\Javascript\Configurator;
 
 use Ibuildings\QA\Tools\Common\Configurator\ConfiguratorInterface;
 use Ibuildings\QA\Tools\Common\Settings;
@@ -9,12 +8,12 @@ use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Can configure setting for PHPLint
+ * Can configure Javascript source paths
  *
- * Class PhpLintConfigurator
- * @package Ibuildings\QA\Tools\PHP\Configurator
+ * Class JavascriptSourcePathConfigurator
+ * @package Ibuildings\QA\Tools\Javascript\Configurator
  */
-class PhpLintConfigurator
+class JavascriptSourcePathConfigurator
     implements ConfiguratorInterface
 {
     /**
@@ -46,23 +45,28 @@ class PhpLintConfigurator
         $this->output = $output;
         $this->dialog = $dialog;
         $this->settings = $settings;
-
-        $this->settings['enablePhpLint'] = false;
     }
 
     /**
-     *
+     * Asks user what the path to javascript source is.
      */
     public function configure()
     {
-        if (!$this->settings['enablePhpTools']) {
-            return false;
+        if (!$this->settings['enableJsHint']) {
+            return;
         }
 
-        $this->settings['enablePhpLint'] = $this->dialog->askConfirmation(
+        $this->settings['javaScriptSrcPath'] = $this->dialog->askAndValidate(
             $this->output,
-            "Do you want to enable PHP Lint? [Y/n] ",
-            true
+            "What is the path to the JavaScript source code? [src] ",
+            function ($data) {
+                if (is_dir($this->settings['baseDir'] . '/' . $data)) {
+                    return $data;
+                }
+                throw new \Exception("That path doesn't exist");
+            },
+            false,
+            'src'
         );
     }
 }

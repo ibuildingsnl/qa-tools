@@ -1,5 +1,4 @@
 <?php
-
 namespace Ibuildings\QA\Tools\PHP\Configurator;
 
 use Ibuildings\QA\Tools\Common\Configurator\ConfiguratorInterface;
@@ -9,12 +8,12 @@ use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Can configure setting for PHPLint
+ * Can configure Php source paths
  *
- * Class PhpLintConfigurator
- * @package Ibuildings\QA\Tools\PHP\Configurator
+ * Class PhpConfigurator
+ * @package Ibuildings\QA\Tools\Php\Configurator
  */
-class PhpLintConfigurator
+class PhpConfigurator
     implements ConfiguratorInterface
 {
     /**
@@ -47,22 +46,22 @@ class PhpLintConfigurator
         $this->dialog = $dialog;
         $this->settings = $settings;
 
-        $this->settings['enablePhpLint'] = false;
+        $this->settings['enablePhpTools'] = false;
     }
 
     /**
-     *
+     * Asks user what the path to Php source is.
      */
     public function configure()
     {
-        if (!$this->settings['enablePhpTools']) {
-            return false;
-        }
-
-        $this->settings['enablePhpLint'] = $this->dialog->askConfirmation(
+        $this->settings['enablePhpTools'] = $this->dialog->askConfirmation(
             $this->output,
-            "Do you want to enable PHP Lint? [Y/n] ",
+            "\n<comment>Do you want to install the QA tools for PHP? [Y/n] </comment>",
             true
         );
+
+        if ($this->settings['enablePhpTools']) {
+            $this->output->writeln("\n<info>Configuring PHP inspections</info>\n");
+        }
     }
 }

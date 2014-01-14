@@ -12,6 +12,8 @@ use Ibuildings\QA\Tools\Common\Settings;
 use Ibuildings\QA\Tools\Common\Configurator\Registry;
 use Ibuildings\QA\Tools\Common\DependencyInjection\Twig;
 use Ibuildings\QA\Tools\Common\CommandExistenceChecker;
+
+use Ibuildings\QA\Tools\PHP\Configurator\PhpConfigurator;
 use Ibuildings\QA\Tools\PHP\Configurator\PhpCodeSnifferConfigurator;
 use Ibuildings\QA\Tools\PHP\Configurator\PhpCopyPasteDetectorConfigurator;
 use Ibuildings\QA\Tools\PHP\Configurator\PhpLintConfigurator;
@@ -20,14 +22,18 @@ use Ibuildings\QA\Tools\PHP\Configurator\PhpSecurityCheckerConfigurator;
 use Ibuildings\QA\Tools\PHP\Configurator\PhpSourcePathConfigurator;
 use Ibuildings\QA\Tools\PHP\Configurator\PhpUnitConfigurator;
 
-use Symfony\Component\Config\Definition\Exception\Exception;
+use Ibuildings\QA\Tools\Javascript\Configurator\JavascriptConfigurator;
+use Ibuildings\QA\Tools\Javascript\Configurator\JsHintConfigurator;
+use Ibuildings\QA\Tools\Javascript\Configurator\JavascriptSourcePathConfigurator;
+
+use Ibuildings\QA\Tools\Functional\Configurator\BehatConfigurator;
+
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * Class InstallCommand
@@ -60,8 +66,6 @@ class InstallCommand extends AbstractCommand
     {
         $this->settings['buildArtifactsPath'] = 'build/artifacts';
 
-        $this->settings['enableJsHint'] = false;
-
         return $this;
     }
 
@@ -90,61 +94,43 @@ class InstallCommand extends AbstractCommand
         $this->configureProjectName($input, $output);
         $this->configureBuildArtifactsPath($input, $output);
 
-        if ($this->dialog->askConfirmation(
-            $output,
-            "\n<comment>Do you want to install the QA tools for PHP? [Y/n] </comment>",
-            true
-        )
-        ) {
-            $output->writeln("\n<info>Configuring PHP inspections</info>\n");
+        // Register configurators
+        $configuratorRegistry = new Registry();
 
-            $multiplePathHelper = new MultiplePathHelper($output, $this->dialog, BASE_DIR);
+        $multiplePathHelper = new MultiplePathHelper($output, $this->dialog, BASE_DIR);
 
-            // Register configurators
-            $configuratorRegistry = new Registry();
-            $configuratorRegistry->register(new PhpLintConfigurator($output, $this->dialog, $this->settings));
-            $configuratorRegistry->register(
-                new PhpMessDetectorConfigurator($output, $this->dialog, $this->settings, $this->twig)
-            );
-            $configuratorRegistry->register(
-                new PhpCodeSnifferConfigurator($output, $this->dialog, $multiplePathHelper, $this->settings, $this->twig)
-            );
-            $configuratorRegistry->register(
-                new PhpCopyPasteDetectorConfigurator($output, $this->dialog, $multiplePathHelper, $this->settings)
-            );
-            $configuratorRegistry->register(
-                new PhpSecurityCheckerConfigurator($output, $this->dialog, $this->settings)
-            );
-            $configuratorRegistry->register(new PhpSourcePathConfigurator($output, $this->dialog, $this->settings));
-            $configuratorRegistry->register(
-                new PhpUnitConfigurator($output, $this->dialog, $this->settings, $this->twig)
-            );
-            $configuratorRegistry->executeConfigurators();
-        }
+        // PHP
+        $configuratorRegistry->register(new PhpConfigurator($output, $this->dialog, $this->settings));
+        $configuratorRegistry->register(new PhpLintConfigurator($output, $this->dialog, $this->settings));
+        $configuratorRegistry->register(
+            new PhpMessDetectorConfigurator($output, $this->dialog, $this->settings, $this->twig)
+        );
+        $configuratorRegistry->register(
+            new PhpCodeSnifferConfigurator($output, $this->dialog, $multiplePathHelper, $this->settings, $this->twig)
+        );
+        $configuratorRegistry->register(
+            new PhpCopyPasteDetectorConfigurator($output, $this->dialog, $multiplePathHelper, $this->settings)
+        );
+        $configuratorRegistry->register(
+            new PhpSecurityCheckerConfigurator($output, $this->dialog, $this->settings)
+        );
 
-        $this->settings['enableJsTools'] = false;
-        if ($this->dialog->askConfirmation(
-            $output,
-            "\n<comment>Do you want to install the QA tools for Javascript? [Y/n] </comment>",
-            true
-        )
-        ) {
-            $this->configureJsHint($input, $output);
-            $this->configureJavaScriptSrcPath($input, $output);
+        $configuratorRegistry->register(new PhpSourcePathConfigurator($output, $this->dialog, $this->settings));
+        $configuratorRegistry->register(
+            new PhpUnitConfigurator($output, $this->dialog, $this->settings, $this->twig)
+        );
 
-            $this->writeJsHintConfig($input, $output);
-        }
+        // Javascript
+        $configuratorRegistry->register(new JavascriptConfigurator($output, $this->dialog, $this->settings));
+        $configuratorRegistry->register(new JsHintConfigurator($output, $this->dialog, $this->settings, $this->twig));
+        $configuratorRegistry->register(new JavascriptSourcePathConfigurator($output, $this->dialog, $this->settings));
 
-        if ($this->dialog->askConfirmation(
-            $output,
-            "\n<comment>Do you want to install the Behat framework? [Y/n] </comment>",
-            true
-        )
-        ) {
-            $this->configureBehat($input, $output);
-            $this->writeBehatYamlFiles($input, $output);
-            $this->writeBehatExamples($input, $output);
-        }
+        // Functional testing
+        $configuratorRegistry->register(
+            new BehatConfigurator($output, $this->dialog, $this->settings, $this->twig)
+        );
+
+        $configuratorRegistry->executeConfigurators();
 
         $this->writeAntBuildXml($input, $output);
 
@@ -204,213 +190,6 @@ class InstallCommand extends AbstractCommand
         );
     }
 
-    protected function configureJsHint(InputInterface $input, OutputInterface $output)
-    {
-        $this->settings['enableJsHint'] = $this->dialog->askConfirmation(
-            $output,
-            "Do you want to enable JSHint? [Y/n] ",
-            true
-        );
-
-        if ($this->settings['enableJsHint']) {
-            $this->settings['enableJsTools'] = true;
-        }
-
-        // Test if node is installed
-        $commandExistenceChecker = new CommandExistenceChecker();
-        if (!$commandExistenceChecker->commandExists('node', $message)) {
-            $output->writeln("\n<error>{$message} -> Not enabling JSHint.</error>");
-            $this->settings['enableJsHint'] = false;
-
-            return;
-        }
-    }
-
-    protected function configureJavaScriptSrcPath(InputInterface $input, OutputInterface $output)
-    {
-        if ($this->settings['enableJsHint']) {
-            $this->settings['javaScriptSrcPath'] = $this->dialog->askAndValidate(
-                $output,
-                "What is the path to the JavaScript source code? [src] ",
-                function ($data) {
-                    if (is_dir(BASE_DIR . '/' . $data)) {
-                        return $data;
-                    }
-                    throw new \Exception("That path doesn't exist");
-                },
-                false,
-                'src'
-            );
-        }
-    }
-
-    protected function writeJsHintConfig(InputInterface $input, OutputInterface $output)
-    {
-        if ($this->settings['enableJsHint']) {
-            $fh = fopen(BASE_DIR . '/.jshintrc', 'w');
-            fwrite(
-                $fh,
-                $this->twig->render(
-                    '.jshintrc.dist',
-                    $this->settings->toArray()
-                )
-            );
-            fclose($fh);
-            $output->writeln("\n<info>Config file for JSHint written</info>");
-        }
-    }
-
-    /**
-     * Enable in the settings if Behat is available.
-     *
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     */
-    protected function configureBehat(InputInterface $input, OutputInterface $output)
-    {
-        $this->settings['enableBehat'] = true;
-        $this->settings['featuresDir'] = BASE_DIR . '/features';
-    }
-
-    /**
-     * Install Behat yaml files.
-     *
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     */
-    protected function writeBehatYamlFiles(InputInterface $input, OutputInterface $output)
-    {
-        if (!$this->settings['enableBehat']) {
-            return;
-        }
-
-        $this->settings['baseUrl'] = $this->dialog->askAndValidate(
-            $output,
-            "What is base url of your application? [http://www.ibuildings.nl] ",
-            function ($data) {
-                if (substr($data, 0, 4) == 'http') {
-                    return $data;
-                }
-                throw new \Exception("Url needs to start with http");
-            },
-            false,
-            'http://www.ibuildings.nl'
-        );
-
-        $baseUrlCi = $this->suggestDomain($this->settings['baseUrl'], 'ci');
-
-        $this->settings['baseUrlCi'] = $this->dialog->askAndValidate(
-            $output,
-            "What is base url of the ci environment? [$baseUrlCi] ",
-            function ($data) {
-                if (substr($data, 0, 4) == 'http') {
-                    return $data;
-                }
-                throw new \Exception("Url needs to start with http");
-            },
-            false,
-            $baseUrlCi
-        );
-
-        $baseUrlDev = $this->suggestDomain($this->settings['baseUrl'], 'dev');
-
-        $this->settings['baseUrlDev'] = $this->dialog->askAndValidate(
-            $output,
-            "What is base url of your dev environment? [$baseUrlDev] ",
-            function ($data) {
-                if (substr($data, 0, 4) == 'http') {
-                    return $data;
-                }
-                throw new \Exception("Url needs to start with http");
-            },
-            false,
-            $baseUrlDev
-        );
-
-        // copy behat.yml
-        $fh = fopen(BASE_DIR . '/behat.yml', 'w');
-        fwrite(
-            $fh,
-            $this->twig->render(
-                'behat.yml.dist',
-                $this->settings->toArray()
-            )
-        );
-        fclose($fh);
-
-        // copy behat.yml
-        $fh = fopen(BASE_DIR . '/behat.dev.yml', 'w');
-        fwrite(
-            $fh,
-            $this->twig->render(
-                'behat.dev.yml.dist',
-                $this->settings->toArray()
-            )
-        );
-        fclose($fh);
-    }
-
-    /**
-     * Suggest a new domain based on the 'main url' and a subdomain string.
-     *
-     * @param string $url the main domain
-     * @param string $part the subdomain string
-     *
-     * @return string
-     */
-    protected function suggestDomain($url, $part)
-    {
-        $urlParts = parse_url($url);
-
-        $scheme = $urlParts['scheme'];
-        $host = $urlParts['host'];
-
-        if (strrpos($host, 'www') !== false) {
-            return $scheme . '://' . str_replace('www', $part, $host);
-        }
-
-        $hostParts = explode('.', $host);
-        if (count($hostParts) > 2) {
-            // change first part of the hostname
-            $hostParts[0] = $part;
-
-            return $scheme . '://' . implode('.', $hostParts);
-        } else {
-            // prefix hostname
-            return $scheme . '://' . $part . '.' . implode('.', $hostParts);
-        }
-    }
-
-    /**
-     * Install a Behat feature example.
-     *
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     */
-    protected function writeBehatExamples(InputInterface $input, OutputInterface $output)
-    {
-        if (!$this->settings['enableBehat']) {
-            return;
-        }
-
-        if (is_dir($this->settings['featuresDir'])) {
-            $output->writeln("<error>Features directory already present. No example features are installed.</error>");
-
-            return;
-        }
-
-        try {
-            $filesystem = new Filesystem();
-            $filesystem->mirror(PACKAGE_BASE_DIR . '/config-dist/features', $this->settings['featuresDir']);
-        } catch (Exception $e) {
-            $output->writeln(
-                "<error>Something went wrong when creating the features directory" . $e->getMessage() . "</error>"
-            );
-
-            return;
-        }
-    }
-
     protected function writeAntBuildXml(InputInterface $input, OutputInterface $output)
     {
         if ($this->settings['enablePhpMessDetector']
@@ -419,6 +198,7 @@ class InstallCommand extends AbstractCommand
             || $this->settings['enablePhpUnit']
             || $this->settings['enablePhpLint']
             || $this->settings['enableJsHint']
+            || $this->settings['enableBehat']
         ) {
             $fh = fopen(BASE_DIR . '/build.xml', 'w');
             fwrite(
