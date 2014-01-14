@@ -4,9 +4,10 @@ namespace Ibuildings\QA\Tools\Javascript\Configurator;
 
 use Ibuildings\QA\Tools\Common\Configurator\ConfiguratorInterface;
 use Ibuildings\QA\Tools\Common\Settings;
-use Ibuildings\QA\Tools\Common\CommandExistenceChecker;
+use Ibuildings\QA\Tools\Javascript\Console\InstallJsHintCommand;
 
 use Symfony\Component\Console\Helper\DialogHelper;
+use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -16,6 +17,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 class JsHintConfigurator
     implements ConfiguratorInterface
 {
+    /**
+     * @var InputInterface
+     */
+    protected $input;
+
     /**
      * @var OutputInterface
      */
@@ -37,22 +43,33 @@ class JsHintConfigurator
     protected $twig;
 
     /**
+     * @var InstallJsHintCommand
+     */
+    protected $installJsHintCommand;
+
+    /**
+     * @param InputInterface $input
      * @param OutputInterface $output
      * @param DialogHelper $dialog
      * @param Settings $settings
-     * @param \Twig_Environment $twig
+     * @param \Twig_Environment $twig,
+     * @param InstallJsHintCommand $installJsHintCommand
      */
     public function __construct(
+        InputInterface $input,
         OutputInterface $output,
         DialogHelper $dialog,
         Settings $settings,
-        \Twig_Environment $twig
+        \Twig_Environment $twig,
+        InstallJsHintCommand $installJsHintCommand
     )
     {
+        $this->input = $input;
         $this->output = $output;
         $this->dialog = $dialog;
         $this->settings = $settings;
         $this->twig = $twig;
+        $this->installJsHintCommand = $installJsHintCommand;
 
         $this->settings['enableJsHint'] = false;
     }
@@ -73,13 +90,9 @@ class JsHintConfigurator
             $this->settings['enableJsTools'] = true;
         }
 
-        // Test if node is installed
-        $commandExistenceChecker = new CommandExistenceChecker();
-        if (!$commandExistenceChecker->commandExists('node', $message)) {
-            $this->output->writeln("\n<error>{$message} -> Not enabling JSHint.</error>");
+        $statusCode = $this->installJsHintCommand->run($this->input, $this->output);
+        if ($statusCode) {
             $this->settings['enableJsHint'] = false;
-
-            return;
         }
     }
 

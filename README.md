@@ -31,7 +31,18 @@ To run the tools, you need to have at least Apache Ant 1.7.1 installed.
 To use the pre-commit hook you need to have:
     - at least git 1.7.8 installed
     - md5 installed (note that this can also be named md5sum depending on your OS)
-If you want to run JSHint, you also need Node.js installed.
+If you want to run JSHint, you also need Node.js and NPM installed. If you want JSHint to be automatically updated
+please add the following to your composer.json:
+```json
+    "scripts": {
+        "post-install-cmd": [
+            "bin/qa-tools install:jshint"
+        ],
+        "post-update-cmd": [
+            "bin/qa-tools install:jshint"
+        ]
+    }
+```
 
 # Installation
 It can be installed with Composer.
