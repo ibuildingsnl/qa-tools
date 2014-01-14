@@ -1,5 +1,5 @@
 {
-    "dependencies": {
-        "jshint": "1.0.0"
-    }
+  "dependencies": {
+    "jshint": "~2.4.1"
+  }
 }
