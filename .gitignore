@@ -5,4 +5,4 @@ build
 composer.lock
 .scrutinizer.yml
 phpunit.xml
-node_modules
+node_modules/jshint
