@@ -55,12 +55,12 @@ class JavascriptSourcePathConfigurator
         if (!$this->settings['enableJsHint']) {
             return;
         }
-
+        $baseDir = $this->settings['baseDir'];
         $this->settings['javaScriptSrcPath'] = $this->dialog->askAndValidate(
             $this->output,
             "What is the path to the JavaScript source code? [src] ",
-            function ($data) {
-                if (is_dir($this->settings['baseDir'] . '/' . $data)) {
+            function ($data) use ($baseDir) {
+                if (is_dir($baseDir . '/' . $data)) {
                     return $data;
                 }
                 throw new \Exception("That path doesn't exist");
