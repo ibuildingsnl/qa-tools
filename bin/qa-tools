@@ -8,9 +8,10 @@ define('BASE_DIR', realpath(__DIR__ . '/../../../../'));
 define('PACKAGE_BASE_DIR', realpath(__DIR__ . '/../'));
 require_once BASE_DIR . '/vendor/autoload.php';
 
-$application = new \Symfony\Component\Console\Application('Ibuildings QA Tools Setup', '1.1.6');
+$application = new \Symfony\Component\Console\Application('Ibuildings QA Tools Setup', '1.1.9');
 
 $application->add(new \Ibuildings\QA\Tools\Common\Console\InstallCommand());
+$application->add(new \Ibuildings\QA\Tools\Javascript\Console\InstallJsHintCommand());
 $application->add(new \Ibuildings\QA\Tools\Common\Console\InstallPreCommitHookCommand());
 $application->add(new \Ibuildings\QA\Tools\Common\Console\ChangeSetPreCommitCommand());
 $application->add(new \Ibuildings\QA\Tools\Common\Console\RunCommand());

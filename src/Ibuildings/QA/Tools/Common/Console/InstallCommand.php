@@ -122,7 +122,15 @@ class InstallCommand extends AbstractCommand
 
         // Javascript
         $configuratorRegistry->register(new JavascriptConfigurator($output, $this->dialog, $this->settings));
-        $configuratorRegistry->register(new JsHintConfigurator($output, $this->dialog, $this->settings, $this->twig));
+        $installJsHintCommand = $this->getApplication()->find('install:jshint');
+        $configuratorRegistry->register(new JsHintConfigurator(
+            $input,
+            $output,
+            $this->dialog,
+            $this->settings,
+            $this->twig,
+            $installJsHintCommand
+        ));
         $configuratorRegistry->register(new JavascriptSourcePathConfigurator($output, $this->dialog, $this->settings));
 
         // Functional testing
