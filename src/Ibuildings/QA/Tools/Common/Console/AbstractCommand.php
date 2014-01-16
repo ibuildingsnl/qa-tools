@@ -6,7 +6,6 @@
 
 namespace Ibuildings\QA\Tools\Common\Console;
 
-use Ibuildings\QA\Tools\Common\CommandExistenceChecker;
 use Ibuildings\QA\Tools\Common\Settings;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\DialogHelper;
