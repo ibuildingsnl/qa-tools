@@ -51,9 +51,12 @@ git checkout-index -af --prefix="$TMP_DIR/"
 # Remove files from TMP_DIR which are no longer present in the index
 git diff-index --cached --name-only --diff-filter=D -z HEAD | (cd "$TMP_DIR" && xargs -0 rm -f --)
 
+# Find baseDir
+BASEDIR=$(git rev-parse --show-toplevel)
+
 # Run the pre-commit build
 echo "\n\033[01;32mStarting build...\033[00m\n"
-php "{{ baseDir }}/{{ composerBinDir }}/qa-tools" run build --working-dir="$TMP_DIR"
+php "${BASEDIR}/{{ composerBinDir }}/qa-tools" run build --working-dir="$TMP_DIR"
 exitCode=$?
 
 # If exit code is not 0 then there was a failure
