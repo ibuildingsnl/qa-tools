@@ -56,6 +56,7 @@ class PhpMessDetectorConfigurator
     {
         $this->output = $output;
         $this->dialog = $dialog;
+        $this->multiplePathHelper = $multiplePathHelper;
         $this->settings = $settings;
         $this->twig = $twig;
 
