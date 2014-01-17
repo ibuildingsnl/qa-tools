@@ -103,7 +103,7 @@ class InstallCommand extends AbstractCommand
         $configuratorRegistry->register(new PhpConfigurator($output, $this->dialog, $this->settings));
         $configuratorRegistry->register(new PhpLintConfigurator($output, $this->dialog, $this->settings));
         $configuratorRegistry->register(
-            new PhpMessDetectorConfigurator($output, $this->dialog, $this->settings, $this->twig)
+            new PhpMessDetectorConfigurator($output, $this->dialog, $multiplePathHelper, $this->settings, $this->twig)
         );
         $configuratorRegistry->register(
             new PhpCodeSnifferConfigurator($output, $this->dialog, $multiplePathHelper, $this->settings, $this->twig)
