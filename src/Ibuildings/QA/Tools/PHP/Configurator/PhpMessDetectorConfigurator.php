@@ -2,6 +2,7 @@
 
 namespace Ibuildings\QA\Tools\PHP\Configurator;
 
+use Ibuildings\QA\Tools\Common\Configurator\Helper\MultiplePathHelper;
 use Ibuildings\QA\Tools\Common\Configurator\ConfiguratorInterface;
 use Ibuildings\QA\Tools\Common\Settings;
 
@@ -40,18 +41,21 @@ class PhpMessDetectorConfigurator
     /**
      * @param OutputInterface $output
      * @param DialogHelper $dialog
+     * @param MultiplePathHelper $multiplePathHelper
      * @param Settings $settings
      * @param \Twig_Environment $twig
      */
     public function __construct(
         OutputInterface $output,
         DialogHelper $dialog,
+        MultiplePathHelper $multiplePathHelper,
         Settings $settings,
         \Twig_Environment $twig
     )
     {
         $this->output = $output;
         $this->dialog = $dialog;
+        $this->multiplePathHelper = $multiplePathHelper;
         $this->settings = $settings;
         $this->twig = $twig;
 
@@ -69,6 +73,18 @@ class PhpMessDetectorConfigurator
             "Do you want to enable the PHP Mess Detector? [Y/n] ",
             true
         );
+
+
+        // Exclude default patterns
+        $excludePatterns = $this->multiplePathHelper->askPatterns(
+            "  - Which patterns should be excluded for PHP Mess Detector?",
+            '',
+            "  - Do you want to exclude custom patterns for PHP Mess Detector?",
+            false
+        );
+
+        $this->settings['phpMdExcludePatterns'] = $excludePatterns;
+
     }
 
     public function writeConfig()
