@@ -106,6 +106,9 @@
             <arg value="xml"/>
             <arg value="phpmd.xml"/>
             <arg value="--reportfile"/>
+{% if phpMdExcludePatterns %}
+            <arg value="--exclude {{ phpMdExcludePatterns|join(',') }}"/>
+{% endif %}
             <arg value="{{ buildArtifactsPath }}/logs/pmd.xml"/>
         </exec>
     </target>
