@@ -42,7 +42,7 @@ class MultiplePathHelper
     }
 
     /**
-     * Asks the user for one or more patterns.
+     * Convenience wrapper for this->ask()
      *
      * @param string $pathQuestion
      * @param string $defaultPaths
@@ -57,46 +57,29 @@ class MultiplePathHelper
         $confirmationQuestion = null,
         $defaultConfirmation = true
     ) {
-        if ($defaultPaths) {
-            $pathQuestion .= " [$defaultPaths]";
-        }
 
-        $defaultConfirmationText = ' [Y/n] ';
-        if ($defaultConfirmation === false) {
-            $defaultConfirmationText = ' [y/N] ';
-        }
+        $callback = function ($data) {
+          $paths = explode(',', $data);
 
-        if ($confirmationQuestion) {
-            if (!$this->dialog->askConfirmation(
-                $this->output,
-                $confirmationQuestion . $defaultConfirmationText,
-                $defaultConfirmation
-            )
-            ) {
-                return array();
-            }
-        }
+          $trimmedPaths = array();
+          foreach ($paths as $path) {
+            $trimmedPaths[] = trim($path);
+          }
 
-        return $this->dialog->askAndValidate(
-            $this->output,
-            $pathQuestion . ' (comma separated)',
-            function ($data) {
-                $paths = explode(',', $data);
+          return $trimmedPaths;
+        };
 
-                $trimmedPaths = array();
-                foreach ($paths as $path) {
-                    $trimmedPaths[] = trim($path);
-                }
-
-                return $trimmedPaths;
-            },
-            false,
-            $defaultPaths
-        );
+      return $this->ask(
+        $pathQuestion,
+        $defaultPaths,
+        $confirmationQuestion,
+        $defaultConfirmation,
+        $callback
+      );
     }
 
     /**
-     * Asks the user for one or more paths, paths will be validated.
+     * Convenience wrapper for this->ask()
      *
      * @param string $pathQuestion
      * @param string $defaultPaths
@@ -111,10 +94,57 @@ class MultiplePathHelper
         $confirmationQuestion = null,
         $defaultConfirmation = true
     ) {
+
+      $callback = function ($data) {
+        $paths = explode(',', $data);
+        $trimmedPaths = array();
+
+        foreach ($paths as $path) {
+          $trimmedPath = trim($path);
+
+          // Check paths
+          $fullPath = $this->baseDir . DIRECTORY_SEPARATOR . $trimmedPath;
+          if (!is_dir($fullPath)) {
+            throw new \Exception("path '{$fullPath}' doesn't exist");
+          }
+
+          $trimmedPaths[] = $trimmedPath;
+        }
+
+        return $trimmedPaths;
+      };
+
+      return $this->ask(
+        $pathQuestion,
+        $defaultPaths,
+        $confirmationQuestion,
+        $defaultConfirmation,
+        $callback
+      );
+    }
+
+    /**
+     * Ask the user for one or more paths/patterns
+     *
+     * @param string $pathQuestion
+     * @param string $defaultPaths
+     * @param null $confirmationQuestion Optional question to ask if you want to set the value
+     * @param bool $defaultConfirmation
+     * @param callable $callback
+     *
+     * @return string
+     */
+    protected function ask(
+        $pathQuestion,
+        $defaultPaths,
+        $confirmationQuestion,
+        $defaultConfirmation,
+        callable $callback
+    ) {
+
         if ($defaultPaths) {
             $pathQuestion .= " [$defaultPaths]";
         }
-
 
         $defaultConfirmationText = ' [Y/n] ';
         if ($defaultConfirmation === false) {
@@ -135,24 +165,7 @@ class MultiplePathHelper
         return $this->dialog->askAndValidate(
             $this->output,
             $pathQuestion . ' (comma separated)',
-            function ($data) {
-                $paths = explode(',', $data);
-                $trimmedPaths = array();
-
-                foreach ($paths as $path) {
-                    $trimmedPath = trim($path);
-
-                    // Check paths
-                    $fullPath = $this->baseDir . DIRECTORY_SEPARATOR . $trimmedPath;
-                    if (!is_dir($fullPath)) {
-                        throw new \Exception("path '{$fullPath}' doesn't exist");
-                    }
-
-                    $trimmedPaths[] = $trimmedPath;
-                }
-
-                return $trimmedPaths;
-            },
+            $callback,
             false,
             $defaultPaths
         );
