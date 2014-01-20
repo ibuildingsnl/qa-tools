@@ -4,7 +4,6 @@ namespace Ibuildings\QA\Tools\PHP\Configurator;
 
 use Ibuildings\QA\Tools\Common\Configurator\ConfiguratorInterface;
 use Ibuildings\QA\Tools\Common\Configurator\Helper\MultiplePathHelper;
-use Ibuildings\QA\Tools\Common\DependencyInjection\Twig;
 use Ibuildings\QA\Tools\Common\Settings;
 
 use Symfony\Component\Console\Helper\DialogHelper;

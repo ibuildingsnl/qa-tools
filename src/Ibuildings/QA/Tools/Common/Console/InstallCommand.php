@@ -8,9 +8,7 @@ namespace Ibuildings\QA\Tools\Common\Console;
 
 use Ibuildings\QA\Tools\Common\Configurator\Helper\MultiplePathHelper;
 use Ibuildings\QA\Tools\PHP\Configurator\PhpExcludePathsConfigurator;
-use Ibuildings\QA\Tools\Common\Settings;
 use Ibuildings\QA\Tools\Common\Configurator\Registry;
-use Ibuildings\QA\Tools\Common\DependencyInjection\Twig;
 use Ibuildings\QA\Tools\Common\CommandExistenceChecker;
 
 use Ibuildings\QA\Tools\PHP\Configurator\PhpConfigurator;
