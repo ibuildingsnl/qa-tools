@@ -145,7 +145,7 @@ class BehatConfigurator
             $fh,
             $this->twig->render(
                 'behat.yml.dist',
-                $this->settings->toArray()
+                $this->settings->getArrayCopy()
             )
         );
         fclose($fh);
@@ -156,7 +156,7 @@ class BehatConfigurator
             $fh,
             $this->twig->render(
                 'behat.dev.yml.dist',
-                $this->settings->toArray()
+                $this->settings->getArrayCopy()
             )
         );
         fclose($fh);

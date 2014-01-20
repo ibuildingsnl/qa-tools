@@ -110,7 +110,7 @@ class JsHintConfigurator
             $fh,
             $this->twig->render(
                 '.jshintrc.dist',
-                $this->settings->toArray()
+                $this->settings->getArrayCopy()
             )
         );
         fclose($fh);

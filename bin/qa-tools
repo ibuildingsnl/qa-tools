@@ -1,14 +1,19 @@
 #!/usr/bin/env php
 <?php
-/**
- * @author Matthijs van den Bos <matthijs@vandenbos.org>
- * @copyright 2013 Matthijs van den Bos
- */
-define('BASE_DIR', realpath(__DIR__ . '/../../../../'));
-define('PACKAGE_BASE_DIR', realpath(__DIR__ . '/../'));
-require_once BASE_DIR . '/vendor/autoload.php';
+require_once realpath(__DIR__ . '/../../../../') . '/vendor/autoload.php';
 
-$application = new \Symfony\Component\Console\Application('Ibuildings QA Tools Setup', '1.1.9');
+use \Ibuildings\QA\Tools\Common\Application;
+use \Ibuildings\QA\Tools\Common\Settings;
+
+/**
+ * Instantiate the settings object and
+ * initialize global application configuration
+ * before we pass the object to the application
+ */
+$appConfig = new Settings();
+$appConfig->initialize();
+
+$application = new Application('Ibuildings QA Tools Setup', '1.1.9', $appConfig);
 
 $application->add(new \Ibuildings\QA\Tools\Common\Console\InstallCommand());
 $application->add(new \Ibuildings\QA\Tools\Javascript\Console\InstallJsHintCommand());

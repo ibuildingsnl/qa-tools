@@ -47,11 +47,11 @@ abstract class AbstractCommand extends Command
 
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
-        $this->settings = new Settings();
+        $this->settings = $this->getApplication()->getSettings();
 
         $this->dialog = $this->getHelperSet()->get('dialog');
 
-        $loader = new \Twig_Loader_Filesystem(PACKAGE_BASE_DIR . '/config-dist');
+        $loader = new \Twig_Loader_Filesystem($this->settings['packageBaseDir'] . '/config-dist');
         $this->twig = new \Twig_Environment($loader);
         $filter = new \Twig_SimpleFilter(
             'bool',
@@ -65,18 +65,6 @@ abstract class AbstractCommand extends Command
         );
         $this->twig->addFilter($filter);
 
-        $this->settings['dirname'] = basename(BASE_DIR);
-
-        if (!defined('BASE_DIR') || !is_dir(BASE_DIR)) {
-            throw new \Exception('BASE_DIR constant is not set or invalid');
-        }
-        $this->settings['baseDir'] = BASE_DIR;
-
-        if (!defined('PACKAGE_BASE_DIR') || !is_dir(PACKAGE_BASE_DIR)) {
-            throw new \Exception('PACKAGE_BASE_DIR constant is not set or invalid');
-        }
-        $this->settings['packageBaseDir'] = PACKAGE_BASE_DIR;
-
         $this->parseComposerConfig();
     }
 
@@ -86,11 +74,11 @@ abstract class AbstractCommand extends Command
      */
     protected function parseComposerConfig()
     {
-        if (!file_exists(BASE_DIR . DIRECTORY_SEPARATOR . 'composer.json')) {
-            throw new \Exception("Could not find composer.json in project root dir '" . BASE_DIR . "'");
+        if (!file_exists($this->settings['baseDir'] . DIRECTORY_SEPARATOR . 'composer.json')) {
+            throw new \Exception("Could not find composer.json in project root dir '" . $this->settings['baseDir'] . "'");
         }
 
-        $file = file_get_contents(BASE_DIR . DIRECTORY_SEPARATOR . 'composer.json');
+        $file = file_get_contents($this->settings['baseDir'] . DIRECTORY_SEPARATOR . 'composer.json');
 
         $parsedFile = json_decode($file, true);
 
