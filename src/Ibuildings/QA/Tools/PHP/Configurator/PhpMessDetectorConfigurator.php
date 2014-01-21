@@ -90,12 +90,12 @@ class PhpMessDetectorConfigurator
     public function writeConfig()
     {
         if ($this->settings['enablePhpMessDetector']) {
-            $fh = fopen(BASE_DIR . '/phpmd.xml', 'w');
+            $fh = fopen($this->settings->getBaseDir() . '/phpmd.xml', 'w');
             fwrite(
                 $fh,
                 $this->twig->render(
                     'phpmd.xml.dist',
-                    $this->settings->toArray()
+                    $this->settings->getArrayCopy()
                 )
             );
             fclose($fh);

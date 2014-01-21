@@ -55,7 +55,7 @@ class JavascriptSourcePathConfigurator
         if (!$this->settings['enableJsHint']) {
             return;
         }
-        $baseDir = $this->settings['baseDir'];
+        $baseDir = $this->settings->getBaseDir();
         $this->settings['javaScriptSrcPath'] = $this->dialog->askAndValidate(
             $this->output,
             "What is the path to the JavaScript source code? [src] ",

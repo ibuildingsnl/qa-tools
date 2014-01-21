@@ -122,12 +122,12 @@ class PhpCodeSnifferConfigurator
     public function writeConfig()
     {
         if ($this->settings['enablePhpCodeSniffer']) {
-            $fh = fopen(BASE_DIR . '/phpcs.xml', 'w');
+            $fh = fopen($this->settings->getBaseDir() . '/phpcs.xml', 'w');
             fwrite(
                 $fh,
                 $this->twig->render(
                     'phpcs.xml.dist',
-                    $this->settings->toArray()
+                    $this->settings->getArrayCopy()
                 )
             );
             fclose($fh);

@@ -81,11 +81,12 @@ class PhpUnitConfigurator
         );
 
         if ($this->settings['customPhpUnitXml']) {
+            $settings = $this->settings;
             $this->settings['phpUnitConfigPath'] = $this->dialog->askAndValidate(
                 $output,
                 "What is the path to the custom PHPUnit config? [app/phpunit.xml.dist] ",
-                function ($data) {
-                    if (file_exists(BASE_DIR . '/' . $data)) {
+                function ($data) use ($settings) {
+                    if (file_exists($settings->getBaseDir() . '/' . $data)) {
                         return $data;
                     }
                     throw new \Exception("That path doesn't exist");
@@ -95,11 +96,12 @@ class PhpUnitConfigurator
             );
         } else {
             if ($this->settings['enablePhpUnit']) {
+                $settings = $this->settings;
                 $this->settings['phpTestsPath'] = $this->dialog->askAndValidate(
                     $output,
                     "What is the path to the PHPUnit tests? [tests] ",
-                    function ($data) {
-                        if (is_dir(BASE_DIR . '/' . $data)) {
+                    function ($data) use ($settings) {
+                        if (is_dir($settings->getBaseDir() . '/' . $data)) {
                             return $data;
                         }
                         throw new \Exception("That path doesn't exist");
@@ -115,11 +117,12 @@ class PhpUnitConfigurator
                 );
 
                 if ($this->settings['enablePhpUnitAutoload']) {
+                    $settings = $this->settings;
                     $this->settings['phpTestsAutoloadPath'] = $this->dialog->askAndValidate(
                         $output,
                         "What is the path to the autoload script for PHPUnit? [vendor/autoload.php] ",
-                        function ($data) {
-                            if (file_exists(BASE_DIR . '/' . $data)) {
+                        function ($data) use ($settings) {
+                            if (file_exists($settings->getBaseDir() . '/' . $data)) {
                                 return $data;
                             }
                             throw new \Exception("That path doesn't exist");
@@ -135,12 +138,12 @@ class PhpUnitConfigurator
     public function writeConfig()
     {
         if ($this->settings['enablePhpUnit'] && !$this->settings['customPhpUnitXml']) {
-            $fh = fopen(BASE_DIR . '/phpunit.xml', 'w');
+            $fh = fopen($this->settings->getBaseDir() . '/phpunit.xml', 'w');
             fwrite(
                 $fh,
                 $this->twig->render(
                     'phpunit.xml.dist',
-                    $this->settings->toArray()
+                    $this->settings->getArrayCopy()
                 )
             );
             fclose($fh);

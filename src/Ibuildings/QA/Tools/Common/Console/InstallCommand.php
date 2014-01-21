@@ -95,7 +95,7 @@ class InstallCommand extends AbstractCommand
         // Register configurators
         $configuratorRegistry = new Registry();
 
-        $multiplePathHelper = new MultiplePathHelper($output, $this->dialog, BASE_DIR);
+        $multiplePathHelper = new MultiplePathHelper($output, $this->dialog, $this->settings->getBaseDir());
 
         // PHP
         $configuratorRegistry->register(new PhpConfigurator($output, $this->dialog, $this->settings));
@@ -149,7 +149,7 @@ class InstallCommand extends AbstractCommand
 
     protected function configureProjectName(InputInterface $input, OutputInterface $output)
     {
-        $dirName = basename(BASE_DIR);
+        $dirName = basename($this->settings->getBaseDir());
         $guessedName = filter_var(
             ucwords(str_replace(array('-', '_'), ' ', $dirName)),
             FILTER_SANITIZE_STRING,
@@ -173,11 +173,12 @@ class InstallCommand extends AbstractCommand
     protected function configureBuildArtifactsPath(InputInterface $input, OutputInterface $output)
     {
         $dialog = $this->dialog;
+        $settings = $this->settings;
         $this->settings['buildArtifactsPath'] = $this->dialog->askAndValidate(
             $output,
             "Where do you want to store the build artifacts? [" . $this->settings['buildArtifactsPath'] . "] ",
-            function ($data) use ($output, $dialog) {
-                if (!is_dir(BASE_DIR . '/' . $data)) {
+            function ($data) use ($output, $dialog, $settings) {
+                if (!is_dir($settings->getBaseDir() . '/' . $data)) {
                     if ($dialog->askConfirmation(
                         $output,
                         "  - Are you sure? The path doesn't exist and will be created. [Y/n] ",
@@ -206,24 +207,24 @@ class InstallCommand extends AbstractCommand
             || $this->settings['enableJsHint']
             || $this->settings['enableBehat']
         ) {
-            $fh = fopen(BASE_DIR . '/build.xml', 'w');
+            $fh = fopen($this->settings->getBaseDir() . '/build.xml', 'w');
             fwrite(
                 $fh,
                 $this->twig->render(
                     'build.xml.dist',
-                    $this->settings->toArray()
+                    $this->settings->getArrayCopy()
                 )
             );
             fclose($fh);
 
             $output->writeln("\n<info>Ant build file written</info>");
 
-            $fh = fopen(BASE_DIR . '/build-pre-commit.xml', 'w');
+            $fh = fopen($this->settings->getBaseDir() . '/build-pre-commit.xml', 'w');
             fwrite(
                 $fh,
                 $this->twig->render(
                     'build-pre-commit.xml.dist',
-                    $this->settings->toArray()
+                    $this->settings->getArrayCopy()
                 )
             );
             fclose($fh);
@@ -241,9 +242,9 @@ class InstallCommand extends AbstractCommand
 
     protected function addToGitIgnore($pattern)
     {
-        if (file_exists(BASE_DIR . '/.gitignore')) {
+        if (file_exists($this->settings->getBaseDir() . '/.gitignore')) {
             // check if pattern already in there, else add
-            $lines = file(BASE_DIR . '/.gitignore');
+            $lines = file($this->settings->getBaseDir() . '/.gitignore');
             $alreadyIgnored = false;
             foreach ($lines as $line) {
                 if (trim($line) === $pattern) {
@@ -253,7 +254,7 @@ class InstallCommand extends AbstractCommand
             }
 
             if (!$alreadyIgnored) {
-                $fh = fopen(BASE_DIR . '/.gitignore', 'a');
+                $fh = fopen($this->settings->getBaseDir() . '/.gitignore', 'a');
                 fwrite(
                     $fh,
                     $pattern . "\n"
@@ -261,7 +262,7 @@ class InstallCommand extends AbstractCommand
                 fclose($fh);
             }
         } else {
-            $fh = fopen(BASE_DIR . '/.gitignore', 'w');
+            $fh = fopen($this->settings->getBaseDir() . '/.gitignore', 'w');
             fwrite(
                 $fh,
                 $pattern . "\n"

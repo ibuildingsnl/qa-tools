@@ -95,7 +95,8 @@ class MultiplePathHelper
         $defaultConfirmation = true
     ) {
 
-      $callback = function ($data) {
+      $baseDir = $this->baseDir;
+      $callback = function ($data) use ($baseDir) {
         $paths = explode(',', $data);
         $trimmedPaths = array();
 
@@ -103,7 +104,7 @@ class MultiplePathHelper
           $trimmedPath = trim($path);
 
           // Check paths
-          $fullPath = $this->baseDir . DIRECTORY_SEPARATOR . $trimmedPath;
+          $fullPath = $baseDir . DIRECTORY_SEPARATOR . $trimmedPath;
           if (!is_dir($fullPath)) {
             throw new \Exception("path '{$fullPath}' doesn't exist");
           }
@@ -139,8 +140,16 @@ class MultiplePathHelper
         $defaultPaths,
         $confirmationQuestion,
         $defaultConfirmation,
-        callable $callback
+        $callback
     ) {
+
+        /**
+         * Type hinting with callable (@see http://www.php.net/manual/en/language.types.callable.php)
+         * is only from PHP5.4+ and therefore we check with is_callable()
+         */
+        if (!is_callable($callback)) {
+            throw new \Exception('Error calling callable');
+        }
 
         if ($defaultPaths) {
             $pathQuestion .= " [$defaultPaths]";

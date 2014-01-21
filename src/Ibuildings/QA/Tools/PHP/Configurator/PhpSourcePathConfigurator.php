@@ -54,11 +54,12 @@ class PhpSourcePathConfigurator
             || $this->settings['enablePhpCodeSniffer']
             || $this->settings['enablePhpCopyPasteDetection']
         ) {
+            $settings = $this->settings;
             $this->settings['phpSrcPath'] = $this->dialog->askAndValidate(
                 $this->output,
                 "What is the path to the PHP source code? [src] ",
-                function ($data) {
-                    if (is_dir(BASE_DIR . '/' . $data)) {
+                function ($data) use ($settings) {
+                    if (is_dir($settings->getBaseDir() . '/' . $data)) {
                         return $data;
                     }
                     throw new \Exception("That path doesn't exist");
