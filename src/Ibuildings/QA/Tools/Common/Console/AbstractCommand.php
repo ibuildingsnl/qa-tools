@@ -51,7 +51,7 @@ abstract class AbstractCommand extends Command
 
         $this->dialog = $this->getHelperSet()->get('dialog');
 
-        $loader = new \Twig_Loader_Filesystem($this->settings['packageBaseDir'] . '/config-dist');
+        $loader = new \Twig_Loader_Filesystem($this->settings->getPackageBaseDir() . '/config-dist');
         $this->twig = new \Twig_Environment($loader);
         $filter = new \Twig_SimpleFilter(
             'bool',
@@ -74,11 +74,11 @@ abstract class AbstractCommand extends Command
      */
     protected function parseComposerConfig()
     {
-        if (!file_exists($this->settings['baseDir'] . DIRECTORY_SEPARATOR . 'composer.json')) {
-            throw new \Exception("Could not find composer.json in project root dir '" . $this->settings['baseDir'] . "'");
+        if (!file_exists($this->settings->getBaseDir() . DIRECTORY_SEPARATOR . 'composer.json')) {
+            throw new \Exception("Could not find composer.json in project root dir '" . $this->settings->getBaseDir() . "'");
         }
 
-        $file = file_get_contents($this->settings['baseDir'] . DIRECTORY_SEPARATOR . 'composer.json');
+        $file = file_get_contents($this->settings->getBaseDir() . DIRECTORY_SEPARATOR . 'composer.json');
 
         $parsedFile = json_decode($file, true);
 

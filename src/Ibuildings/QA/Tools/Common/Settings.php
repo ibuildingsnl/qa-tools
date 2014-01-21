@@ -5,28 +5,40 @@ namespace Ibuildings\QA\Tools\Common;
 class Settings extends \ArrayObject
 {
     /**
-     * Will setup some global Application Configuration and is used to retain
-     * Application state between runs.
+     * Instantiate the object.
+     *
+     * @param string $baseDir
+     * @param string $packageBaseDir
+     * @throws \Exception
      */
-    public function __construct()
+    public function __construct($baseDir, $packageBaseDir)
     {
+
+        if (!is_dir($packageBaseDir)) {
+            throw new \Exception('Cannot find vendor package dir:' . $packageBaseDir);
+        }
+
+        if (!is_dir($baseDir)) {
+            throw new \Exception('Cannot find project base dir:' . $baseDir);
+        }
+
+        $this['packageBaseDir'] = $packageBaseDir;
+        $this['baseDir'] = $baseDir;
     }
 
     /**
-     * Manually call the initialize() to setup some base app config settings
-     *
-     * @throws \Exception
+     * @return string
      */
-    public function initialize()
+    public function getBaseDir()
     {
-        $this['packageBaseDir'] = realpath(__DIR__ . '/../../../../../');
-        if (!is_dir($this['packageBaseDir'])) {
-            throw new \Exception('Cannot find vendor package dir:' . $this['packageBaseDir']);
-        }
+        return $this['baseDir'];
+    }
 
-        $this['baseDir'] = realpath($this['packageBaseDir'] . '/../../../');
-        if (!is_dir($this['baseDir'])) {
-            throw new \Exception('Cannot find project base dir:' . $this['baseDir']);
-        }
+    /**
+     * @return string
+     */
+    public function getPackageBaseDir()
+    {
+        return $this['packageBaseDir'];
     }
 }

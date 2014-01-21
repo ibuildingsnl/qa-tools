@@ -72,7 +72,7 @@ class InstallPreCommitHookCommand extends AbstractCommand
             return;
         }
 
-        $gitHooksDirExists = is_dir($this->settings['baseDir'] . '/.git/hooks');
+        $gitHooksDirExists = is_dir($this->settings->getBaseDir() . '/.git/hooks');
         if ($this->settings['enablePreCommitHook'] && !$gitHooksDirExists) {
             $output->writeln(
                 "<error>You don't have an initialized git repo or hooks directory. Not setting pre-commit hook.</error>"
@@ -80,7 +80,7 @@ class InstallPreCommitHookCommand extends AbstractCommand
             $this->settings['enablePreCommitHook'] = false;
         }
 
-        $gitPreCommitHookExists = file_exists($this->settings['baseDir'] . '/.git/hooks/pre-commit');
+        $gitPreCommitHookExists = file_exists($this->settings->getBaseDir() . '/.git/hooks/pre-commit');
         if ($gitPreCommitHookExists) {
             $output->writeln("<error>You already have a git pre-commit hook.</error>");
             $overwritePreCommitHook = $this->dialog->askConfirmation(
@@ -97,7 +97,7 @@ class InstallPreCommitHookCommand extends AbstractCommand
     protected function writePreCommitHook(InputInterface $input, OutputInterface $output)
     {
         if ($this->settings['enablePreCommitHook']) {
-            $fh = fopen($this->settings['baseDir'] . '/.git/hooks/pre-commit', 'w');
+            $fh = fopen($this->settings->getBaseDir() . '/.git/hooks/pre-commit', 'w');
             fwrite(
                 $fh,
                 $this->twig->render(
@@ -106,7 +106,7 @@ class InstallPreCommitHookCommand extends AbstractCommand
                 )
             );
             fclose($fh);
-            chmod($this->settings['baseDir'] . '/.git/hooks/pre-commit', 0755);
+            chmod($this->settings->getBaseDir() . '/.git/hooks/pre-commit', 0755);
             $output->writeln("\n<info>Commit hook written</info>");
         }
     }

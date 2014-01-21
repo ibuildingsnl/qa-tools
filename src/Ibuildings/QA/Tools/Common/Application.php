@@ -12,14 +12,6 @@ class Application extends BaseApplication
     protected $settings;
 
     /**
-     * @param \Ibuildings\QA\Tools\Common\Settings $settings
-     */
-    public function setSettings($settings)
-    {
-        $this->settings = $settings;
-    }
-
-    /**
      * @return \Ibuildings\QA\Tools\Common\Settings
      */
     public function getSettings()

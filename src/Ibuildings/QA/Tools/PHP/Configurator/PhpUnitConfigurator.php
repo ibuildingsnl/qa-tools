@@ -86,7 +86,7 @@ class PhpUnitConfigurator
                 $output,
                 "What is the path to the custom PHPUnit config? [app/phpunit.xml.dist] ",
                 function ($data) use ($settings) {
-                    if (file_exists($settings['baseDir'] . '/' . $data)) {
+                    if (file_exists($settings->getBaseDir() . '/' . $data)) {
                         return $data;
                     }
                     throw new \Exception("That path doesn't exist");
@@ -101,7 +101,7 @@ class PhpUnitConfigurator
                     $output,
                     "What is the path to the PHPUnit tests? [tests] ",
                     function ($data) use ($settings) {
-                        if (is_dir($settings['baseDir'] . '/' . $data)) {
+                        if (is_dir($settings->getBaseDir() . '/' . $data)) {
                             return $data;
                         }
                         throw new \Exception("That path doesn't exist");
@@ -122,7 +122,7 @@ class PhpUnitConfigurator
                         $output,
                         "What is the path to the autoload script for PHPUnit? [vendor/autoload.php] ",
                         function ($data) use ($settings) {
-                            if (file_exists($settings['baseDir'] . '/' . $data)) {
+                            if (file_exists($settings->getBaseDir() . '/' . $data)) {
                                 return $data;
                             }
                             throw new \Exception("That path doesn't exist");
@@ -138,7 +138,7 @@ class PhpUnitConfigurator
     public function writeConfig()
     {
         if ($this->settings['enablePhpUnit'] && !$this->settings['customPhpUnitXml']) {
-            $fh = fopen($this->settings['baseDir'] . '/phpunit.xml', 'w');
+            $fh = fopen($this->settings->getBaseDir() . '/phpunit.xml', 'w');
             fwrite(
                 $fh,
                 $this->twig->render(

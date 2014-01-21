@@ -105,7 +105,7 @@ class JsHintConfigurator
             return;
         }
 
-        $fh = fopen($this->settings['baseDir'] . '/.jshintrc', 'w');
+        $fh = fopen($this->settings->getBaseDir() . '/.jshintrc', 'w');
         fwrite(
             $fh,
             $this->twig->render(

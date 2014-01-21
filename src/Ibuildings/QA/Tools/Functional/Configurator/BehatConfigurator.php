@@ -72,7 +72,7 @@ class BehatConfigurator
         );
 
         if ($this->settings['enableBehat']) {
-            $this->settings['featuresDir'] = $this->settings['baseDir'] . '/features';
+            $this->settings['featuresDir'] = $this->settings->getBaseDir() . '/features';
         }
     }
 
@@ -140,7 +140,7 @@ class BehatConfigurator
         );
 
         // copy behat.yml
-        $fh = fopen($this->settings['baseDir'] . '/behat.yml', 'w');
+        $fh = fopen($this->settings->getBaseDir() . '/behat.yml', 'w');
         fwrite(
             $fh,
             $this->twig->render(
@@ -151,7 +151,7 @@ class BehatConfigurator
         fclose($fh);
 
         // copy behat.yml
-        $fh = fopen($this->settings['baseDir'] . '/behat.dev.yml', 'w');
+        $fh = fopen($this->settings->getBaseDir() . '/behat.dev.yml', 'w');
         fwrite(
             $fh,
             $this->twig->render(
@@ -212,7 +212,7 @@ class BehatConfigurator
 
         try {
             $filesystem = new Filesystem();
-            $filesystem->mirror($this->settings['packageBaseDir'] . '/config-dist/features', $this->settings['featuresDir']);
+            $filesystem->mirror($this->settings->getPackageBaseDir() . '/config-dist/features', $this->settings['featuresDir']);
         } catch (\Exception $e) {
             $output->writeln(
                 "<error>Something went wrong when creating the features directory" . $e->getMessage() . "</error>"

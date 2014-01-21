@@ -59,7 +59,7 @@ class PhpSourcePathConfigurator
                 $this->output,
                 "What is the path to the PHP source code? [src] ",
                 function ($data) use ($settings) {
-                    if (is_dir($settings['baseDir'] . '/' . $data)) {
+                    if (is_dir($settings->getBaseDir() . '/' . $data)) {
                         return $data;
                     }
                     throw new \Exception("That path doesn't exist");

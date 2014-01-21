@@ -1,19 +1,18 @@
 #!/usr/bin/env php
 <?php
-require_once realpath(__DIR__ . '/../../../../') . '/vendor/autoload.php';
+
+// Bootstrap
+$baseDir = realpath(__DIR__ . '/../../../../');
+$packageBaseDir = realpath(__DIR__ . '/../');
+
+require_once $baseDir . '/vendor/autoload.php';
 
 use \Ibuildings\QA\Tools\Common\Application;
 use \Ibuildings\QA\Tools\Common\Settings;
 
-/**
- * Instantiate the settings object and
- * initialize global application configuration
- * before we pass the object to the application
- */
-$appConfig = new Settings();
-$appConfig->initialize();
+$appConfig = new Settings($baseDir, $packageBaseDir);
 
-$application = new Application('Ibuildings QA Tools Setup', '1.1.9', $appConfig);
+$application = new Application('Ibuildings QA Tools Setup', '1.1.10', $appConfig);
 
 $application->add(new \Ibuildings\QA\Tools\Common\Console\InstallCommand());
 $application->add(new \Ibuildings\QA\Tools\Javascript\Console\InstallJsHintCommand());

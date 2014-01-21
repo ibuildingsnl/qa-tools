@@ -95,7 +95,7 @@ class InstallCommand extends AbstractCommand
         // Register configurators
         $configuratorRegistry = new Registry();
 
-        $multiplePathHelper = new MultiplePathHelper($output, $this->dialog, $this->settings['baseDir']);
+        $multiplePathHelper = new MultiplePathHelper($output, $this->dialog, $this->settings->getBaseDir());
 
         // PHP
         $configuratorRegistry->register(new PhpConfigurator($output, $this->dialog, $this->settings));
@@ -149,7 +149,7 @@ class InstallCommand extends AbstractCommand
 
     protected function configureProjectName(InputInterface $input, OutputInterface $output)
     {
-        $dirName = basename($this->settings['baseDir']);
+        $dirName = basename($this->settings->getBaseDir());
         $guessedName = filter_var(
             ucwords(str_replace(array('-', '_'), ' ', $dirName)),
             FILTER_SANITIZE_STRING,
@@ -178,7 +178,7 @@ class InstallCommand extends AbstractCommand
             $output,
             "Where do you want to store the build artifacts? [" . $this->settings['buildArtifactsPath'] . "] ",
             function ($data) use ($output, $dialog, $settings) {
-                if (!is_dir($settings['baseDir'] . '/' . $data)) {
+                if (!is_dir($settings->getBaseDir() . '/' . $data)) {
                     if ($dialog->askConfirmation(
                         $output,
                         "  - Are you sure? The path doesn't exist and will be created. [Y/n] ",
@@ -207,7 +207,7 @@ class InstallCommand extends AbstractCommand
             || $this->settings['enableJsHint']
             || $this->settings['enableBehat']
         ) {
-            $fh = fopen($this->settings['baseDir'] . '/build.xml', 'w');
+            $fh = fopen($this->settings->getBaseDir() . '/build.xml', 'w');
             fwrite(
                 $fh,
                 $this->twig->render(
@@ -219,7 +219,7 @@ class InstallCommand extends AbstractCommand
 
             $output->writeln("\n<info>Ant build file written</info>");
 
-            $fh = fopen($this->settings['baseDir'] . '/build-pre-commit.xml', 'w');
+            $fh = fopen($this->settings->getBaseDir() . '/build-pre-commit.xml', 'w');
             fwrite(
                 $fh,
                 $this->twig->render(
@@ -242,9 +242,9 @@ class InstallCommand extends AbstractCommand
 
     protected function addToGitIgnore($pattern)
     {
-        if (file_exists($this->settings['baseDir'] . '/.gitignore')) {
+        if (file_exists($this->settings->getBaseDir() . '/.gitignore')) {
             // check if pattern already in there, else add
-            $lines = file($this->settings['baseDir'] . '/.gitignore');
+            $lines = file($this->settings->getBaseDir() . '/.gitignore');
             $alreadyIgnored = false;
             foreach ($lines as $line) {
                 if (trim($line) === $pattern) {
@@ -254,7 +254,7 @@ class InstallCommand extends AbstractCommand
             }
 
             if (!$alreadyIgnored) {
-                $fh = fopen($this->settings['baseDir'] . '/.gitignore', 'a');
+                $fh = fopen($this->settings->getBaseDir() . '/.gitignore', 'a');
                 fwrite(
                     $fh,
                     $pattern . "\n"
@@ -262,7 +262,7 @@ class InstallCommand extends AbstractCommand
                 fclose($fh);
             }
         } else {
-            $fh = fopen($this->settings['baseDir'] . '/.gitignore', 'w');
+            $fh = fopen($this->settings->getBaseDir() . '/.gitignore', 'w');
             fwrite(
                 $fh,
                 $pattern . "\n"
