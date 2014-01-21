@@ -143,6 +143,10 @@ class MultiplePathHelper
         $callback
     ) {
 
+        /**
+         * Type hinting with callable (@see http://www.php.net/manual/en/language.types.callable.php)
+         * is only from PHP5.4+ and therefor we check with is_callable()
+         */
         if (!is_callable($callback)) {
             throw new \Exception('Error calling callable');
         }
