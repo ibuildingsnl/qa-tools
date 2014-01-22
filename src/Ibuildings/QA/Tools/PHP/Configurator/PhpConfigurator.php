@@ -3,8 +3,9 @@ namespace Ibuildings\QA\Tools\PHP\Configurator;
 
 use Ibuildings\QA\Tools\Common\Configurator\ConfiguratorInterface;
 use Ibuildings\QA\Tools\Common\Settings;
+use Ibuildings\QA\Tools\Common\Console\Helper\DialogInterface;
+use Ibuildings\QA\Tools\Common\Console\Helper\DialogHelper;
 
-use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -14,7 +15,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  * @package Ibuildings\QA\Tools\Php\Configurator
  */
 class PhpConfigurator
-    implements ConfiguratorInterface
+    implements ConfiguratorInterface, DialogInterface
 {
     /**
      * @var OutputInterface
@@ -33,20 +34,16 @@ class PhpConfigurator
 
     /**
      * @param OutputInterface $output
-     * @param DialogHelper $dialog
      * @param Settings $settings
      */
     public function __construct(
         OutputInterface $output,
-        DialogHelper $dialog,
         Settings $settings
     )
     {
         $this->output = $output;
-        $this->dialog = $dialog;
         $this->settings = $settings;
 
-        $this->settings['enablePhpTools'] = false;
     }
 
     /**
@@ -54,14 +51,26 @@ class PhpConfigurator
      */
     public function configure()
     {
+        $value = $this->settings['enablePhpTools'] || TRUE;
+
         $this->settings['enablePhpTools'] = $this->dialog->askConfirmation(
             $this->output,
             "\n<comment>Do you want to install the QA tools for PHP? [Y/n] </comment>",
-            true
+            $value
         );
 
         if ($this->settings['enablePhpTools']) {
             $this->output->writeln("\n<info>Configuring PHP inspections</info>\n");
         }
+    }
+
+    /**
+     * @see DialogInterface
+     *
+     * @param DialogHelper $helper
+     */
+    public function setDialogHelper(DialogHelper $helper)
+    {
+        $this->dialog = $helper;
     }
 }

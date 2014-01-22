@@ -47,6 +47,8 @@ class InstallPreCommitHookCommand extends AbstractCommand
 
     protected function configurePreCommitHook(InputInterface $input, OutputInterface $output)
     {
+        $this->dialog = $this->getApplication()->getDialogHelper();
+
         $this->settings['enablePreCommitHook'] = $this->dialog->askConfirmation(
             $output,
             "\n<comment>Do you want to enable the git pre-commit hook? It will run the QA tools on every commit [Y/n] </comment>",

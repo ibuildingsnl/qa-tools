@@ -1,9 +1,4 @@
 <?php
-/**
- * @author Matthijs van den Bos <matthijs@vandenbos.org>
- * @copyright 2013 Matthijs van den Bos
- */
-
 namespace Ibuildings\QA\Tools\Common\Console;
 
 use Ibuildings\QA\Tools\Common\Configurator\Helper\MultiplePathHelper;
@@ -27,7 +22,6 @@ use Ibuildings\QA\Tools\Javascript\Configurator\JavascriptSourcePathConfigurator
 use Ibuildings\QA\Tools\Functional\Configurator\BehatConfigurator;
 
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -98,7 +92,10 @@ class InstallCommand extends AbstractCommand
         $multiplePathHelper = new MultiplePathHelper($output, $this->dialog, $this->settings->getBaseDir());
 
         // PHP
-        $configuratorRegistry->register(new PhpConfigurator($output, $this->dialog, $this->settings));
+        $phpconfigurator = new PhpConfigurator($output, $this->settings);
+        $this->requireHelper('dialog', $phpconfigurator);
+        $configuratorRegistry->register($phpconfigurator);
+
         $configuratorRegistry->register(new PhpLintConfigurator($output, $this->dialog, $this->settings));
         $configuratorRegistry->register(
             new PhpMessDetectorConfigurator($output, $this->dialog, $multiplePathHelper, $this->settings, $this->twig)
