@@ -58,7 +58,7 @@ class PhpSecurityCheckerConfigurator
 
         $this->settings['enablePhpSecurityChecker'] = $this->dialog->askConfirmation(
             $this->output,
-            "Do you want to enable the Sensiolabs Security Checker? [Y/n] ",
+            "Do you want to enable the Sensiolabs Security Checker?",
             true
         );
     }

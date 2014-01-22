@@ -56,7 +56,7 @@ class JavascriptConfigurator
     {
         $this->settings['enableJsTools'] = $this->dialog->askConfirmation(
             $this->output,
-            "\n<comment>Do you want to install the QA tools for Javascript? [Y/n] </comment>",
+            "\nDo you want to install the QA tools for Javascript?",
             true
         );
     }

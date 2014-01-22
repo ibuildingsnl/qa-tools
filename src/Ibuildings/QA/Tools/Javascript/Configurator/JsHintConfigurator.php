@@ -82,7 +82,7 @@ class JsHintConfigurator
 
         $this->settings['enableJsHint'] = $this->dialog->askConfirmation(
             $this->output,
-            "Do you want to enable JSHint? [Y/n] ",
+            "Do you want to enable JSHint?",
             true
         );
 

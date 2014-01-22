@@ -67,7 +67,7 @@ class BehatConfigurator
     {
         $this->settings['enableBehat'] = $this->dialog->askConfirmation(
             $this->output,
-            "\n<comment>Do you want to install the Behat framework? [Y/n] </comment>",
+            "\nDo you want to install the Behat framework?",
             true
         );
 

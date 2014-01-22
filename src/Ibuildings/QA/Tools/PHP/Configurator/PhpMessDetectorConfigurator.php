@@ -70,7 +70,7 @@ class PhpMessDetectorConfigurator
 
         $this->settings['enablePhpMessDetector'] = $this->dialog->askConfirmation(
             $this->output,
-            "Do you want to enable the PHP Mess Detector? [Y/n] ",
+            "Do you want to enable the PHP Mess Detector?",
             true
         );
 

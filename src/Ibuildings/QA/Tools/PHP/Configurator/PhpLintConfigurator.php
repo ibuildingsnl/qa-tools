@@ -61,7 +61,7 @@ class PhpLintConfigurator
 
         $this->settings['enablePhpLint'] = $this->dialog->askConfirmation(
             $this->output,
-            "Do you want to enable PHP Lint? [Y/n] ",
+            "Do you want to enable PHP Lint?",
             true
         );
     }

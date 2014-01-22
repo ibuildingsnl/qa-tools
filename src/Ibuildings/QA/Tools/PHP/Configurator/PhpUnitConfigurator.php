@@ -70,13 +70,13 @@ class PhpUnitConfigurator
         $output->writeln("\n<info>Configuring PHPUnit</info>\n");
         $this->settings['enablePhpUnit'] = $this->dialog->askConfirmation(
             $output,
-            "Do you want to enable PHPunit tests? [Y/n] ",
+            "Do you want to enable PHPunit tests?",
             true
         );
 
         $this->settings['customPhpUnitXml'] = $this->dialog->askConfirmation(
             $output,
-            "Do you have a custom PHPUnit config? (for example, Symfony has one in 'app/phpunit.xml.dist') [y/N] ",
+            "Do you have a custom PHPUnit config? (for example, Symfony has one in 'app/phpunit.xml.dist')",
             false
         );
 
@@ -112,7 +112,7 @@ class PhpUnitConfigurator
 
                 $this->settings['enablePhpUnitAutoload'] = $this->dialog->askConfirmation(
                     $output,
-                    "Do you want to enable an autoload script for PHPUnit? [Y/n] ",
+                    "Do you want to enable an autoload script for PHPUnit?",
                     true
                 );
 

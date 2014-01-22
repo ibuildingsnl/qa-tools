@@ -71,7 +71,7 @@ class PhpCodeSnifferConfigurator
 
         $this->settings['enablePhpCodeSniffer'] = $this->dialog->askConfirmation(
             $this->output,
-            "Do you want to enable the PHP Code Sniffer? [Y/n] ",
+            "Do you want to enable the PHP Code Sniffer?",
             true
         );
 
@@ -95,7 +95,7 @@ class PhpCodeSnifferConfigurator
 
         $excludeSymfony = $this->dialog->askConfirmation(
             $this->output,
-            "  - Do you want to exclude some default Symfony patterns for PHP Code Sniffer? [y/N] ",
+            "  - Do you want to exclude some default Symfony patterns for PHP Code Sniffer?",
             false
         );
 

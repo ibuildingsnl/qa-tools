@@ -51,7 +51,7 @@ class InstallPreCommitHookCommand extends AbstractCommand
 
         $this->settings['enablePreCommitHook'] = $this->dialog->askConfirmation(
             $output,
-            "\n<comment>Do you want to enable the git pre-commit hook? It will run the QA tools on every commit [Y/n] </comment>",
+            "\nDo you want to enable the git pre-commit hook? It will run the QA tools on every commit",
             true
         );
 
@@ -87,7 +87,7 @@ class InstallPreCommitHookCommand extends AbstractCommand
             $output->writeln("<error>You already have a git pre-commit hook.</error>");
             $overwritePreCommitHook = $this->dialog->askConfirmation(
                 $output,
-                "  - Do you want to overwrite your current pre-commit hook? [y/N] ",
+                "  - Do you want to overwrite your current pre-commit hook?",
                 false
             );
             if (!$overwritePreCommitHook) {

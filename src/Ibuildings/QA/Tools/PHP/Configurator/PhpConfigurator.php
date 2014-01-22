@@ -55,7 +55,7 @@ class PhpConfigurator
 
         $this->settings['enablePhpTools'] = $this->dialog->askConfirmation(
             $this->output,
-            "\n<comment>Do you want to install the QA tools for PHP? [Y/n] </comment>",
+            "\nDo you want to install the QA tools for PHP?",
             $value
         );
 

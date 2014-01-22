@@ -51,6 +51,8 @@ class InstallCommand extends AbstractCommand
     {
         parent::initialize($input, $output);
 
+        $this->dialog = $this->getApplication()->getDialogHelper();
+
         $this->enableDefaultSettings();
     }
 
@@ -75,7 +77,7 @@ class InstallCommand extends AbstractCommand
 
         if (!$this->dialog->askConfirmation(
             $output,
-            "\n<comment>If you already have a build config, it will be overwritten. Do you want to continue? [Y/n] </comment>",
+            "\nIf you already have a build config, it will be overwritten. Do you want to continue?",
             true
         )
         ) {
@@ -178,7 +180,7 @@ class InstallCommand extends AbstractCommand
                 if (!is_dir($settings->getBaseDir() . '/' . $data)) {
                     if ($dialog->askConfirmation(
                         $output,
-                        "  - Are you sure? The path doesn't exist and will be created. [Y/n] ",
+                        "  - Are you sure? The path doesn't exist and will be created.",
                         true
                     )
                     ) {
