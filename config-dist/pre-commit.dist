@@ -13,15 +13,15 @@ cleanup ()
     return $?
 }
 
-control_c ()
 # run if user hits control-c
+control_c ()
 {
     cleanup
     exit $?
 }
 
 # Trap signals like ctrl-c. Execute cleanup
-trap control_c SIGHUP SIGINT SIGQUIT SIGTERM
+trap 'control_c' HUP INT QUIT TERM
 
 # Get a diff between the staged changes and HEAD
 DIFF=$(git diff --cached --name-only)
