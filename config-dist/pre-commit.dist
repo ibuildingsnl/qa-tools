@@ -2,14 +2,14 @@
 
 cleanup ()
 {
-    echo "\n\033[01;32mCleanup...\033[00m"
+    echo -e "\n\033[01;32mCleanup...\033[00m"
 
     if [[ -d "$TMP_DIR" ]]
     then
         # Removing $TMP_DIR
         rm -r "$TMP_DIR"
     fi
-    echo "\033[01;32mDone\033[00m"
+    echo -e "\033[01;32mDone\033[00m"
     return $?
 }
 
@@ -29,8 +29,8 @@ DIFF=$(git diff --cached --name-only)
 # If the diff is empty, we do nothing
 if [[ -z "$DIFF" ]]
 then
-    echo "\n\033[01;32mNothing to commit; not running qa-tools\033[00m"
-    echo "\nIf you want to commit anyway, use --no-verify"
+    echo -e "\n\033[01;32mNothing to commit; not running qa-tools\033[00m"
+    echo -e "\nIf you want to commit anyway, use --no-verify"
     exit 0;
 fi
 
@@ -44,7 +44,7 @@ MD5=$(echo $PWD/$TIMESTAMP | md5sum | sed 's/[^0-9a-zA-Z]//g')
 {% endif %}
 TMP_DIR=/tmp/qa-tools/$MD5;
 
-echo "\n\033[01;32mCreating temporary commit state at $TMP_DIR\033[00m"
+echo -e "\n\033[01;32mCreating temporary commit state at $TMP_DIR\033[00m"
 # Checkout a copy of the current index into MIRROR
 git checkout-index -af --prefix="$TMP_DIR/"
 
@@ -55,15 +55,15 @@ git diff-index --cached --name-only --diff-filter=D -z HEAD | (cd "$TMP_DIR" && 
 BASEDIR=$(git rev-parse --show-toplevel)
 
 # Run the pre-commit build
-echo "\n\033[01;32mStarting build...\033[00m\n"
+echo -e "\n\033[01;32mStarting build...\033[00m\n"
 php "${BASEDIR}/{{ composerBinDir }}/qa-tools" run build --working-dir="$TMP_DIR"
 exitCode=$?
 
 # If exit code is not 0 then there was a failure
 if [[ 0 -ne $exitCode ]]
 then
-    echo "\n\033[01;31mCommit aborted: build failed\033[00m"
-    echo "\nIf you want to commit anyway, use --no-verify"
+    echo -e "\n\033[01;31mCommit aborted: build failed\033[00m"
+    echo -e "\nIf you want to commit anyway, use --no-verify"
     rm -f phpcs-full.tmp
     exitCode=1
 fi
