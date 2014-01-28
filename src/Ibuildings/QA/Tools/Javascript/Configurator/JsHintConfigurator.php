@@ -14,8 +14,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  * Class JsHintConfigurator
  * @package Ibuildings\QA\Tools\Javascript\Configurator
  */
-class JsHintConfigurator
-    implements ConfiguratorInterface
+class JsHintConfigurator implements ConfiguratorInterface
 {
     /**
      * @var InputInterface
@@ -62,8 +61,7 @@ class JsHintConfigurator
         Settings $settings,
         \Twig_Environment $twig,
         InstallJsHintCommand $installJsHintCommand
-    )
-    {
+    ) {
         $this->input = $input;
         $this->output = $output;
         $this->dialog = $dialog;
@@ -80,10 +78,11 @@ class JsHintConfigurator
             return;
         }
 
+        $default = (empty($this->settings['enableJsHint'])) ? true : $this->settings['enableJsHint'];
         $this->settings['enableJsHint'] = $this->dialog->askConfirmation(
             $this->output,
             "Do you want to enable JSHint?",
-            true
+            $default
         );
 
         if ($this->settings['enableJsHint']) {

@@ -15,8 +15,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  * Class PhpCopyPasteDetectorConfigurator
  * @package Ibuildings\QA\Tools\PHP\Configurator
  */
-class PhpCopyPasteDetectorConfigurator
-    implements ConfiguratorInterface
+class PhpCopyPasteDetectorConfigurator implements ConfiguratorInterface
 {
     /**
      * @var OutputInterface
@@ -49,8 +48,7 @@ class PhpCopyPasteDetectorConfigurator
         DialogHelper $dialog,
         MultiplePathHelper $multiplePathHelper,
         Settings $settings
-    )
-    {
+    ) {
         $this->output = $output;
         $this->dialog = $dialog;
         $this->multiplePathHelper = $multiplePathHelper;
@@ -65,19 +63,27 @@ class PhpCopyPasteDetectorConfigurator
             return false;
         }
 
+        $default = (empty($this->settings['enablePhpCopyPasteDetection']))
+            ? true
+            : $this->settings['enablePhpCopyPasteDetection'];
         $this->settings['enablePhpCopyPasteDetection'] = $this->dialog->askConfirmation(
             $this->output,
             "Do you want to enable PHP Copy Paste Detection?",
-            true
+            $default
         );
 
         if (!$this->settings['enablePhpCopyPasteDetection']) {
             return;
         }
 
+        // Tests is the Symfony default
+        $default = (!empty($this->settings['phpCpdExcludePatterns']))
+            ? implode(',', $this->settings['phpCpdExcludePatterns'])
+            : 'Tests';
+
         $this->settings['phpCpdExcludePatterns'] = $this->multiplePathHelper->askPatterns(
             "Which patterns should be excluded for PHP Copy Paste detection?",
-            "Tests", // Tests is the Symfony default
+            $default,
             "Do you want to exclude patterns for PHP Copy Paste detection?"
         );
     }

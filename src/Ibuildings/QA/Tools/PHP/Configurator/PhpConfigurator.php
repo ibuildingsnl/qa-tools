@@ -14,8 +14,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  * Class PhpConfigurator
  * @package Ibuildings\QA\Tools\Php\Configurator
  */
-class PhpConfigurator
-    implements ConfiguratorInterface, DialogInterface
+class PhpConfigurator implements ConfiguratorInterface, DialogInterface
 {
     /**
      * @var OutputInterface
@@ -39,8 +38,7 @@ class PhpConfigurator
     public function __construct(
         OutputInterface $output,
         Settings $settings
-    )
-    {
+    ) {
         $this->output = $output;
         $this->settings = $settings;
 
@@ -51,12 +49,11 @@ class PhpConfigurator
      */
     public function configure()
     {
-        $value = $this->settings['enablePhpTools'] || TRUE;
-
+        $default = (empty($this->settings['enablePhpTools'])) ? true : $this->settings['enablePhpTools'];
         $this->settings['enablePhpTools'] = $this->dialog->askConfirmation(
             $this->output,
             "\nDo you want to install the QA tools for PHP?",
-            $value
+            $default
         );
 
         if ($this->settings['enablePhpTools']) {

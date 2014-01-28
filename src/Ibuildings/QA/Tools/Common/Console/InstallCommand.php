@@ -47,22 +47,21 @@ class InstallCommand extends AbstractCommand
             ->setHelp('Installs all tools and config files');
     }
 
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     */
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
         parent::initialize($input, $output);
 
         $this->dialog = $this->getApplication()->getDialogHelper();
-
-        $this->enableDefaultSettings();
     }
 
-    private function enableDefaultSettings()
-    {
-        $this->settings['buildArtifactsPath'] = 'build/artifacts';
-
-        return $this;
-    }
-
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $output->writeln("<info>Starting setup of Ibuildings QA Tools<info>");
@@ -155,9 +154,10 @@ class InstallCommand extends AbstractCommand
             FILTER_FLAG_STRIP_LOW | FILTER_FLAG_STRIP_LOW
         );
 
+        $default = (empty($this->settings['projectName'])) ? $guessedName : $this->settings['projectName'];
         $this->settings['projectName'] = $this->dialog->askAndValidate(
             $output,
-            "What is the name of the project? [$guessedName] ",
+            "What is the name of the project? [$default] ",
             function ($data) {
                 if (preg_match('/^[\w\.\s]+$/', $data)) {
                     return $data;
@@ -165,7 +165,7 @@ class InstallCommand extends AbstractCommand
                 throw new \Exception("The project name may only contain 'a-zA-Z0-9_. '");
             },
             false,
-            $guessedName
+            $default
         );
     }
 
@@ -173,9 +173,12 @@ class InstallCommand extends AbstractCommand
     {
         $dialog = $this->dialog;
         $settings = $this->settings;
+        $default = (empty($this->settings['buildArtifactsPath']))
+            ? 'build/artifacts'
+            : $this->settings['buildArtifactsPath'];
         $this->settings['buildArtifactsPath'] = $this->dialog->askAndValidate(
             $output,
-            "Where do you want to store the build artifacts? [" . $this->settings['buildArtifactsPath'] . "] ",
+            "Where do you want to store the build artifacts? [{$default}] ",
             function ($data) use ($output, $dialog, $settings) {
                 if (!is_dir($settings->getBaseDir() . '/' . $data)) {
                     if ($dialog->askConfirmation(
@@ -192,7 +195,7 @@ class InstallCommand extends AbstractCommand
                 return $data;
             },
             false,
-            $this->settings['buildArtifactsPath']
+            $default
         );
     }
 

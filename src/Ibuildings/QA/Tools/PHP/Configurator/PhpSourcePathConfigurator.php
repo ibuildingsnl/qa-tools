@@ -14,8 +14,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  * Class PhpSourcePathConfigurator
  * @package Ibuildings\QA\Tools\PHP\Configurator
  */
-class PhpSourcePathConfigurator
-    implements ConfiguratorInterface
+class PhpSourcePathConfigurator implements ConfiguratorInterface
 {
     /**
      * @var OutputInterface
@@ -41,8 +40,7 @@ class PhpSourcePathConfigurator
         OutputInterface $output,
         DialogHelper $dialog,
         Settings $settings
-    )
-    {
+    ) {
         $this->output = $output;
         $this->dialog = $dialog;
         $this->settings = $settings;
@@ -55,9 +53,10 @@ class PhpSourcePathConfigurator
             || $this->settings['enablePhpCopyPasteDetection']
         ) {
             $settings = $this->settings;
+            $default =  (empty($settings['phpSrcPath'])) ? 'src' : $settings['phpSrcPath'];
             $this->settings['phpSrcPath'] = $this->dialog->askAndValidate(
                 $this->output,
-                "What is the path to the PHP source code? [src] ",
+                "What is the path to the PHP source code? [{$default}] ",
                 function ($data) use ($settings) {
                     if (is_dir($settings->getBaseDir() . '/' . $data)) {
                         return $data;
@@ -65,7 +64,7 @@ class PhpSourcePathConfigurator
                     throw new \Exception("That path doesn't exist");
                 },
                 false,
-                'src'
+                $default
             );
         }
     }
