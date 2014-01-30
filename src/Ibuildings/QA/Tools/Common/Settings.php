@@ -9,7 +9,7 @@ class Settings extends \ArrayObject
     /**
      * @var string
      */
-    protected $filename = 'settings.json';
+    protected $filename = 'qa-tools.json';
 
     /**
      * Instantiate the object.
