@@ -54,7 +54,7 @@ class InstallJsHintCommand extends AbstractCommand
         }
 
         // Install npm dependencies (JSHint)
-        exec("cd vendor/ibuildings/qa-tools && npm install", $output, $returnVal);
+        exec("cd vendor/ibuildings/qa-tools && npm install && ln -sf ../node_modules/.bin/jshint bin/", $output, $returnVal);
         if (!empty($returnVal)) {
             $output->writeln("\n<error>Could not install JSHint -> Not enabling JSHint.</error>");
             $this->settings['enableJsHint'] = false;
