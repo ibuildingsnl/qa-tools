@@ -6,7 +6,7 @@
             depends="prepare-environment{% if enablePhpLint %},php-lint{% endif %}{% if enableJsHint %},jshint{% endif %}{% if enablePhpMessDetector %},phpmd{% endif %}{% if enablePhpCodeSniffer %},phpcs{% endif %}{% if enablePhpUnit %},phpunit{% endif %}"/>
 
     <target name="prepare-environment"
-            depends="set-test-tree-location,get-changeset,composer-run-install">
+            depends="set-test-tree-location,get-changeset{% if enableComposer %},composer-run-install{% endif %}">
         <echo message="OK"/>
     </target>
 
