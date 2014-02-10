@@ -7,6 +7,7 @@
 namespace Ibuildings\QA\Tools\Common\Console;
 
 use Ibuildings\QA\Tools\Common\Configurator\Helper\MultiplePathHelper;
+use Ibuildings\QA\Tools\PHP\Configurator\PhpComposerConfigurator;
 use Ibuildings\QA\Tools\PHP\Configurator\PhpExcludePathsConfigurator;
 use Ibuildings\QA\Tools\Common\Configurator\Registry;
 use Ibuildings\QA\Tools\Common\CommandExistenceChecker;
@@ -99,6 +100,7 @@ class InstallCommand extends AbstractCommand
 
         // PHP
         $configuratorRegistry->register(new PhpConfigurator($output, $this->dialog, $this->settings));
+        $configuratorRegistry->register(new PhpComposerConfigurator($output, $this->dialog, $this->settings));
         $configuratorRegistry->register(new PhpLintConfigurator($output, $this->dialog, $this->settings));
         $configuratorRegistry->register(
             new PhpMessDetectorConfigurator($output, $this->dialog, $multiplePathHelper, $this->settings, $this->twig)
