@@ -4,11 +4,9 @@ cleanup ()
 {
     echo -e "\n\033[01;32mCleanup...\033[00m"
 
-    if [[ -d "$TMP_DIR" ]]
-    then
-        # Removing $TMP_DIR
-        rm -r "$TMP_DIR"
-    fi
+    # do some cleanup
+    rm -f phpcs-full.tmp
+
     echo -e "\033[01;32mDone\033[00m"
     return $?
 }
@@ -18,6 +16,18 @@ control_c ()
 {
     cleanup
     exit $?
+}
+
+# We need tog grab the keyboard because git hooks normally run non-interactively
+keyboard_grab ()
+{
+    # Allows us to read user input below, assigns stdin to keyboard
+    exec < /dev/tty
+}
+
+keyboard_release ()
+{
+    exec <&-
 }
 
 # Trap signals like ctrl-c. Execute cleanup
@@ -31,32 +41,42 @@ if [[ -z "$DIFF" ]]
 then
     echo -e "\n\033[01;32mNothing to commit; not running qa-tools\033[00m"
     echo -e "\nIf you want to commit anyway, use --no-verify"
-    exit 0;
+    exit 1;
 fi
 
-TIMESTAMP=$(date +%s)
+UNSTAGED=$(git diff --name-status)
+UNTRACKED=$(git ls-files -o --exclude-standard)
 
-{# use different command/parameters depending on the available command #}
-{% if md5Command == 'md5' %}
-MD5=$({{ md5Command }} -q -s $PWD/$TIMESTAMP)
-{% else %}
-MD5=$(echo $PWD/$TIMESTAMP | md5sum | sed 's/[^0-9a-zA-Z]//g')
-{% endif %}
-TMP_DIR=/tmp/qa-tools/$MD5;
+# If there are unstaged changes, we ask to confirm
+if [[ -n "$UNSTAGED"  || -n "$UNTRACKED" ]]
+then
+    echo -e "\n\033[01;32mThere are unstaged or untracked changes:\033[00m"
+    if [[ -n "$UNSTAGED" ]]
+    then
+        echo -e "\nUNSTAGED:"
+        echo -e "\n$UNSTAGED\n"
+    fi
+    if [[ -n "$UNTRACKED" ]]
+    then
+        echo -e "\nUNTRACKED:"
+        echo -e "\n$UNTRACKED\n"
+    fi
 
-echo -e "\n\033[01;32mCreating temporary commit state at $TMP_DIR\033[00m"
-# Checkout a copy of the current index into MIRROR
-git checkout-index -af --prefix="$TMP_DIR/"
-
-# Remove files from TMP_DIR which are no longer present in the index
-git diff-index --cached --name-only --diff-filter=D -z HEAD | (cd "$TMP_DIR" && xargs -0 rm -f --)
+    keyboard_grab
+    read -r -p "Do you want to continue? [Y/n] " response
+    if [[ $response =~ ^([nN][oO]|[nN])$ ]]
+    then
+        exit 1;
+    fi
+    keyboard_release
+fi
 
 # Find baseDir
 BASEDIR=$(git rev-parse --show-toplevel)
 
 # Run the pre-commit build
 echo -e "\n\033[01;32mStarting build...\033[00m\n"
-php "${BASEDIR}/{{ composerBinDir }}/qa-tools" run build --working-dir="$TMP_DIR"
+php "${BASEDIR}/{{ composerBinDir }}/qa-tools" run 
 exitCode=$?
 
 # If exit code is not 0 then there was a failure
@@ -64,7 +84,6 @@ if [[ 0 -ne $exitCode ]]
 then
     echo -e "\n\033[01;31mCommit aborted: build failed\033[00m"
     echo -e "\nIf you want to commit anyway, use --no-verify"
-    rm -f phpcs-full.tmp
     exitCode=1
 fi
 
