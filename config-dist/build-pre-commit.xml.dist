@@ -6,7 +6,7 @@
             depends="prepare-environment{% if enablePhpLint %},php-lint{% endif %}{% if enableJsHint %},jshint{% endif %}{% if enablePhpMessDetector %},phpmd{% endif %}{% if enablePhpCodeSniffer %},phpcs{% endif %}{% if enablePhpUnit %},phpunit{% endif %}"/>
 
     <target name="prepare-environment"
-            depends="set-test-tree-location,get-changeset{% if enableComposer %},composer-run-install{% endif %}">
+            depends="set-test-tree-location,get-changeset{% if enableComposer == 'ask'%},composer-ask-install{% elseif enableComposer %},composer-run-install{% endif %}">
         <echo message="OK"/>
     </target>
 
@@ -144,6 +144,24 @@
             <arg line="${test-tree-location}/composer.phar install --prefer-dist --quiet --no-interaction --working-dir ${test-tree-location}"/>
         </exec>
     </target>
+    
+    {% if enableComposer == 'ask' %}
+    <target name="composer-ask-install" if="do.run-composer" depends="composer-confirm-install">
+        <echo message="Running composer install..."/>
+        <antcall target="composer-run-install" />
+    </target>
+
+    <target name="composer-confirm-install">
+        <input
+                message="Do you want to run composer install for this commit?"
+                validargs="y,n"
+                addproperty="input.run-composer-install"
+                />
+        <condition property="do.run-composer">
+            <equals arg1="y" arg2="${input.run-composer-install}"/>
+        </condition>
+    </target>
+    {% endif %}
 
     {% if enablePhpLint%}<target name="php-lint"
             depends="get-changeset.php-absolute.newlinesep"
