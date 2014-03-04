@@ -39,7 +39,7 @@ please add the following to your composer.json:
             "vendor/ibuildings/qa-tools/bin/qa-tools install:jshint"
         ],
         "post-update-cmd": [
-            "vendor/ibuildings/qa-tools//bin/qa-tools install:jshint"
+            "vendor/ibuildings/qa-tools/bin/qa-tools install:jshint"
         ]
     }
 ```
