@@ -1,7 +1,12 @@
 <?php
+
 /**
- * @author Lucas van Lierop <lucas@vanlierop.org>
- * @copyright 2013 Lucas van Lierop
+ * This file is part of Ibuildings QA-Tools.
+ *
+ * (c) Ibuildings
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace Ibuildings\QA\Tools\Javascript\Console;
