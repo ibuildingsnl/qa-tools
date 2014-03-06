@@ -13,9 +13,7 @@ namespace Ibuildings\QA\Tools\Javascript\Console;
 
 use Ibuildings\QA\Tools\Common\CommandExistenceChecker;
 use Ibuildings\QA\Tools\Common\Console\AbstractCommand;
-use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -59,7 +57,7 @@ class InstallJsHintCommand extends AbstractCommand
         }
 
         // Install npm dependencies (JSHint)
-        exec("cd vendor/ibuildings/qa-tools && npm install && ln -sf ../node_modules/.bin/jshint bin/", $output, $returnVal);
+        exec("cd vendor/ibuildings/qa-tools && npm install && ln -sf ../node_modules/.bin/jshint bin/", $consoleOutput, $returnVal);
         if (!empty($returnVal)) {
             $output->writeln("\n<error>Could not install JSHint -> Not enabling JSHint.</error>");
             $this->settings['enableJsHint'] = false;

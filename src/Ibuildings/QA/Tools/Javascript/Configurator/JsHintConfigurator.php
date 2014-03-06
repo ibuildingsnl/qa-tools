@@ -95,8 +95,8 @@ class JsHintConfigurator
             true
         );
 
-        if ($this->settings['enableJsHint']) {
-            $this->settings['enableJsTools'] = true;
+        if ($this->settings['enableJsHint'] === false) {
+            return;
         }
 
         $statusCode = $this->installJsHintCommand->run($this->input, $this->output);

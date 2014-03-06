@@ -22,6 +22,7 @@ use Symfony\Component\Filesystem\Filesystem;
  * Can configure settings for Behat.
  *
  * Class BehatConfigurator
+ *
  * @package Ibuildings\QA\Tools\Functional\Configurator
  */
 class BehatConfigurator
@@ -48,9 +49,9 @@ class BehatConfigurator
     protected $twig;
 
     /**
-     * @param OutputInterface $output
-     * @param DialogHelper $dialog
-     * @param Settings $settings
+     * @param OutputInterface   $output
+     * @param DialogHelper      $dialog
+     * @param Settings          $settings
      * @param \Twig_Environment $twig
      * @param \Twig_Environment $twig
      */
@@ -175,7 +176,7 @@ class BehatConfigurator
     /**
      * Suggest a new domain based on the 'main url' and a subdomain string.
      *
-     * @param string $url the main domain
+     * @param string $url  the main domain
      * @param string $part the subdomain string
      *
      * @return string
