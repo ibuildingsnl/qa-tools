@@ -121,7 +121,6 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
         $dialog->expects($this->at(9))->method('askConfirmation')->will($this->returnValue(true));
 
         //Which coding standard do you want to use? (PEAR, PHPCS, PSR1, PSR2, Squiz, Zend)
-        //Where do you want to store the build artifacts?
         $dialog->expects($this->at(10))->method('askAndValidate')->will($this->returnValue('PSR2'));
 
         //-- Do you want to exclude some default Symfony patterns for PHP Code Sniffer? [y/N]
@@ -180,8 +179,6 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(array('command' => $command->getName()));
-
-        $this->assertRegExp('/.../', $commandTester->getDisplay());
 
         $display = $commandTester->getDisplay();
         $this->assertContains('Config file for PHP Mess Detector written', $display);

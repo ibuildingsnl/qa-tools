@@ -76,7 +76,7 @@ BASEDIR=$(git rev-parse --show-toplevel)
 
 # Run the pre-commit build
 echo -e "\n\033[01;32mStarting build...\033[00m\n"
-php "${BASEDIR}/{{ composerBinDir }}/qa-tools" run
+php "${BASEDIR}/vendor/bin/qa-tools" run
 exitCode=$?
 
 # If exit code is not 0 then there was a failure
