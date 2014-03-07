@@ -11,7 +11,6 @@
 
 namespace Ibuildings\QA\Tools\Common\Console;
 
-use Ibuildings\QA\Tools\Common\CommandExistenceChecker;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Input\InputArgument;
@@ -120,14 +119,6 @@ class InstallPreCommitHookCommand extends AbstractCommand
             chmod($this->settings->getBaseDir() . '/.git/hooks/pre-commit', 0755);
             $output->writeln("\n<info>Commit hook written</info>");
         }
-    }
-
-    /**
-     * @return CommandExistenceChecker
-     */
-    protected function getCommitExistenceChecker()
-    {
-        return new CommandExistenceChecker();
     }
 
     /**

@@ -1,5 +1,14 @@
 <?php
 
+/**
+ * This file is part of Ibuildings QA-Tools.
+ *
+ * (c) Ibuildings
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Ibuildings\QA\tests\Common\Console;
 
 use Ibuildings\QA\Tools\Common\Application;
@@ -7,7 +16,11 @@ use Ibuildings\QA\Tools\Common\Console\InstallCommand;
 use Ibuildings\QA\Tools\Common\Settings;
 use Symfony\Component\Console\Tester\CommandTester;
 
-
+/**
+ * Class InstallCommandTest
+ *
+ * @package Ibuildings\QA\tests\Common\Console
+ */
 class InstallCommandTest extends \PHPUnit_Framework_TestCase
 {
 
@@ -75,6 +88,34 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
         $commandTester->execute(array('command' => $command->getName()));
 
         $this->assertContains('No QA tools enabled. No configuration written', $commandTester->getDisplay());
+    }
+
+    /**
+     * @test
+     */
+    public function antNotFound()
+    {
+        $checker = $this->getMock('Ibuildings\QA\Tools\Common\CommandExistenceChecker', array('commandExists'));
+        $checker->expects($this->any())->method('commandExists')->will($this->returnValue(false));
+
+        $installCommand = new \Ibuildings\QA\tests\mock\InstallCommand();
+        $installCommand->setChecker($checker);
+
+        $this->application->add($installCommand);
+
+        /** @var InstallCommand $command */
+        $command = $this->application->find('install');
+
+        $commandTester = new CommandTester($command);
+
+        $commandTester->execute(
+            array(
+                'command' => $command->getName()
+            )
+        );
+
+        $display = $commandTester->getDisplay();
+        $this->assertContains('-> Exiting', $display);
     }
 
     /**

@@ -16,39 +16,16 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Class InstallPreCommitHookCommand
+ * Class InstallCommand
  *
  * @package Ibuildings\QA\tests\mock
  */
-class InstallPreCommitHookCommand extends \Ibuildings\QA\Tools\Common\Console\InstallPreCommitHookCommand
+class InstallCommand extends \Ibuildings\QA\Tools\Common\Console\InstallCommand
 {
     /**
      * @var CommandExistenceChecker
      */
     protected $checker;
-
-    /**
-     * used to save rendered precommithook instead of saving it to file
-     *
-     * @var string
-     */
-    public $precommitHookContent;
-
-    /**
-     * Overwrite to be able to catch rendered output to a variable
-     *
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     */
-    protected function writePreCommitHook(InputInterface $input, OutputInterface $output)
-    {
-        $this->precommitHookContent = $this->twig->render(
-            'pre-commit.dist',
-            $this->settings->getArrayCopy()
-        );
-
-        $output->writeln("\n<info>Commit hook written</info>");
-    }
 
     /**
      * @param \Ibuildings\QA\Tools\Common\CommandExistenceChecker $checker

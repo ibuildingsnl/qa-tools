@@ -1,5 +1,14 @@
 <?php
 
+/**
+ * This file is part of Ibuildings QA-Tools.
+ *
+ * (c) Ibuildings
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Ibuildings\QA\tests\Common\Console;
 
 use Ibuildings\QA\Tools\Common\Application;
@@ -7,6 +16,11 @@ use Ibuildings\QA\Tools\Common\Console\ChangeSetPreCommitCommand;
 use Ibuildings\QA\Tools\Common\Settings;
 use Symfony\Component\Console\Tester\CommandTester;
 
+/**
+ * Class ChangeSetPreCommitCommandTest
+ *
+ * @package Ibuildings\QA\tests\Common\Console
+ */
 class ChangeSetPreCommitCommandTest extends \PHPUnit_Framework_TestCase
 {
     protected $application;

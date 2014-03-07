@@ -13,9 +13,7 @@ namespace Ibuildings\QA\Tools\Common\Console;
 
 use Ibuildings\QA\Tools\Common\Configurator\Helper\MultiplePathHelper;
 use Ibuildings\QA\Tools\PHP\Configurator\PhpComposerConfigurator;
-use Ibuildings\QA\Tools\PHP\Configurator\PhpExcludePathsConfigurator;
 use Ibuildings\QA\Tools\Common\Configurator\Registry;
-use Ibuildings\QA\Tools\Common\CommandExistenceChecker;
 
 use Ibuildings\QA\Tools\PHP\Configurator\PhpConfigurator;
 use Ibuildings\QA\Tools\PHP\Configurator\PhpCodeSnifferConfigurator;
@@ -78,7 +76,7 @@ class InstallCommand extends AbstractCommand
         $output->writeln("<info>Starting setup of Ibuildings QA Tools<info>");
 
         // Test if correct ant version is installed
-        $commandExistenceChecker = new CommandExistenceChecker();
+        $commandExistenceChecker = $this->getCommitExistenceChecker();
         if (!$commandExistenceChecker->commandExists('ant -version', $message, InstallCommand::MINIMAL_VERSION_ANT)) {
             $output->writeln("\n<error>{$message} -> Exiting.</error>");
 
@@ -146,9 +144,6 @@ class InstallCommand extends AbstractCommand
         $configuratorRegistry->executeConfigurators();
 
         $this->writeAntBuildXml($input, $output);
-
-        //        $command = $this->getApplication()->find('install:pre-push');
-        //        $command->run($input, $output);
 
         $command = $this->getApplication()->find('install:pre-commit');
         $command->run($input, $output);

@@ -1,5 +1,14 @@
 <?php
 
+/**
+ * This file is part of Ibuildings QA-Tools.
+ *
+ * (c) Ibuildings
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Ibuildings\QA\tests\Common\Console;
 
 use Ibuildings\QA\tests\mock\InstallPreCommitHookCommand;
@@ -8,6 +17,11 @@ use Ibuildings\QA\Tools\Common\Console\AbstractCommand;
 use Ibuildings\QA\Tools\Common\Settings;
 use Symfony\Component\Console\Tester\CommandTester;
 
+/**
+ * Class InstallPreCommitHookCommandTest
+ *
+ * @package Ibuildings\QA\tests\Common\Console
+ */
 class InstallPreCommitHookCommandTest extends \PHPUnit_Framework_TestCase
 {
     /**

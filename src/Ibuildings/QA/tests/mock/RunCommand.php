@@ -16,39 +16,16 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Class InstallPreCommitHookCommand
+ * Class RunCommand
  *
  * @package Ibuildings\QA\tests\mock
  */
-class InstallPreCommitHookCommand extends \Ibuildings\QA\Tools\Common\Console\InstallPreCommitHookCommand
+class RunCommand extends \Ibuildings\QA\Tools\Common\Console\RunCommand
 {
     /**
      * @var CommandExistenceChecker
      */
     protected $checker;
-
-    /**
-     * used to save rendered precommithook instead of saving it to file
-     *
-     * @var string
-     */
-    public $precommitHookContent;
-
-    /**
-     * Overwrite to be able to catch rendered output to a variable
-     *
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     */
-    protected function writePreCommitHook(InputInterface $input, OutputInterface $output)
-    {
-        $this->precommitHookContent = $this->twig->render(
-            'pre-commit.dist',
-            $this->settings->getArrayCopy()
-        );
-
-        $output->writeln("\n<info>Commit hook written</info>");
-    }
 
     /**
      * @param \Ibuildings\QA\Tools\Common\CommandExistenceChecker $checker
@@ -70,5 +47,19 @@ class InstallPreCommitHookCommand extends \Ibuildings\QA\Tools\Common\Console\In
         }
 
         return new CommandExistenceChecker();
+    }
+
+    /**
+     * We don't want to really run ant so overwrite the function
+     *
+     * @param string $verbose
+     * @param string $target
+     * @param string $dirOption
+     *
+     * @return int|void
+     */
+    protected function runAnt($verbose, $target, $dirOption)
+    {
+        return'don\'t exit php unit would not like that';
     }
 }
