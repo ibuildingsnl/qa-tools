@@ -165,7 +165,7 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
         $dialog->expects($this->at(10))->method('askAndValidate')->will($this->returnValue('PSR2'));
 
         //-- Do you want to exclude some default Symfony patterns for PHP Code Sniffer? [y/N]
-        $dialog->expects($this->at(11))->method('askConfirmation')->will($this->returnValue(false));
+        $dialog->expects($this->at(11))->method('askConfirmation')->will($this->returnValue(true));
 
         //- Do you want to exclude some custom patterns for PHP Code Sniffer? [y/N]
         $dialog->expects($this->at(12))->method('askConfirmation')->will($this->returnValue(false));
