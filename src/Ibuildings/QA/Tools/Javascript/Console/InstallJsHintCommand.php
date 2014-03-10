@@ -40,7 +40,7 @@ class InstallJsHintCommand extends AbstractCommand
         $output->writeln("<info>Starting setup of the pre-commit hook for the Ibuildings QA Tools<info>");
 
         // Test if node is installed
-        $commandExistenceChecker = new CommandExistenceChecker();
+        $commandExistenceChecker = $this->getCommitExistenceChecker();
         if (!$commandExistenceChecker->commandExists('node', $message)) {
             $output->writeln("\n<error>{$message} -> Not enabling JSHint.</error>");
 
@@ -48,7 +48,6 @@ class InstallJsHintCommand extends AbstractCommand
         }
 
         // Test if node package manager is installed
-        $commandExistenceChecker = new CommandExistenceChecker();
         if (!$commandExistenceChecker->commandExists('npm', $message)) {
             $output->writeln("\n<error>{$message} -> Not enabling JSHint.</error>");
             $this->settings['enableJsHint'] = false;
@@ -56,8 +55,8 @@ class InstallJsHintCommand extends AbstractCommand
             return self::CODE_ERROR;
         }
 
-        // Install npm dependencies (JSHint)
-        exec("cd vendor/ibuildings/qa-tools && npm install && ln -sf ../node_modules/.bin/jshint bin/", $consoleOutput, $returnVal);
+        $returnVal = $this->installNpmDependencies();
+
         if (!empty($returnVal)) {
             $output->writeln("\n<error>Could not install JSHint -> Not enabling JSHint.</error>");
             $this->settings['enableJsHint'] = false;
@@ -66,5 +65,20 @@ class InstallJsHintCommand extends AbstractCommand
         }
 
         return self::CODE_SUCCESS;
+    }
+
+    /**
+     * Will install jshint
+     *
+     * @return mixed
+     *
+     * @codeCoverageIgnore
+     */
+    protected function installNpmDependencies()
+    {
+        // Install npm dependencies (JSHint)
+        exec("cd vendor/ibuildings/qa-tools && npm install && ln -sf ../node_modules/.bin/jshint bin/", $consoleOutput, $returnVal);
+
+        return $returnVal;
     }
 }
