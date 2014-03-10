@@ -208,27 +208,20 @@ class InstallCommand extends AbstractCommand
             || $this->settings['enableJsHint']
             || $this->settings['enableBehat']
         ) {
-            $fh = fopen($this->settings->getBaseDir() . '/build.xml', 'w');
-            fwrite(
-                $fh,
-                $this->twig->render(
-                    'build.xml.dist',
-                    $this->settings->getArrayCopy()
-                )
+
+            $this->writeRenderedContentTo(
+                $this->settings->getBaseDir() . '/build.xml',
+                'build.xml.dist',
+                $this->settings->getArrayCopy()
             );
-            fclose($fh);
 
             $output->writeln("\n<info>Ant build file written</info>");
 
-            $fh = fopen($this->settings->getBaseDir() . '/build-pre-commit.xml', 'w');
-            fwrite(
-                $fh,
-                $this->twig->render(
-                    'build-pre-commit.xml.dist',
-                    $this->settings->getArrayCopy()
-                )
+            $this->writeRenderedContentTo(
+                $this->settings->getBaseDir() . '/build-pre-commit.xml',
+                'build-pre-commit.xml.dist',
+                $this->settings->getArrayCopy()
             );
-            fclose($fh);
 
             $output->writeln("\n<info>Ant pre commit build file written</info>");
 
@@ -239,6 +232,19 @@ class InstallCommand extends AbstractCommand
         } else {
             $output->writeln("\n<info>No QA tools enabled. No configuration written</info>");
         }
+    }
+
+    protected function writeRenderedContentTo($toFile, $templateName, $params)
+    {
+        $fh = fopen($toFile, 'w');
+        fwrite(
+            $fh,
+            $this->twig->render(
+                $templateName,
+                $params
+            )
+        );
+        fclose($fh);
     }
 
     protected function addToGitIgnore($pattern)

@@ -164,13 +164,13 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
                 'Ibuildings\QA\Tools\Functional\Configurator\BehatConfigurator')->behatDevOutput
         );
 
-        $this->assertStringEqualsFile(
+        $this->assertXmlStringEqualsXmlFile(
             __DIR__ . '/fixtures/phpcs.xml',
             $command->getConfiguratorRegistry()->getConfiguratorByName(
                 'Ibuildings\QA\Tools\PHP\Configurator\PhpCodeSnifferConfigurator')->outputString
         );
 
-        $this->assertStringEqualsFile(
+        $this->assertXmlStringEqualsXmlFile(
             __DIR__ . '/fixtures/phpmd.xml',
             $command->getConfiguratorRegistry()->getConfiguratorByName(
                 'Ibuildings\QA\Tools\PHP\Configurator\PhpMessDetectorConfigurator')->outputString
@@ -181,6 +181,18 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
             $command->getConfiguratorRegistry()->getConfiguratorByName(
                 'Ibuildings\QA\Tools\PHP\Configurator\PhpUnitConfigurator')->outputString
         );
+
+
+        $this->assertXmlStringEqualsXmlFile(
+            __DIR__ . '/fixtures/build.xml',
+            $command->buildXmlOutput
+        );
+
+        $this->assertXmlStringEqualsXmlFile(
+            __DIR__ . '/fixtures/build-pre-commit.xml',
+            $command->buildPreCommitXmlOutput
+        );
+
 
         $this->assertContains('Config file for PHP Mess Detector written', $display);
         $this->assertContains('Config file for PHP Code Sniffer written', $display);

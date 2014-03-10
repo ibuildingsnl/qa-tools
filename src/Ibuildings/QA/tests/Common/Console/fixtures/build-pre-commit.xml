@@ -184,7 +184,7 @@
     <target name="phpunit" depends="set-test-tree-location">
         <exec outputproperty="phpunit-output-raw" resultproperty="phpunit-exitcode"
               executable="${test-tree-location}/vendor/bin/phpunit" failonerror="false">
-            <arg line="--configuration=${test-tree-location}//home/melvin/WWW/qa-tools/src/Ibuildings/QA/tests/Common/Console/fixtures/phpunit.test --stop-on-failure"/>
+            <arg line="--configuration=${test-tree-location}/ --stop-on-failure"/>
         </exec>
         <condition property="phpunit-output" value="${phpunit-output-raw}" else="OK">
             <isfailure code="${phpunit-exitcode}"/>

@@ -42,6 +42,16 @@ class InstallCommand extends \Ibuildings\QA\Tools\Common\Console\InstallCommand
     protected $checker;
 
     /**
+     * @var string
+     */
+    public $buildXmlOutput;
+
+    /**
+     * @var string
+     */
+    public $buildPreCommitXmlOutput;
+
+    /**
      * @param \Ibuildings\QA\Tools\Common\CommandExistenceChecker $checker
      */
     public function setChecker($checker)
@@ -99,5 +109,19 @@ class InstallCommand extends \Ibuildings\QA\Tools\Common\Console\InstallCommand
         $this->catchedInput = $input;
 
         parent::execute($input, $output);
+    }
+
+    protected function writeRenderedContentTo($toFile, $templateName, $params)
+    {
+        $content = $this->twig->render(
+            $templateName,
+            $params
+        );
+
+        if ($templateName === 'build-pre-commit.xml.dist') {
+            $this->buildPreCommitXmlOutput = $content;
+        } else {
+            $this->buildXmlOutput = $content;
+        }
     }
 }
