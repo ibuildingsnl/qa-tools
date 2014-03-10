@@ -11,7 +11,7 @@
 
 namespace Ibuildings\QA\Tools\Functional\Configurator;
 
-use Ibuildings\QA\Tools\Common\Configurator\ConfiguratorInterface;
+use Ibuildings\QA\Tools\Common\Configurator\AbstractWritableConfigurator;
 use Ibuildings\QA\Tools\Common\Settings;
 
 use Symfony\Component\Console\Helper\DialogHelper;
@@ -25,8 +25,7 @@ use Symfony\Component\Filesystem\Filesystem;
  *
  * @package Ibuildings\QA\Tools\Functional\Configurator
  */
-class BehatConfigurator
-    implements ConfiguratorInterface
+class BehatConfigurator extends AbstractWritableConfigurator
 {
     /**
      * @var OutputInterface
@@ -44,15 +43,9 @@ class BehatConfigurator
     protected $settings;
 
     /**
-     * @var \Twig_Environment
-     */
-    protected $twig;
-
-    /**
      * @param OutputInterface   $output
      * @param DialogHelper      $dialog
      * @param Settings          $settings
-     * @param \Twig_Environment $twig
      * @param \Twig_Environment $twig
      */
     public function __construct(
@@ -92,21 +85,20 @@ class BehatConfigurator
      */
     public function writeConfig()
     {
+        if ($this->shouldWrite() === false) {
+            return;
+        }
+        $this->askAdditionalQuestions($this->output);
+
         $this->writeBehatYamlFiles($this->output);
         $this->writeBehatExamples($this->output);
     }
 
     /**
-     * Install Behat yaml files.
-     *
      * @param OutputInterface $output
      */
-    protected function writeBehatYamlFiles(OutputInterface $output)
+    protected function askAdditionalQuestions(OutputInterface $output)
     {
-        if (!$this->settings['enableBehat']) {
-            return;
-        }
-
         $this->settings['baseUrl'] = $this->dialog->askAndValidate(
             $output,
             "What is base url of your application? [http://www.ibuildings.nl] ",
@@ -149,15 +141,20 @@ class BehatConfigurator
             false,
             $baseUrlDev
         );
+    }
 
+    /**
+     * Install Behat yaml files.
+     *
+     * @codeCoverageIgnore
+     */
+    protected function writeBehatYamlFiles()
+    {
         // copy behat.yml
         $fh = fopen($this->settings->getBaseDir() . '/behat.yml', 'w');
         fwrite(
             $fh,
-            $this->twig->render(
-                'behat.yml.dist',
-                $this->settings->getArrayCopy()
-            )
+            $this->getConfigContent('behat.yml.dist', $this->settings->getArrayCopy())
         );
         fclose($fh);
 
@@ -165,10 +162,7 @@ class BehatConfigurator
         $fh = fopen($this->settings->getBaseDir() . '/behat.dev.yml', 'w');
         fwrite(
             $fh,
-            $this->twig->render(
-                'behat.dev.yml.dist',
-                $this->settings->getArrayCopy()
-            )
+            $this->getConfigContent('behat.dev.yml.dist', $this->settings->getArrayCopy())
         );
         fclose($fh);
     }
@@ -208,12 +202,11 @@ class BehatConfigurator
      * Install a Behat feature example.
      *
      * @param OutputInterface $output
+     *
+     * @codeCoverageIgnore
      */
     protected function writeBehatExamples(OutputInterface $output)
     {
-        if (!$this->settings['enableBehat']) {
-            return;
-        }
 
         if (is_dir($this->settings['featuresDir'])) {
             $output->writeln("<error>Features directory already present. No example features are installed.</error>");
@@ -232,4 +225,14 @@ class BehatConfigurator
             return;
         }
     }
+
+    /**
+     * @inheritdoc
+     */
+    protected function shouldWrite()
+    {
+        return $this->settings['enableBehat'] === true;
+    }
+
+
 }

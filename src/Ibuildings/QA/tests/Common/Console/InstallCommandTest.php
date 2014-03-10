@@ -22,6 +22,8 @@ use Symfony\Component\Console\Tester\CommandTester;
  * Class InstallCommandTest
  *
  * @package Ibuildings\QA\tests\Common\Console
+ *
+ * @ignore("PHPMD")
  */
 class InstallCommandTest extends \PHPUnit_Framework_TestCase
 {
@@ -38,7 +40,9 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
 
         $this->application = new Application('ibuildings qa tools', '1.1.11', $settings);
 
-        $this->application->add(new \Ibuildings\QA\Tools\Common\Console\InstallCommand());
+        $installCommand = new \Ibuildings\QA\tests\mock\InstallCommand();
+
+        $this->application->add($installCommand);
         $this->application->add(new \Ibuildings\QA\Tools\Javascript\Console\InstallJsHintCommand());
         $this->application->add(new \Ibuildings\QA\tests\mock\InstallPreCommitHookCommand());
         $this->application->add(new \Ibuildings\QA\Tools\Common\Console\ChangeSetPreCommitCommand());
@@ -125,7 +129,7 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
      */
     public function install()
     {
-        /** @var InstallCommand $command */
+        /** @var \Ibuildings\QA\tests\mock\InstallCommand $command */
         $command = $this->application->find('install');
 
         // We mock the DialogHelper
@@ -147,6 +151,37 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
         $commandTester->execute(array('command' => $command->getName()), array('verbosity' => OutputInterface::VERBOSITY_VERY_VERBOSE));
 
         $display = $commandTester->getDisplay();
+
+        $this->assertStringEqualsFile(
+            __DIR__ . '/fixtures/behat.yml',
+            $command->getConfiguratorRegistry()->getConfiguratorByName(
+                'Ibuildings\QA\Tools\Functional\Configurator\BehatConfigurator')->behatOutput
+        );
+
+        $this->assertStringEqualsFile(
+            __DIR__ . '/fixtures/behat.dev.yml',
+            $command->getConfiguratorRegistry()->getConfiguratorByName(
+                'Ibuildings\QA\Tools\Functional\Configurator\BehatConfigurator')->behatDevOutput
+        );
+
+        $this->assertStringEqualsFile(
+            __DIR__ . '/fixtures/phpcs.xml',
+            $command->getConfiguratorRegistry()->getConfiguratorByName(
+                'Ibuildings\QA\Tools\PHP\Configurator\PhpCodeSnifferConfigurator')->outputString
+        );
+
+        $this->assertStringEqualsFile(
+            __DIR__ . '/fixtures/phpmd.xml',
+            $command->getConfiguratorRegistry()->getConfiguratorByName(
+                'Ibuildings\QA\Tools\PHP\Configurator\PhpMessDetectorConfigurator')->outputString
+        );
+
+        $this->assertStringEqualsFile(
+            __DIR__ . '/fixtures/phpunit.test',
+            $command->getConfiguratorRegistry()->getConfiguratorByName(
+                'Ibuildings\QA\Tools\PHP\Configurator\PhpUnitConfigurator')->outputString
+        );
+
         $this->assertContains('Config file for PHP Mess Detector written', $display);
         $this->assertContains('Config file for PHP Code Sniffer written', $display);
         $this->assertContains('Config file for PHPUnit written', $display);
@@ -216,13 +251,13 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue('test1'));
 
         $dialog
-            ->expects($this->at($startAt++))
+            ->expects($this->at($startAt))
             ->method('askAndValidate')
             ->with(
                 $this->anything(),
                 $this->equalTo('Where do you want to store the build artifacts? [build/artifacts] ')
             )
-            ->will($this->returnValue('/test2/etstter'));
+            ->will($this->returnValue('/test2/tester'));
     }
 
     /**
@@ -460,7 +495,7 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue(true));
 
         $dialog
-            ->expects($this->at($startAt++))
+            ->expects($this->at($startAt))
             ->method('askAndValidate')
             ->with(
                 $this->anything(),

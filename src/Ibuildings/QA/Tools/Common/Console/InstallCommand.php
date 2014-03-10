@@ -13,7 +13,6 @@ namespace Ibuildings\QA\Tools\Common\Console;
 
 use Ibuildings\QA\Tools\Common\Configurator\Helper\MultiplePathHelper;
 use Ibuildings\QA\Tools\PHP\Configurator\PhpComposerConfigurator;
-use Ibuildings\QA\Tools\Common\Configurator\Registry;
 
 use Ibuildings\QA\Tools\PHP\Configurator\PhpConfigurator;
 use Ibuildings\QA\Tools\PHP\Configurator\PhpCodeSnifferConfigurator;
@@ -97,7 +96,7 @@ class InstallCommand extends AbstractCommand
         $this->configureBuildArtifactsPath($input, $output);
 
         // Register configurators
-        $configuratorRegistry = new Registry();
+        $configuratorRegistry = $this->getConfiguratorRegistry();
 
         $multiplePathHelper = new MultiplePathHelper($output, $this->dialog, $this->settings->getBaseDir());
 

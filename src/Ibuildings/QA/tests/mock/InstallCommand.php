@@ -23,6 +23,20 @@ use Symfony\Component\Console\Output\OutputInterface;
 class InstallCommand extends \Ibuildings\QA\Tools\Common\Console\InstallCommand
 {
     /**
+     * @var OutputInterface
+     */
+    protected $catchedOutput;
+
+    /**
+     * @var Registry
+     */
+    protected $registry;
+
+    /**
+     * @var InputInterface
+     */
+    protected $catchedInput;
+    /**
      * @var CommandExistenceChecker
      */
     protected $checker;
@@ -47,5 +61,43 @@ class InstallCommand extends \Ibuildings\QA\Tools\Common\Console\InstallCommand
         }
 
         return new CommandExistenceChecker();
+    }
+
+    /**
+     * Will give access to the configuration registry so we can check the output of
+     * the configurators
+     *
+     * @return Registry|\Ibuildings\QA\Tools\Common\Configurator\Registry
+     */
+    public function getConfiguratorRegistry()
+    {
+        $installJsHintCommand = $this->getApplication()->find('install:jshint');
+
+        if (is_null($this->registry)) {
+            $this->registry = new Registry(
+                $this->catchedInput,
+                $this->catchedOutput,
+                $this->dialog,
+                $this->settings,
+                $this->twig,
+                $installJsHintCommand
+            );
+        }
+
+        return $this->registry;
+    }
+
+    /**
+     * Overwitten to be able to catch the input and output to use in creating of the mock configurators
+     *
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     */
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        $this->catchedOutput = $output;
+        $this->catchedInput = $input;
+
+        parent::execute($input, $output);
     }
 }

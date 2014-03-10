@@ -11,7 +11,7 @@
 
 namespace Ibuildings\QA\Tools\Javascript\Configurator;
 
-use Ibuildings\QA\Tools\Common\Configurator\ConfiguratorInterface;
+use Ibuildings\QA\Tools\Common\Configurator\AbstractWritableConfigurator;
 use Ibuildings\QA\Tools\Common\Settings;
 use Ibuildings\QA\Tools\Javascript\Console\InstallJsHintCommand;
 
@@ -23,8 +23,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  * Class JsHintConfigurator
  * @package Ibuildings\QA\Tools\Javascript\Configurator
  */
-class JsHintConfigurator
-    implements ConfiguratorInterface
+class JsHintConfigurator extends AbstractWritableConfigurator
 {
     /**
      * @var InputInterface
@@ -45,11 +44,6 @@ class JsHintConfigurator
      * @var Settings
      */
     protected $settings;
-
-    /**
-     * @var \Twig_Environment
-     */
-    protected $twig;
 
     /**
      * @var InstallJsHintCommand
@@ -107,22 +101,29 @@ class JsHintConfigurator
 
     /**
      * Writes config file
+
+     * @codeCoverageIgnore
      */
     public function writeConfig()
     {
-        if (!$this->settings['enableJsHint']) {
+        if ($this->shouldWrite() === false) {
             return;
         }
 
         $fh = fopen($this->settings->getBaseDir() . '/.jshintrc', 'w');
         fwrite(
             $fh,
-            $this->twig->render(
-                '.jshintrc.dist',
-                $this->settings->getArrayCopy()
-            )
+            $this->getConfigContent('.jshintrc.dist', $this->settings->getArrayCopy())
         );
         fclose($fh);
         $this->output->writeln("\n<info>Config file for JSHint written</info>");
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function shouldWrite()
+    {
+        return $this->settings['enableJsHint'] === true;
     }
 }
