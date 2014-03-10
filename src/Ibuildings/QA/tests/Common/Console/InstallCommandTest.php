@@ -14,6 +14,8 @@ namespace Ibuildings\QA\tests\Common\Console;
 use Ibuildings\QA\Tools\Common\Application;
 use Ibuildings\QA\Tools\Common\Console\InstallCommand;
 use Ibuildings\QA\Tools\Common\Settings;
+use Symfony\Component\Console\Helper\DialogHelper;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Tester\CommandTester;
 
 /**
@@ -38,7 +40,7 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
 
         $this->application->add(new \Ibuildings\QA\Tools\Common\Console\InstallCommand());
         $this->application->add(new \Ibuildings\QA\Tools\Javascript\Console\InstallJsHintCommand());
-        $this->application->add(new \Ibuildings\QA\Tools\Common\Console\InstallPreCommitHookCommand());
+        $this->application->add(new \Ibuildings\QA\tests\mock\InstallPreCommitHookCommand());
         $this->application->add(new \Ibuildings\QA\Tools\Common\Console\ChangeSetPreCommitCommand());
         $this->application->add(new \Ibuildings\QA\Tools\Common\Console\RunCommand());
     }
@@ -129,91 +131,47 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
         // We mock the DialogHelper
         $dialog = $this->getMock('Symfony\Component\Console\Helper\DialogHelper', array('askConfirmation', 'askAndValidate'));
 
-        //If you already have a build config, it will be overwritten. Do you want to continue? [Y/n]
-        $dialog->expects($this->at(0))
-            ->method('askConfirmation')
-            ->will($this->returnValue(true));
 
-        //What is the name of the project?
-        $dialog->expects($this->at(1))->method('askAndValidate')->will($this->returnValue('test1'));
+        $this->addBaseExpects($dialog);
+        $this->addQAExpects($dialog);
+        $this->addPHPMDExpects($dialog);
+        $this->addPHPCSExpects($dialog);
+        $this->addCodeDuplicateExpects($dialog);
+        $this->addPhpUnitExpects($dialog);
+        $this->addFinishingExpects($dialog);
 
-        //Where do you want to store the build artifacts?
-        $dialog->expects($this->at(2))->method('askAndValidate')->will($this->returnValue('test2'));
+        // We override the standard helper with our mock
+        $command->getHelperSet()->set($dialog, 'dialog');
 
-        // Are you sure? The path doesn't exist and will be created
-        $dialog->expects($this->at(3))->method('askConfirmation')->will($this->returnValue(true));
+        $commandTester = new CommandTester($command);
+        $commandTester->execute(array('command' => $command->getName()), array('verbosity' => OutputInterface::VERBOSITY_VERY_VERBOSE));
 
-        //Do you want to install the QA tools for PHP?
-        $dialog->expects($this->at(4))->method('askConfirmation')->will($this->returnValue(true));
+        $display = $commandTester->getDisplay();
+        $this->assertContains('Config file for PHP Mess Detector written', $display);
+        $this->assertContains('Config file for PHP Code Sniffer written', $display);
+        $this->assertContains('Config file for PHPUnit written', $display);
+        $this->assertContains('Ant build file written', $display);
+        $this->assertContains('Ant pre commit build file written', $display);
+    }
 
-        //Do you want to run `./composer.phar install` on every commit? [y/N]
-        $dialog->expects($this->at(5))->method('askConfirmation')->will($this->returnValue(true));
+    /**
+     * @test
+     */
+    public function installWithCustomPhpUnit()
+    {
+        /** @var InstallCommand $command */
+        $command = $this->application->find('install');
 
-        //Do you want to enable PHP Lint?
-        $dialog->expects($this->at(6))->method('askConfirmation')->will($this->returnValue(true));
+        // We mock the DialogHelper
+        $dialog = $this->getMock('Symfony\Component\Console\Helper\DialogHelper', array('askConfirmation', 'askAndValidate'));
 
-        //Do you want to enable the PHP Mess Detector? [Y/n]
-        $dialog->expects($this->at(7))->method('askConfirmation')->will($this->returnValue(true));
-
-        //- Do you want to exclude custom patterns for PHP Mess Detector
-        $dialog->expects($this->at(8))->method('askConfirmation')->will($this->returnValue(false));
-
-        //- Do you want to enable the PHP Code Sniffer?
-        $dialog->expects($this->at(9))->method('askConfirmation')->will($this->returnValue(true));
-
-        //Which coding standard do you want to use? (PEAR, PHPCS, PSR1, PSR2, Squiz, Zend)
-        $dialog->expects($this->at(10))->method('askAndValidate')->will($this->returnValue('PSR2'));
-
-        //-- Do you want to exclude some default Symfony patterns for PHP Code Sniffer? [y/N]
-        $dialog->expects($this->at(11))->method('askConfirmation')->will($this->returnValue(true));
-
-        //- Do you want to exclude some custom patterns for PHP Code Sniffer? [y/N]
-        $dialog->expects($this->at(12))->method('askConfirmation')->will($this->returnValue(false));
-
-        //Do you want to enable PHP Copy Paste Detection? [Y/n]
-        $dialog->expects($this->at(13))->method('askConfirmation')->will($this->returnValue(true));
-
-        //Do you want to exclude patterns for PHP Copy Paste detection? [Y/n]
-        $dialog->expects($this->at(14))->method('askConfirmation')->will($this->returnValue(false));
-
-        //Do you want to enable the Sensiolabs Security Checker? [Y/n]
-        $dialog->expects($this->at(15))->method('askConfirmation')->will($this->returnValue(true));
-
-        //What is the path to the PHP source code? [src]
-        $dialog->expects($this->at(16))->method('askAndValidate')->will($this->returnValue('/tmp'));
-
-        //Do you want to enable PHPunit tests? [Y/n]
-        $dialog->expects($this->at(17))->method('askConfirmation')->will($this->returnValue(true));
-
-        //Do you have a custom PHPUnit config? (for example, Symfony has one in 'app/phpunit.xml.dist') [y/N]
-        $dialog->expects($this->at(18))->method('askConfirmation')->will($this->returnValue(false));
-
-        //What is the path to the PHPUnit tests?
-        $dialog->expects($this->at(19))->method('askAndValidate')->will($this->returnValue('/tmp'));
-
-        //Do you want to enable an autoload script for PHPUnit?
-        $dialog->expects($this->at(20))->method('askConfirmation')->will($this->returnValue(true));
-
-        //what is the path to the autoload script for PHPUnit?
-        $dialog->expects($this->at(21))->method('askAndValidate')->will($this->returnValue('/tmp'));
-
-        //Do you want to install the QA tools for Javascript? [Y/n]
-        $dialog->expects($this->at(22))->method('askConfirmation')->will($this->returnValue(true));
-
-        //Do you want to enable JSHint? [Y/n]
-        $dialog->expects($this->at(23))->method('askConfirmation')->will($this->returnValue(false));
-
-        //Do you want to install the Behat framework?
-        $dialog->expects($this->at(24))->method('askConfirmation')->will($this->returnValue(true));
-
-        //What is base url of the ci environment?
-        $dialog->expects($this->at(25))->method('askAndValidate')->will($this->returnValue('http://test'));
-
-        //What is base url of the ci environment?
-        $dialog->expects($this->at(26))->method('askAndValidate')->will($this->returnValue('http://ci.test'));
-
-        //Do you want to enable the git pre-commit hook? It will run the QA tools on every commit
-        $dialog->expects($this->at(27))->method('askConfirmation')->will($this->returnValue(true));
+        $this->addBaseExpects($dialog);
+        $this->addQAExpects($dialog);
+        $this->addPHPMDExpects($dialog);
+        $this->addPHPCSExpects($dialog);
+        $this->addCodeDuplicateExpects($dialog);
+        $this->addPhpUnitWithCustomPathExpects($dialog);
+        $this->addFinishingExpects($dialog, 19);
 
         // We override the standard helper with our mock
         $command->getHelperSet()->set($dialog, 'dialog');
@@ -224,8 +182,366 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
         $display = $commandTester->getDisplay();
         $this->assertContains('Config file for PHP Mess Detector written', $display);
         $this->assertContains('Config file for PHP Code Sniffer written', $display);
-        $this->assertContains('Config file for PHPUnit written', $display);
+        $this->assertNotContains('Config file for PHPUnit written', $display);
         $this->assertContains('Ant build file written', $display);
         $this->assertContains('Ant pre commit build file written', $display);
+    }
+
+    /**
+     * Will add the base start expects to the dialog helper
+     *
+     * @param DialogHelper $dialog
+     * @param int          $startAt at what position do we expect the first question
+     */
+    protected function addBaseExpects(DialogHelper $dialog, $startAt = 0)
+    {
+        $dialog
+            ->expects($this->at($startAt++))
+            ->method('askConfirmation')
+            ->with(
+                $this->anything(),
+                $this->equalTo(
+                    "\n<comment>If you already have a build config, it will be overwritten. Do you want to continue? [Y/n] </comment>"
+                )
+            )
+            ->will($this->returnValue(true));
+
+        $dialog
+            ->expects($this->at($startAt++))
+            ->method('askAndValidate')
+            ->with(
+                $this->anything(),
+                $this->equalTo('What is the name of the project? [Qa Tools] ')
+            )
+            ->will($this->returnValue('test1'));
+
+        $dialog
+            ->expects($this->at($startAt++))
+            ->method('askAndValidate')
+            ->with(
+                $this->anything(),
+                $this->equalTo('Where do you want to store the build artifacts? [build/artifacts] ')
+            )
+            ->will($this->returnValue('/test2/etstter'));
+    }
+
+    /**
+     * @param DialogHelper $dialog
+     * @param int          $startAt at what position do we expect the first question
+     */
+    protected function addQAExpects(DialogHelper $dialog, $startAt = 3)
+    {
+        $dialog
+            ->expects($this->at($startAt++))
+            ->method('askConfirmation')
+            ->with(
+                $this->anything(),
+                $this->equalTo("\n<comment>Do you want to install the QA tools for PHP? [Y/n] </comment>")
+            )
+            ->will($this->returnValue(true));
+
+        $dialog
+            ->expects($this->at($startAt++))->method('askConfirmation')
+            ->with(
+                $this->anything(),
+                $this->equalTo('Do you want to run `./composer.phar install` on every commit? [y/N] ')
+            )
+            ->will($this->returnValue(true));
+
+        $dialog
+            ->expects($this->at($startAt))
+            ->method('askConfirmation')
+            ->with(
+                $this->anything(),
+                $this->equalTo('Do you want to enable PHP Lint? [Y/n] ')
+            )
+            ->will($this->returnValue(true));
+    }
+
+    /**
+     * Adds answers to the PHPMD questions
+     *
+     * @param DialogHelper $dialog
+     * @param int          $startAt at what position do we expect the first question
+     */
+    protected function addPHPMDExpects(DialogHelper $dialog, $startAt = 6)
+    {
+        $dialog
+            ->expects($this->at($startAt++))
+            ->method('askConfirmation')
+            ->with(
+                $this->anything(),
+                $this->equalTo('Do you want to enable the PHP Mess Detector? [Y/n] ')
+            )
+            ->will($this->returnValue(true));
+
+        $dialog
+            ->expects($this->at($startAt))
+            ->method('askConfirmation')
+            ->with(
+                $this->anything(),
+                $this->equalTo('  - Do you want to exclude custom patterns for PHP Mess Detector? [y/N] ')
+            )
+            ->will($this->returnValue(false));
+    }
+
+    /**
+     * Adds answers to the PHPCS questions
+     *
+     * @param DialogHelper $dialog
+     * @param int          $startAt at what position do we expect the first question
+     */
+    protected function addPHPCSExpects(DialogHelper $dialog, $startAt = 8)
+    {
+        $dialog
+            ->expects($this->at($startAt++))
+            ->method('askConfirmation')
+            ->with(
+                $this->anything(),
+                $this->equalTo('Do you want to enable the PHP Code Sniffer? [Y/n] ')
+            )
+            ->will($this->returnValue(true));
+
+        $dialog
+            ->expects($this->at($startAt++))
+            ->method('askAndValidate')
+            ->with(
+                $this->anything(),
+                $this->equalTo(
+                    '  - Which coding standard do you want to use? (PEAR, PHPCS, PSR1, PSR2, Squiz, Zend) [PSR2] '
+                )
+            )
+            ->will($this->returnValue('PSR2'));
+
+        $dialog
+            ->expects($this->at($startAt++))
+            ->method('askConfirmation')
+            ->with(
+                $this->anything(),
+                $this->equalTo('  - Do you want to exclude some default Symfony patterns for PHP Code Sniffer? [y/N] ')
+            )
+            ->will($this->returnValue(true));
+
+        //- Do you want to exclude some custom patterns for PHP Code Sniffer? [y/N]
+        $dialog
+            ->expects($this->at($startAt))
+            ->method('askConfirmation')
+            ->with(
+                $this->anything(),
+                $this->equalTo('  - Do you want to exclude some custom patterns for PHP Code Sniffer? [y/N] ')
+            )
+            ->will($this->returnValue(false));
+    }
+
+    /**
+     * Add answers to the duplicate code questions
+     *
+     * @param DialogHelper $dialog
+     * @param int          $startAt
+     */
+    protected function addCodeDuplicateExpects(DialogHelper $dialog, $startAt = 12)
+    {
+        $dialog
+            ->expects($this->at($startAt++))
+            ->method('askConfirmation')
+            ->with(
+                $this->anything(),
+                $this->equalTo("Do you want to enable PHP Copy Paste Detection? [Y/n] ")
+            )
+            ->will($this->returnValue(true));
+
+        $dialog
+            ->expects($this->at($startAt++))
+            ->method('askConfirmation')
+            ->with(
+                $this->anything(),
+                $this->equalTo("Do you want to exclude patterns for PHP Copy Paste detection? [Y/n] ")
+            )
+            ->will($this->returnValue(false));
+
+        $dialog
+            ->expects($this->at($startAt++))
+            ->method('askConfirmation')
+            ->with(
+                $this->anything(),
+                $this->equalTo("Do you want to enable the Sensiolabs Security Checker? [Y/n] ")
+            )
+            ->will($this->returnValue(true));
+
+        $dialog
+            ->expects($this->at($startAt))
+            ->method('askAndValidate')
+            ->with(
+                $this->anything(),
+                $this->equalTo("What is the path to the PHP source code? [src] ")
+            )
+            ->will($this->returnValue('/tmp'));
+    }
+
+    /**
+     * Adds answers to the phpunit questions.
+     *
+     * @param DialogHelper $dialog
+     * @param int          $startAt at what position do we expect the first question
+     */
+    protected function addPhpUnitExpects(DialogHelper $dialog, $startAt = 16)
+    {
+        $dialog
+            ->expects($this->at($startAt++))
+            ->method('askConfirmation')
+            ->with(
+                $this->anything(),
+                $this->equalTo('Do you want to enable PHPunit tests? [Y/n] ')
+            )
+            ->will($this->returnValue(true));
+
+        $dialog
+            ->expects($this->at($startAt++))
+            ->method('askConfirmation')
+            ->with(
+                $this->anything(),
+                $this->equalTo('Do you have a custom PHPUnit config? (for example, Symfony has one in \'app/phpunit.xml.dist\') [y/N] ')
+            )
+            ->will($this->returnValue(false));
+
+        $dialog
+            ->expects($this->at($startAt++))
+            ->method('askAndValidate')
+            ->with(
+                $this->anything(),
+                $this->equalTo('What is the path to the PHPUnit tests? [tests] ')
+            )
+            ->will($this->returnValue('/tmp'));
+
+        $dialog
+            ->expects($this->at($startAt++))
+            ->method('askConfirmation')
+            ->with(
+                $this->anything(),
+                $this->equalTo('Do you want to enable an autoload script for PHPUnit? [Y/n] ')
+            )
+            ->will($this->returnValue(true));
+
+        $dialog
+            ->expects($this->at($startAt))
+            ->method('askAndValidate')
+            ->with(
+                $this->anything(),
+                $this->equalTo('What is the path to the autoload script for PHPUnit? [vendor/autoload.php] ')
+            )
+            ->will($this->returnValue('/tmp'));
+    }
+
+    /**
+     * Add alternative answers the phpunit questions, in this case we already have a phpunit config so we get different
+     * questions
+     *
+     * @param DialogHelper $dialog
+     * @param int          $startAt at what position do we expect the first question
+     */
+    protected function addPhpUnitWithCustomPathExpects(DialogHelper $dialog, $startAt = 16)
+    {
+        $dialog
+            ->expects($this->at($startAt++))
+            ->method('askConfirmation')
+            ->with(
+                $this->anything(),
+                $this->equalTo('Do you want to enable PHPunit tests? [Y/n] ')
+            )
+            ->will($this->returnValue(true));
+
+        $dialog
+            ->expects($this->at($startAt++))
+            ->method('askConfirmation')
+            ->with(
+                $this->anything(),
+                $this->equalTo('Do you have a custom PHPUnit config? (for example, Symfony has one in \'app/phpunit.xml.dist\') [y/N] ')
+            )
+            ->will($this->returnValue(true));
+
+        $dialog
+            ->expects($this->at($startAt++))
+            ->method('askAndValidate')
+            ->with(
+                $this->anything(),
+                $this->equalTo('What is the path to the custom PHPUnit config? [app/phpunit.xml.dist] ')
+            )
+            ->will($this->returnValue(__DIR__ . '/fixtures/phpunit.test'));
+    }
+
+    /**
+     * Ads answers to the last questions
+     *
+     * @param DialogHelper $dialog
+     * @param int          $startAt at what position do we expect the first question
+     */
+    protected function addFinishingExpects(DialogHelper $dialog, $startAt = 21)
+    {
+        //Do you want to install the QA tools for Javascript? [Y/n]
+        $dialog
+            ->expects($this->at($startAt++))
+            ->method('askConfirmation')
+            ->with(
+                $this->anything(),
+                $this->equalTo("\n<comment>Do you want to install the QA tools for Javascript? [Y/n] </comment>")
+            )
+            ->will($this->returnValue(true));
+
+        $dialog
+            ->expects($this->at($startAt++))
+            ->method('askConfirmation')
+            ->with(
+                $this->anything(),
+                $this->equalTo('Do you want to enable JSHint? [Y/n] ')
+            )
+            ->will($this->returnValue(false));
+
+        $dialog
+            ->expects($this->at($startAt++))
+            ->method('askConfirmation')
+            ->with(
+                $this->anything(),
+                $this->equalTo("\n<comment>Do you want to install the Behat framework? [Y/n] </comment>")
+            )
+            ->will($this->returnValue(true));
+
+
+        $dialog
+            ->expects($this->at($startAt++))
+            ->method('askAndValidate')
+            ->with(
+                $this->anything(),
+                $this->equalTo("What is base url of your application? [http://www.ibuildings.nl] ")
+            )
+            ->will($this->returnValue('http://test'));
+
+        $dialog
+            ->expects($this->at($startAt++))
+            ->method('askAndValidate')
+            ->with(
+                $this->anything(),
+                $this->equalTo("What is base url of the ci environment? [http://ci.test] ")
+            )
+            ->will($this->returnValue('http://ci.test'));
+
+        $dialog
+            ->expects($this->at($startAt++))
+            ->method('askAndValidate')
+            ->with(
+                $this->anything(),
+                $this->equalTo("What is base url of your dev environment? [http://dev.test] ")
+            )
+            ->will($this->returnValue('http://dev.test'));
+
+        $dialog
+            ->expects($this->at($startAt))
+            ->method('askConfirmation')
+            ->with(
+                $this->anything(),
+                $this->equalTo(
+                    "\n<comment>Do you want to enable the git pre-commit hook? It will run the QA tools on every commit [Y/n] </comment>"
+                )
+            )
+            ->will($this->returnValue(true));
     }
 }
