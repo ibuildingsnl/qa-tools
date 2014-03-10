@@ -39,7 +39,7 @@ class InstallPreCommitHookCommand extends AbstractCommand
         $output->writeln("<info>Starting setup of the pre-commit hook for the Ibuildings QA Tools<info>");
 
         // Test if correct ant version is installed
-        $commandExistenceChecker = $this->getCommitExistenceChecker();
+        $commandExistenceChecker = $this->getCommandExistenceChecker();
         if (!$commandExistenceChecker->commandExists('ant -version', $message, InstallCommand::MINIMAL_VERSION_ANT)) {
             $output->writeln("\n<error>{$message} -> Exiting.</error>");
             return;
@@ -62,7 +62,7 @@ class InstallPreCommitHookCommand extends AbstractCommand
         }
 
         // Test if correct ant version is installed
-        $commandExistenceChecker = $this->getCommitExistenceChecker();
+        $commandExistenceChecker = $this->getCommandExistenceChecker();
         if (!$commandExistenceChecker->commandExists(array('md5', 'md5sum'), $message, null, $foundCommand)) {
             $output->writeln("\n<error>{$message} -> Exiting.</error>");
             return;

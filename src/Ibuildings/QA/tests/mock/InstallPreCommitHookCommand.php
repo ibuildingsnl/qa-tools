@@ -59,11 +59,11 @@ class InstallPreCommitHookCommand extends \Ibuildings\QA\Tools\Common\Console\In
     }
 
     /**
-     * Overwrite to be able to use a mock commitExistence checker
+     * Overwrite to be able to use a mock commandExistence checker
      *
      * @return CommandExistenceChecker
      */
-    protected function getCommitExistenceChecker()
+    protected function getCommandExistenceChecker()
     {
         if (isset($this->checker)) {
             return $this->checker;

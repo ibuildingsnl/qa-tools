@@ -106,7 +106,7 @@ abstract class AbstractCommand extends Command
     /**
      * @return CommandExistenceChecker
      */
-    protected function getCommitExistenceChecker()
+    protected function getCommandExistenceChecker()
     {
         return new CommandExistenceChecker();
     }

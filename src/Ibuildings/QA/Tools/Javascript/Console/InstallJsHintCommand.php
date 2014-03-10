@@ -40,7 +40,7 @@ class InstallJsHintCommand extends AbstractCommand
         $output->writeln("<info>Starting setup of the pre-commit hook for the Ibuildings QA Tools<info>");
 
         // Test if node is installed
-        $commandExistenceChecker = $this->getCommitExistenceChecker();
+        $commandExistenceChecker = $this->getCommandExistenceChecker();
         if (!$commandExistenceChecker->commandExists('node', $message)) {
             $output->writeln("\n<error>{$message} -> Not enabling JSHint.</error>");
 

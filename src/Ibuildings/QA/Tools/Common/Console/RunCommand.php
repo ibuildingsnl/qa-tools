@@ -54,7 +54,7 @@ class RunCommand extends AbstractCommand
         $output->writeln("<info>Running the Ibuildings QA Tools<info>");
 
         // Test if correct ant version is installed
-        $commandExistenceChecker = $this->getCommitExistenceChecker();
+        $commandExistenceChecker = $this->getCommandExistenceChecker();
         if (!$commandExistenceChecker->commandExists('ant -version', $message, static::MINIMAL_VERSION_ANT)) {
             $output->writeln("\n<error>{$message} -> Exiting.</error>");
             return;

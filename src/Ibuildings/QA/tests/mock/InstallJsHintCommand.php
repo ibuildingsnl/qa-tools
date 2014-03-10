@@ -36,11 +36,11 @@ class InstallJsHintCommand extends \Ibuildings\QA\Tools\Javascript\Console\Insta
     }
 
     /**
-     * Overwrite to be able to use a mock commitExistence checker
+     * Overwrite to be able to use a mock commandExistence checker
      *
      * @return CommandExistenceChecker
      */
-    protected function getCommitExistenceChecker()
+    protected function getCommandExistenceChecker()
     {
         if (isset($this->checker)) {
             return $this->checker;
