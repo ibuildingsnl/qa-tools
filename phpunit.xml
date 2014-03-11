@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<phpunit bootstrap="../../../Ibuildings/QA/tests/bootstrap/bootstrap.php" colors="true">
+<phpunit bootstrap="src/Ibuildings/QA/tests/bootstrap/bootstrap.php" colors="true">
 
     <testsuites>
         <testsuite name="Ibuidlings QA tools test suite">
-            <directory suffix="Test.php">../../../Ibuildings/QA/tests</directory>
+            <directory suffix="Test.php">src/Ibuildings/QA/tests</directory>
         </testsuite>
     </testsuites>
 
     <filter>
         <whitelist>
-            <directory>../../../</directory>
+            <directory>src</directory>
             <exclude>
-                <directory>../../../*/tests</directory>
+                <directory>src/*/tests</directory>
             </exclude>
         </whitelist>
     </filter>

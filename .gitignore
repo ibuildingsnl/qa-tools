@@ -4,6 +4,5 @@ vendor
 build
 composer.lock
 .scrutinizer.yml
-/phpunit.xml
 node_modules/jshint
 cache.properties
