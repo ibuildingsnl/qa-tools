@@ -11,7 +11,6 @@
 
 namespace Ibuildings\QA\Tools\Common\Console;
 
-use Ibuildings\QA\Tools\Common\CommandExistenceChecker;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -19,6 +18,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Class RunCommand
+ *
  * @package Ibuildings\QA\Tools\Common\Console
  *
  * @SuppressWarnings(PHPMD)
@@ -54,7 +54,7 @@ class RunCommand extends AbstractCommand
         $output->writeln("<info>Running the Ibuildings QA Tools<info>");
 
         // Test if correct ant version is installed
-        $commandExistenceChecker = new CommandExistenceChecker();
+        $commandExistenceChecker = $this->getCommandExistenceChecker();
         if (!$commandExistenceChecker->commandExists('ant -version', $message, static::MINIMAL_VERSION_ANT)) {
             $output->writeln("\n<error>{$message} -> Exiting.</error>");
             return;
@@ -72,11 +72,29 @@ class RunCommand extends AbstractCommand
             $verbose = '-verbose ';
         }
 
+        $exitCode = $this->runAnt($verbose, $target, $dirOption);
+
+        if (is_integer($exitCode)) {
+            // @codeCoverageIgnoreStart
+            exit($exitCode);
+            // @codeCoverageIgnoreEnd
+        }
+    }
+
+    /**
+     * @param string $verbose
+     * @param string $target
+     * @param string $dirOption
+     *
+     * @codeCoverageIgnore
+     */
+    protected function runAnt($verbose, $target, $dirOption)
+    {
         passthru(
             "ant $verbose -e -f build-pre-commit.xml -logger org.apache.tools.ant.NoBannerLogger $target $dirOption",
             $exitCode
         );
 
-        exit($exitCode);
+        return $exitCode;
     }
 }

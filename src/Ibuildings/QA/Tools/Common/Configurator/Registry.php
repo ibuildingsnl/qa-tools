@@ -19,7 +19,7 @@ class Registry
     /**
      * @var array
      */
-    private $configurators;
+    protected $configurators;
 
     /**
      * @param ConfiguratorInterface $configurator

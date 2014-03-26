@@ -6,7 +6,7 @@ default:
 
     extensions:
         Behat\MinkExtension\Extension:
-            base_url: {{baseUrl}}
+            base_url: http://test
             default_session: goutte
             browser_name: "firefox"
             goutte: ~
@@ -17,7 +17,7 @@ default:
 ci:
     extensions:
         Behat\MinkExtension\Extension:
-            base_url: {{baseUrlCi}}
+            base_url: http://ci.test
 
 # The dev
 imports:

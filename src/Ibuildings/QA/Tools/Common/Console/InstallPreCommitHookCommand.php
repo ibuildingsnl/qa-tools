@@ -11,7 +11,6 @@
 
 namespace Ibuildings\QA\Tools\Common\Console;
 
-use Ibuildings\QA\Tools\Common\CommandExistenceChecker;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Input\InputArgument;
@@ -40,7 +39,7 @@ class InstallPreCommitHookCommand extends AbstractCommand
         $output->writeln("<info>Starting setup of the pre-commit hook for the Ibuildings QA Tools<info>");
 
         // Test if correct ant version is installed
-        $commandExistenceChecker = new CommandExistenceChecker();
+        $commandExistenceChecker = $this->getCommandExistenceChecker();
         if (!$commandExistenceChecker->commandExists('ant -version', $message, InstallCommand::MINIMAL_VERSION_ANT)) {
             $output->writeln("\n<error>{$message} -> Exiting.</error>");
             return;
@@ -63,21 +62,21 @@ class InstallPreCommitHookCommand extends AbstractCommand
         }
 
         // Test if correct ant version is installed
-        $commandExistenceChecker = new CommandExistenceChecker();
+        $commandExistenceChecker = $this->getCommandExistenceChecker();
         if (!$commandExistenceChecker->commandExists(array('md5', 'md5sum'), $message, null, $foundCommand)) {
             $output->writeln("\n<error>{$message} -> Exiting.</error>");
             return;
         }
+
         $this->settings['md5Command'] = $foundCommand;
 
         // Test if correct and version is installed
-        $commandExistenceChecker = new CommandExistenceChecker();
-        if (!$commandExistenceChecker->commandExists('git', $message, InstallCommand::MINIMAL_VERSION_ANT)) {
+        if (!$commandExistenceChecker->commandExists('git', $message, InstallCommand::MINIMAL_VERSION_GIT)) {
             $output->writeln("\n<error>{$message} -> Exiting.</error>");
             return;
         }
 
-        $gitHooksDirExists = is_dir($this->settings->getBaseDir() . '/.git/hooks');
+        $gitHooksDirExists = $this->gitHooksDirExists($this->settings->getBaseDir());
         if ($this->settings['enablePreCommitHook'] && !$gitHooksDirExists) {
             $output->writeln(
                 "<error>You don't have an initialized git repo or hooks directory. Not setting pre-commit hook.</error>"
@@ -85,7 +84,7 @@ class InstallPreCommitHookCommand extends AbstractCommand
             $this->settings['enablePreCommitHook'] = false;
         }
 
-        $gitPreCommitHookExists = file_exists($this->settings->getBaseDir() . '/.git/hooks/pre-commit');
+        $gitPreCommitHookExists = $this->preCommitHookExists($this->settings->getBaseDir());
         if ($gitPreCommitHookExists) {
             $output->writeln("<error>You already have a git pre-commit hook.</error>");
             $overwritePreCommitHook = $this->dialog->askConfirmation(
@@ -99,6 +98,12 @@ class InstallPreCommitHookCommand extends AbstractCommand
         }
     }
 
+    /**
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
+     * @codeCoverageIgnore
+     */
     protected function writePreCommitHook(InputInterface $input, OutputInterface $output)
     {
         if ($this->settings['enablePreCommitHook']) {
@@ -114,5 +119,25 @@ class InstallPreCommitHookCommand extends AbstractCommand
             chmod($this->settings->getBaseDir() . '/.git/hooks/pre-commit', 0755);
             $output->writeln("\n<info>Commit hook written</info>");
         }
+    }
+
+    /**
+     * @param string $baseDir
+     *
+     * @return bool
+     */
+    protected function preCommitHookExists($baseDir)
+    {
+        return file_exists($baseDir . '/.git/hooks/pre-commit');
+    }
+
+    /**
+     * @param string $baseDir
+     *
+     * @return bool
+     */
+    protected function gitHooksDirExists($baseDir)
+    {
+        return is_dir($baseDir . '/.git/hooks');
     }
 }

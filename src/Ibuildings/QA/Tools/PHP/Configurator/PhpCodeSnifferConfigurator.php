@@ -11,7 +11,7 @@
 
 namespace Ibuildings\QA\Tools\PHP\Configurator;
 
-use Ibuildings\QA\Tools\Common\Configurator\ConfiguratorInterface;
+use Ibuildings\QA\Tools\Common\Configurator\AbstractWritableConfigurator;
 use Ibuildings\QA\Tools\Common\Configurator\Helper\MultiplePathHelper;
 use Ibuildings\QA\Tools\Common\Settings;
 
@@ -25,8 +25,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @package Ibuildings\QA\Tools\PHP\Configurator
  */
-class PhpCodeSnifferConfigurator
-    implements ConfiguratorInterface
+class PhpCodeSnifferConfigurator extends AbstractWritableConfigurator
 {
     /**
      * @var OutputInterface
@@ -44,17 +43,13 @@ class PhpCodeSnifferConfigurator
      * @var Settings
      */
     protected $settings;
-    /**
-     * @var \Twig_Environment
-     */
-    protected $twig;
 
     /**
-     * @param OutputInterface $output
-     * @param DialogHelper $dialog
+     * @param OutputInterface    $output
+     * @param DialogHelper       $dialog
      * @param MultiplePathHelper $multiplePathHelper
-     * @param Settings $settings
-     * @param \Twig_Environment $twig
+     * @param Settings           $settings
+     * @param \Twig_Environment  $twig
      */
     public function __construct(
         OutputInterface $output,
@@ -62,7 +57,8 @@ class PhpCodeSnifferConfigurator
         MultiplePathHelper $multiplePathHelper,
         Settings $settings,
         \Twig_Environment $twig
-    ) {
+    )
+    {
         $this->output = $output;
         $this->dialog = $dialog;
         $this->multiplePathHelper = $multiplePathHelper;
@@ -128,19 +124,28 @@ class PhpCodeSnifferConfigurator
         $this->settings['phpCsExcludePatterns'] = array_merge($symfonyPatterns, $customPatterns);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function writeConfig()
     {
-        if ($this->settings['enablePhpCodeSniffer']) {
+        if ($this->shouldWrite()) {
             $fh = fopen($this->settings->getBaseDir() . '/phpcs.xml', 'w');
             fwrite(
                 $fh,
-                $this->twig->render(
-                    'phpcs.xml.dist',
-                    $this->settings->getArrayCopy()
-                )
+                $this->getConfigContent('phpcs.xml.dist', $this->settings->getArrayCopy())
             );
             fclose($fh);
             $this->output->writeln("\n<info>Config file for PHP Code Sniffer written</info>");
         }
+    }
+
+    /**
+     * @inheritdoc
+     * @codeCoverageIgnore
+     */
+    protected function shouldWrite()
+    {
+        return $this->settings['enablePhpCodeSniffer'] === true;
     }
 }

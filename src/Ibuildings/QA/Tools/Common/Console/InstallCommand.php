@@ -13,9 +13,6 @@ namespace Ibuildings\QA\Tools\Common\Console;
 
 use Ibuildings\QA\Tools\Common\Configurator\Helper\MultiplePathHelper;
 use Ibuildings\QA\Tools\PHP\Configurator\PhpComposerConfigurator;
-use Ibuildings\QA\Tools\PHP\Configurator\PhpExcludePathsConfigurator;
-use Ibuildings\QA\Tools\Common\Configurator\Registry;
-use Ibuildings\QA\Tools\Common\CommandExistenceChecker;
 
 use Ibuildings\QA\Tools\PHP\Configurator\PhpConfigurator;
 use Ibuildings\QA\Tools\PHP\Configurator\PhpCodeSnifferConfigurator;
@@ -78,7 +75,7 @@ class InstallCommand extends AbstractCommand
         $output->writeln("<info>Starting setup of Ibuildings QA Tools<info>");
 
         // Test if correct ant version is installed
-        $commandExistenceChecker = new CommandExistenceChecker();
+        $commandExistenceChecker = $this->getCommandExistenceChecker();
         if (!$commandExistenceChecker->commandExists('ant -version', $message, InstallCommand::MINIMAL_VERSION_ANT)) {
             $output->writeln("\n<error>{$message} -> Exiting.</error>");
 
@@ -99,7 +96,7 @@ class InstallCommand extends AbstractCommand
         $this->configureBuildArtifactsPath($input, $output);
 
         // Register configurators
-        $configuratorRegistry = new Registry();
+        $configuratorRegistry = $this->getConfiguratorRegistry();
 
         $multiplePathHelper = new MultiplePathHelper($output, $this->dialog, $this->settings->getBaseDir());
 
@@ -146,9 +143,6 @@ class InstallCommand extends AbstractCommand
         $configuratorRegistry->executeConfigurators();
 
         $this->writeAntBuildXml($input, $output);
-
-        //        $command = $this->getApplication()->find('install:pre-push');
-        //        $command->run($input, $output);
 
         $command = $this->getApplication()->find('install:pre-commit');
         $command->run($input, $output);
@@ -214,27 +208,20 @@ class InstallCommand extends AbstractCommand
             || $this->settings['enableJsHint']
             || $this->settings['enableBehat']
         ) {
-            $fh = fopen($this->settings->getBaseDir() . '/build.xml', 'w');
-            fwrite(
-                $fh,
-                $this->twig->render(
-                    'build.xml.dist',
-                    $this->settings->getArrayCopy()
-                )
+
+            $this->writeRenderedContentTo(
+                $this->settings->getBaseDir() . '/build.xml',
+                'build.xml.dist',
+                $this->settings->getArrayCopy()
             );
-            fclose($fh);
 
             $output->writeln("\n<info>Ant build file written</info>");
 
-            $fh = fopen($this->settings->getBaseDir() . '/build-pre-commit.xml', 'w');
-            fwrite(
-                $fh,
-                $this->twig->render(
-                    'build-pre-commit.xml.dist',
-                    $this->settings->getArrayCopy()
-                )
+            $this->writeRenderedContentTo(
+                $this->settings->getBaseDir() . '/build-pre-commit.xml',
+                'build-pre-commit.xml.dist',
+                $this->settings->getArrayCopy()
             );
-            fclose($fh);
 
             $output->writeln("\n<info>Ant pre commit build file written</info>");
 
@@ -245,6 +232,19 @@ class InstallCommand extends AbstractCommand
         } else {
             $output->writeln("\n<info>No QA tools enabled. No configuration written</info>");
         }
+    }
+
+    protected function writeRenderedContentTo($toFile, $templateName, $params)
+    {
+        $fh = fopen($toFile, 'w');
+        fwrite(
+            $fh,
+            $this->twig->render(
+                $templateName,
+                $params
+            )
+        );
+        fclose($fh);
     }
 
     protected function addToGitIgnore($pattern)
