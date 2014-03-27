@@ -1,0 +1,4 @@
+dev:
+    extensions:
+        Behat\MinkExtension\Extension:
+            base_url: http://dev.test

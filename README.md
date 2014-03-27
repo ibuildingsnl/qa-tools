@@ -14,7 +14,7 @@ output of this script as a base and configure it manually.
 ## Inspections
  - PHP Lint
  - PHP Copy/Paste Detector (1.4.*)
- - PHP Codesniffer (1.4.*)
+ - PHP Codesniffer (1.5.*)
  - PHP Mess Detector (1.5.*)
  - JSHint (1.0.0)
 
@@ -36,10 +36,10 @@ please add the following to your composer.json:
 ```json
     "scripts": {
         "post-install-cmd": [
-            "bin/qa-tools install:jshint"
+            "vendor/ibuildings/qa-tools/bin/qa-tools install:jshint"
         ],
         "post-update-cmd": [
-            "bin/qa-tools install:jshint"
+            "vendor/ibuildings/qa-tools/bin/qa-tools install:jshint"
         ]
     }
 ```
@@ -52,12 +52,6 @@ Add the following to your composer.json
     "require-dev": {
         "ibuildings/qa-tools": "~1.1"
     },
-    "repositories": [
-        {
-            "type": "composer",
-            "url": "***REMOVED***"
-        }
-    ],
 ```
 
 And run `composer install`

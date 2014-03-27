@@ -1,9 +1,18 @@
 <?php
 
+/**
+ * This file is part of Ibuildings QA-Tools.
+ *
+ * (c) Ibuildings
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Ibuildings\QA\Tools\PHP\Configurator;
 
+use Ibuildings\QA\Tools\Common\Configurator\AbstractWritableConfigurator;
 use Ibuildings\QA\Tools\Common\Configurator\Helper\MultiplePathHelper;
-use Ibuildings\QA\Tools\Common\Configurator\ConfiguratorInterface;
 use Ibuildings\QA\Tools\Common\Settings;
 
 use Symfony\Component\Console\Helper\DialogHelper;
@@ -13,9 +22,10 @@ use Symfony\Component\Console\Output\OutputInterface;
  * Can configure setting for PHP Mess Detector
  *
  * Class PhpMessDetectorConfigurator
+ *
  * @package Ibuildings\QA\Tools\PHP\Configurator
  */
-class PhpMessDetectorConfigurator implements ConfiguratorInterface
+class PhpMessDetectorConfigurator extends AbstractWritableConfigurator
 {
     /**
      * @var OutputInterface
@@ -33,16 +43,11 @@ class PhpMessDetectorConfigurator implements ConfiguratorInterface
     protected $settings;
 
     /**
-     * @var \Twig_Environment
-     */
-    protected $twig;
-
-    /**
-     * @param OutputInterface $output
-     * @param DialogHelper $dialog
+     * @param OutputInterface    $output
+     * @param DialogHelper       $dialog
      * @param MultiplePathHelper $multiplePathHelper
-     * @param Settings $settings
-     * @param \Twig_Environment $twig
+     * @param Settings           $settings
+     * @param \Twig_Environment  $twig
      */
     public function __construct(
         OutputInterface $output,
@@ -86,22 +91,30 @@ class PhpMessDetectorConfigurator implements ConfiguratorInterface
         );
 
         $this->settings['phpMdExcludePatterns'] = $excludePatterns;
-
     }
 
+    /**
+     * @inheritdoc
+     * @codeCoverageIgnore
+     */
     public function writeConfig()
     {
-        if ($this->settings['enablePhpMessDetector']) {
+        if ($this->shouldWrite()) {
             $fh = fopen($this->settings->getBaseDir() . '/phpmd.xml', 'w');
             fwrite(
                 $fh,
-                $this->twig->render(
-                    'phpmd.xml.dist',
-                    $this->settings->getArrayCopy()
-                )
+                $this->getConfigContent('phpmd.xml.dist', $this->settings->getArrayCopy())
             );
             fclose($fh);
             $this->output->writeln("\n<info>Config file for PHP Mess Detector written</info>");
         }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function shouldWrite()
+    {
+        return $this->settings['enablePhpMessDetector'] === true;
     }
 }

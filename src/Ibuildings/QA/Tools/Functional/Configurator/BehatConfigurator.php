@@ -1,7 +1,17 @@
 <?php
+
+/**
+ * This file is part of Ibuildings QA-Tools.
+ *
+ * (c) Ibuildings
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Ibuildings\QA\Tools\Functional\Configurator;
 
-use Ibuildings\QA\Tools\Common\Configurator\ConfiguratorInterface;
+use Ibuildings\QA\Tools\Common\Configurator\AbstractWritableConfigurator;
 use Ibuildings\QA\Tools\Common\Settings;
 
 use Symfony\Component\Console\Helper\DialogHelper;
@@ -12,9 +22,10 @@ use Symfony\Component\Filesystem\Filesystem;
  * Can configure settings for Behat.
  *
  * Class BehatConfigurator
+ *
  * @package Ibuildings\QA\Tools\Functional\Configurator
  */
-class BehatConfigurator implements ConfiguratorInterface
+class BehatConfigurator extends AbstractWritableConfigurator
 {
     /**
      * @var OutputInterface
@@ -32,15 +43,9 @@ class BehatConfigurator implements ConfiguratorInterface
     protected $settings;
 
     /**
-     * @var \Twig_Environment
-     */
-    protected $twig;
-
-    /**
-     * @param OutputInterface $output
-     * @param DialogHelper $dialog
-     * @param Settings $settings
-     * @param \Twig_Environment $twig
+     * @param OutputInterface   $output
+     * @param DialogHelper      $dialog
+     * @param Settings          $settings
      * @param \Twig_Environment $twig
      */
     public function __construct(
@@ -80,21 +85,20 @@ class BehatConfigurator implements ConfiguratorInterface
      */
     public function writeConfig()
     {
+        if ($this->shouldWrite() === false) {
+            return;
+        }
+        $this->askAdditionalQuestions($this->output);
+
         $this->writeBehatYamlFiles($this->output);
         $this->writeBehatExamples($this->output);
     }
 
     /**
-     * Install Behat yaml files.
-     *
      * @param OutputInterface $output
      */
-    protected function writeBehatYamlFiles(OutputInterface $output)
+    protected function askAdditionalQuestions(OutputInterface $output)
     {
-        if (!$this->settings['enableBehat']) {
-            return;
-        }
-
         $default = (empty($this->settings['baseUrl'])) ? 'http://www.ibuildings.nl' : $this->settings['baseUrl'];
         $this->settings['baseUrl'] = $this->dialog->askAndValidate(
             $output,
@@ -142,15 +146,20 @@ class BehatConfigurator implements ConfiguratorInterface
             false,
             $baseUrlDev
         );
+    }
 
+    /**
+     * Install Behat yaml files.
+     *
+     * @codeCoverageIgnore
+     */
+    protected function writeBehatYamlFiles()
+    {
         // copy behat.yml
         $fh = fopen($this->settings->getBaseDir() . '/behat.yml', 'w');
         fwrite(
             $fh,
-            $this->twig->render(
-                'behat.yml.dist',
-                $this->settings->getArrayCopy()
-            )
+            $this->getConfigContent('behat.yml.dist', $this->settings->getArrayCopy())
         );
         fclose($fh);
 
@@ -158,10 +167,7 @@ class BehatConfigurator implements ConfiguratorInterface
         $fh = fopen($this->settings->getBaseDir() . '/behat.dev.yml', 'w');
         fwrite(
             $fh,
-            $this->twig->render(
-                'behat.dev.yml.dist',
-                $this->settings->getArrayCopy()
-            )
+            $this->getConfigContent('behat.dev.yml.dist', $this->settings->getArrayCopy())
         );
         fclose($fh);
     }
@@ -169,7 +175,7 @@ class BehatConfigurator implements ConfiguratorInterface
     /**
      * Suggest a new domain based on the 'main url' and a subdomain string.
      *
-     * @param string $url the main domain
+     * @param string $url  the main domain
      * @param string $part the subdomain string
      *
      * @return string
@@ -201,12 +207,11 @@ class BehatConfigurator implements ConfiguratorInterface
      * Install a Behat feature example.
      *
      * @param OutputInterface $output
+     *
+     * @codeCoverageIgnore
      */
     protected function writeBehatExamples(OutputInterface $output)
     {
-        if (!$this->settings['enableBehat']) {
-            return;
-        }
 
         if (is_dir($this->settings['featuresDir'])) {
             $output->writeln("<error>Features directory already present. No example features are installed.</error>");
@@ -228,4 +233,14 @@ class BehatConfigurator implements ConfiguratorInterface
             return;
         }
     }
+
+    /**
+     * @inheritdoc
+     */
+    protected function shouldWrite()
+    {
+        return $this->settings['enableBehat'] === true;
+    }
+
+
 }

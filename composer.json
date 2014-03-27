@@ -1,5 +1,6 @@
 {
     "name": "ibuildings/qa-tools",
+    "license": "MIT",
     "description": "Ibuildings standard QA Tools",
     "require": {
         "php": ">=5.3.3",
@@ -24,7 +25,7 @@
     ],
     "extra": {
         "branch-alias": {
-            "dev-master": "1.0.x-dev"
+            "dev-master": "1.1.x-dev"
         }
     },
     "autoload" : {

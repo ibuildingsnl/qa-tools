@@ -1,20 +1,23 @@
 <?php
+
 /**
- * @author Matthijs van den Bos <matthijs@vandenbos.org>
- * @copyright 2013 Matthijs van den Bos
+ * This file is part of Ibuildings QA-Tools.
+ *
+ * (c) Ibuildings
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace Ibuildings\QA\Tools\Common\Console;
 
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Helper\DialogHelper;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Class ChangeSetPreCommitCommand
+ *
  * @package Ibuildings\QA\Tools\Common\Console
  *
  * @SuppressWarnings(PHPMD)
@@ -56,9 +59,7 @@ class ChangeSetPreCommitCommand extends AbstractCommand
         $exts = $input->getOption('filter-ext');
         $sep = $input->getOption('separator');
 
-        $gitCommand = 'git diff --cached --diff-filter=ACM --name-only ' . implode(' ', $paths);
-
-        $changeset =  `$gitCommand`;
+        $changeset = $this->getChangeSet($paths);
 
         // only do further processing if we have extension filter options or a separator option
         if (count($exts) || null !== $sep) {
@@ -78,5 +79,24 @@ class ChangeSetPreCommitCommand extends AbstractCommand
         }
 
         echo $changeset;
+    }
+
+    /**
+     * Checks the given paths for changed files and return those that are found
+     *
+     * @param string $paths
+     *
+     * @return array
+     *
+     * ignore code as this is purely commandline and we don't want to test that
+     * @codeCoverageIgnore
+     */
+    protected function getChangeSet($paths)
+    {
+        $gitCommand = 'git diff --cached --diff-filter=ACM --name-only ' . implode(' ', $paths);
+
+        $changeSet = `$gitCommand`;
+
+        return $changeSet;
     }
 }

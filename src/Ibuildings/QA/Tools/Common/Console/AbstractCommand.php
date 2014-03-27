@@ -1,7 +1,12 @@
 <?php
+
 /**
- * @author Matthijs van den Bos <matthijs@vandenbos.org>
- * @copyright 2013 Matthijs van den Bos
+ * This file is part of Ibuildings QA-Tools.
+ *
+ * (c) Ibuildings
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace Ibuildings\QA\Tools\Common\Console;
@@ -11,10 +16,11 @@ use Ibuildings\QA\Tools\Common\Configurator\ConfiguratorInterface;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Helper;
+use Ibuildings\QA\Tools\Common\CommandExistenceChecker;
 
 /**
  * Class AbstractCommand
@@ -133,4 +139,13 @@ abstract class AbstractCommand extends Command
             $configurator->$func($helper);
         }
     }
+
+    /**
+     * @return CommandExistenceChecker
+     */
+    protected function getCommandExistenceChecker()
+    {
+        return new CommandExistenceChecker();
+    }
+
 }

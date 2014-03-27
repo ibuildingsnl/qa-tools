@@ -6,7 +6,7 @@
             depends="prepare-environment{% if enablePhpLint %},php-lint{% endif %}{% if enableJsHint %},jshint{% endif %}{% if enablePhpMessDetector %},phpmd{% endif %}{% if enablePhpCodeSniffer %},phpcs{% endif %}{% if enablePhpUnit %},phpunit{% endif %}"/>
 
     <target name="prepare-environment"
-            depends="set-test-tree-location,get-changeset,composer-run-install">
+            depends="set-test-tree-location,get-changeset{% if enableComposer %},composer-run-install{% endif %}">
         <echo message="OK"/>
     </target>
 
@@ -99,10 +99,9 @@
         <exec executable="${basedir}/{{ composerBinDir }}/qa-tools" outputProperty="changeset.js.spacesep">
             <arg line="changeset:pre-commit --filter-path={{ javaScriptSrcPath }} --filter-ext=js --separator=' '"/>
         </exec>
-        <property name="changeset.js" value="${changeset.js}"/>
         <condition property="changeset.js.notempty">
             <not>
-                <equals arg1="${changeset.js}" arg2="" trim="true"/>
+                <equals arg1="${changeset.js.spacesep}" arg2="" trim="true"/>
             </not>
         </condition>
     </target>
