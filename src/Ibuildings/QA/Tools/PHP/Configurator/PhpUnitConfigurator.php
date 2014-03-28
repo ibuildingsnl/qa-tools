@@ -113,7 +113,6 @@ class PhpUnitConfigurator extends AbstractWritableConfigurator
         );
 
         if (!$this->hasCustomPhpUnitXml($output, $this->settings) &&  $this->settings['enablePhpUnit']) {
-
             $settings = $this->settings;
             $default = (empty($this->settings['phpTestsPath'])) ? 'tests' : $this->settings['phpTestsPath'];
             $this->settings['phpTestsPath'] = $this->dialog->askAndValidate(

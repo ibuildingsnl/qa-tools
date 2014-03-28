@@ -11,9 +11,8 @@
 
 namespace Ibuildings\QA\tests\Common\Console;
 
-use Ibuildings\QA\Tools\Common\Application;
+use Ibuildings\QA\tests\mock\SettingsMock;
 use Ibuildings\QA\Tools\Common\Console\InstallCommand;
-use Ibuildings\QA\Tools\Common\Settings;
 use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Tester\CommandTester;
@@ -36,9 +35,16 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
     {
         $baseDir = realpath(__DIR__ . '/../../../../../../');
         $packageBaseDir = realpath(__DIR__ . '/../../../../../../');
-        $settings = new Settings($baseDir, $packageBaseDir);
+        $settings = new SettingsMock($baseDir, $packageBaseDir);
 
-        $this->application = new Application('ibuildings qa tools', '1.1.11', $settings);
+        $this->application = $this->getMock('Ibuildings\QA\Tools\Common\Application', array('getDialogHelper'), array('ibuildings qa tools', '1.1.11', $settings));
+
+        $dialog = $this->getMock('Ibuildings\QA\Tools\Common\Console\Helper\DialogHelper', array('askConfirmation', 'askAndValidate'));
+
+        $this->application->expects($this->any())
+            ->method('getDialogHelper')
+            ->will($this->returnValue($dialog));
+
 
         $installCommand = new \Ibuildings\QA\tests\mock\InstallCommand();
 
@@ -57,12 +63,16 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
         /** @var InstallCommand $command */
         $command = $this->application->find('install');
         // We mock the DialogHelper
-        $dialog = $this->getMock('Symfony\Component\Console\Helper\DialogHelper', array('askConfirmation'));
+
+        $dialog = $this->application->getDialogHelper();
+
         $dialog->expects($this->at(0))
             ->method('askConfirmation')
+            ->with(
+                $this->anything(),
+                $this->equalTo("\nIf you already have a build config, it will be overwritten. Do you want to continue?")
+            )
             ->will($this->returnValue(false));
-
-        $command->getHelperSet()->set($dialog, 'dialog');
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(array('command' => $command->getName()));
@@ -80,16 +90,18 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
         $command = $this->application->find('install');
 
         // We mock the DialogHelper
-        $dialog = $this->getMock('Symfony\Component\Console\Helper\DialogHelper', array('askConfirmation', 'askAndValidate'));
+        $dialog = $this->application->getDialogHelper();
 
-        //If you already have a build config, it will be overwritten. Do you want to continue? [Y/n]
         $dialog->expects($this->at(0))
             ->method('askConfirmation')
+            ->with(
+                $this->anything(),
+                $this->equalTo("\nIf you already have a build config, it will be overwritten. Do you want to continue?")
+            )
             ->will($this->returnValue(true));
 
         $dialog->expects($this->any())->method('askConfirmation')->will($this->returnValue(false));
         // We override the standard helper with our mock
-        $command->getHelperSet()->set($dialog, 'dialog');
         $commandTester = new CommandTester($command);
         $commandTester->execute(array('command' => $command->getName()));
 
@@ -133,8 +145,7 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
         $command = $this->application->find('install');
 
         // We mock the DialogHelper
-        $dialog = $this->getMock('Symfony\Component\Console\Helper\DialogHelper', array('askConfirmation', 'askAndValidate'));
-
+        $dialog = $this->application->getDialogHelper();
 
         $this->addBaseExpects($dialog);
         $this->addQAExpects($dialog);
@@ -143,9 +154,6 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
         $this->addCodeDuplicateExpects($dialog);
         $this->addPhpUnitExpects($dialog);
         $this->addFinishingExpects($dialog);
-
-        // We override the standard helper with our mock
-        $command->getHelperSet()->set($dialog, 'dialog');
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(array('command' => $command->getName()), array('verbosity' => OutputInterface::VERBOSITY_VERY_VERBOSE));
@@ -209,8 +217,7 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
         /** @var InstallCommand $command */
         $command = $this->application->find('install');
 
-        // We mock the DialogHelper
-        $dialog = $this->getMock('Symfony\Component\Console\Helper\DialogHelper', array('askConfirmation', 'askAndValidate'));
+        $dialog = $this->application->getDialogHelper();
 
         $this->addBaseExpects($dialog);
         $this->addQAExpects($dialog);
@@ -219,9 +226,6 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
         $this->addCodeDuplicateExpects($dialog);
         $this->addPhpUnitWithCustomPathExpects($dialog);
         $this->addFinishingExpects($dialog, 19);
-
-        // We override the standard helper with our mock
-        $command->getHelperSet()->set($dialog, 'dialog');
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(array('command' => $command->getName()));
@@ -248,7 +252,7 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
             ->with(
                 $this->anything(),
                 $this->equalTo(
-                    "\n<comment>If you already have a build config, it will be overwritten. Do you want to continue? [Y/n] </comment>"
+                    "\nIf you already have a build config, it will be overwritten. Do you want to continue?"
                 )
             )
             ->will($this->returnValue(true));
@@ -283,7 +287,7 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
             ->method('askConfirmation')
             ->with(
                 $this->anything(),
-                $this->equalTo("\n<comment>Do you want to install the QA tools for PHP? [Y/n] </comment>")
+                $this->equalTo("\nDo you want to install the QA tools for PHP?")
             )
             ->will($this->returnValue(true));
 
@@ -300,7 +304,7 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
             ->method('askConfirmation')
             ->with(
                 $this->anything(),
-                $this->equalTo('Do you want to enable PHP Lint? [Y/n] ')
+                $this->equalTo('Do you want to enable PHP Lint?')
             )
             ->will($this->returnValue(true));
     }
@@ -318,7 +322,7 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
             ->method('askConfirmation')
             ->with(
                 $this->anything(),
-                $this->equalTo('Do you want to enable the PHP Mess Detector? [Y/n] ')
+                $this->equalTo('Do you want to enable the PHP Mess Detector?')
             )
             ->will($this->returnValue(true));
 
@@ -327,7 +331,7 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
             ->method('askConfirmation')
             ->with(
                 $this->anything(),
-                $this->equalTo('  - Do you want to exclude custom patterns for PHP Mess Detector? [y/N] ')
+                $this->equalTo('  - Do you want to exclude custom patterns for PHP Mess Detector?')
             )
             ->will($this->returnValue(false));
     }
@@ -345,7 +349,7 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
             ->method('askConfirmation')
             ->with(
                 $this->anything(),
-                $this->equalTo('Do you want to enable the PHP Code Sniffer? [Y/n] ')
+                $this->equalTo('Do you want to enable the PHP Code Sniffer?')
             )
             ->will($this->returnValue(true));
 
@@ -365,17 +369,16 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
             ->method('askConfirmation')
             ->with(
                 $this->anything(),
-                $this->equalTo('  - Do you want to exclude some default Symfony patterns for PHP Code Sniffer? [y/N] ')
+                $this->equalTo('  - Do you want to exclude some default Symfony patterns for PHP Code Sniffer?')
             )
             ->will($this->returnValue(true));
 
-        //- Do you want to exclude some custom patterns for PHP Code Sniffer? [y/N]
         $dialog
             ->expects($this->at($startAt))
             ->method('askConfirmation')
             ->with(
                 $this->anything(),
-                $this->equalTo('  - Do you want to exclude some custom patterns for PHP Code Sniffer? [y/N] ')
+                $this->equalTo('  - Do you want to exclude some custom patterns for PHP Code Sniffer?')
             )
             ->will($this->returnValue(false));
     }
@@ -393,7 +396,7 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
             ->method('askConfirmation')
             ->with(
                 $this->anything(),
-                $this->equalTo("Do you want to enable PHP Copy Paste Detection? [Y/n] ")
+                $this->equalTo("Do you want to enable PHP Copy Paste Detection?")
             )
             ->will($this->returnValue(true));
 
@@ -402,7 +405,7 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
             ->method('askConfirmation')
             ->with(
                 $this->anything(),
-                $this->equalTo("Do you want to exclude patterns for PHP Copy Paste detection? [Y/n] ")
+                $this->equalTo("Do you want to exclude patterns for PHP Copy Paste detection?")
             )
             ->will($this->returnValue(false));
 
@@ -411,7 +414,7 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
             ->method('askConfirmation')
             ->with(
                 $this->anything(),
-                $this->equalTo("Do you want to enable the Sensiolabs Security Checker? [Y/n] ")
+                $this->equalTo("Do you want to enable the Sensiolabs Security Checker?")
             )
             ->will($this->returnValue(true));
 
@@ -438,7 +441,7 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
             ->method('askConfirmation')
             ->with(
                 $this->anything(),
-                $this->equalTo('Do you want to enable PHPunit tests? [Y/n] ')
+                $this->equalTo('Do you want to enable PHPunit tests?')
             )
             ->will($this->returnValue(true));
 
@@ -447,7 +450,7 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
             ->method('askConfirmation')
             ->with(
                 $this->anything(),
-                $this->equalTo('Do you have a custom PHPUnit config? (for example, Symfony has one in \'app/phpunit.xml.dist\') [y/N] ')
+                $this->equalTo('Do you have a custom PHPUnit config? (for example, Symfony has one in \'app/phpunit.xml.dist\')')
             )
             ->will($this->returnValue(false));
 
@@ -465,7 +468,7 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
             ->method('askConfirmation')
             ->with(
                 $this->anything(),
-                $this->equalTo('Do you want to enable an autoload script for PHPUnit? [Y/n] ')
+                $this->equalTo('Do you want to enable an autoload script for PHPUnit?')
             )
             ->will($this->returnValue(true));
 
@@ -493,7 +496,7 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
             ->method('askConfirmation')
             ->with(
                 $this->anything(),
-                $this->equalTo('Do you want to enable PHPunit tests? [Y/n] ')
+                $this->equalTo('Do you want to enable PHPunit tests?')
             )
             ->will($this->returnValue(true));
 
@@ -502,7 +505,7 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
             ->method('askConfirmation')
             ->with(
                 $this->anything(),
-                $this->equalTo('Do you have a custom PHPUnit config? (for example, Symfony has one in \'app/phpunit.xml.dist\') [y/N] ')
+                $this->equalTo('Do you have a custom PHPUnit config? (for example, Symfony has one in \'app/phpunit.xml.dist\')')
             )
             ->will($this->returnValue(true));
 
@@ -530,7 +533,7 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
             ->method('askConfirmation')
             ->with(
                 $this->anything(),
-                $this->equalTo("\n<comment>Do you want to install the QA tools for Javascript? [Y/n] </comment>")
+                $this->equalTo("\nDo you want to install the QA tools for Javascript?")
             )
             ->will($this->returnValue(true));
 
@@ -539,7 +542,7 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
             ->method('askConfirmation')
             ->with(
                 $this->anything(),
-                $this->equalTo('Do you want to enable JSHint? [Y/n] ')
+                $this->equalTo('Do you want to enable JSHint?')
             )
             ->will($this->returnValue(false));
 
@@ -548,7 +551,7 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
             ->method('askConfirmation')
             ->with(
                 $this->anything(),
-                $this->equalTo("\n<comment>Do you want to install the Behat framework? [Y/n] </comment>")
+                $this->equalTo("\nDo you want to install the Behat framework?")
             )
             ->will($this->returnValue(true));
 
@@ -586,7 +589,7 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
             ->with(
                 $this->anything(),
                 $this->equalTo(
-                    "\n<comment>Do you want to enable the git pre-commit hook? It will run the QA tools on every commit [Y/n] </comment>"
+                    "\nDo you want to enable the git pre-commit hook? It will run the QA tools on every commit"
                 )
             )
             ->will($this->returnValue(true));

@@ -12,6 +12,7 @@
 namespace Ibuildings\QA\tests\mock;
 
 use Ibuildings\QA\Tools\Common\CommandExistenceChecker;
+use Ibuildings\QA\Tools\Common\Configurator\ConfiguratorInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 

@@ -58,6 +58,7 @@ class Application extends BaseApplication
         }
 
         $this->dialog = new DialogHelper();
+        $this->dialog->setHelperSet($this->getHelperSet());
         return $this->dialog;
     }
 }

@@ -12,6 +12,7 @@
 namespace Ibuildings\QA\Tools\Common\Console;
 
 use Ibuildings\QA\Tools\Common\Configurator\Helper\MultiplePathHelper;
+use Ibuildings\QA\Tools\Common\Configurator\Registry;
 use Ibuildings\QA\Tools\PHP\Configurator\PhpComposerConfigurator;
 
 use Ibuildings\QA\Tools\PHP\Configurator\PhpConfigurator;
@@ -283,5 +284,10 @@ class InstallCommand extends AbstractCommand
             );
             fclose($fh);
         }
+    }
+
+    protected function getConfiguratorRegistry()
+    {
+        return new Registry();
     }
 }
