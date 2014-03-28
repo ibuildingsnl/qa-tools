@@ -11,8 +11,15 @@
 
 namespace Ibuildings\QA\Tools\Common;
 
+use Camspiers\JsonPretty\JsonPretty;
+
 class Settings extends \ArrayObject
 {
+    /**
+     * @var string
+     */
+    protected $filename = 'qa-tools.json';
+
     /**
      * Instantiate the object.
      *
@@ -22,7 +29,6 @@ class Settings extends \ArrayObject
      */
     public function __construct($baseDir, $packageBaseDir)
     {
-
         if (!is_dir($packageBaseDir)) {
             throw new \Exception('Cannot find vendor package dir:' . $packageBaseDir);
         }
@@ -31,8 +37,37 @@ class Settings extends \ArrayObject
             throw new \Exception('Cannot find project base dir:' . $baseDir);
         }
 
-        $this['packageBaseDir'] = $packageBaseDir;
-        $this['baseDir'] = $baseDir;
+        $this->packageBaseDir = $packageBaseDir;
+        $this->baseDir = $baseDir;
+
+        // Load settings from this (if any)
+        $this->initializeFromConfig();
+    }
+
+    /**
+     * Load configuration from settings json file
+     */
+    protected function initializeFromConfig()
+    {
+        $configurationFile = $this->configurationFile();
+        if (is_readable($configurationFile)) {
+            $loadedConfiguration = json_decode(file_get_contents($configurationFile));
+            $this->exchangeArray($loadedConfiguration);
+        }
+    }
+
+    /**
+     * File path
+     *
+     * @return string
+     */
+    protected function configurationFile()
+    {
+        $configurationFile = $this->getBaseDir()
+            . DIRECTORY_SEPARATOR
+            . '/'
+            . $this->filename;
+        return $configurationFile;
     }
 
     /**
@@ -40,7 +75,7 @@ class Settings extends \ArrayObject
      */
     public function getBaseDir()
     {
-        return $this['baseDir'];
+        return $this->baseDir;
     }
 
     /**
@@ -48,6 +83,26 @@ class Settings extends \ArrayObject
      */
     public function getPackageBaseDir()
     {
-        return $this['packageBaseDir'];
+        return $this->packageBaseDir;
+    }
+
+    /**
+     * Destructor. Will write app config to file
+     * to keep configuration persistent across app
+     * runs.
+     *
+     * @todo throw a warning when file is not writable.
+     */
+    public function __destruct()
+    {
+        $configurationFile = $this->configurationFile();
+
+        if (is_writable($this->getBaseDir()) &&
+            (!file_exists($configurationFile) OR is_writable($configurationFile))
+        ) {
+            $jsonPretty = new JsonPretty();
+            $json = $jsonPretty->prettify($this->getArrayCopy());
+            file_put_contents($configurationFile, $json);
+        }
     }
 }

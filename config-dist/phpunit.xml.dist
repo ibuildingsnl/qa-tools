@@ -9,7 +9,7 @@
          processIsolation="false"
          stopOnFailure="false"
          syntaxCheck="false"
-         bootstrap="{{ phpTestsAutoloadPath }}">
+         bootstrap="{{ phpUnitAutoloadPath }}">
     <testsuites>
         <testsuite name="Test Suite">
             <directory>{{ phpTestsPath }}</directory>

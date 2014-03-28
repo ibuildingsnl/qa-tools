@@ -23,8 +23,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  * Class JavascriptConfigurator
  * @package Ibuildings\QA\Tools\Javascript\Configurator
  */
-class JavascriptConfigurator
-    implements ConfiguratorInterface
+class JavascriptConfigurator implements ConfiguratorInterface
 {
     /**
      * @var OutputInterface
@@ -50,8 +49,7 @@ class JavascriptConfigurator
         OutputInterface $output,
         DialogHelper $dialog,
         Settings $settings
-    )
-    {
+    ) {
         $this->output = $output;
         $this->dialog = $dialog;
         $this->settings = $settings;
@@ -64,10 +62,11 @@ class JavascriptConfigurator
      */
     public function configure()
     {
+        $default = (empty($this->settings['enableJsTools'])) ? true : $this->settings['enableJsTools'];
         $this->settings['enableJsTools'] = $this->dialog->askConfirmation(
             $this->output,
-            "\n<comment>Do you want to install the QA tools for Javascript? [Y/n] </comment>",
-            true
+            "\nDo you want to install the QA tools for Javascript?",
+            $default
         );
     }
 }

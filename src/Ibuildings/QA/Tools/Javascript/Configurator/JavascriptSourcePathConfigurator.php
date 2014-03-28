@@ -66,9 +66,10 @@ class JavascriptSourcePathConfigurator
             return;
         }
         $baseDir = $this->settings->getBaseDir();
+        $default = (empty($this->settings['javaScriptSrcPath'])) ? 'src' : $this->settings['javaScriptSrcPath'];
         $this->settings['javaScriptSrcPath'] = $this->dialog->askAndValidate(
             $this->output,
-            "What is the path to the JavaScript source code? [src] ",
+            "What is the path to the JavaScript source code? [{$default}] ",
             function ($data) use ($baseDir) {
                 if (is_dir($baseDir . '/' . $data)) {
                     return $data;
@@ -76,7 +77,7 @@ class JavascriptSourcePathConfigurator
                 throw new \Exception("That path doesn't exist");
             },
             false,
-            'src'
+            $default
         );
     }
 }

@@ -23,8 +23,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  * Class PhpSecurityCheckerConfigurator
  * @package Ibuildings\QA\Tools\PHP\Configurator
  */
-class PhpSecurityCheckerConfigurator
-    implements ConfiguratorInterface
+class PhpSecurityCheckerConfigurator implements ConfiguratorInterface
 {
     /**
      * @var OutputInterface
@@ -50,8 +49,7 @@ class PhpSecurityCheckerConfigurator
         OutputInterface $output,
         DialogHelper $dialog,
         Settings $settings
-    )
-    {
+    ) {
         $this->output = $output;
         $this->dialog = $dialog;
         $this->settings = $settings;
@@ -65,10 +63,13 @@ class PhpSecurityCheckerConfigurator
             return false;
         }
 
+        $default  = (empty($this->settings['enablePhpSecurityChecker']))
+            ? true
+            : $this->settings['enablePhpSecurityChecker'];
         $this->settings['enablePhpSecurityChecker'] = $this->dialog->askConfirmation(
             $this->output,
-            "Do you want to enable the Sensiolabs Security Checker? [Y/n] ",
-            true
+            "Do you want to enable the Sensiolabs Security Checker?",
+            $default
         );
     }
 }

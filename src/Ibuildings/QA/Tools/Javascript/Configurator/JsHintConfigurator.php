@@ -65,8 +65,7 @@ class JsHintConfigurator extends AbstractWritableConfigurator
         Settings $settings,
         \Twig_Environment $twig,
         InstallJsHintCommand $installJsHintCommand
-    )
-    {
+    ) {
         $this->input = $input;
         $this->output = $output;
         $this->dialog = $dialog;
@@ -83,10 +82,11 @@ class JsHintConfigurator extends AbstractWritableConfigurator
             return;
         }
 
+        $default = (empty($this->settings['enableJsHint'])) ? true : $this->settings['enableJsHint'];
         $this->settings['enableJsHint'] = $this->dialog->askConfirmation(
             $this->output,
-            "Do you want to enable JSHint? [Y/n] ",
-            true
+            "Do you want to enable JSHint?",
+            $default
         );
 
         if ($this->settings['enableJsHint'] === false) {

@@ -41,7 +41,13 @@ class InstallPreCommitHookCommandTest extends \PHPUnit_Framework_TestCase
         $preCommitHookCommand = new InstallPreCommitHookCommand();
         $preCommitHookCommand->setChecker($checker);
 
-        $this->application = new Application('ibuildings qa tools', '1.1.11', $settings);
+        $this->application = $this->getMock('Ibuildings\QA\Tools\Common\Application', array('getDialogHelper'), array('ibuildings qa tools', '1.1.11', $settings));
+
+        $dialog = $this->getMock('Ibuildings\QA\Tools\Common\Console\Helper\DialogHelper', array('askConfirmation', 'askAndValidate'));
+
+        $this->application->expects($this->any())
+            ->method('getDialogHelper')
+            ->will($this->returnValue($dialog));
 
         $this->application->add($preCommitHookCommand);
     }
@@ -103,11 +109,7 @@ class InstallPreCommitHookCommandTest extends \PHPUnit_Framework_TestCase
 
         $this->application->add($preCommitHookCommand);
 
-        // We mock the DialogHelper
-        $dialog = $this->getMock(
-            'Symfony\Component\Console\Helper\DialogHelper',
-            array('askConfirmation', 'askAndValidate')
-        );
+        $dialog = $this->application->getDialogHelper();
 
         //If you already have a build config, it will be overwritten. Do you want to continue? [Y/n]
         $dialog->expects($this->at(0))
@@ -116,9 +118,6 @@ class InstallPreCommitHookCommandTest extends \PHPUnit_Framework_TestCase
 
         /** @var InstallPreCommitHookCommand $command */
         $command = $this->application->find('install:pre-commit');
-
-        // We override the standard helper with our mock
-        $command->getHelperSet()->set($dialog, 'dialog');
 
         $commandTester = new CommandTester($command);
 
@@ -173,11 +172,7 @@ class InstallPreCommitHookCommandTest extends \PHPUnit_Framework_TestCase
 
         $this->application->add($preCommitHookCommand);
 
-        // We mock the DialogHelper
-        $dialog = $this->getMock(
-            'Symfony\Component\Console\Helper\DialogHelper',
-            array('askConfirmation', 'askAndValidate')
-        );
+        $dialog = $this->application->getDialogHelper();
 
         //If you already have a build config, it will be overwritten. Do you want to continue? [Y/n]
         $dialog->expects($this->at(0))
@@ -186,9 +181,6 @@ class InstallPreCommitHookCommandTest extends \PHPUnit_Framework_TestCase
 
         /** @var InstallPreCommitHookCommand $command */
         $command = $this->application->find('install:pre-commit');
-
-        // We override the standard helper with our mock
-        $command->getHelperSet()->set($dialog, 'dialog');
 
         $commandTester = new CommandTester($command);
 
@@ -208,8 +200,7 @@ class InstallPreCommitHookCommandTest extends \PHPUnit_Framework_TestCase
      */
     public function everythingFound()
     {
-        // We mock the DialogHelper
-        $dialog = $this->getMock('Symfony\Component\Console\Helper\DialogHelper', array('askConfirmation', 'askAndValidate'));
+        $dialog = $this->application->getDialogHelper();
 
         //If you already have a build config, it will be overwritten. Do you want to continue? [Y/n]
         $dialog->expects($this->at(0))
@@ -219,8 +210,6 @@ class InstallPreCommitHookCommandTest extends \PHPUnit_Framework_TestCase
         /** @var InstallPreCommitHookCommand $command */
         $command = $this->application->find('install:pre-commit');
 
-        // We override the standard helper with our mock
-        $command->getHelperSet()->set($dialog, 'dialog');
         $commandTester = new CommandTester($command);
 
         $commandTester->execute(
@@ -252,23 +241,28 @@ class InstallPreCommitHookCommandTest extends \PHPUnit_Framework_TestCase
         $preCommitHookCommand->setChecker($checker);
         $preCommitHookCommand->expects($this->any())->method('gitHooksDirExists')->will($this->returnValue(false));
 
-        $application = new Application('ibuildings qa tools', '1.1.11', $settings);
+        $application = $this->getMock('Ibuildings\QA\Tools\Common\Application', array('getDialogHelper'), array('ibuildings qa tools', '1.1.11', $settings));
+
+        $dialog = $this->getMock('Ibuildings\QA\Tools\Common\Console\Helper\DialogHelper', array('askConfirmation', 'askAndValidate'));
+
+        $application->expects($this->any())
+            ->method('getDialogHelper')
+            ->will($this->returnValue($dialog));
 
         $application->add($preCommitHookCommand);
-
-        // We mock the DialogHelper
-        $dialog = $this->getMock('Symfony\Component\Console\Helper\DialogHelper', array('askConfirmation', 'askAndValidate'));
 
         //If you already have a build config, it will be overwritten. Do you want to continue? [Y/n]
         $dialog->expects($this->at(0))
             ->method('askConfirmation')
+            ->with(
+                $this->anything(),
+                $this->equalTo("\nDo you want to enable the git pre-commit hook? It will run the QA tools on every commit")
+            )
             ->will($this->returnValue(true));
 
         /** @var InstallPreCommitHookCommand $command */
         $command = $application->find('install:pre-commit');
 
-        // We override the standard helper with our mock
-        $command->getHelperSet()->set($dialog, 'dialog');
         $commandTester = new CommandTester($command);
 
         $commandTester->execute(
@@ -304,12 +298,16 @@ class InstallPreCommitHookCommandTest extends \PHPUnit_Framework_TestCase
 
         $preCommitHookCommand->setChecker($checker);
         $preCommitHookCommand->expects($this->any())->method('preCommitHookExists')->will($this->returnValue(true));
-        $application = new Application('ibuildings qa tools', '1.1.11', $settings);
+
+        $application = $this->getMock('Ibuildings\QA\Tools\Common\Application', array('getDialogHelper'), array('ibuildings qa tools', '1.1.11', $settings));
+
+        $dialog = $this->getMock('Ibuildings\QA\Tools\Common\Console\Helper\DialogHelper', array('askConfirmation', 'askAndValidate'));
+
+        $application->expects($this->any())
+            ->method('getDialogHelper')
+            ->will($this->returnValue($dialog));
 
         $application->add($preCommitHookCommand);
-
-        // We mock the DialogHelper
-        $dialog = $this->getMock('Symfony\Component\Console\Helper\DialogHelper', array('askConfirmation', 'askAndValidate'));
 
         //If you already have a build config, it will be overwritten. Do you want to continue? [Y/n]
         $dialog->expects($this->at(0))
@@ -319,8 +317,6 @@ class InstallPreCommitHookCommandTest extends \PHPUnit_Framework_TestCase
         /** @var InstallPreCommitHookCommand $command */
         $command = $application->find('install:pre-commit');
 
-        // We override the standard helper with our mock
-        $command->getHelperSet()->set($dialog, 'dialog');
         $commandTester = new CommandTester($command);
 
         $commandTester->execute(

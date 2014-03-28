@@ -47,8 +47,7 @@ class PhpUnitConfigurator extends AbstractWritableConfigurator
         DialogHelper $dialog,
         Settings $settings,
         \Twig_Environment $twig
-    )
-    {
+    ) {
         $this->output = $output;
         $this->dialog = $dialog;
         $this->settings = $settings;
@@ -59,6 +58,45 @@ class PhpUnitConfigurator extends AbstractWritableConfigurator
         $this->settings['phpUnitConfigPath'] = '';
     }
 
+    /**
+     * Custom PHPUnit configuration?
+     *
+     * @param OutputInterface $output
+     * @param Settings $settings
+     * @return bool
+     */
+    protected function hasCustomPhpUnitXml(OutputInterface $output, Settings $settings)
+    {
+        $default = (empty($this->settings['customPhpUnitXml'])) ? false : $this->settings['customPhpUnitXml'];
+        $settings['customPhpUnitXml'] = $this->dialog->askConfirmation(
+            $output,
+            "Do you have a custom PHPUnit config? (for example, Symfony has one in 'app/phpunit.xml.dist')",
+            $default
+        );
+
+        // No need to go further.
+        if (false === $settings['customPhpUnitXml']) {
+            return false;
+        }
+
+        $default = (empty($settings['phpUnitConfigPath'])) ? 'app/phpunit.xml.dist' : $settings['phpUnitConfigPath'];
+        $settings['phpUnitConfigPath'] = $this->dialog->askAndValidate(
+            $output,
+            "What is the path to the custom PHPUnit config? [{$default}] ",
+            function ($data) use ($settings) {
+                if (file_exists($settings->getBaseDir() . '/' . $data)) {
+                    return $data;
+                }
+                throw new \Exception("That path doesn't exist");
+            },
+            false,
+            $default
+        );
+
+        return true;
+    }
+
+
     public function configure()
     {
         if (!$this->settings['enablePhpTools']) {
@@ -67,23 +105,58 @@ class PhpUnitConfigurator extends AbstractWritableConfigurator
 
         $output = $this->output;
         $output->writeln("\n<info>Configuring PHPUnit</info>\n");
+        $default = (empty($this->settings['enablePhpUnit'])) ? true : $this->settings['enablePhpUnit'];
         $this->settings['enablePhpUnit'] = $this->dialog->askConfirmation(
             $output,
-            "Do you want to enable PHPunit tests? [Y/n] ",
-            true
+            "Do you want to enable PHPunit tests?",
+            $default
         );
 
-        $this->settings['customPhpUnitXml'] = $this->dialog->askConfirmation(
-            $output,
-            "Do you have a custom PHPUnit config? (for example, Symfony has one in 'app/phpunit.xml.dist') [y/N] ",
-            false
-        );
-
-        if ($this->settings['customPhpUnitXml']) {
+        if (!$this->hasCustomPhpUnitXml($output, $this->settings) &&  $this->settings['enablePhpUnit']) {
             $settings = $this->settings;
-            $this->settings['phpUnitConfigPath'] = $this->dialog->askAndValidate(
+            $default = (empty($this->settings['phpTestsPath'])) ? 'tests' : $this->settings['phpTestsPath'];
+            $this->settings['phpTestsPath'] = $this->dialog->askAndValidate(
                 $output,
-                "What is the path to the custom PHPUnit config? [app/phpunit.xml.dist] ",
+                "What is the path to the PHPUnit tests? [{$default}] ",
+                function ($data) use ($settings) {
+                    if (is_dir($settings->getBaseDir() . '/' . $data)) {
+                        return $data;
+                    }
+                    throw new \Exception("That path doesn't exist");
+                },
+                false,
+                $default
+            );
+
+            $this->enablePhpUnitAutoLoad($output, $this->settings);
+        }
+    }
+
+    /**
+     * @param OutputInterface $output
+     * @param Settings $settings
+     * @return bool
+     */
+    protected function enablePhpUnitAutoLoad(OutputInterface $output, Settings $settings)
+    {
+        $default = (empty($settings['enablePhpUnitAutoload'])) ? true : $settings['enablePhpUnitAutoload'];
+        $settings['enablePhpUnitAutoload'] = $this->dialog->askConfirmation(
+            $output,
+            "Do you want to enable an autoload script for PHPUnit?",
+            $default
+        );
+
+        if (false === $settings['enablePhpUnitAutoload']) {
+            return false;
+        }
+
+        if ($settings['enablePhpUnitAutoload']) {
+            $default = (empty($settings['phpUnitAutoloadPath']))
+                ? 'vendor/autoload.php'
+                : $settings['phpUnitAutoloadPath'];
+            $settings['phpUnitAutoloadPath'] = $this->dialog->askAndValidate(
+                $output,
+                "What is the path to the autoload script for PHPUnit? [{$default}] ",
                 function ($data) use ($settings) {
                     if (file_exists($settings->getBaseDir() . '/' . $data)) {
                         return $data;
@@ -91,48 +164,12 @@ class PhpUnitConfigurator extends AbstractWritableConfigurator
                     throw new \Exception("That path doesn't exist");
                 },
                 false,
-                'app/phpunit.xml.dist'
+                $default
             );
-        } else {
-            if ($this->settings['enablePhpUnit']) {
-                $settings = $this->settings;
-                $this->settings['phpTestsPath'] = $this->dialog->askAndValidate(
-                    $output,
-                    "What is the path to the PHPUnit tests? [tests] ",
-                    function ($data) use ($settings) {
-                        if (is_dir($settings->getBaseDir() . '/' . $data)) {
-                            return $data;
-                        }
-                        throw new \Exception("That path doesn't exist");
-                    },
-                    false,
-                    'tests'
-                );
-
-                $this->settings['enablePhpUnitAutoload'] = $this->dialog->askConfirmation(
-                    $output,
-                    "Do you want to enable an autoload script for PHPUnit? [Y/n] ",
-                    true
-                );
-
-                if ($this->settings['enablePhpUnitAutoload']) {
-                    $settings = $this->settings;
-                    $this->settings['phpTestsAutoloadPath'] = $this->dialog->askAndValidate(
-                        $output,
-                        "What is the path to the autoload script for PHPUnit? [vendor/autoload.php] ",
-                        function ($data) use ($settings) {
-                            if (file_exists($settings->getBaseDir() . '/' . $data)) {
-                                return $data;
-                            }
-                            throw new \Exception("That path doesn't exist");
-                        },
-                        false,
-                        'vendor/autoload.php'
-                    );
-                }
-            }
         }
+        return true;
     }
+
 
     /**
      * @inheritdoc

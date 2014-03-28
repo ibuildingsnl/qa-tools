@@ -53,8 +53,7 @@ class BehatConfigurator extends AbstractWritableConfigurator
         DialogHelper $dialog,
         Settings $settings,
         \Twig_Environment $twig
-    )
-    {
+    ) {
         $this->output = $output;
         $this->dialog = $dialog;
         $this->settings = $settings;
@@ -69,10 +68,11 @@ class BehatConfigurator extends AbstractWritableConfigurator
      */
     public function configure()
     {
+        $default = (empty($this->settings['enableBehat'])) ? true : $this->settings['enableBehat'];
         $this->settings['enableBehat'] = $this->dialog->askConfirmation(
             $this->output,
-            "\n<comment>Do you want to install the Behat framework? [Y/n] </comment>",
-            true
+            "\nDo you want to install the Behat framework?",
+            $default
         );
 
         if ($this->settings['enableBehat']) {
@@ -99,9 +99,10 @@ class BehatConfigurator extends AbstractWritableConfigurator
      */
     protected function askAdditionalQuestions(OutputInterface $output)
     {
+        $default = (empty($this->settings['baseUrl'])) ? 'http://www.ibuildings.nl' : $this->settings['baseUrl'];
         $this->settings['baseUrl'] = $this->dialog->askAndValidate(
             $output,
-            "What is base url of your application? [http://www.ibuildings.nl] ",
+            "What is base url of your application? [{$default}] ",
             function ($data) {
                 if (substr($data, 0, 4) == 'http') {
                     return $data;
@@ -109,10 +110,12 @@ class BehatConfigurator extends AbstractWritableConfigurator
                 throw new \Exception("Url needs to start with http");
             },
             false,
-            'http://www.ibuildings.nl'
+            $default
         );
 
-        $baseUrlCi = $this->suggestDomain($this->settings['baseUrl'], 'ci');
+        $baseUrlCi = (empty($this->settings['baseUrlCi']))
+            ? $this->suggestDomain($this->settings['baseUrl'], 'ci')
+            : $this->settings['baseUrlCi'];
 
         $this->settings['baseUrlCi'] = $this->dialog->askAndValidate(
             $output,
@@ -127,7 +130,9 @@ class BehatConfigurator extends AbstractWritableConfigurator
             $baseUrlCi
         );
 
-        $baseUrlDev = $this->suggestDomain($this->settings['baseUrl'], 'dev');
+        $baseUrlDev = (empty($this->settings['baseUrlDev']))
+            ? $this->suggestDomain($this->settings['baseUrl'], 'dev')
+            : $this->settings['baseUrlDev'];
 
         $this->settings['baseUrlDev'] = $this->dialog->askAndValidate(
             $output,
@@ -216,7 +221,10 @@ class BehatConfigurator extends AbstractWritableConfigurator
 
         try {
             $filesystem = new Filesystem();
-            $filesystem->mirror($this->settings->getPackageBaseDir() . '/config-dist/features', $this->settings['featuresDir']);
+            $filesystem->mirror(
+                $this->settings->getPackageBaseDir() . '/config-dist/features',
+                $this->settings['featuresDir']
+            );
         } catch (\Exception $e) {
             $output->writeln(
                 "<error>Something went wrong when creating the features directory" . $e->getMessage() . "</error>"

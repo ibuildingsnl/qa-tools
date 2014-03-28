@@ -55,8 +55,7 @@ class PhpMessDetectorConfigurator extends AbstractWritableConfigurator
         MultiplePathHelper $multiplePathHelper,
         Settings $settings,
         \Twig_Environment $twig
-    )
-    {
+    ) {
         $this->output = $output;
         $this->dialog = $dialog;
         $this->multiplePathHelper = $multiplePathHelper;
@@ -72,19 +71,23 @@ class PhpMessDetectorConfigurator extends AbstractWritableConfigurator
             return false;
         }
 
+        $default = (empty($this->settings['enablePhpMessDetector'])) ? true : $this->settings['enablePhpMessDetector'];
         $this->settings['enablePhpMessDetector'] = $this->dialog->askConfirmation(
             $this->output,
-            "Do you want to enable the PHP Mess Detector? [Y/n] ",
-            true
+            "Do you want to enable the PHP Mess Detector?",
+            $default
         );
 
 
         // Exclude default patterns
+        $default = (!empty($this->settings['phpMdExcludePatterns']))
+            ? implode(',', $this->settings['phpMdExcludePatterns'])
+            : '';
         $excludePatterns = $this->multiplePathHelper->askPatterns(
             "  - Which patterns should be excluded for PHP Mess Detector?",
-            '',
+            $default,
             "  - Do you want to exclude custom patterns for PHP Mess Detector?",
-            false
+            isset($this->settings['phpMdExcludePatterns'])||false
         );
 
         $this->settings['phpMdExcludePatterns'] = $excludePatterns;

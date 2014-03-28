@@ -142,6 +142,7 @@ class MultiplePathHelper
      * @param null $confirmationQuestion Optional question to ask if you want to set the value
      * @param bool $defaultConfirmation
      * @param callable $callback
+     * @throws \Exception when callable is not callable.
      *
      * @return string
      */
@@ -165,15 +166,10 @@ class MultiplePathHelper
             $pathQuestion .= " [$defaultPaths]";
         }
 
-        $defaultConfirmationText = ' [Y/n] ';
-        if ($defaultConfirmation === false) {
-            $defaultConfirmationText = ' [y/N] ';
-        }
-
         if ($confirmationQuestion) {
             if (!$this->dialog->askConfirmation(
                 $this->output,
-                $confirmationQuestion . $defaultConfirmationText,
+                $confirmationQuestion,
                 $defaultConfirmation
             )
             ) {

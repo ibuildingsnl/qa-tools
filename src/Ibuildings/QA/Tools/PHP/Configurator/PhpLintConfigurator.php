@@ -23,8 +23,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  * Class PhpLintConfigurator
  * @package Ibuildings\QA\Tools\PHP\Configurator
  */
-class PhpLintConfigurator
-    implements ConfiguratorInterface
+class PhpLintConfigurator implements ConfiguratorInterface
 {
     /**
      * @var OutputInterface
@@ -50,8 +49,7 @@ class PhpLintConfigurator
         OutputInterface $output,
         DialogHelper $dialog,
         Settings $settings
-    )
-    {
+    ) {
         $this->output = $output;
         $this->dialog = $dialog;
         $this->settings = $settings;
@@ -68,10 +66,11 @@ class PhpLintConfigurator
             return false;
         }
 
+        $default = (empty($this->settings['enablePhpLint'])) ? true : $this->settings['enablePhpLint'];
         $this->settings['enablePhpLint'] = $this->dialog->askConfirmation(
             $this->output,
-            "Do you want to enable PHP Lint? [Y/n] ",
-            true
+            "Do you want to enable PHP Lint?",
+            $default
         );
     }
 }

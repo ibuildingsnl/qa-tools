@@ -12,6 +12,7 @@
 namespace Ibuildings\QA\Tools\Common\Console;
 
 use Ibuildings\QA\Tools\Common\Configurator\Helper\MultiplePathHelper;
+use Ibuildings\QA\Tools\Common\Configurator\Registry;
 use Ibuildings\QA\Tools\PHP\Configurator\PhpComposerConfigurator;
 
 use Ibuildings\QA\Tools\PHP\Configurator\PhpConfigurator;
@@ -30,7 +31,6 @@ use Ibuildings\QA\Tools\Javascript\Configurator\JavascriptSourcePathConfigurator
 use Ibuildings\QA\Tools\Functional\Configurator\BehatConfigurator;
 
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -56,20 +56,21 @@ class InstallCommand extends AbstractCommand
             ->setHelp('Installs all tools and config files');
     }
 
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     */
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
         parent::initialize($input, $output);
 
-        $this->enableDefaultSettings();
+        $this->dialog = $this->getApplication()->getDialogHelper();
     }
 
-    private function enableDefaultSettings()
-    {
-        $this->settings['buildArtifactsPath'] = 'build/artifacts';
-
-        return $this;
-    }
-
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $output->writeln("<info>Starting setup of Ibuildings QA Tools<info>");
@@ -84,7 +85,7 @@ class InstallCommand extends AbstractCommand
 
         if (!$this->dialog->askConfirmation(
             $output,
-            "\n<comment>If you already have a build config, it will be overwritten. Do you want to continue? [Y/n] </comment>",
+            "\nIf you already have a build config, it will be overwritten. Do you want to continue?",
             true
         )
         ) {
@@ -101,7 +102,10 @@ class InstallCommand extends AbstractCommand
         $multiplePathHelper = new MultiplePathHelper($output, $this->dialog, $this->settings->getBaseDir());
 
         // PHP
-        $configuratorRegistry->register(new PhpConfigurator($output, $this->dialog, $this->settings));
+        $phpconfigurator = new PhpConfigurator($output, $this->settings);
+        $this->requireHelper('dialog', $phpconfigurator);
+        $configuratorRegistry->register($phpconfigurator);
+
         $configuratorRegistry->register(new PhpComposerConfigurator($output, $this->dialog, $this->settings));
         $configuratorRegistry->register(new PhpLintConfigurator($output, $this->dialog, $this->settings));
         $configuratorRegistry->register(
@@ -157,9 +161,10 @@ class InstallCommand extends AbstractCommand
             FILTER_FLAG_STRIP_LOW | FILTER_FLAG_STRIP_LOW
         );
 
+        $default = (empty($this->settings['projectName'])) ? $guessedName : $this->settings['projectName'];
         $this->settings['projectName'] = $this->dialog->askAndValidate(
             $output,
-            "What is the name of the project? [$guessedName] ",
+            "What is the name of the project? [$default] ",
             function ($data) {
                 if (preg_match('/^[\w\.\s]+$/', $data)) {
                     return $data;
@@ -167,7 +172,7 @@ class InstallCommand extends AbstractCommand
                 throw new \Exception("The project name may only contain 'a-zA-Z0-9_. '");
             },
             false,
-            $guessedName
+            $default
         );
     }
 
@@ -175,14 +180,17 @@ class InstallCommand extends AbstractCommand
     {
         $dialog = $this->dialog;
         $settings = $this->settings;
+        $default = (empty($this->settings['buildArtifactsPath']))
+            ? 'build/artifacts'
+            : $this->settings['buildArtifactsPath'];
         $this->settings['buildArtifactsPath'] = $this->dialog->askAndValidate(
             $output,
-            "Where do you want to store the build artifacts? [" . $this->settings['buildArtifactsPath'] . "] ",
+            "Where do you want to store the build artifacts? [{$default}] ",
             function ($data) use ($output, $dialog, $settings) {
                 if (!is_dir($settings->getBaseDir() . '/' . $data)) {
                     if ($dialog->askConfirmation(
                         $output,
-                        "  - Are you sure? The path doesn't exist and will be created. [Y/n] ",
+                        "  - Are you sure? The path doesn't exist and will be created.",
                         true
                     )
                     ) {
@@ -194,7 +202,7 @@ class InstallCommand extends AbstractCommand
                 return $data;
             },
             false,
-            $this->settings['buildArtifactsPath']
+            $default
         );
     }
 
@@ -276,5 +284,10 @@ class InstallCommand extends AbstractCommand
             );
             fclose($fh);
         }
+    }
+
+    protected function getConfiguratorRegistry()
+    {
+        return new Registry();
     }
 }

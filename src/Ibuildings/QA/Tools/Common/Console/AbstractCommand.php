@@ -12,10 +12,14 @@
 namespace Ibuildings\QA\Tools\Common\Console;
 
 use Ibuildings\QA\Tools\Common\Settings;
+use Ibuildings\QA\Tools\Common\Configurator\ConfiguratorInterface;
+
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Helper;
 use Ibuildings\QA\Tools\Common\CommandExistenceChecker;
 
 /**
@@ -43,17 +47,12 @@ abstract class AbstractCommand extends Command
      */
     protected $settings;
 
-    /** @var DialogHelper */
-    protected $dialog;
-
     /** @var \Twig_Environment */
     protected $twig;
 
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
         $this->settings = $this->getApplication()->getSettings();
-
-        $this->dialog = $this->getHelperSet()->get('dialog');
 
         $loader = new \Twig_Loader_Filesystem($this->settings->getPackageBaseDir() . '/config-dist');
         $this->twig = new \Twig_Environment($loader);
@@ -100,6 +99,44 @@ abstract class AbstractCommand extends Command
             $this->settings['composerBinDir'] = $this->composerConfig['bin-dir'];
         } else {
             $this->settings['composerBinDir'] = 'vendor/bin';
+        }
+    }
+
+    /**
+     * Checks whether the configurator needs a helper base on the
+     * interface it implements. Will inject the helper
+     *
+     * Although we have strict method checking with interfaces. Methods are
+     * crafted dynamically. Therefore a method_exists is still in place.
+     *
+     * @param string $name
+     * @param ConfiguratorInterface $configurator
+     * @throws \RuntimeException
+     */
+    public function requireHelper($name, ConfiguratorInterface $configurator)
+    {
+        $iname = 'Ibuildings\QA\Tools\Common\Console\Helper\\' . ucfirst(strtolower($name)) . 'Interface';
+
+        if ($configurator instanceof $iname) {
+
+            $pfunc = ucfirst(strtolower($name)) . 'Helper';
+
+            $func = 'get' . $pfunc;
+
+            $app = $this->getApplication();
+            if (!method_exists($app, $func)) {
+                throw new \RuntimeException('Cannot find application helper method ' . $func);
+            }
+
+            $helper = $this->getApplication()->$func();
+
+            $func = 'set' . $pfunc;
+
+            if (!method_exists($configurator, $func)) {
+                throw new \RuntimeException('Cannot find method ' . $func . ' to inject helper');
+            }
+
+            $configurator->$func($helper);
         }
     }
 
