@@ -125,4 +125,9 @@ class InstallCommand extends \Ibuildings\QA\Tools\Common\Console\InstallCommand
             $this->buildXmlOutput = $content;
         }
     }
+
+    protected function guessName($dirName)
+    {
+        return parent::guessName('Qa-tools');
+    }
 }

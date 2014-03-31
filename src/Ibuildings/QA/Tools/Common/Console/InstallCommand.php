@@ -152,14 +152,28 @@ class InstallCommand extends AbstractCommand
         $command->run($input, $output);
     }
 
-    protected function configureProjectName(InputInterface $input, OutputInterface $output)
+    /**
+     * Guess name based on dir
+     *
+     * @param string $dirName
+     *
+     * @return string
+     */
+    protected function guessName($dirName)
     {
-        $dirName = basename($this->settings->getBaseDir());
         $guessedName = filter_var(
             ucwords(str_replace(array('-', '_'), ' ', $dirName)),
             FILTER_SANITIZE_STRING,
             FILTER_FLAG_STRIP_LOW | FILTER_FLAG_STRIP_LOW
         );
+
+        return $guessedName;
+    }
+
+    protected function configureProjectName(InputInterface $input, OutputInterface $output)
+    {
+        $dirName = basename($this->settings->getBaseDir());
+        $guessedName = $this->guessName($dirName);
 
         $default = (empty($this->settings['projectName'])) ? $guessedName : $this->settings['projectName'];
         $this->settings['projectName'] = $this->dialog->askAndValidate(
