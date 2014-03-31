@@ -27,6 +27,10 @@ use Symfony\Component\Filesystem\Filesystem;
  */
 class BehatConfigurator extends AbstractWritableConfigurator
 {
+    const ENV_DEV = 'Dev';
+
+    const ENV_CI = 'Ci';
+
     /**
      * @var OutputInterface
      */
@@ -99,6 +103,18 @@ class BehatConfigurator extends AbstractWritableConfigurator
      */
     protected function askAdditionalQuestions(OutputInterface $output)
     {
+        $this->askBaseProduction($output);
+        $this->askBaseDifferentEnvironment($output, self::ENV_CI);
+        $this->askBaseDifferentEnvironment($output, self::ENV_DEV);
+    }
+
+    /**
+     * Ask base url for project
+     *
+     * @param OutputInterface $output
+     */
+    protected function askBaseProduction(OutputInterface $output)
+    {
         $default = (empty($this->settings['baseUrl'])) ? 'http://www.ibuildings.nl' : $this->settings['baseUrl'];
         $this->settings['baseUrl'] = $this->dialog->askAndValidate(
             $output,
@@ -112,14 +128,23 @@ class BehatConfigurator extends AbstractWritableConfigurator
             false,
             $default
         );
+    }
 
-        $baseUrlCi = (empty($this->settings['baseUrlCi']))
-            ? $this->suggestDomain($this->settings['baseUrl'], 'ci')
+    /**
+     * Ask Base url for an different environment environment
+     *
+     * @param OutputInterface $output
+     * @param string          $environment
+     */
+    protected function askBaseDifferentEnvironment(OutputInterface $output, $environment)
+    {
+        $baseUrlCi = (empty($this->settings['baseUrl' . $environment]))
+            ? $this->suggestDomain($this->settings['baseUrl'], strtolower($environment))
             : $this->settings['baseUrlCi'];
 
-        $this->settings['baseUrlCi'] = $this->dialog->askAndValidate(
+        $this->settings['baseUrl' . $environment] = $this->dialog->askAndValidate(
             $output,
-            "What is base url of the ci environment? [$baseUrlCi] ",
+            "What is base url of the " . strtolower($environment) . " environment? [$baseUrlCi] ",
             function ($data) {
                 if (substr($data, 0, 4) == 'http') {
                     return $data;
@@ -128,23 +153,6 @@ class BehatConfigurator extends AbstractWritableConfigurator
             },
             false,
             $baseUrlCi
-        );
-
-        $baseUrlDev = (empty($this->settings['baseUrlDev']))
-            ? $this->suggestDomain($this->settings['baseUrl'], 'dev')
-            : $this->settings['baseUrlDev'];
-
-        $this->settings['baseUrlDev'] = $this->dialog->askAndValidate(
-            $output,
-            "What is base url of your dev environment? [$baseUrlDev] ",
-            function ($data) {
-                if (substr($data, 0, 4) == 'http') {
-                    return $data;
-                }
-                throw new \Exception("Url needs to start with http");
-            },
-            false,
-            $baseUrlDev
         );
     }
 

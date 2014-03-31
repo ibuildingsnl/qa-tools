@@ -83,7 +83,8 @@
             <arg path="src"/>
             <arg value="xml"/>
             <arg value="phpmd.xml"/>
-            <arg value="--exclude tests"/>
+            <arg value="--exclude"/>
+            <arg value="Ibuildings/QA/tests"/>
             <arg value="--reportfile"/>
             <arg value="build/artifacts/logs/pmd.xml"/>
         </exec>

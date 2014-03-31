@@ -67,12 +67,12 @@ class PhpCodeSnifferConfigurator extends AbstractWritableConfigurator
         $this->settings['enablePhpCodeSniffer'] = false;
     }
 
-    public function configure()
+    /**
+     * Asks in the commandline if the user want to enable the codesniffer for the given project
+     *
+     */
+    protected function askEnable()
     {
-        if (!$this->settings['enablePhpTools']) {
-            return false;
-        }
-
         $default = (empty($this->settings['enablePhpCodeSniffer'])) ? false : $this->settings['enablePhpCodeSniffer'];
         $this->settings['enablePhpCodeSniffer'] = $this->dialog->askConfirmation(
             $this->output,
@@ -97,10 +97,16 @@ class PhpCodeSnifferConfigurator extends AbstractWritableConfigurator
                 $default
             );
         }
+    }
 
-        // Exclude symfony patterns
+    /**
+     * Asks if the user wants to exclude some standard symfony paths
+     *
+     * @return array
+     */
+    protected function askExcludeSymfony()
+    {
         $symfonyPatterns = array();
-
 
         $default = (empty($this->settings['phpCsExcludeSymfony'])) ? false : $this->settings['phpCsExcludeSymfony'];
         $this->settings['phpCsExcludeSymfony'] = $this->dialog->askConfirmation(
@@ -118,6 +124,16 @@ class PhpCodeSnifferConfigurator extends AbstractWritableConfigurator
             );
         }
 
+        return $symfonyPatterns;
+    }
+
+    /**
+     * Asks if the user wants to exclude any other paths
+     *
+     * @param array $symfonyPatterns
+     */
+    protected function askExcludePatterns(array $symfonyPatterns)
+    {
         // Exclude default patterns
         $default = (empty($this->settings['phpCsExcludeCustomPatterns']))
             ? false
@@ -133,6 +149,23 @@ class PhpCodeSnifferConfigurator extends AbstractWritableConfigurator
             $symfonyPatterns,
             $this->settings['phpCsExcludeCustomPatterns']
         );
+    }
+
+    /**
+     * @return bool
+     */
+    public function configure()
+    {
+        if (!$this->settings['enablePhpTools']) {
+            return false;
+        }
+
+        $this->askEnable();
+
+        // Exclude symfony patterns
+        $symfonyPatterns = $this->askExcludeSymfony();
+
+        $this->askExcludePatterns(($symfonyPatterns));
     }
 
     /**
