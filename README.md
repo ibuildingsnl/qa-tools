@@ -45,7 +45,7 @@ please add the following to your composer.json:
 ```
 
 # Installation
-It can be installed with Composer.
+The QA tools can easily be installed by using composer
 
 Add the following to your composer.json
 ```json
@@ -69,11 +69,17 @@ Locally on your development environment, you can run the QA-Tools by running `$ 
 ## Behat
 You can run your Behat features with `$ vendor/bin/qa-tools run behat`.
 
-### Phantomjs
+## Phantomjs
 Start using phantomjs web driver using: `$ phantomjs --webdriver=4444`
 
+# Generated config
+When running the QA Tools a QA-settings.json settings file is generated for you. All answered questions will be saved here. Next time you will execute the QA Tools again the default values are the ones you answered before.
+This also makes it possible to create different distributions of the file based on much used functionality for your projects.
+
+This can be helpfull if you know all new projects have to work with the same set of QA tools by adding teh qa-settings.json file to the project all default answers will be the correct ones.
+
 # Notes
-Important note: the pre-commit hook runs on the source you actually staged for commit with `$ git add`, untracked file are ignored. This is to make sure that succesful or failing builds reflect what is actually being committed.
+Important note: the pre-commit hook runs on the source you actually staged for commit with `$ git add`, untracked file are ignored. This is to make sure that successful or failing builds reflect what is actually being committed.
 
 # Contributing
 If something is broken or you have a feature request, please create an issue here on the github repo. 
