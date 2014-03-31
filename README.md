@@ -76,7 +76,7 @@ Start using phantomjs web driver using: `$ phantomjs --webdriver=4444`
 When running the QA Tools a QA-settings.json settings file is generated for you. All answered questions will be saved here. Next time you will execute the QA Tools again the default values are the ones you answered before.
 This also makes it possible to create different distributions of the file based on much used functionality for your projects.
 
-This can be helpfull if you know all new projects have to work with the same set of QA tools by adding teh qa-settings.json file to the project all default answers will be the correct ones.
+This can be helpfull if you know all new projects have to work with the same set of QA tools by adding the qa-settings.json file to the project all default answers will be the correct ones.
 
 # Notes
 Important note: the pre-commit hook runs on the source you actually staged for commit with `$ git add`, untracked file are ignored. This is to make sure that successful or failing builds reflect what is actually being committed.
