@@ -23,8 +23,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  * Class PhpSecurityCheckerConfigurator
  * @package Ibuildings\QA\Tools\PHP\Configurator
  */
-class PhpComposerConfigurator
-    implements ConfiguratorInterface
+class PhpComposerConfigurator implements ConfiguratorInterface
 {
     /**
      * @var OutputInterface
@@ -50,8 +49,7 @@ class PhpComposerConfigurator
         OutputInterface $output,
         DialogHelper $dialog,
         Settings $settings
-    )
-    {
+    ) {
         $this->output = $output;
         $this->dialog = $dialog;
         $this->settings = $settings;

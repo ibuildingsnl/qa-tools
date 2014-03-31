@@ -57,8 +57,7 @@ class PhpCodeSnifferConfigurator extends AbstractWritableConfigurator
         MultiplePathHelper $multiplePathHelper,
         Settings $settings,
         \Twig_Environment $twig
-    )
-    {
+    ) {
         $this->output = $output;
         $this->dialog = $dialog;
         $this->multiplePathHelper = $multiplePathHelper;

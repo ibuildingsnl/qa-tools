@@ -241,6 +241,4 @@ class BehatConfigurator extends AbstractWritableConfigurator
     {
         return $this->settings['enableBehat'] === true;
     }
-
-
 }

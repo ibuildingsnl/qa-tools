@@ -41,10 +41,12 @@ class CommandExistenceChecker
      * When a command is not found or it's too old a warning message will be set. When multiple commands are passed and none
      * is found warnings for each commmand will be returned.
      *
-     * @param string|array $name, may include a parameter to get the version for commands that do not use --version. Multiple options can be tested by passing an array
+     * @param string|array $name , may include a parameter to get the version for commands that do not use --version.
+     *                           Multiple options can be tested by passing an array
      * @param string message return Message by reference
      * @param string|null $minimalVersion
      * @param string|null $foundCommand
+     *
      * @return bool
      * @todo refactor this to an object to which you can pass the optional version parameter and get the message and found command
      *  instead of using optional parameters and parameters by reference
@@ -56,7 +58,7 @@ class CommandExistenceChecker
         }
 
         $messages = array();
-        foreach($name as $option) {
+        foreach ($name as $option) {
             $optionMessage = '';
             if ($this->testIfCommandExists($option, $optionMessage, $minimalVersion)) {
                 $foundCommand = $option;
@@ -109,8 +111,7 @@ class CommandExistenceChecker
         &$message,
         $minimalVersion,
         $versionParameter
-    )
-    {
+    ) {
         $installedVersionDesc = shell_exec("{$commandName} {$versionParameter}");
         $installedVersion = $this->parseVersionDesc($installedVersionDesc);
         $versionTooOld = version_compare($installedVersion, $minimalVersion) < 0;

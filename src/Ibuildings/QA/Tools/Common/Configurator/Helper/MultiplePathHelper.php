@@ -38,8 +38,8 @@ class MultiplePathHelper
 
     /**
      * @param OutputInterface $output
-     * @param DialogHelper $dialog
-     * @param string $baseDir
+     * @param DialogHelper    $dialog
+     * @param string          $baseDir
      */
     public function __construct(
         OutputInterface $output,
@@ -56,8 +56,8 @@ class MultiplePathHelper
      *
      * @param string $pathQuestion
      * @param string $defaultPaths
-     * @param null $confirmationQuestion Optional question to ask if you want to set the value
-     * @param bool $defaultConfirmation
+     * @param null   $confirmationQuestion Optional question to ask if you want to set the value
+     * @param bool   $defaultConfirmation
      *
      * @return string
      */
@@ -69,23 +69,23 @@ class MultiplePathHelper
     ) {
 
         $callback = function ($data) {
-          $paths = explode(',', $data);
+            $paths = explode(',', $data);
 
-          $trimmedPaths = array();
-          foreach ($paths as $path) {
-            $trimmedPaths[] = trim($path);
-          }
+            $trimmedPaths = array();
+            foreach ($paths as $path) {
+                $trimmedPaths[] = trim($path);
+            }
 
-          return $trimmedPaths;
+            return $trimmedPaths;
         };
 
-      return $this->ask(
-        $pathQuestion,
-        $defaultPaths,
-        $confirmationQuestion,
-        $defaultConfirmation,
-        $callback
-      );
+        return $this->ask(
+            $pathQuestion,
+            $defaultPaths,
+            $confirmationQuestion,
+            $defaultConfirmation,
+            $callback
+        );
     }
 
     /**
@@ -93,8 +93,8 @@ class MultiplePathHelper
      *
      * @param string $pathQuestion
      * @param string $defaultPaths
-     * @param null $confirmationQuestion Optional question to ask if you want to set the value
-     * @param bool $defaultConfirmation
+     * @param null   $confirmationQuestion Optional question to ask if you want to set the value
+     * @param bool   $defaultConfirmation
      *
      * @return string
      */
@@ -105,43 +105,44 @@ class MultiplePathHelper
         $defaultConfirmation = true
     ) {
 
-      $baseDir = $this->baseDir;
-      $callback = function ($data) use ($baseDir) {
-        $paths = explode(',', $data);
-        $trimmedPaths = array();
+        $baseDir = $this->baseDir;
+        $callback = function ($data) use ($baseDir) {
+            $paths = explode(',', $data);
+            $trimmedPaths = array();
 
-        foreach ($paths as $path) {
-          $trimmedPath = trim($path);
+            foreach ($paths as $path) {
+                $trimmedPath = trim($path);
 
-          // Check paths
-          $fullPath = $baseDir . DIRECTORY_SEPARATOR . $trimmedPath;
-          if (!is_dir($fullPath)) {
-            throw new \Exception("path '{$fullPath}' doesn't exist");
-          }
+                // Check paths
+                $fullPath = $baseDir . DIRECTORY_SEPARATOR . $trimmedPath;
+                if (!is_dir($fullPath)) {
+                    throw new \Exception("path '{$fullPath}' doesn't exist");
+                }
 
-          $trimmedPaths[] = $trimmedPath;
-        }
+                $trimmedPaths[] = $trimmedPath;
+            }
 
-        return $trimmedPaths;
-      };
+            return $trimmedPaths;
+        };
 
-      return $this->ask(
-        $pathQuestion,
-        $defaultPaths,
-        $confirmationQuestion,
-        $defaultConfirmation,
-        $callback
-      );
+        return $this->ask(
+            $pathQuestion,
+            $defaultPaths,
+            $confirmationQuestion,
+            $defaultConfirmation,
+            $callback
+        );
     }
 
     /**
      * Ask the user for one or more paths/patterns
      *
-     * @param string $pathQuestion
-     * @param string $defaultPaths
-     * @param null $confirmationQuestion Optional question to ask if you want to set the value
-     * @param bool $defaultConfirmation
+     * @param string   $pathQuestion
+     * @param string   $defaultPaths
+     * @param null     $confirmationQuestion Optional question to ask if you want to set the value
+     * @param bool     $defaultConfirmation
      * @param callable $callback
+     *
      * @throws \Exception when callable is not callable.
      *
      * @return string
