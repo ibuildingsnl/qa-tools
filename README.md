@@ -1,4 +1,4 @@
-qa-tools
+QA-Tools
 ======
 
 Home of the Ibuildings QA Tools
