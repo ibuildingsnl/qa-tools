@@ -98,7 +98,7 @@ class Settings extends \ArrayObject
         $configurationFile = $this->configurationFile();
 
         if (is_writable($this->getBaseDir()) &&
-            (!file_exists($configurationFile) OR is_writable($configurationFile))
+            (!file_exists($configurationFile) or is_writable($configurationFile))
         ) {
             $jsonPretty = new JsonPretty();
             $json = $jsonPretty->prettify($this->getArrayCopy());

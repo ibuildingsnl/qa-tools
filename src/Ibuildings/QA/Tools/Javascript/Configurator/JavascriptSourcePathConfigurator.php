@@ -23,8 +23,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  * Class JavascriptSourcePathConfigurator
  * @package Ibuildings\QA\Tools\Javascript\Configurator
  */
-class JavascriptSourcePathConfigurator
-    implements ConfiguratorInterface
+class JavascriptSourcePathConfigurator implements ConfiguratorInterface
 {
     /**
      * @var OutputInterface
@@ -50,8 +49,7 @@ class JavascriptSourcePathConfigurator
         OutputInterface $output,
         DialogHelper $dialog,
         Settings $settings
-    )
-    {
+    ) {
         $this->output = $output;
         $this->dialog = $dialog;
         $this->settings = $settings;

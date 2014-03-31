@@ -147,5 +147,4 @@ abstract class AbstractCommand extends Command
     {
         return new CommandExistenceChecker();
     }
-
 }

@@ -188,9 +188,10 @@ class PhpUnitConfigurator extends AbstractWritableConfigurator
         if ($this->shouldWrite()) {
             $fh = fopen($this->settings->getBaseDir() . '/phpunit.xml', 'w');
             fwrite(
-                $fh, $this->getConfigContent('phpunit.xml.dist', $this->settings->getArrayCopy())
-
+                $fh,
+                $this->getConfigContent('phpunit.xml.dist', $this->settings->getArrayCopy())
             );
+
             fclose($fh);
             $this->output->writeln("\n<info>Config file for PHPUnit written</info>");
         }

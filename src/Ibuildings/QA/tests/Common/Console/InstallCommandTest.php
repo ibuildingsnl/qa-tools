@@ -579,7 +579,7 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
             ->method('askAndValidate')
             ->with(
                 $this->anything(),
-                $this->equalTo("What is base url of your dev environment? [http://dev.test] ")
+                $this->equalTo("What is base url of the dev environment? [http://dev.test] ")
             )
             ->will($this->returnValue('http://dev.test'));
 
