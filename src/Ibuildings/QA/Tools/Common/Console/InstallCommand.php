@@ -48,6 +48,11 @@ class InstallCommand extends AbstractCommand
     /** @var  array */
     protected $composerConfig;
 
+    /**
+     * @var \Symfony\Component\Console\Helper\DialogHelper
+     */
+    protected $dialog;
+
     protected function configure()
     {
         $this
