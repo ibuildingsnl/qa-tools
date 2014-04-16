@@ -5,15 +5,6 @@
     <target name="build"
             depends="prepare,composer-run-install,php-lint-ci,phpmd-ci,phpcs-ci,phpcpd-ci,php-security-checker,phpunit-ci,behat-ci"/>
 
-    <target name="clean" description="Cleanup build artifacts">
-        <delete dir="/test2/tester/coverage"/>
-        <delete dir="/test2/tester/logs"/>
-    </target>
-
-    <target name="prepare" depends="clean" description="Prepare for build">
-        <mkdir dir="/test2/tester/coverage"/>
-        <mkdir dir="/test2/tester/logs"/>
-    </target>
 
     <target name="check-composer">
         <available file="composer.phar" property="composer.installed"/>
@@ -90,15 +81,12 @@
             <arg path="/tmp"/>
             <arg value="xml"/>
             <arg value="phpmd.xml"/>
-            <arg value="--reportfile"/>
-            <arg value="/test2/tester/logs/pmd.xml"/>
         </exec>
     </target>
 
     <target name="phpcs-ci"
             description="Find coding standard violations using PHP_CodeSniffer creating a log file for the continuous integration server">
         <exec executable="vendor/bin/phpcs" failonerror="true">
-            <arg value="--report-checkstyle=/test2/tester/logs/checkstyle-php.xml"/>
             <arg value="--report=full"/>
             <arg value="--standard=phpcs.xml"/>
             <!-- Don't show warnings-->
@@ -110,8 +98,6 @@
 
     <target name="phpcpd-ci" description="Find duplicate code using PHPCPD">
         <exec executable="vendor/bin/phpcpd" failonerror="false">
-            <arg value="--log-pmd"/>
-            <arg value="/test2/tester/logs/pmd-cpd.xml"/>
             <arg path="/tmp"/>
         </exec>
     </target>
@@ -119,14 +105,11 @@
     <target name="phpunit-ci" description="Run unit tests with PHPUnit">
         <exec executable="vendor/bin/phpunit" failonerror="true">
             <arg line="--configuration=${basedir}/"/>
-            <arg line="--coverage-html=/test2/tester/coverage"/>
-            <arg line="--log-junit=/test2/tester/logs/junit.xml"/>
-            <arg line="--coverage-clover=/test2/tester/logs/clover.xml"/>
+            <arg line="--coverage-text"/>
         </exec>
     </target>
 
 
-        <!-- Running Behat on jenkins -->
     <target name="behat-ci">
         <exec executable="php" failonerror="true">
             <arg line="vendor/bin/behat --config ./behat.yml --profile ci ${basedir}/features --tags=~skip" />

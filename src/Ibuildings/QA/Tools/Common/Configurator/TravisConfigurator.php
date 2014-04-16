@@ -26,17 +26,17 @@ class TravisConfigurator extends AbstractWritableConfigurator
     /**
      * @var \Symfony\Component\Console\Output\OutputInterface
      */
-    private $output;
+    protected $output;
 
     /**
      * @var \Symfony\Component\Console\Helper\DialogHelper
      */
-    private $dialog;
+    protected $dialog;
 
     /**
      * @var \Ibuildings\QA\Tools\Common\Settings
      */
-    private $settings;
+    protected $settings;
 
     /**
      * @var \Twig_Environment

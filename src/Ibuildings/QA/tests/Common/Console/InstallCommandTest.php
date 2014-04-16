@@ -45,7 +45,6 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
             ->method('getDialogHelper')
             ->will($this->returnValue($dialog));
 
-
         $installCommand = new \Ibuildings\QA\tests\mock\InstallCommand();
 
         $this->application->add($installCommand);
@@ -147,13 +146,16 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
         // We mock the DialogHelper
         $dialog = $this->application->getDialogHelper();
 
-        $this->addBaseExpects($dialog);
-        $this->addQAExpects($dialog);
-        $this->addPHPMDExpects($dialog);
-        $this->addPHPCSExpects($dialog);
-        $this->addCodeDuplicateExpects($dialog);
-        $this->addPhpUnitExpects($dialog);
-        $this->addFinishingExpects($dialog);
+        $startAt = 0;
+        $this->addBaseExpects($dialog, $startAt);
+        $this->addBuildArtifactExpects($dialog, $startAt);
+        $this->addTravisExpects($dialog, $startAt);
+        $this->addQAExpects($dialog, $startAt);
+        $this->addPHPMDExpects($dialog, $startAt);
+        $this->addPHPCSExpects($dialog, $startAt);
+        $this->addCodeDuplicateExpects($dialog, $startAt);
+        $this->addPhpUnitExpects($dialog, $startAt);
+        $this->addFinishingExpects($dialog, $startAt);
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(array('command' => $command->getName()), array('verbosity' => OutputInterface::VERBOSITY_VERY_VERBOSE));
@@ -219,13 +221,16 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
 
         $dialog = $this->application->getDialogHelper();
 
-        $this->addBaseExpects($dialog);
-        $this->addQAExpects($dialog);
-        $this->addPHPMDExpects($dialog);
-        $this->addPHPCSExpects($dialog);
-        $this->addCodeDuplicateExpects($dialog);
-        $this->addPhpUnitWithCustomPathExpects($dialog);
-        $this->addFinishingExpects($dialog, 19);
+        $startAt = 0;
+        $this->addBaseExpects($dialog, $startAt);
+        $this->addBuildArtifactExpects($dialog, $startAt);
+        $this->addTravisExpects($dialog, $startAt);
+        $this->addQAExpects($dialog, $startAt);
+        $this->addPHPMDExpects($dialog, $startAt);
+        $this->addPHPCSExpects($dialog, $startAt);
+        $this->addCodeDuplicateExpects($dialog, $startAt);
+        $this->addPhpUnitWithCustomPathExpects($dialog, $startAt);
+        $this->addFinishingExpects($dialog, $startAt);
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(array('command' => $command->getName()));
@@ -244,7 +249,7 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
      * @param DialogHelper $dialog
      * @param int          $startAt at what position do we expect the first question
      */
-    protected function addBaseExpects(DialogHelper $dialog, $startAt = 0)
+    protected function addBaseExpects(DialogHelper $dialog, &$startAt)
     {
         $dialog
             ->expects($this->at($startAt++))
@@ -265,22 +270,13 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
                 $this->equalTo('What is the name of the project? [Qa Tools] ')
             )
             ->will($this->returnValue('test1'));
-
-        $dialog
-            ->expects($this->at($startAt))
-            ->method('askAndValidate')
-            ->with(
-                $this->anything(),
-                $this->equalTo('Where do you want to store the build artifacts? [build/artifacts] ')
-            )
-            ->will($this->returnValue('/test2/tester'));
     }
 
     /**
      * @param DialogHelper $dialog
      * @param int          $startAt at what position do we expect the first question
      */
-    protected function addQAExpects(DialogHelper $dialog, $startAt = 3)
+    protected function addQAExpects(DialogHelper $dialog, &$startAt)
     {
         $dialog
             ->expects($this->at($startAt++))
@@ -300,7 +296,7 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue(true));
 
         $dialog
-            ->expects($this->at($startAt))
+            ->expects($this->at($startAt++))
             ->method('askConfirmation')
             ->with(
                 $this->anything(),
@@ -309,13 +305,38 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue(true));
     }
 
+    protected function addBuildArtifactExpects(DialogHelper $dialog, &$startAt)
+    {
+        $dialog
+            ->expects($this->at($startAt++))
+            ->method('askConfirmation')
+            ->with(
+                $this->anything(),
+                $this->equalTo("By default results are shown on the CLI (recommended if you are using travis)
+  - Do you want to generate build artifacts?")
+            )
+            ->will($this->returnValue(false));
+    }
+
+    protected function addTravisExpects(DialogHelper $dialog, &$startAt)
+    {
+        $dialog
+            ->expects($this->at($startAt++))
+            ->method('askConfirmation')
+            ->with(
+                $this->anything(),
+                $this->equalTo('Do you want to enable Travis integration for this project?')
+            )
+            ->will($this->returnValue(false));
+    }
+
     /**
      * Adds answers to the PHPMD questions
      *
      * @param DialogHelper $dialog
      * @param int          $startAt at what position do we expect the first question
      */
-    protected function addPHPMDExpects(DialogHelper $dialog, $startAt = 6)
+    protected function addPHPMDExpects(DialogHelper $dialog, &$startAt)
     {
         $dialog
             ->expects($this->at($startAt++))
@@ -327,7 +348,7 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue(true));
 
         $dialog
-            ->expects($this->at($startAt))
+            ->expects($this->at($startAt++))
             ->method('askConfirmation')
             ->with(
                 $this->anything(),
@@ -342,7 +363,7 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
      * @param DialogHelper $dialog
      * @param int          $startAt at what position do we expect the first question
      */
-    protected function addPHPCSExpects(DialogHelper $dialog, $startAt = 8)
+    protected function addPHPCSExpects(DialogHelper $dialog, &$startAt)
     {
         $dialog
             ->expects($this->at($startAt++))
@@ -374,7 +395,7 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue(true));
 
         $dialog
-            ->expects($this->at($startAt))
+            ->expects($this->at($startAt++))
             ->method('askConfirmation')
             ->with(
                 $this->anything(),
@@ -389,7 +410,7 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
      * @param DialogHelper $dialog
      * @param int          $startAt
      */
-    protected function addCodeDuplicateExpects(DialogHelper $dialog, $startAt = 12)
+    protected function addCodeDuplicateExpects(DialogHelper $dialog, &$startAt)
     {
         $dialog
             ->expects($this->at($startAt++))
@@ -419,7 +440,7 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue(true));
 
         $dialog
-            ->expects($this->at($startAt))
+            ->expects($this->at($startAt++))
             ->method('askAndValidate')
             ->with(
                 $this->anything(),
@@ -434,7 +455,7 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
      * @param DialogHelper $dialog
      * @param int          $startAt at what position do we expect the first question
      */
-    protected function addPhpUnitExpects(DialogHelper $dialog, $startAt = 16)
+    protected function addPhpUnitExpects(DialogHelper $dialog, &$startAt)
     {
         $dialog
             ->expects($this->at($startAt++))
@@ -459,7 +480,7 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
             ->method('askAndValidate')
             ->with(
                 $this->anything(),
-                $this->equalTo('What is the path to the PHPUnit tests? [tests] ')
+                $this->equalTo('What is the path to the PHPUnit tests? [./src/Ibuildings/QA/tests] ')
             )
             ->will($this->returnValue('/tmp'));
 
@@ -473,7 +494,7 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue(true));
 
         $dialog
-            ->expects($this->at($startAt))
+            ->expects($this->at($startAt++))
             ->method('askAndValidate')
             ->with(
                 $this->anything(),
@@ -489,7 +510,7 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
      * @param DialogHelper $dialog
      * @param int          $startAt at what position do we expect the first question
      */
-    protected function addPhpUnitWithCustomPathExpects(DialogHelper $dialog, $startAt = 16)
+    protected function addPhpUnitWithCustomPathExpects(DialogHelper $dialog, &$startAt)
     {
         $dialog
             ->expects($this->at($startAt++))
@@ -510,7 +531,7 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue(true));
 
         $dialog
-            ->expects($this->at($startAt))
+            ->expects($this->at($startAt++))
             ->method('askAndValidate')
             ->with(
                 $this->anything(),
@@ -525,7 +546,7 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
      * @param DialogHelper $dialog
      * @param int          $startAt at what position do we expect the first question
      */
-    protected function addFinishingExpects(DialogHelper $dialog, $startAt = 21)
+    protected function addFinishingExpects(DialogHelper $dialog, &$startAt)
     {
         //Do you want to install the QA tools for Javascript? [Y/n]
         $dialog
@@ -584,7 +605,7 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue('http://dev.test'));
 
         $dialog
-            ->expects($this->at($startAt))
+            ->expects($this->at($startAt++))
             ->method('askConfirmation')
             ->with(
                 $this->anything(),

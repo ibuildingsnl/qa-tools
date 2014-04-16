@@ -11,6 +11,7 @@
 
 namespace Ibuildings\QA\tests\mock;
 
+use Ibuildings\QA\Tools\Common\Configurator\AbstractWritableConfigurator;
 use Ibuildings\QA\Tools\Common\Configurator\ConfiguratorInterface;
 use Ibuildings\QA\Tools\Common\Configurator\Helper\MultiplePathHelper;
 use Ibuildings\QA\Tools\Common\Settings;
@@ -86,52 +87,61 @@ class Registry extends \Ibuildings\QA\Tools\Common\Configurator\Registry
      */
     public function register(ConfiguratorInterface $configurator)
     {
-        $expectMultiPath = array('PhpMessDetectorConfigurator', 'PhpCodeSnifferConfigurator');
-
-        if (is_a($configurator, 'Ibuildings\QA\Tools\Common\Configurator\AbstractWritableConfigurator')) {
-            $className = end(explode('\\', get_class($configurator)));
-            $mockClass = "Ibuildings\\QA\\tests\\mock\\Configurator\\" . $className;
-            if (class_exists($mockClass)) {
-                if (in_array($className, $expectMultiPath)) {
-                    $multiplePathHelper = new MultiplePathHelper(
-                        $this->outputInterface,
-                        $this->dialogHelper,
-                        $this->settings->getBaseDir()
-                    );
-
-                    $this->configurators[get_class($configurator)] = new $mockClass(
-                        $this->outputInterface,
-                        $this->dialogHelper,
-                        $multiplePathHelper,
-                        $this->settings,
-                        $this->twig
-                    );
-                } elseif ($className === 'JsHintConfigurator') {
-                    $this->configurators[get_class($configurator)] = new $mockClass(
-                        $this->inputInterface,
-                        $this->outputInterface,
-                        $this->dialogHelper,
-                        $this->settings,
-                        $this->twig,
-                        $this->installJsHintCommand
-                    );
-                } else {
-                    $this->configurators[get_class($configurator)] = new $mockClass(
-                        $this->outputInterface,
-                        $this->dialogHelper,
-                        $this->settings,
-                        $this->twig
-                    );
-                }
-
-                return;
-            }
-        } else {
+        if (!$configurator instanceof AbstractWritableConfigurator) {
             parent::register($configurator);
+            return;
         }
+
+        // This really ought to be done differently... with proper DI and consistent usage of SF/Filesystem component
+        // we could just write to tmp dirs and test it properly (see FilesystemTestCase in File component)
+        $className = end(explode('\\', get_class($configurator)));
+        $mockClass = "Ibuildings\\QA\\tests\\mock\\Configurator\\" . $className;
+        if (!class_exists($mockClass)) {
+            throw new \RuntimeException(sprintf(
+                'Configurator "%s" is an instance AbstractWritableConfigurator. A mock of this configurator should be'
+                . 'made so that the writeConfig method does not write to disk but stores the contents',
+                get_class($configurator)
+            ));
+        }
+
+        if (in_array($className, array('PhpMessDetectorConfigurator', 'PhpCodeSnifferConfigurator'))) {
+            $multiplePathHelper = new MultiplePathHelper(
+                $this->outputInterface,
+                $this->dialogHelper,
+                $this->settings->getBaseDir()
+            );
+
+            $writingMockedConfigurator = new $mockClass(
+                $this->outputInterface,
+                $this->dialogHelper,
+                $multiplePathHelper,
+                $this->settings,
+                $this->twig
+            );
+        } elseif ($className === 'JsHintConfigurator') {
+            $writingMockedConfigurator = new $mockClass(
+                $this->inputInterface,
+                $this->outputInterface,
+                $this->dialogHelper,
+                $this->settings,
+                $this->twig,
+                $this->installJsHintCommand
+            );
+        } else {
+            $writingMockedConfigurator = new $mockClass(
+                $this->outputInterface,
+                $this->dialogHelper,
+                $this->settings,
+                $this->twig
+            );
+        }
+
+        // should be resolved asap
+        $this->configurators[get_class($configurator)] = $writingMockedConfigurator;
     }
 
-    public function getConfiguratorByName($name) {
+    public function getConfiguratorByName($name)
+    {
         return $this->configurators[$name];
     }
 

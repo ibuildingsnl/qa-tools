@@ -15,8 +15,8 @@ use Ibuildings\QA\Tools\Common\Configurator\BuildArtifactsConfigurator;
 use Ibuildings\QA\Tools\Common\Configurator\Helper\MultiplePathHelper;
 use Ibuildings\QA\Tools\Common\Configurator\Registry;
 use Ibuildings\QA\Tools\Common\Configurator\TravisConfigurator;
-use Ibuildings\QA\Tools\PHP\Configurator\PhpComposerConfigurator;
 
+use Ibuildings\QA\Tools\PHP\Configurator\PhpComposerConfigurator;
 use Ibuildings\QA\Tools\PHP\Configurator\PhpConfigurator;
 use Ibuildings\QA\Tools\PHP\Configurator\PhpCodeSnifferConfigurator;
 use Ibuildings\QA\Tools\PHP\Configurator\PhpCopyPasteDetectorConfigurator;
@@ -32,10 +32,7 @@ use Ibuildings\QA\Tools\Javascript\Configurator\JavascriptSourcePathConfigurator
 
 use Ibuildings\QA\Tools\Functional\Configurator\BehatConfigurator;
 
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
