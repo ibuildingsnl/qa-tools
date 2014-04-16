@@ -11,6 +11,7 @@
 
 namespace Ibuildings\QA\Tools\Common\Console;
 
+use Ibuildings\QA\Tools\Common\Configurator\BuildArtifactsConfigurator;
 use Ibuildings\QA\Tools\Common\Configurator\Helper\MultiplePathHelper;
 use Ibuildings\QA\Tools\Common\Configurator\Registry;
 use Ibuildings\QA\Tools\PHP\Configurator\PhpComposerConfigurator;
@@ -99,12 +100,11 @@ class InstallCommand extends AbstractCommand
 
         $output->writeln("\n");
         $this->configureProjectName($input, $output);
-        $this->configureBuildArtifactsPath($input, $output);
 
         // Register configurators
         $configuratorRegistry = $this->getConfiguratorRegistry();
 
-        $multiplePathHelper = new MultiplePathHelper($output, $this->dialog, $this->settings->getBaseDir());
+        $configuratorRegistry->register(new BuildArtifactsConfigurator($output, $this->dialog, $this->settings));
 
         // PHP
         $phpconfigurator = new PhpConfigurator($output, $this->settings);
@@ -113,6 +113,9 @@ class InstallCommand extends AbstractCommand
 
         $configuratorRegistry->register(new PhpComposerConfigurator($output, $this->dialog, $this->settings));
         $configuratorRegistry->register(new PhpLintConfigurator($output, $this->dialog, $this->settings));
+
+        $multiplePathHelper = new MultiplePathHelper($output, $this->dialog, $this->settings->getBaseDir());
+
         $configuratorRegistry->register(
             new PhpMessDetectorConfigurator($output, $this->dialog, $multiplePathHelper, $this->settings, $this->twig)
         );
@@ -189,36 +192,6 @@ class InstallCommand extends AbstractCommand
                     return $data;
                 }
                 throw new \Exception("The project name may only contain 'a-zA-Z0-9_. '");
-            },
-            false,
-            $default
-        );
-    }
-
-    protected function configureBuildArtifactsPath(InputInterface $input, OutputInterface $output)
-    {
-        $dialog = $this->dialog;
-        $settings = $this->settings;
-        $default = (empty($this->settings['buildArtifactsPath']))
-            ? 'build/artifacts'
-            : $this->settings['buildArtifactsPath'];
-        $this->settings['buildArtifactsPath'] = $this->dialog->askAndValidate(
-            $output,
-            "Where do you want to store the build artifacts? [{$default}] ",
-            function ($data) use ($output, $dialog, $settings) {
-                if (!is_dir($settings->getBaseDir() . '/' . $data)) {
-                    if ($dialog->askConfirmation(
-                        $output,
-                        "  - Are you sure? The path doesn't exist and will be created.",
-                        true
-                    )
-                    ) {
-                        return $data;
-                    }
-                    throw new \Exception("Not using path '" . $data . " ', trying again...");
-                }
-
-                return $data;
             },
             false,
             $default
