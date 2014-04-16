@@ -34,6 +34,8 @@ use Ibuildings\QA\Tools\Functional\Configurator\BehatConfigurator;
 
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Filesystem\Exception\IOException;
+use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * Class InstallCommand
@@ -52,6 +54,11 @@ class InstallCommand extends AbstractCommand
      */
     protected $dialog;
 
+    /**
+     * @var \Symfony\Component\Filesystem\Filesystem
+     */
+    protected $filesystem;
+
     protected function configure()
     {
         $this
@@ -69,6 +76,7 @@ class InstallCommand extends AbstractCommand
         parent::initialize($input, $output);
 
         $this->dialog = $this->getApplication()->getDialogHelper();
+        $this->filesystem = new Filesystem();
     }
 
     /**
@@ -223,8 +231,8 @@ class InstallCommand extends AbstractCommand
 
             $output->writeln("\n<info>Ant pre commit build file written</info>");
 
-            $this->addToGitIgnore('build');
-            $this->addToGitIgnore('cache.properties');
+            $this->addToGitIgnore('build', $output);
+            $this->addToGitIgnore('cache.properties', $output);
 
             $output->writeln("\n<info>Ant build file written</info>");
         } else {
@@ -245,34 +253,41 @@ class InstallCommand extends AbstractCommand
         fclose($fh);
     }
 
-    protected function addToGitIgnore($pattern)
+    protected function addToGitIgnore($pattern, OutputInterface $output)
     {
-        if (file_exists($this->settings->getBaseDir() . '/.gitignore')) {
-            // check if pattern already in there, else add
-            $lines = file($this->settings->getBaseDir() . '/.gitignore');
-            $alreadyIgnored = false;
-            foreach ($lines as $line) {
-                if (trim($line) === $pattern) {
-                    $alreadyIgnored = true;
-                    break;
-                }
-            }
+        $file = $this->settings->getBaseDir() . '/.gitignore';
 
-            if (!$alreadyIgnored) {
-                $fh = fopen($this->settings->getBaseDir() . '/.gitignore', 'a');
-                fwrite(
-                    $fh,
-                    $pattern . "\n"
-                );
-                fclose($fh);
+        if (!$this->filesystem->exists($file)) {
+            try {
+                $this->filesystem->dumpFile($file, $pattern . "\n");
+            } catch (IOException $e) {
+                $output->writeln(sprintf(
+                    '<error>Could not create .gitignore file with pattern "%s", please do so manually</error>'
+                ));
             }
-        } else {
-            $fh = fopen($this->settings->getBaseDir() . '/.gitignore', 'w');
-            fwrite(
-                $fh,
-                $pattern . "\n"
-            );
-            fclose($fh);
+            return;
+        }
+
+        $lines = file($file);
+        if ($lines === false) {
+            $output->writeln(sprintf(
+                '<error>Could not add pattern "%s" to .gitignore file, please do so manually</error>'
+            ));
+        }
+
+        if (in_array($pattern . "\n", $lines)) {
+            return;
+        }
+
+        $lines[] = $pattern . "\n";
+        try {
+            $this->filesystem->rename($file, $file . '.old');
+            $this->filesystem->dumpFile($file, implode('', $lines));
+            $this->filesystem->remove($file . '.old');
+        } catch (IOException $e) {
+            $output->writeln(sprintf(
+                '<error>Could not add pattern "%s" to .gitignore file, please do so manually</error>'
+            ));
         }
     }
 
