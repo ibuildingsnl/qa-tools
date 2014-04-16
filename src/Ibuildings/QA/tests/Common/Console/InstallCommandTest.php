@@ -480,7 +480,7 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
             ->method('askAndValidate')
             ->with(
                 $this->anything(),
-                $this->equalTo('What is the path to the PHPUnit tests? [./src/Ibuildings/QA/tests] ')
+                $this->equalTo('What is the path to the PHPUnit tests? [tests] ')
             )
             ->will($this->returnValue('/tmp'));
 
