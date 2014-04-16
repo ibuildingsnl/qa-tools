@@ -34,8 +34,13 @@ class DialogHelper extends BaseDialogHelper
      */
     public function askConfirmation(OutputInterface $output, $question, $default = true)
     {
-        $hint = ($default) ? '[Y/n] ' : '[y/N] ';
-        $question = $question . ' ' . $hint;
+        $hint = ($default) ? ' [Y/n] ' : ' [y/N] ';
+
+        if (is_string($question)) {
+            $question = $question . $hint;
+        } else {
+            array_push($question, array_pop($question) . $hint);
+        }
 
         return parent::askConfirmation($output, $question, $default);
     }
