@@ -54,8 +54,7 @@ class TravisConfigurator extends AbstractWritableConfigurator
         DialogHelper $dialog,
         Settings $settings,
         \Twig_Environment $twig
-    )
-    {
+    ) {
         $this->output = $output;
         $this->dialog = $dialog;
         $this->settings = $settings;

@@ -50,8 +50,7 @@ class BuildArtifactsConfigurator implements ConfiguratorInterface
         OutputInterface $output,
         DialogHelper $dialog,
         Settings $settings
-    )
-    {
+    ) {
         $this->output = $output;
         $this->dialog = $dialog;
         $this->settings = $settings;
