@@ -17,6 +17,8 @@ use Ibuildings\QA\Tools\Common\Settings;
 
 use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Filesystem\Exception\IOException;
+use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * Can configure settings for PHP Code Sniffer
@@ -173,15 +175,25 @@ class PhpCodeSnifferConfigurator extends AbstractWritableConfigurator
      */
     public function writeConfig()
     {
-        if ($this->shouldWrite()) {
-            $fh = fopen($this->settings->getBaseDir() . '/phpcs.xml', 'w');
-            fwrite(
-                $fh,
-                $this->getConfigContent('phpcs.xml.dist', $this->settings->getArrayCopy())
-            );
-            fclose($fh);
-            $this->output->writeln("\n<info>Config file for PHP Code Sniffer written</info>");
+        if (!$this->shouldWrite()) {
+            return;
         }
+
+        $filesystem = new Filesystem();
+        try {
+            $filesystem->dumpFile(
+                $this->settings->getBaseDir() . '/phpcs.xml',
+                $this->twig->render('phpcs.xml.dist', $this->settings->getArrayCopy())
+            );
+        } catch (IOException $e) {
+            $this->output->writeln(sprintf(
+                '<error>Could not write phpcs.xml, error: "%s"</error>',
+                $e->getMessage()
+            ));
+            return;
+        }
+
+        $this->output->writeln("\n<info>Config file for PHP Code Sniffer written</info>");
     }
 
     /**

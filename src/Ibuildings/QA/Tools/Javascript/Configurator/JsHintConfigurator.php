@@ -18,6 +18,8 @@ use Ibuildings\QA\Tools\Javascript\Console\InstallJsHintCommand;
 use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Filesystem\Exception\IOException;
+use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * Class JsHintConfigurator
@@ -106,16 +108,25 @@ class JsHintConfigurator extends AbstractWritableConfigurator
      */
     public function writeConfig()
     {
-        if ($this->shouldWrite() === false) {
+        if (!$this->shouldWrite()) {
             return;
         }
 
-        $fh = fopen($this->settings->getBaseDir() . '/.jshintrc', 'w');
-        fwrite(
-            $fh,
-            $this->getConfigContent('.jshintrc.dist', $this->settings->getArrayCopy())
-        );
-        fclose($fh);
+        $filesystem = new Filesystem();
+
+        try {
+            $filesystem->dumpFile(
+                $this->settings->getBaseDir() . '/.jshintrc',
+                $this->twig->render('.jshintrc.dist', $this->settings->getArrayCopy())
+            );
+        } catch (IOException $e) {
+            $this->output->writeln(sprintf(
+                '<error>Could not write .jshintrc, error: "%s"</error>',
+                $e->getMessage()
+            ));
+            return;
+        }
+
         $this->output->writeln("\n<info>Config file for JSHint written</info>");
     }
 
