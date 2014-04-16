@@ -14,6 +14,7 @@ namespace Ibuildings\QA\Tools\Common\Console;
 use Ibuildings\QA\Tools\Common\Configurator\BuildArtifactsConfigurator;
 use Ibuildings\QA\Tools\Common\Configurator\Helper\MultiplePathHelper;
 use Ibuildings\QA\Tools\Common\Configurator\Registry;
+use Ibuildings\QA\Tools\Common\Configurator\TravisConfigurator;
 use Ibuildings\QA\Tools\PHP\Configurator\PhpComposerConfigurator;
 
 use Ibuildings\QA\Tools\PHP\Configurator\PhpConfigurator;
@@ -105,7 +106,7 @@ class InstallCommand extends AbstractCommand
         $configuratorRegistry = $this->getConfiguratorRegistry();
 
         $configuratorRegistry->register(new BuildArtifactsConfigurator($output, $this->dialog, $this->settings));
-
+        $configuratorRegistry->register(new TravisConfigurator($output, $this->dialog, $this->settings, $this->twig));
         // PHP
         $phpconfigurator = new PhpConfigurator($output, $this->settings);
         $this->requireHelper('dialog', $phpconfigurator);
