@@ -16,6 +16,7 @@ use Ibuildings\QA\Tools\Common\Settings;
 
 use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
@@ -163,21 +164,27 @@ class BehatConfigurator extends AbstractWritableConfigurator
      */
     protected function writeBehatYamlFiles()
     {
-        // copy behat.yml
-        $fh = fopen($this->settings->getBaseDir() . '/behat.yml', 'w');
-        fwrite(
-            $fh,
-            $this->getConfigContent('behat.yml.dist', $this->settings->getArrayCopy())
-        );
-        fclose($fh);
+        $filesystem = new FileSystem();
 
-        // copy behat.yml
-        $fh = fopen($this->settings->getBaseDir() . '/behat.dev.yml', 'w');
-        fwrite(
-            $fh,
-            $this->getConfigContent('behat.dev.yml.dist', $this->settings->getArrayCopy())
-        );
-        fclose($fh);
+        try {
+            $filesystem->dumpFile(
+                $this->settings->getBaseDir() . '/behat.yml',
+                $this->twig->render('behat.yml.dist', $this->settings->getArrayCopy())
+            );
+
+            $filesystem->dumpFile(
+                $this->settings->getBaseDir() . '/behat.dev.yml',
+                $this->twig->render('behat.dev.yml.dist', $this->settings->getArrayCopy())
+            );
+        } catch (IOException $e) {
+            $this->output->writeln(sprintf(
+                '<error>Could not write behat config file, error: "%s"</error>',
+                $e->getMessage()
+            ));
+            return;
+        }
+
+        $this->output->writeln('Behat configuration files are written');
     }
 
     /**

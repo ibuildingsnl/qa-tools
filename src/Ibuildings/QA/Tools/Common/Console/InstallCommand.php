@@ -215,21 +215,25 @@ class InstallCommand extends AbstractCommand
             || $this->settings['enableBehat']
         ) {
 
-            $this->writeRenderedContentTo(
+            $written = $this->writeContentTo(
                 $this->settings->getBaseDir() . '/build.xml',
-                'build.xml.dist',
-                $this->settings->getArrayCopy()
+                $this->twig->render('build.xml.dist', $this->settings->getArrayCopy()),
+                $output
             );
 
-            $output->writeln("\n<info>Ant build file written</info>");
+            if ($written) {
+                $output->writeln("\n<info>Ant build file written</info>");
+            }
 
-            $this->writeRenderedContentTo(
+            $written = $this->writeContentTo(
                 $this->settings->getBaseDir() . '/build-pre-commit.xml',
-                'build-pre-commit.xml.dist',
-                $this->settings->getArrayCopy()
+                $this->twig->render('build-pre-commit.xml.dist', $this->settings->getArrayCopy()),
+                $output
             );
 
-            $output->writeln("\n<info>Ant pre commit build file written</info>");
+            if ($written) {
+                $output->writeln("\n<info>Ant pre commit build file written</info>");
+            }
 
             $this->addToGitIgnore('build', $output);
             $this->addToGitIgnore('cache.properties', $output);
@@ -240,53 +244,47 @@ class InstallCommand extends AbstractCommand
         }
     }
 
-    protected function writeRenderedContentTo($toFile, $templateName, $params)
+    protected function writeContentTo($toFile, $content, OutputInterface $output)
     {
-        $fh = fopen($toFile, 'w');
-        fwrite(
-            $fh,
-            $this->twig->render(
-                $templateName,
-                $params
-            )
-        );
-        fclose($fh);
+        try {
+            $this->filesystem->dumpFile($toFile, $content);
+        } catch (IOException $e) {
+            $output->writeln(sprintf(
+                '<error>Could not write content to file "%s"</error>',
+                $toFile
+            ));
+            return false;
+        }
+
+        return true;
     }
 
     protected function addToGitIgnore($pattern, OutputInterface $output)
     {
         $file = $this->settings->getBaseDir() . '/.gitignore';
+        $patternLine = $pattern . "\n";
+        $lines = array();
 
-        if (!$this->filesystem->exists($file)) {
-            try {
-                $this->filesystem->dumpFile($file, $pattern . "\n");
-            } catch (IOException $e) {
+        if ($this->filesystem->exists($file)) {
+            $lines = file($file);
+            if ($lines === false) {
                 $output->writeln(sprintf(
-                    '<error>Could not create .gitignore file with pattern "%s", please do so manually</error>'
+                    '<error>Could not add pattern "%s" to .gitignore file, please do so manually</error>',
+                    $pattern
                 ));
+                return;
             }
-            return;
+
+            if (in_array($patternLine, $lines)) {
+                return;
+            }
         }
 
-        $lines = file($file);
-        if ($lines === false) {
+        $lines[] = $patternLine;
+        if (!$this->writeContentTo($file, $patternLine, $output)) {
             $output->writeln(sprintf(
-                '<error>Could not add pattern "%s" to .gitignore file, please do so manually</error>'
-            ));
-        }
-
-        if (in_array($pattern . "\n", $lines)) {
-            return;
-        }
-
-        $lines[] = $pattern . "\n";
-        try {
-            $this->filesystem->rename($file, $file . '.old');
-            $this->filesystem->dumpFile($file, implode('', $lines));
-            $this->filesystem->remove($file . '.old');
-        } catch (IOException $e) {
-            $output->writeln(sprintf(
-                '<error>Could not add pattern "%s" to .gitignore file, please do so manually</error>'
+                '<error>Could not add pattern "%s" to .gitignore file, please do so manually</error>',
+                $pattern
             ));
         }
     }
