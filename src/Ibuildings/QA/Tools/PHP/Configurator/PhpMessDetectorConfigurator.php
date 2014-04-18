@@ -101,10 +101,6 @@ class PhpMessDetectorConfigurator extends AbstractWritableConfigurator
      */
     public function writeConfig()
     {
-        if (!$this->shouldWrite()) {
-            return;
-        }
-
         $filesystem = new Filesystem();
         try {
             $filesystem->dumpFile(
@@ -125,7 +121,7 @@ class PhpMessDetectorConfigurator extends AbstractWritableConfigurator
     /**
      * @inheritdoc
      */
-    protected function shouldWrite()
+    public function shouldWrite()
     {
         return $this->settings['enablePhpMessDetector'] === true;
     }

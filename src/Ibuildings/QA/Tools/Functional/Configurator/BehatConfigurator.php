@@ -252,7 +252,7 @@ class BehatConfigurator extends AbstractWritableConfigurator
     /**
      * @inheritdoc
      */
-    protected function shouldWrite()
+    public function shouldWrite()
     {
         return $this->settings['enableBehat'] === true;
     }

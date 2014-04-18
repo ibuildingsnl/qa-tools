@@ -41,21 +41,24 @@ class Registry
             $configurator->configure();
         }
 
-        $this->writeConfig();
+        $this->writeConfigurationFiles();
     }
 
     /**
      * Writes config
      */
-    private function writeConfig()
+    private function writeConfigurationFiles()
     {
-        /**
-         * @var ConfiguratorInterface
-         */
         foreach ($this->configurators as $configurator) {
-            if (method_exists($configurator, 'writeConfig')) {
-                $configurator->writeConfig();
+            if (!$configurator instanceof AbstractWritableConfigurator) {
+                continue;
             }
+
+            if (!$configurator->shouldWrite()) {
+                continue;
+            }
+
+            $configurator->writeConfig();
         }
     }
 }

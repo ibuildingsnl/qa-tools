@@ -35,7 +35,7 @@ abstract class AbstractWritableConfigurator implements ConfiguratorInterface
      *
      * @return boolean
      */
-    abstract protected function shouldWrite();
+    abstract public function shouldWrite();
 
     /**
      * Renders a twig template and returns it

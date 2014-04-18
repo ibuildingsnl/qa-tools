@@ -175,10 +175,6 @@ class PhpCodeSnifferConfigurator extends AbstractWritableConfigurator
      */
     public function writeConfig()
     {
-        if (!$this->shouldWrite()) {
-            return;
-        }
-
         $filesystem = new Filesystem();
         try {
             $filesystem->dumpFile(
@@ -200,7 +196,7 @@ class PhpCodeSnifferConfigurator extends AbstractWritableConfigurator
      * @inheritdoc
      * @codeCoverageIgnore
      */
-    protected function shouldWrite()
+    public function shouldWrite()
     {
         return $this->settings['enablePhpCodeSniffer'] === true;
     }

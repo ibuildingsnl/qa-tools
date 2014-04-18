@@ -80,11 +80,6 @@ class TravisConfigurator extends AbstractWritableConfigurator
 
     public function writeConfig()
     {
-        // not sure if shouldWrite is called, this can be removed if so
-        if (!$this->shouldWrite()) {
-            return;
-        }
-
         $filesystem = new Filesystem();
 
         try {

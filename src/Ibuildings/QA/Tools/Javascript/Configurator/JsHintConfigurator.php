@@ -108,10 +108,6 @@ class JsHintConfigurator extends AbstractWritableConfigurator
      */
     public function writeConfig()
     {
-        if (!$this->shouldWrite()) {
-            return;
-        }
-
         $filesystem = new Filesystem();
 
         try {
@@ -133,7 +129,7 @@ class JsHintConfigurator extends AbstractWritableConfigurator
     /**
      * @inheritdoc
      */
-    protected function shouldWrite()
+    public function shouldWrite()
     {
         return $this->settings['enableJsHint'] === true;
     }
