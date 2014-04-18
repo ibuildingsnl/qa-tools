@@ -190,7 +190,7 @@ class PhpUnitConfigurator extends AbstractWritableConfigurator
         $filesystem = new Filesystem();
         try {
             $filesystem->dumpFile(
-                $this->settings->getBaseDir() . '/',
+                $this->settings->getBaseDir() . '/phpunit.xml',
                 $this->twig->render('phpunit.xml.dist', $this->settings->getArrayCopy())
             );
         } catch (IOException $e) {
