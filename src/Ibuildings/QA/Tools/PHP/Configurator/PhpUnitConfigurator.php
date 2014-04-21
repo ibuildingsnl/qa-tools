@@ -29,14 +29,24 @@ use Symfony\Component\Filesystem\Filesystem;
 class PhpUnitConfigurator extends AbstractWritableConfigurator
 {
     /**
-     * @var OutputInterface
+     * @var \Symfony\Component\Console\Output\OutputInterface
      */
     protected $output;
 
     /**
-     * @var DialogHelper
+     * @var \Symfony\Component\Console\Helper\DialogHelper
      */
     protected $dialog;
+
+    /**
+     * @var \Ibuildings\QA\Tools\Common\Settings
+     */
+    protected $settings;
+
+    /**
+     * @var \Twig_Environment
+     */
+    protected $twig;
 
     /**
      * @param OutputInterface   $output

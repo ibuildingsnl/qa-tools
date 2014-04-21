@@ -27,22 +27,22 @@ use Symfony\Component\Console\Output\OutputInterface;
 class PhpCopyPasteDetectorConfigurator implements ConfiguratorInterface
 {
     /**
-     * @var OutputInterface
+     * @var \Symfony\Component\Console\Output\OutputInterface
      */
     protected $output;
 
     /**
-     * @var DialogHelper
+     * @var \Symfony\Component\Console\Helper\DialogHelper
      */
     protected $dialog;
 
     /**
-     * @var MultiplePathHelper
+     * @var \Ibuildings\QA\Tools\Common\Configurator\Helper\MultiplePathHelper
      */
     protected $multiplePathHelper;
 
     /**
-     * @var Settings
+     * @var \Ibuildings\QA\Tools\Common\Settings
      */
     protected $settings;
 

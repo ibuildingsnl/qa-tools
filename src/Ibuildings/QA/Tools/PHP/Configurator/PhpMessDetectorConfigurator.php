@@ -30,19 +30,29 @@ use Symfony\Component\Filesystem\Filesystem;
 class PhpMessDetectorConfigurator extends AbstractWritableConfigurator
 {
     /**
-     * @var OutputInterface
+     * @var \Symfony\Component\Console\Output\OutputInterface
      */
     protected $output;
 
     /**
-     * @var DialogHelper
+     * @var \Symfony\Component\Console\Helper\DialogHelper
      */
     protected $dialog;
 
     /**
-     * @var Settings
+     * @var \Ibuildings\QA\Tools\Common\Configurator\Helper\MultiplePathHelper
+     */
+    protected $multiplePathHelper;
+
+    /**
+     * @var \Ibuildings\QA\Tools\Common\Settings
      */
     protected $settings;
+
+    /**
+     * @var \Twig_Environment
+     */
+    protected $twig;
 
     /**
      * @param OutputInterface    $output

@@ -28,27 +28,32 @@ use Symfony\Component\Filesystem\Filesystem;
 class JsHintConfigurator extends AbstractWritableConfigurator
 {
     /**
-     * @var InputInterface
+     * @var \Symfony\Component\Console\Input\InputInterface
      */
     protected $input;
 
     /**
-     * @var OutputInterface
+     * @var \Symfony\Component\Console\Output\OutputInterface
      */
     protected $output;
 
     /**
-     * @var DialogHelper
+     * @var \Symfony\Component\Console\Helper\DialogHelper
      */
     protected $dialog;
 
     /**
-     * @var Settings
+     * @var \Ibuildings\QA\Tools\Common\Settings
      */
     protected $settings;
 
     /**
-     * @var InstallJsHintCommand
+     * @var \Twig_Environment
+     */
+    protected $twig;
+
+    /**
+     * @var \Ibuildings\QA\Tools\Javascript\Console\InstallJsHintCommand
      */
     protected $installJsHintCommand;
 

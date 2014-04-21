@@ -29,23 +29,27 @@ use Symfony\Component\Filesystem\Filesystem;
 class BehatConfigurator extends AbstractWritableConfigurator
 {
     const ENV_DEV = 'Dev';
-
     const ENV_CI = 'Ci';
 
     /**
-     * @var OutputInterface
+     * @var \Symfony\Component\Console\Output\OutputInterface
      */
     protected $output;
 
     /**
-     * @var DialogHelper
+     * @var \Symfony\Component\Console\Helper\DialogHelper
      */
     protected $dialog;
 
     /**
-     * @var Settings
+     * @var \Ibuildings\QA\Tools\Common\Settings
      */
     protected $settings;
+
+    /**
+     * @var \Twig_Environment
+     */
+    protected $twig;
 
     /**
      * @param OutputInterface   $output
