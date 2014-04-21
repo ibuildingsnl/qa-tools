@@ -20,8 +20,6 @@ use Symfony\Component\Console\Output\OutputInterface;
  * Class RunCommand
  *
  * @package Ibuildings\QA\Tools\Common\Console
- *
- * @SuppressWarnings(PHPMD)
  */
 class RunCommand extends AbstractCommand
 {
@@ -49,6 +47,9 @@ class RunCommand extends AbstractCommand
             );
     }
 
+    /**
+     * @SuppressWarnings(PHPMD.ExitExpression)
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $output->writeln("<info>Running the Ibuildings QA Tools<info>");

@@ -19,8 +19,6 @@ use Symfony\Component\Filesystem\Filesystem;
 /**
  * Class InstallCommand
  * @package Ibuildings\QA\Tools\Common\Console
- *
- * @SuppressWarnings(PHPMD)
  */
 class InstallPreCommitHookCommand extends AbstractCommand
 {

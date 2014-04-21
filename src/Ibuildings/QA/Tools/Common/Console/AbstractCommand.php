@@ -26,8 +26,6 @@ use Ibuildings\QA\Tools\Common\CommandExistenceChecker;
  * Class AbstractCommand
  *
  * @package Ibuildings\QA\Tools\Common\Console
- *
- * @SuppressWarnings(PHPMD)
  */
 abstract class AbstractCommand extends Command
 {

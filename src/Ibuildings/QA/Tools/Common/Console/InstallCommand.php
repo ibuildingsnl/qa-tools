@@ -42,7 +42,7 @@ use Symfony\Component\Filesystem\Filesystem;
  *
  * @package Ibuildings\QA\Tools\Common\Console
  *
- * @SuppressWarnings(PHPMD)
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class InstallCommand extends AbstractCommand
 {
@@ -204,6 +204,12 @@ class InstallCommand extends AbstractCommand
         );
     }
 
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     *
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     */
     protected function writeAntBuildXml(InputInterface $input, OutputInterface $output)
     {
         if ($this->settings['enablePhpMessDetector']
