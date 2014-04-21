@@ -39,8 +39,8 @@ class BehatConfigurator extends \Ibuildings\QA\Tools\Functional\Configurator\Beh
      */
     protected function writeBehatYamlFiles()
     {
-        $this->behatOutput = $this->getConfigContent('behat.yml.dist', $this->settings->getArrayCopy());
-        $this->behatDevOutput =  $this->getConfigContent('behat.dev.yml.dist', $this->settings->getArrayCopy());
+        $this->behatOutput = $this->twig->render('behat.yml.dist', $this->settings->getArrayCopy());
+        $this->behatDevOutput =  $this->twig->render('behat.dev.yml.dist', $this->settings->getArrayCopy());
         return null;
     }
 

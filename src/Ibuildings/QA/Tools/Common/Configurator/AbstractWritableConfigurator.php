@@ -19,11 +19,6 @@ namespace Ibuildings\QA\Tools\Common\Configurator;
 abstract class AbstractWritableConfigurator implements ConfiguratorInterface
 {
     /**
-     * @var \Twig_Environment
-     */
-    protected $twig;
-
-    /**
      * Writes the config to a file
      *
      * @codeCoverageIgnore
@@ -36,22 +31,4 @@ abstract class AbstractWritableConfigurator implements ConfiguratorInterface
      * @return boolean
      */
     abstract public function shouldWrite();
-
-    /**
-     * Renders a twig template and returns it
-     *
-     * @param string $template
-     * @param array  $params
-     *
-     * @return string
-     */
-    protected function getConfigContent($template, $params)
-    {
-        $content = $this->twig->render(
-            $template,
-            $params
-        );
-
-        return $content;
-    }
 }
