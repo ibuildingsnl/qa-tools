@@ -11,12 +11,14 @@
 
 namespace Ibuildings\QA\Tools\PHP\Configurator;
 
-use Ibuildings\QA\Tools\Common\Configurator\AbstractWritableConfigurator;
+use Ibuildings\QA\Tools\Common\Configurator\ConfigurationWriterInterface;
 use Ibuildings\QA\Tools\Common\Configurator\Helper\MultiplePathHelper;
 use Ibuildings\QA\Tools\Common\Settings;
 
 use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Filesystem\Exception\IOException;
+use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * Can configure setting for PHP Mess Detector
@@ -25,22 +27,32 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @package Ibuildings\QA\Tools\PHP\Configurator
  */
-class PhpMessDetectorConfigurator extends AbstractWritableConfigurator
+class PhpMessDetectorConfigurator implements ConfigurationWriterInterface
 {
     /**
-     * @var OutputInterface
+     * @var \Symfony\Component\Console\Output\OutputInterface
      */
     protected $output;
 
     /**
-     * @var DialogHelper
+     * @var \Symfony\Component\Console\Helper\DialogHelper
      */
     protected $dialog;
 
     /**
-     * @var Settings
+     * @var \Ibuildings\QA\Tools\Common\Configurator\Helper\MultiplePathHelper
+     */
+    protected $multiplePathHelper;
+
+    /**
+     * @var \Ibuildings\QA\Tools\Common\Settings
      */
     protected $settings;
+
+    /**
+     * @var \Twig_Environment
+     */
+    protected $twig;
 
     /**
      * @param OutputInterface    $output
@@ -99,21 +111,27 @@ class PhpMessDetectorConfigurator extends AbstractWritableConfigurator
      */
     public function writeConfig()
     {
-        if ($this->shouldWrite()) {
-            $fh = fopen($this->settings->getBaseDir() . '/phpmd.xml', 'w');
-            fwrite(
-                $fh,
-                $this->getConfigContent('phpmd.xml.dist', $this->settings->getArrayCopy())
+        $filesystem = new Filesystem();
+        try {
+            $filesystem->dumpFile(
+                $this->settings->getBaseDir() . '/phpmd.xml',
+                $this->twig->render('phpmd.xml.dist', $this->settings->getArrayCopy())
             );
-            fclose($fh);
-            $this->output->writeln("\n<info>Config file for PHP Mess Detector written</info>");
+        } catch (IOException $e) {
+            $this->output->writeln(sprintf(
+                '<error>Could not write phpmd.xml, error: "%s"</error>',
+                $e->getMessage()
+            ));
+            return;
         }
+
+        $this->output->writeln("\n<info>Config file for PHP Mess Detector written</info>");
     }
 
     /**
      * @inheritdoc
      */
-    protected function shouldWrite()
+    public function shouldWrite()
     {
         return $this->settings['enablePhpMessDetector'] === true;
     }

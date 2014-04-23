@@ -112,18 +112,15 @@ class InstallCommand extends \Ibuildings\QA\Tools\Common\Console\InstallCommand
         parent::execute($input, $output);
     }
 
-    protected function writeRenderedContentTo($toFile, $templateName, $params)
+    protected function writeContentTo($toFile, $content, OutputInterface $output)
     {
-        $content = $this->twig->render(
-            $templateName,
-            $params
-        );
-
-        if ($templateName === 'build-pre-commit.xml.dist') {
+        if ($toFile === $this->settings->getBaseDir() . '/build-pre-commit.xml') {
             $this->buildPreCommitXmlOutput = $content;
         } else {
             $this->buildXmlOutput = $content;
         }
+
+        return true;
     }
 
     protected function guessName($dirName)

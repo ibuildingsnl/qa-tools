@@ -32,7 +32,7 @@ class PhpUnitConfigurator extends \Ibuildings\QA\Tools\PHP\Configurator\PhpUnitC
     public function writeConfig()
     {
         if ($this->shouldWrite()) {
-            $this->outputString = $this->getConfigContent('phpunit.xml.dist', $this->settings->getArrayCopy());
+            $this->outputString = $this->twig->render('phpunit.xml.dist', $this->settings->getArrayCopy());
             $this->output->writeln("\n<info>Config file for PHPUnit written</info>");
         }
     }

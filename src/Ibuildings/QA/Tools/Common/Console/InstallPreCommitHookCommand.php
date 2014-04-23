@@ -11,18 +11,14 @@
 
 namespace Ibuildings\QA\Tools\Common\Console;
 
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Helper\DialogHelper;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Filesystem\Exception\IOException;
+use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * Class InstallCommand
  * @package Ibuildings\QA\Tools\Common\Console
- *
- * @SuppressWarnings(PHPMD)
  */
 class InstallPreCommitHookCommand extends AbstractCommand
 {
@@ -51,9 +47,9 @@ class InstallPreCommitHookCommand extends AbstractCommand
 
     protected function configurePreCommitHook(InputInterface $input, OutputInterface $output)
     {
-        $this->dialog = $this->getApplication()->getDialogHelper();
+        $dialog = $this->getApplication()->getDialogHelper();
 
-        $this->settings['enablePreCommitHook'] = $this->dialog->askConfirmation(
+        $this->settings['enablePreCommitHook'] = $dialog->askConfirmation(
             $output,
             "\nDo you want to enable the git pre-commit hook? It will run the QA tools on every commit",
             true
@@ -89,7 +85,7 @@ class InstallPreCommitHookCommand extends AbstractCommand
         $gitPreCommitHookExists = $this->preCommitHookExists($this->settings->getBaseDir());
         if ($gitPreCommitHookExists) {
             $output->writeln("<error>You already have a git pre-commit hook.</error>");
-            $overwritePreCommitHook = $this->dialog->askConfirmation(
+            $overwritePreCommitHook = $dialog->askConfirmation(
                 $output,
                 "  - Do you want to overwrite your current pre-commit hook?",
                 false
@@ -108,19 +104,25 @@ class InstallPreCommitHookCommand extends AbstractCommand
      */
     protected function writePreCommitHook(InputInterface $input, OutputInterface $output)
     {
-        if ($this->settings['enablePreCommitHook']) {
-            $fh = fopen($this->settings->getBaseDir() . '/.git/hooks/pre-commit', 'w');
-            fwrite(
-                $fh,
-                $this->twig->render(
-                    'pre-commit.dist',
-                    $this->settings->getArrayCopy()
-                )
-            );
-            fclose($fh);
-            chmod($this->settings->getBaseDir() . '/.git/hooks/pre-commit', 0755);
-            $output->writeln("\n<info>Commit hook written</info>");
+        if (!$this->settings['enablePreCommitHook']) {
+            return;
         }
+
+        $filesystem = new Filesystem();
+        try {
+            $filesystem->dumpFile(
+                $this->settings->getBaseDir() . '/.git/hooks/pre-commit',
+                $this->twig->render('pre-commit.dist', $this->settings->getArrayCopy()),
+                0755
+            );
+        } catch (IOException $e) {
+            $output->writeln(sprintf(
+                '<error>Could not write pre-commit hook, error: "%s"</error>',
+                $e->getMessage()
+            ));
+        }
+
+        $output->writeln("\n<info>Commit hook written</info>");
     }
 
     /**

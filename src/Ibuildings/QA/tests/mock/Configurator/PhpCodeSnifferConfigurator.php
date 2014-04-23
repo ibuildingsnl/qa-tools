@@ -31,9 +31,7 @@ class PhpCodeSnifferConfigurator extends \Ibuildings\QA\Tools\PHP\Configurator\P
      */
     public function writeConfig()
     {
-        if ($this->shouldWrite()) {
-            $this->outputString = $this->getConfigContent('phpcs.xml.dist', $this->settings->getArrayCopy());
-            $this->output->writeln("\n<info>Config file for PHP Code Sniffer written</info>");
-        }
+        $this->outputString = $this->twig->render('phpcs.xml.dist', $this->settings->getArrayCopy());
+        $this->output->writeln("\n<info>Config file for PHP Code Sniffer written</info>");
     }
 }

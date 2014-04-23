@@ -26,17 +26,17 @@ use Symfony\Component\Console\Output\OutputInterface;
 class PhpComposerConfigurator implements ConfiguratorInterface
 {
     /**
-     * @var OutputInterface
+     * @var \Symfony\Component\Console\Output\OutputInterface
      */
     protected $output;
 
     /**
-     * @var DialogHelper
+     * @var \Symfony\Component\Console\Helper\DialogHelper
      */
     protected $dialog;
 
     /**
-     * @var Settings
+     * @var \Ibuildings\QA\Tools\Common\Settings
      */
     protected $settings;
 

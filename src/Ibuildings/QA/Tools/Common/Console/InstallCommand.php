@@ -11,10 +11,12 @@
 
 namespace Ibuildings\QA\Tools\Common\Console;
 
+use Ibuildings\QA\Tools\Common\Configurator\BuildArtifactsConfigurator;
 use Ibuildings\QA\Tools\Common\Configurator\Helper\MultiplePathHelper;
 use Ibuildings\QA\Tools\Common\Configurator\Registry;
-use Ibuildings\QA\Tools\PHP\Configurator\PhpComposerConfigurator;
+use Ibuildings\QA\Tools\Common\Configurator\TravisConfigurator;
 
+use Ibuildings\QA\Tools\PHP\Configurator\PhpComposerConfigurator;
 use Ibuildings\QA\Tools\PHP\Configurator\PhpConfigurator;
 use Ibuildings\QA\Tools\PHP\Configurator\PhpCodeSnifferConfigurator;
 use Ibuildings\QA\Tools\PHP\Configurator\PhpCopyPasteDetectorConfigurator;
@@ -30,23 +32,32 @@ use Ibuildings\QA\Tools\Javascript\Configurator\JavascriptSourcePathConfigurator
 
 use Ibuildings\QA\Tools\Functional\Configurator\BehatConfigurator;
 
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Filesystem\Exception\IOException;
+use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * Class InstallCommand
  *
  * @package Ibuildings\QA\Tools\Common\Console
  *
- * @SuppressWarnings(PHPMD)
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class InstallCommand extends AbstractCommand
 {
     /** @var  array */
     protected $composerConfig;
+
+    /**
+     * @var \Symfony\Component\Console\Helper\DialogHelper
+     */
+    protected $dialog;
+
+    /**
+     * @var \Symfony\Component\Filesystem\Filesystem
+     */
+    protected $filesystem;
 
     protected function configure()
     {
@@ -65,6 +76,7 @@ class InstallCommand extends AbstractCommand
         parent::initialize($input, $output);
 
         $this->dialog = $this->getApplication()->getDialogHelper();
+        $this->filesystem = new Filesystem();
     }
 
     /**
@@ -94,13 +106,12 @@ class InstallCommand extends AbstractCommand
 
         $output->writeln("\n");
         $this->configureProjectName($input, $output);
-        $this->configureBuildArtifactsPath($input, $output);
 
         // Register configurators
         $configuratorRegistry = $this->getConfiguratorRegistry();
 
-        $multiplePathHelper = new MultiplePathHelper($output, $this->dialog, $this->settings->getBaseDir());
-
+        $configuratorRegistry->register(new BuildArtifactsConfigurator($output, $this->dialog, $this->settings));
+        $configuratorRegistry->register(new TravisConfigurator($output, $this->dialog, $this->settings, $this->twig));
         // PHP
         $phpconfigurator = new PhpConfigurator($output, $this->settings);
         $this->requireHelper('dialog', $phpconfigurator);
@@ -108,6 +119,9 @@ class InstallCommand extends AbstractCommand
 
         $configuratorRegistry->register(new PhpComposerConfigurator($output, $this->dialog, $this->settings));
         $configuratorRegistry->register(new PhpLintConfigurator($output, $this->dialog, $this->settings));
+
+        $multiplePathHelper = new MultiplePathHelper($output, $this->dialog, $this->settings->getBaseDir());
+
         $configuratorRegistry->register(
             new PhpMessDetectorConfigurator($output, $this->dialog, $multiplePathHelper, $this->settings, $this->twig)
         );
@@ -190,36 +204,12 @@ class InstallCommand extends AbstractCommand
         );
     }
 
-    protected function configureBuildArtifactsPath(InputInterface $input, OutputInterface $output)
-    {
-        $dialog = $this->dialog;
-        $settings = $this->settings;
-        $default = (empty($this->settings['buildArtifactsPath']))
-            ? 'build/artifacts'
-            : $this->settings['buildArtifactsPath'];
-        $this->settings['buildArtifactsPath'] = $this->dialog->askAndValidate(
-            $output,
-            "Where do you want to store the build artifacts? [{$default}] ",
-            function ($data) use ($output, $dialog, $settings) {
-                if (!is_dir($settings->getBaseDir() . '/' . $data)) {
-                    if ($dialog->askConfirmation(
-                        $output,
-                        "  - Are you sure? The path doesn't exist and will be created.",
-                        true
-                    )
-                    ) {
-                        return $data;
-                    }
-                    throw new \Exception("Not using path '" . $data . " ', trying again...");
-                }
-
-                return $data;
-            },
-            false,
-            $default
-        );
-    }
-
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     *
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     */
     protected function writeAntBuildXml(InputInterface $input, OutputInterface $output)
     {
         if ($this->settings['enablePhpMessDetector']
@@ -231,24 +221,28 @@ class InstallCommand extends AbstractCommand
             || $this->settings['enableBehat']
         ) {
 
-            $this->writeRenderedContentTo(
+            $written = $this->writeContentTo(
                 $this->settings->getBaseDir() . '/build.xml',
-                'build.xml.dist',
-                $this->settings->getArrayCopy()
+                $this->twig->render('build.xml.dist', $this->settings->getArrayCopy()),
+                $output
             );
 
-            $output->writeln("\n<info>Ant build file written</info>");
+            if ($written) {
+                $output->writeln("\n<info>Ant build file written</info>");
+            }
 
-            $this->writeRenderedContentTo(
+            $written = $this->writeContentTo(
                 $this->settings->getBaseDir() . '/build-pre-commit.xml',
-                'build-pre-commit.xml.dist',
-                $this->settings->getArrayCopy()
+                $this->twig->render('build-pre-commit.xml.dist', $this->settings->getArrayCopy()),
+                $output
             );
 
-            $output->writeln("\n<info>Ant pre commit build file written</info>");
+            if ($written) {
+                $output->writeln("\n<info>Ant pre commit build file written</info>");
+            }
 
-            $this->addToGitIgnore('build');
-            $this->addToGitIgnore('cache.properties');
+            $this->addToGitIgnore('build', $output);
+            $this->addToGitIgnore('cache.properties', $output);
 
             $output->writeln("\n<info>Ant build file written</info>");
         } else {
@@ -256,47 +250,48 @@ class InstallCommand extends AbstractCommand
         }
     }
 
-    protected function writeRenderedContentTo($toFile, $templateName, $params)
+    protected function writeContentTo($toFile, $content, OutputInterface $output)
     {
-        $fh = fopen($toFile, 'w');
-        fwrite(
-            $fh,
-            $this->twig->render(
-                $templateName,
-                $params
-            )
-        );
-        fclose($fh);
+        try {
+            $this->filesystem->dumpFile($toFile, $content);
+        } catch (IOException $e) {
+            $output->writeln(sprintf(
+                '<error>Could not write content to file "%s"</error>',
+                $toFile
+            ));
+            return false;
+        }
+
+        return true;
     }
 
-    protected function addToGitIgnore($pattern)
+    protected function addToGitIgnore($pattern, OutputInterface $output)
     {
-        if (file_exists($this->settings->getBaseDir() . '/.gitignore')) {
-            // check if pattern already in there, else add
-            $lines = file($this->settings->getBaseDir() . '/.gitignore');
-            $alreadyIgnored = false;
-            foreach ($lines as $line) {
-                if (trim($line) === $pattern) {
-                    $alreadyIgnored = true;
-                    break;
-                }
+        $file = $this->settings->getBaseDir() . '/.gitignore';
+        $patternLine = $pattern . "\n";
+        $lines = array();
+
+        if ($this->filesystem->exists($file)) {
+            $lines = file($file);
+            if ($lines === false) {
+                $output->writeln(sprintf(
+                    '<error>Could not add pattern "%s" to .gitignore file, please do so manually</error>',
+                    $pattern
+                ));
+                return;
             }
 
-            if (!$alreadyIgnored) {
-                $fh = fopen($this->settings->getBaseDir() . '/.gitignore', 'a');
-                fwrite(
-                    $fh,
-                    $pattern . "\n"
-                );
-                fclose($fh);
+            if (in_array($patternLine, $lines)) {
+                return;
             }
-        } else {
-            $fh = fopen($this->settings->getBaseDir() . '/.gitignore', 'w');
-            fwrite(
-                $fh,
-                $pattern . "\n"
-            );
-            fclose($fh);
+        }
+
+        $lines[] = $patternLine;
+        if (!$this->writeContentTo($file, $patternLine, $output)) {
+            $output->writeln(sprintf(
+                '<error>Could not add pattern "%s" to .gitignore file, please do so manually</error>',
+                $pattern
+            ));
         }
     }
 

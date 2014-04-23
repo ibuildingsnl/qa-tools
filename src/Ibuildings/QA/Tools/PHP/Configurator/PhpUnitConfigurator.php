@@ -11,11 +11,13 @@
 
 namespace Ibuildings\QA\Tools\PHP\Configurator;
 
-use Ibuildings\QA\Tools\Common\Configurator\AbstractWritableConfigurator;
+use Ibuildings\QA\Tools\Common\Configurator\ConfigurationWriterInterface;
 use Ibuildings\QA\Tools\Common\Settings;
 
 use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Filesystem\Exception\IOException;
+use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * Can configure settings for PHPUnit
@@ -24,17 +26,27 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @package Ibuildings\QA\Tools\PHP\Configurator
  */
-class PhpUnitConfigurator extends AbstractWritableConfigurator
+class PhpUnitConfigurator implements ConfigurationWriterInterface
 {
     /**
-     * @var OutputInterface
+     * @var \Symfony\Component\Console\Output\OutputInterface
      */
     protected $output;
 
     /**
-     * @var DialogHelper
+     * @var \Symfony\Component\Console\Helper\DialogHelper
      */
     protected $dialog;
+
+    /**
+     * @var \Ibuildings\QA\Tools\Common\Settings
+     */
+    protected $settings;
+
+    /**
+     * @var \Twig_Environment
+     */
+    protected $twig;
 
     /**
      * @param OutputInterface   $output
@@ -174,7 +186,7 @@ class PhpUnitConfigurator extends AbstractWritableConfigurator
     /**
      * @inheritdoc
      */
-    protected function shouldWrite()
+    public function shouldWrite()
     {
         return $this->settings['enablePhpUnit'] && !$this->settings['customPhpUnitXml'];
     }
@@ -185,15 +197,20 @@ class PhpUnitConfigurator extends AbstractWritableConfigurator
      */
     public function writeConfig()
     {
-        if ($this->shouldWrite()) {
-            $fh = fopen($this->settings->getBaseDir() . '/phpunit.xml', 'w');
-            fwrite(
-                $fh,
-                $this->getConfigContent('phpunit.xml.dist', $this->settings->getArrayCopy())
+        $filesystem = new Filesystem();
+        try {
+            $filesystem->dumpFile(
+                $this->settings->getBaseDir() . '/phpunit.xml',
+                $this->twig->render('phpunit.xml.dist', $this->settings->getArrayCopy())
             );
-
-            fclose($fh);
-            $this->output->writeln("\n<info>Config file for PHPUnit written</info>");
+        } catch (IOException $e) {
+            $this->output->writeln(sprintf(
+                '<error>Could not write phpunit.xml, error: "%s"</error>',
+                $e->getMessage()
+            ));
+            return;
         }
+
+        $this->output->writeln("\n<info>Config file for PHPUnit written</info>");
     }
 }

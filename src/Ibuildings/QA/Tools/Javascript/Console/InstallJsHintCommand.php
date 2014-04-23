@@ -19,8 +19,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * Class InstallCommand
  * @package Ibuildings\QA\Tools\Common\Console
- *
- * @SuppressWarnings(PHPMD)
  */
 class InstallJsHintCommand extends AbstractCommand
 {
@@ -73,6 +71,7 @@ class InstallJsHintCommand extends AbstractCommand
      * @return mixed
      *
      * @codeCoverageIgnore
+     * @SuppressWarnings(PHPMD.UnusedLocalVariable)
      */
     protected function installNpmDependencies()
     {

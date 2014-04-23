@@ -31,11 +31,7 @@ class JsHintConfigurator extends \Ibuildings\QA\Tools\Javascript\Configurator\Js
      */
     public function writeConfig()
     {
-        if ($this->shouldWrite() === false) {
-            return;
-        }
-
-        $this->outputString = $this->getConfigContent('.jshintrc.dist', $this->settings->getArrayCopy());
+        $this->outputString = $this->twig->render('.jshintrc.dist', $this->settings->getArrayCopy());
         $this->output->writeln("\n<info>Config file for JSHint written</info>");
     }
 }

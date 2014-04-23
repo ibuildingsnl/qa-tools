@@ -32,7 +32,7 @@ class PhpMessDetectorConfigurator extends \Ibuildings\QA\Tools\PHP\Configurator\
     public function writeConfig()
     {
         if ($this->shouldWrite()) {
-            $this->outputString = $this->getConfigContent('phpmd.xml.dist', $this->settings->getArrayCopy());
+            $this->outputString = $this->twig->render('phpmd.xml.dist', $this->settings->getArrayCopy());
             $this->output->writeln("\n<info>Config file for PHP Mess Detector written</info>");
         }
     }

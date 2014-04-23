@@ -11,42 +11,49 @@
 
 namespace Ibuildings\QA\Tools\Javascript\Configurator;
 
-use Ibuildings\QA\Tools\Common\Configurator\AbstractWritableConfigurator;
+use Ibuildings\QA\Tools\Common\Configurator\ConfigurationWriterInterface;
 use Ibuildings\QA\Tools\Common\Settings;
 use Ibuildings\QA\Tools\Javascript\Console\InstallJsHintCommand;
 
 use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Filesystem\Exception\IOException;
+use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * Class JsHintConfigurator
  * @package Ibuildings\QA\Tools\Javascript\Configurator
  */
-class JsHintConfigurator extends AbstractWritableConfigurator
+class JsHintConfigurator implements ConfigurationWriterInterface
 {
     /**
-     * @var InputInterface
+     * @var \Symfony\Component\Console\Input\InputInterface
      */
     protected $input;
 
     /**
-     * @var OutputInterface
+     * @var \Symfony\Component\Console\Output\OutputInterface
      */
     protected $output;
 
     /**
-     * @var DialogHelper
+     * @var \Symfony\Component\Console\Helper\DialogHelper
      */
     protected $dialog;
 
     /**
-     * @var Settings
+     * @var \Ibuildings\QA\Tools\Common\Settings
      */
     protected $settings;
 
     /**
-     * @var InstallJsHintCommand
+     * @var \Twig_Environment
+     */
+    protected $twig;
+
+    /**
+     * @var \Ibuildings\QA\Tools\Javascript\Console\InstallJsHintCommand
      */
     protected $installJsHintCommand;
 
@@ -106,23 +113,28 @@ class JsHintConfigurator extends AbstractWritableConfigurator
      */
     public function writeConfig()
     {
-        if ($this->shouldWrite() === false) {
+        $filesystem = new Filesystem();
+
+        try {
+            $filesystem->dumpFile(
+                $this->settings->getBaseDir() . '/.jshintrc',
+                $this->twig->render('.jshintrc.dist', $this->settings->getArrayCopy())
+            );
+        } catch (IOException $e) {
+            $this->output->writeln(sprintf(
+                '<error>Could not write .jshintrc, error: "%s"</error>',
+                $e->getMessage()
+            ));
             return;
         }
 
-        $fh = fopen($this->settings->getBaseDir() . '/.jshintrc', 'w');
-        fwrite(
-            $fh,
-            $this->getConfigContent('.jshintrc.dist', $this->settings->getArrayCopy())
-        );
-        fclose($fh);
         $this->output->writeln("\n<info>Config file for JSHint written</info>");
     }
 
     /**
      * @inheritdoc
      */
-    protected function shouldWrite()
+    public function shouldWrite()
     {
         return $this->settings['enableJsHint'] === true;
     }

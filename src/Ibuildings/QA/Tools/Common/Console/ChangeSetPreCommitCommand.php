@@ -19,8 +19,6 @@ use Symfony\Component\Console\Output\OutputInterface;
  * Class ChangeSetPreCommitCommand
  *
  * @package Ibuildings\QA\Tools\Common\Console
- *
- * @SuppressWarnings(PHPMD)
  */
 class ChangeSetPreCommitCommand extends AbstractCommand
 {

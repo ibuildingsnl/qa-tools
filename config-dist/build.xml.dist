@@ -9,16 +9,18 @@
     <target name="build"
             depends="prepare,composer-run-install{% if enablePhpLint %},php-lint-ci{% endif %}{% if enableJsHint %},jshint-ci{% endif %}{% if enablePhpMessDetector %},phpmd-ci{% endif %}{% if enablePhpCodeSniffer %},phpcs-ci{% endif %}{% if enablePhpCopyPasteDetection %},phpcpd-ci{% endif %}{% if enablePhpSecurityChecker %},php-security-checker{% endif %}{% if enablePhpUnit %},phpunit-ci{% endif %}{% if enableBehat %},behat-ci{% endif %}"/>
 
+{% if buildArtifacts.enabled %}
     <target name="clean" description="Cleanup build artifacts">
-        <delete dir="{{ buildArtifactsPath }}/coverage"/>
-        <delete dir="{{ buildArtifactsPath }}/logs"/>
+        <delete dir="{{ buildArtifacts.path }}/coverage"/>
+        <delete dir="{{ buildArtifacts.path }}/logs"/>
     </target>
 
     <target name="prepare" depends="clean" description="Prepare for build">
-        <mkdir dir="{{ buildArtifactsPath }}/coverage"/>
-        <mkdir dir="{{ buildArtifactsPath }}/logs"/>
+        <mkdir dir="{{ buildArtifacts.path }}/coverage"/>
+        <mkdir dir="{{ buildArtifacts.path }}/logs"/>
     </target>
 
+{% endif %}
     <target name="check-composer">
         <available file="composer.phar" property="composer.installed"/>
     </target>
@@ -108,8 +110,10 @@
 {% if phpMdExcludePatterns %}
             <arg value="--exclude {{ phpMdExcludePatterns|join(',') }}"/>
 {% endif %}
+{% if buildArtifacts.enabled %}
             <arg value="--reportfile"/>
-            <arg value="{{ buildArtifactsPath }}/logs/pmd.xml"/>
+            <arg value="{{ buildArtifacts.path }}/logs/pmd.xml"/>
+{% endif %}
         </exec>
     </target>
 {% endif %}
@@ -117,7 +121,9 @@
     {% if enablePhpCodeSniffer %}<target name="phpcs-ci"
             description="Find coding standard violations using PHP_CodeSniffer creating a log file for the continuous integration server">
         <exec executable="{{ composerBinDir }}/phpcs" failonerror="true">
-            <arg value="--report-checkstyle={{ buildArtifactsPath }}/logs/checkstyle-php.xml"/>
+{% if buildArtifacts.enabled %}
+            <arg value="--report-checkstyle={{ buildArtifacts.path }}/logs/checkstyle-php.xml"/>
+{% endif %}
             <arg value="--report=full"/>
             <arg value="--standard=phpcs.xml"/>
             <!-- Don't show warnings-->
@@ -130,8 +136,10 @@
 
     {% if enablePhpCopyPasteDetection %}<target name="phpcpd-ci" description="Find duplicate code using PHPCPD">
         <exec executable="{{ composerBinDir }}/phpcpd" failonerror="false">
+{%  if buildArtifacts.enabled %}
             <arg value="--log-pmd"/>
-            <arg value="{{ buildArtifactsPath }}/logs/pmd-cpd.xml"/>
+            <arg value="{{ buildArtifacts.path }}/logs/pmd-cpd.xml"/>
+{% endif %}
 {% if phpCpdExcludePatterns %}
 {% for phpCpdExcludePattern in phpCpdExcludePatterns %}
             <arg value="--exclude"/>
@@ -142,20 +150,22 @@
         </exec>
     </target>
 {% endif %}
+{% if enablePhpUnit %}
 
-    {% if enablePhpUnit %}<target name="phpunit-ci" description="Run unit tests with PHPUnit">
+    <target name="phpunit-ci" description="Run unit tests with PHPUnit">
         <exec executable="{{ composerBinDir }}/phpunit" failonerror="true">
             <arg line="--configuration=${basedir}/{{ phpUnitConfigPath }}"/>
-            <arg line="--coverage-html={{ buildArtifactsPath }}/coverage"/>
-            <arg line="--log-junit={{ buildArtifactsPath }}/logs/junit.xml"/>
-            <arg line="--coverage-clover={{ buildArtifactsPath }}/logs/clover.xml"/>
+{% if buildArtifacts.enabled %}
+            <arg line="--coverage-html={{ buildArtifacts.path }}/coverage"/>
+            <arg line="--log-junit={{ buildArtifacts.path }}/logs/junit.xml"/>
+            <arg line="--coverage-clover={{ buildArtifacts.path }}/logs/clover.xml"/>
+{% endif %}
+            <arg line="--coverage-text"/>
         </exec>
     </target>
 {% endif %}
+{% if enableBehat %}
 
-
-    {% if enableBehat %}
-    <!-- Running Behat on jenkins -->
     <target name="behat-ci">
         <exec executable="php" failonerror="true">
             <arg line="{{ composerBinDir }}/behat --config ./behat.yml --profile ci ${basedir}/features --tags=~skip" />

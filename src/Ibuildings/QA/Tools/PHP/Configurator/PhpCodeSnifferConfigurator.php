@@ -11,12 +11,14 @@
 
 namespace Ibuildings\QA\Tools\PHP\Configurator;
 
-use Ibuildings\QA\Tools\Common\Configurator\AbstractWritableConfigurator;
+use Ibuildings\QA\Tools\Common\Configurator\ConfigurationWriterInterface;
 use Ibuildings\QA\Tools\Common\Configurator\Helper\MultiplePathHelper;
 use Ibuildings\QA\Tools\Common\Settings;
 
 use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Filesystem\Exception\IOException;
+use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * Can configure settings for PHP Code Sniffer
@@ -25,24 +27,32 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @package Ibuildings\QA\Tools\PHP\Configurator
  */
-class PhpCodeSnifferConfigurator extends AbstractWritableConfigurator
+class PhpCodeSnifferConfigurator implements ConfigurationWriterInterface
 {
     /**
-     * @var OutputInterface
+     * @var \Symfony\Component\Console\Output\OutputInterface
      */
     protected $output;
+
     /**
-     * @var DialogHelper
+     * @var \Symfony\Component\Console\Helper\DialogHelper
      */
     protected $dialog;
+
     /**
-     * @var MultiplePathHelper
+     * @var \Ibuildings\QA\Tools\Common\Configurator\Helper\MultiplePathHelper
      */
     protected $multiplePathHelper;
+
     /**
-     * @var Settings
+     * @var \Ibuildings\QA\Tools\Common\Settings
      */
     protected $settings;
+
+    /**
+     * @var \Twig_Environment
+     */
+    protected $twig;
 
     /**
      * @param OutputInterface    $output
@@ -173,22 +183,28 @@ class PhpCodeSnifferConfigurator extends AbstractWritableConfigurator
      */
     public function writeConfig()
     {
-        if ($this->shouldWrite()) {
-            $fh = fopen($this->settings->getBaseDir() . '/phpcs.xml', 'w');
-            fwrite(
-                $fh,
-                $this->getConfigContent('phpcs.xml.dist', $this->settings->getArrayCopy())
+        $filesystem = new Filesystem();
+        try {
+            $filesystem->dumpFile(
+                $this->settings->getBaseDir() . '/phpcs.xml',
+                $this->twig->render('phpcs.xml.dist', $this->settings->getArrayCopy())
             );
-            fclose($fh);
-            $this->output->writeln("\n<info>Config file for PHP Code Sniffer written</info>");
+        } catch (IOException $e) {
+            $this->output->writeln(sprintf(
+                '<error>Could not write phpcs.xml, error: "%s"</error>',
+                $e->getMessage()
+            ));
+            return;
         }
+
+        $this->output->writeln("\n<info>Config file for PHP Code Sniffer written</info>");
     }
 
     /**
      * @inheritdoc
      * @codeCoverageIgnore
      */
-    protected function shouldWrite()
+    public function shouldWrite()
     {
         return $this->settings['enablePhpCodeSniffer'] === true;
     }
