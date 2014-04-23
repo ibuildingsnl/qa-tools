@@ -98,7 +98,7 @@ class Registry extends \Ibuildings\QA\Tools\Common\Configurator\Registry
         $mockClass = "Ibuildings\\QA\\tests\\mock\\Configurator\\" . $className;
         if (!class_exists($mockClass)) {
             throw new \RuntimeException(sprintf(
-                'Configurator "%s" is an instance AbstractWritableConfigurator. A mock of this configurator should be'
+                'Configurator "%s" implements ConfigurationWriterInterface. A mock of this configurator should be'
                 . 'made so that the writeConfig method does not write to disk but stores the contents',
                 get_class($configurator)
             ));
