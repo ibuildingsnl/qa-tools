@@ -37,7 +37,7 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
         $packageBaseDir = realpath(__DIR__ . '/../../../../../../');
         $settings = new SettingsMock($baseDir, $packageBaseDir);
 
-        $this->application = $this->getMock('Ibuildings\QA\Tools\Common\Application', array('getDialogHelper'), array('ibuildings qa tools', '1.1.11', $settings));
+        $this->application = $this->getMock('Ibuildings\QA\Tools\Common\Application', array('getDialogHelper'), array('ibuildings qa tools', '1.1.14', $settings));
 
         $dialog = $this->getMock('Ibuildings\QA\Tools\Common\Console\Helper\DialogHelper', array('askConfirmation', 'askAndValidate'));
 
