@@ -21,7 +21,7 @@ use Symfony\Component\Filesystem\Filesystem;
  * Class TravisConfigurator
  * @package Ibuildings\QA\Tools\Common\Configurator
  */
-class TravisConfigurator extends AbstractWritableConfigurator
+class TravisConfigurator implements ConfigurationWriterInterface
 {
     /**
      * @var \Symfony\Component\Console\Output\OutputInterface

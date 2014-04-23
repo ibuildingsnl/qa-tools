@@ -50,7 +50,7 @@ class Registry
     private function writeConfigurationFiles()
     {
         foreach ($this->configurators as $configurator) {
-            if (!$configurator instanceof AbstractWritableConfigurator) {
+            if (!$configurator instanceof ConfigurationWriterInterface) {
                 continue;
             }
 

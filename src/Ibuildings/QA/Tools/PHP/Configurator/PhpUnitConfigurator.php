@@ -11,7 +11,7 @@
 
 namespace Ibuildings\QA\Tools\PHP\Configurator;
 
-use Ibuildings\QA\Tools\Common\Configurator\AbstractWritableConfigurator;
+use Ibuildings\QA\Tools\Common\Configurator\ConfigurationWriterInterface;
 use Ibuildings\QA\Tools\Common\Settings;
 
 use Symfony\Component\Console\Helper\DialogHelper;
@@ -26,7 +26,7 @@ use Symfony\Component\Filesystem\Filesystem;
  *
  * @package Ibuildings\QA\Tools\PHP\Configurator
  */
-class PhpUnitConfigurator extends AbstractWritableConfigurator
+class PhpUnitConfigurator implements ConfigurationWriterInterface
 {
     /**
      * @var \Symfony\Component\Console\Output\OutputInterface

@@ -11,7 +11,7 @@
 
 namespace Ibuildings\QA\tests\mock;
 
-use Ibuildings\QA\Tools\Common\Configurator\AbstractWritableConfigurator;
+use Ibuildings\QA\Tools\Common\Configurator\ConfigurationWriterInterface;
 use Ibuildings\QA\Tools\Common\Configurator\ConfiguratorInterface;
 use Ibuildings\QA\Tools\Common\Configurator\Helper\MultiplePathHelper;
 use Ibuildings\QA\Tools\Common\Settings;
@@ -87,7 +87,7 @@ class Registry extends \Ibuildings\QA\Tools\Common\Configurator\Registry
      */
     public function register(ConfiguratorInterface $configurator)
     {
-        if (!$configurator instanceof AbstractWritableConfigurator) {
+        if (!$configurator instanceof ConfigurationWriterInterface) {
             parent::register($configurator);
             return;
         }

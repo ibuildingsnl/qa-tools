@@ -11,7 +11,7 @@
 
 namespace Ibuildings\QA\Tools\Javascript\Configurator;
 
-use Ibuildings\QA\Tools\Common\Configurator\AbstractWritableConfigurator;
+use Ibuildings\QA\Tools\Common\Configurator\ConfigurationWriterInterface;
 use Ibuildings\QA\Tools\Common\Settings;
 use Ibuildings\QA\Tools\Javascript\Console\InstallJsHintCommand;
 
@@ -25,7 +25,7 @@ use Symfony\Component\Filesystem\Filesystem;
  * Class JsHintConfigurator
  * @package Ibuildings\QA\Tools\Javascript\Configurator
  */
-class JsHintConfigurator extends AbstractWritableConfigurator
+class JsHintConfigurator implements ConfigurationWriterInterface
 {
     /**
      * @var \Symfony\Component\Console\Input\InputInterface
