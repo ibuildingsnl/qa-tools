@@ -7,7 +7,7 @@
     #}
 
     <target name="build"
-            depends="prepare,composer-run-install{% if enablePhpLint %},php-lint-ci{% endif %}{% if enableJsHint %},jshint-ci{% endif %}{% if enablePhpMessDetector %},phpmd-ci{% endif %}{% if enablePhpCodeSniffer %},phpcs-ci{% endif %}{% if enablePhpCopyPasteDetection %},phpcpd-ci{% endif %}{% if enablePhpSecurityChecker %},php-security-checker{% endif %}{% if enablePhpUnit %},phpunit-ci{% endif %}{% if enableBehat %},behat-ci{% endif %}"/>
+            depends="{% if buildArtifacts.enabled %}prepare,{% endif %}{% if not travis.enabled %}composer-run-install,{% endif %}{% if enablePhpLint %}php-lint-ci,{% endif %}{% if enableJsHint %}jshint-ci,{% endif %}{% if enablePhpMessDetector %}phpmd-ci,{% endif %}{% if enablePhpCodeSniffer %}phpcs-ci,{% endif %}{% if enablePhpCopyPasteDetection %}phpcpd-ci,{% endif %}{% if enablePhpSecurityChecker %}php-security-checker,{% endif %}{% if enablePhpUnit %}phpunit-ci,{% endif %}{% if enableBehat %}behat-ci{% endif %}"/>
 
 {% if buildArtifacts.enabled %}
     <target name="clean" description="Cleanup build artifacts">
@@ -21,6 +21,7 @@
     </target>
 
 {% endif %}
+{% if not travis.enabled %}
     <target name="check-composer">
         <available file="composer.phar" property="composer.installed"/>
     </target>
@@ -41,6 +42,7 @@
         </exec>
     </target>
 
+{% endif %}
     {% if enablePhpLint %}<target name="get-changeset.php.raw"
             description="creates a list of changed php files separated by newline">
         <pathconvert property="changeset.php.raw" pathsep="${line.separator}">

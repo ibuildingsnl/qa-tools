@@ -37,9 +37,9 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
         $packageBaseDir = realpath(__DIR__ . '/../../../../../../');
         $settings = new SettingsMock($baseDir, $packageBaseDir);
 
-        $this->application = $this->getMock('Ibuildings\QA\Tools\Common\Application', array('getDialogHelper'), array('ibuildings qa tools', '1.1.14', $settings));
+        $this->application = $this->getMock('Ibuildings\QA\Tools\Common\Application', array('getDialogHelper'), array('ibuildings qa tools', '1.1.15', $settings));
 
-        $dialog = $this->getMock('Ibuildings\QA\Tools\Common\Console\Helper\DialogHelper', array('askConfirmation', 'askAndValidate'));
+        $dialog = $this->getMock('Ibuildings\QA\Tools\Common\Console\Helper\DialogHelper', array('askConfirmation', 'askAndValidate', 'select'));
 
         $this->application->expects($this->any())
             ->method('getDialogHelper')
@@ -214,6 +214,54 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function installWithTravisEnabled()
+    {
+        /** @var \Ibuildings\QA\tests\mock\InstallCommand $command */
+        $command = $this->application->find('install');
+
+        $dialog = $this->application->getDialogHelper();
+
+        $startAt = 0;
+        $this->addBaseExpects($dialog, $startAt);
+        $this->addBuildArtifactExpects($dialog, $startAt);
+        $this->addTravisEnabledExpects($dialog, $startAt);
+        $this->addQAExpects($dialog, $startAt);
+        $this->addPHPMDExpects($dialog, $startAt);
+        $this->addPHPCSExpects($dialog, $startAt);
+        $this->addCodeDuplicateExpects($dialog, $startAt);
+        $this->addPhpUnitExpects($dialog, $startAt);
+        $this->addFinishingExpects($dialog, $startAt);
+
+        $commandTester = new CommandTester($command);
+        $commandTester->execute(array('command' => $command->getName()), array('verbosity' => OutputInterface::VERBOSITY_VERY_VERBOSE));
+
+        $this->assertXmlStringEqualsXmlFile(
+            __DIR__ . '/fixtures/build_travis_enabled.xml',
+            $command->buildXmlOutput
+        );
+
+        $this->assertXmlStringEqualsXmlFile(
+            __DIR__ . '/fixtures/build-pre-commit.xml',
+            $command->buildPreCommitXmlOutput
+        );
+
+        $this->assertStringEqualsFile(
+            __DIR__ . '/fixtures/.travis.yml',
+            $command->getConfiguratorRegistry()->getConfiguratorByName(
+                'Ibuildings\QA\Tools\Common\Configurator\TravisConfigurator')->travisFileContents
+        );
+
+        $this->assertStringEqualsFile(
+            __DIR__ . '/fixtures/.travis.php.ini',
+            $command->getConfiguratorRegistry()->getConfiguratorByName(
+                'Ibuildings\QA\Tools\Common\Configurator\TravisConfigurator')->travisPhpIniContents
+        );
+    }
+
+
+    /**
+     * @test
+     */
     public function installWithCustomPhpUnit()
     {
         /** @var InstallCommand $command */
@@ -305,6 +353,10 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue(true));
     }
 
+    /**
+     * @param DialogHelper $dialog
+     * @param int          $startAt
+     */
     protected function addBuildArtifactExpects(DialogHelper $dialog, &$startAt)
     {
         $dialog
@@ -318,6 +370,10 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue(false));
     }
 
+    /**
+     * @param DialogHelper $dialog
+     * @param int          $startAt
+     */
     protected function addTravisExpects(DialogHelper $dialog, &$startAt)
     {
         $dialog
@@ -328,6 +384,77 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
                 $this->equalTo('Do you want to enable Travis integration for this project?')
             )
             ->will($this->returnValue(false));
+    }
+
+    /**
+     * @param DialogHelper $dialog
+     * @param int          $startAt
+     */
+    protected function addTravisEnabledExpects(DialogHelper $dialog, &$startAt)
+    {
+        $dialog
+            ->expects($this->at($startAt++))
+            ->method('askConfirmation')
+            ->with(
+                $this->anything(),
+                $this->equalTo('Do you want to enable Travis integration for this project?')
+            )
+            ->will($this->returnValue(true));
+
+        $dialog
+            ->expects($this->at($startAt++))
+            ->method('select')
+            ->with(
+                $this->anything(),
+                $this->equalTo("Which versions of php do you want to test this project on (enter the keys comma separated) [5.5]? ")
+            )
+            ->will($this->returnValue(array(1, 2)));
+
+        $dialog
+            ->expects($this->at($startAt++))
+            ->method('askConfirmation')
+            ->with(
+                $this->anything(),
+                $this->equalTo('You have chosen the following versions: "5.6", "5.5", is this correct? ')
+            )
+            ->will($this->returnValue(true));
+
+        $dialog
+            ->expects($this->at($startAt++))
+            ->method('askConfirmation')
+            ->with(
+                $this->anything(),
+                $this->equalTo('Do you need to set any environment variables for the CI server (e.g. SYMFONY_ENV or APPLICATION_ENV)? ')
+            )
+            ->will($this->returnValue(true));
+
+        $dialog
+            ->expects($this->at($startAt++))
+            ->method('askAndValidate')
+            ->with(
+                $this->anything(),
+                $this->equalTo('Please enter the required variables, comma separated (e.g. FOO=bar,QUUZ=quux)')
+            )
+            ->will($this->returnValue(array('FOO=bar', 'QUUZ=quux')));
+
+        $dialog
+            ->expects($this->at($startAt++))
+            ->method('askConfirmation')
+            ->with(
+                $this->anything(),
+                $this->equalTo("Do you want to enable Slack Notifications from Travis for this project?")
+            )
+            ->will($this->returnValue(true));
+
+        $dialog
+            ->expects($this->at($startAt++))
+            ->method('askAndValidate')
+            ->with(
+                $this->anything(),
+                $this->equalTo("Please paste your slack credentials \n"
+                    . "  (see http://docs.travis-ci.com/user/notifications/#Slack-notifications): \n")
+            )
+            ->will($this->returnValue('ibuildings:somehashvalue'));
     }
 
     /**

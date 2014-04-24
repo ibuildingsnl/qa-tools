@@ -33,7 +33,7 @@ class ChangeSetPreCommitCommandTest extends \PHPUnit_Framework_TestCase
 
         $changesetCommand = $this->getMock('Ibuildings\QA\Tools\Common\Console\ChangeSetPreCommitCommand', array('getChangeSet'));
 
-        $this->application = new Application('ibuildings qa tools', '1.1.14', $settings);
+        $this->application = new Application('ibuildings qa tools', '1.1.15', $settings);
 
         $changesetCommand->expects($this->any())
             ->method('getChangeSet')
