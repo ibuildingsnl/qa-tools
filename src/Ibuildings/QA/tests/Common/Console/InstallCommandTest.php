@@ -353,6 +353,10 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue(true));
     }
 
+    /**
+     * @param DialogHelper $dialog
+     * @param int          $startAt
+     */
     protected function addBuildArtifactExpects(DialogHelper $dialog, &$startAt)
     {
         $dialog
@@ -366,6 +370,10 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue(false));
     }
 
+    /**
+     * @param DialogHelper $dialog
+     * @param int          $startAt
+     */
     protected function addTravisExpects(DialogHelper $dialog, &$startAt)
     {
         $dialog
@@ -378,6 +386,10 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue(false));
     }
 
+    /**
+     * @param DialogHelper $dialog
+     * @param int          $startAt
+     */
     protected function addTravisEnabledExpects(DialogHelper $dialog, &$startAt)
     {
         $dialog
@@ -406,6 +418,24 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
                 $this->equalTo('You have chosen the following versions: "5.6", "5.5", is this correct? ')
             )
             ->will($this->returnValue(true));
+
+        $dialog
+            ->expects($this->at($startAt++))
+            ->method('askConfirmation')
+            ->with(
+                $this->anything(),
+                $this->equalTo('Do you need to set any environment variables for the CI server (e.g. SYMFONY_ENV or APPLICATION_ENV)? ')
+            )
+            ->will($this->returnValue(true));
+
+        $dialog
+            ->expects($this->at($startAt++))
+            ->method('askAndValidate')
+            ->with(
+                $this->anything(),
+                $this->equalTo('Please enter the required variables, comma separated (e.g. FOO=bar,QUUZ=quux)')
+            )
+            ->will($this->returnValue(array('FOO=bar', 'QUUZ=quux')));
 
         $dialog
             ->expects($this->at($startAt++))

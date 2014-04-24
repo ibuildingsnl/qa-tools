@@ -12,6 +12,14 @@ php:
   - {{ version }}
 {% endfor %}
 
+{% if env.enabled %}
+env:
+  global:
+{% for var in env.vars %}
+    - {{ var }}
+{% endfor %}
+
+{% endif %}
 cache:
   directories:
     - ~/.composer

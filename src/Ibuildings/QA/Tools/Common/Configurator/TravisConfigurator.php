@@ -71,8 +71,13 @@ class TravisConfigurator implements ConfigurationWriterInterface
 
         $this->settings['travis']['enabled'] = true;
         $this->settings['travis']['phpVersions'] = $this->askPhpVersions();
-        $this->settings['travis']['slack']['enabled'] = $this->confirmSlackNotifierEnabled();
 
+        $this->settings['travis']['env']['enabled'] = $this->confirmRequiresEnvironmentVariables();
+        if ($this->settings['travis']['env']['enabled']) {
+            $this->settings['travis']['env']['vars'] = $this->askForEnvironmentVariables();
+        }
+
+        $this->settings['travis']['slack']['enabled'] = $this->confirmSlackNotifierEnabled();
         if ($this->settings['travis']['slack']['enabled']) {
             $this->settings['travis']['slack']['token'] = $this->askSlackToken();
         }
@@ -150,6 +155,48 @@ class TravisConfigurator implements ConfigurationWriterInterface
         }
 
         return $selected;
+    }
+
+    /**
+     * @return bool
+     */
+    private function confirmRequiresEnvironmentVariables()
+    {
+        return $this->dialog->askConfirmation(
+            $this->output,
+            'Do you need to set any environment variables for the CI server (e.g. SYMFONY_ENV or APPLICATION_ENV)? '
+        );
+    }
+
+    private function askForEnvironmentVariables()
+    {
+        $validator = function ($value) {
+            $vars = explode(',', $value);
+
+            $invalid = array();
+            foreach ($vars as $var) {
+                if (strlen($var) && strpos($var, '=')) {
+                    continue;
+                }
+
+                $invalid[] = strlen($var) ? $var : '(empty value)';
+            }
+
+            if (count($invalid)) {
+                throw new \Exception(sprintf(
+                    'The following variables are invalid: "%s", please retry',
+                    implode('", "', $invalid)
+                ));
+            }
+
+            return array_map('trim', $vars);
+        };
+
+        return $this->dialog->askAndValidate(
+            $this->output,
+            'Please enter the required variables, comma separated (e.g. FOO=bar,QUUZ=quux)',
+            $validator
+        );
     }
 
     /**

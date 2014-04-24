@@ -11,6 +11,11 @@ php:
   - 5.6
   - 5.5
 
+env:
+  global:
+    - FOO=bar
+    - QUUZ=quux
+
 cache:
   directories:
     - ~/.composer
