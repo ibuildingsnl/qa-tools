@@ -3,28 +3,7 @@
 <project name="test1-ci" default="build">
 
     <target name="build"
-            depends="composer-run-install,php-lint-ci,phpmd-ci,phpcs-ci,phpcpd-ci,php-security-checker,phpunit-ci,behat-ci"/>
-
-
-    <target name="check-composer">
-        <available file="composer.phar" property="composer.installed"/>
-    </target>
-
-    <target name="composer-install" depends="check-composer" unless="composer.installed">
-        <get src="http://getcomposer.org/composer.phar" dest="composer.phar"/>
-    </target>
-
-    <target name="composer-update" depends="composer-install">
-        <exec executable="php" failonerror="true">
-            <arg line="composer.phar self-update"/>
-        </exec>
-    </target>
-
-    <target name="composer-run-install" depends="composer-update">
-        <exec executable="php" failonerror="true">
-            <arg line="composer.phar install --dev"/>
-        </exec>
-    </target>
+            depends="php-lint-ci,phpmd-ci,phpcs-ci,phpcpd-ci,php-security-checker,phpunit-ci,behat-ci"/>
 
     <target name="get-changeset.php.raw"
             description="creates a list of changed php files separated by newline">
