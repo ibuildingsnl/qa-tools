@@ -34,7 +34,7 @@ class InstallJsHintCommandTest extends \PHPUnit_Framework_TestCase
         $packageBaseDir = realpath(__DIR__ . '/../../../../../../');
         $settings = new Settings($baseDir, $packageBaseDir);
 
-        $this->application = new Application('ibuildings qa tools', '1.1.16', $settings);
+        $this->application = new Application('ibuildings qa tools', '1.1.17', $settings);
 
         /** @var InstallJsHintCommand $command */
         $command = $this->getMock('Ibuildings\QA\tests\mock\InstallJsHintCommand', array('installNpmDependencies'));

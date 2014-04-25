@@ -22,7 +22,7 @@ use \Ibuildings\QA\Tools\Common\Settings;
 
 $appConfig = new Settings($baseDir, $packageBaseDir);
 
-$application = new Application('Ibuildings QA Tools Setup', '1.1.16', $appConfig);
+$application = new Application('Ibuildings QA Tools Setup', '1.1.17', $appConfig);
 
 $application->add(new \Ibuildings\QA\Tools\Common\Console\InstallCommand());
 $application->add(new \Ibuildings\QA\Tools\Javascript\Console\InstallJsHintCommand());
