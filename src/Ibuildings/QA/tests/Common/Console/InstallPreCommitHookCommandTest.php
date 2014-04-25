@@ -41,7 +41,7 @@ class InstallPreCommitHookCommandTest extends \PHPUnit_Framework_TestCase
         $preCommitHookCommand = new InstallPreCommitHookCommand();
         $preCommitHookCommand->setChecker($checker);
 
-        $this->application = $this->getMock('Ibuildings\QA\Tools\Common\Application', array('getDialogHelper'), array('ibuildings qa tools', '1.1.16', $settings));
+        $this->application = $this->getMock('Ibuildings\QA\Tools\Common\Application', array('getDialogHelper'), array('ibuildings qa tools', '1.1.17', $settings));
 
         $dialog = $this->getMock('Ibuildings\QA\Tools\Common\Console\Helper\DialogHelper', array('askConfirmation', 'askAndValidate'));
 
