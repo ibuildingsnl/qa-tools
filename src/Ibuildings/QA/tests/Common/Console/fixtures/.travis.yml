@@ -18,9 +18,10 @@ env:
 
 cache:
   directories:
-    - ~/.composer
+    - ./vendor
 
 before_script:
+  - composer self-update
   - composer install --prefer-dist
   - phpenv config-add .travis.php.ini
 
