@@ -94,7 +94,8 @@ class Registry extends \Ibuildings\QA\Tools\Common\Configurator\Registry
 
         // This really ought to be done differently... with proper DI and consistent usage of SF/Filesystem component
         // we could just write to tmp dirs and test it properly (see FilesystemTestCase in File component)
-        $className = end(explode('\\', get_class($configurator)));
+        $className = explode('\\', get_class($configurator));
+        $className = end($className);
         $mockClass = "Ibuildings\\QA\\tests\\mock\\Configurator\\" . $className;
         if (!class_exists($mockClass)) {
             throw new \RuntimeException(sprintf(
