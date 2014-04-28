@@ -571,9 +571,9 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
             ->method('askAndValidate')
             ->with(
                 $this->anything(),
-                $this->equalTo("What is the path to the PHP source code? [src] ")
+                $this->equalTo("At which paths is the PHP source code located? [src] (comma separated)\n")
             )
-            ->will($this->returnValue('/tmp'));
+            ->will($this->returnValue(array('/tmp')));
     }
 
     /**

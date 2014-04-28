@@ -12,6 +12,7 @@
 namespace Ibuildings\QA\Tools\PHP\Configurator;
 
 use Ibuildings\QA\Tools\Common\Configurator\ConfiguratorInterface;
+use Ibuildings\QA\Tools\Common\Configurator\Helper\MultiplePathHelper;
 use Ibuildings\QA\Tools\Common\Settings;
 
 use Symfony\Component\Console\Helper\DialogHelper;
@@ -36,6 +37,11 @@ class PhpSourcePathConfigurator implements ConfiguratorInterface
     protected $dialog;
 
     /**
+     * @var \Ibuildings\QA\Tools\Common\Configurator\Helper\MultiplePathHelper
+     */
+    protected $multiplePathHelper;
+
+    /**
      * @var \Ibuildings\QA\Tools\Common\Settings
      */
     protected $settings;
@@ -43,38 +49,39 @@ class PhpSourcePathConfigurator implements ConfiguratorInterface
     /**
      * @param OutputInterface $output
      * @param DialogHelper $dialog
+     * @param MultiplePathHelper $multiplePathHelper
      * @param Settings $settings
      */
     public function __construct(
         OutputInterface $output,
         DialogHelper $dialog,
+        MultiplePathHelper $multiplePathHelper,
         Settings $settings
     ) {
         $this->output = $output;
         $this->dialog = $dialog;
+        $this->multiplePathHelper = $multiplePathHelper;
         $this->settings = $settings;
     }
 
     public function configure()
     {
-        if ($this->settings['enablePhpMessDetector']
+        if (!$this->isEnabled()) {
+            return;
+        }
+
+        $default = (isset($this->settings['phpSrcPath'])) ? $this->settings['phpSrcPath'] : 'src';
+        $this->settings['phpSrcPath'] = $this->multiplePathHelper->askPaths(
+            "At which paths is the PHP source code located?",
+            $default
+        );
+    }
+
+    private function isEnabled()
+    {
+        return ($this->settings['enablePhpMessDetector']
             || $this->settings['enablePhpCodeSniffer']
             || $this->settings['enablePhpCopyPasteDetection']
-        ) {
-            $settings = $this->settings;
-            $default =  (empty($settings['phpSrcPath'])) ? 'src' : $settings['phpSrcPath'];
-            $this->settings['phpSrcPath'] = $this->dialog->askAndValidate(
-                $this->output,
-                "What is the path to the PHP source code? [{$default}] ",
-                function ($data) use ($settings) {
-                    if (is_dir($settings->getBaseDir() . '/' . $data)) {
-                        return $data;
-                    }
-                    throw new \Exception("That path doesn't exist");
-                },
-                false,
-                $default
-            );
-        }
+            || $this->settings['enablePhpLint']);
     }
 }

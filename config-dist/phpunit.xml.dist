@@ -17,7 +17,9 @@
     </testsuites>
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">
-            <directory>{{ phpSrcPath }}</directory>
+{% for path in phpSrcPath %}
+            <directory>{{ path }}</directory>
+{% endfor %}
         </whitelist>
     </filter>
 </phpunit>
