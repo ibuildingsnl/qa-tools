@@ -181,7 +181,7 @@
         PHPUnit always runs, regardless of there being changes in PHP src.
         This is because other changes, e.g. config, can also break tests
     -->
-    <target name="phpunit" depends="set-test-tree-location">
+    <target name="phpunit" depends="set-test-tree-location" if="changeset.php.notempty">
         <exec outputproperty="phpunit-output-raw" resultproperty="phpunit-exitcode"
               executable="${test-tree-location}/vendor/bin/phpunit" failonerror="false">
             <arg line="--configuration=${test-tree-location}/ --stop-on-failure"/>
