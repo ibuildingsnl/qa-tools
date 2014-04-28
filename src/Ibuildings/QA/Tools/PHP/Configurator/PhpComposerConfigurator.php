@@ -63,10 +63,20 @@ class PhpComposerConfigurator implements ConfiguratorInterface
             return false;
         }
 
-        $this->settings['enableComposer'] = $this->dialog->askConfirmation(
+        $choice = $this->dialog->select(
             $this->output,
-            "Do you want to run `./composer.phar install` on every commit? [y/N] ",
-            false
+            "Do you want to run `./composer.phar install` on every commit?",
+            array('n' => 'no (default)', 'y' => 'yes', 'a' => 'ask every commit'),
+            'n'
         );
+
+        if ($choice === 'n') {
+            $this->settings['enableComposer'] = false;
+        } elseif ($choice === 'y') {
+            $this->settings['enableComposer'] = true;
+        } else {
+            // $choice === 'ask', invalid values are caught by the dialoghelper
+            $this->settings['enableComposer'] = 'ask';
+        }
     }
 }
