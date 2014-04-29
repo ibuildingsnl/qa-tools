@@ -64,10 +64,41 @@ class PhpUnitConfigurator implements ConfigurationWriterInterface
         $this->dialog = $dialog;
         $this->settings = $settings;
         $this->twig = $twig;
+    }
 
-        $this->settings['enablePhpUnit'] = false;
-        $this->settings['customPhpUnitXml'] = false;
-        $this->settings['phpUnitConfigPath'] = '';
+    public function configure()
+    {
+        if (!$this->settings['enablePhpTools']) {
+            return false;
+        }
+
+        $output = $this->output;
+        $output->writeln("\n<info>Configuring PHPUnit</info>\n");
+        $default = (empty($this->settings['enablePhpUnit'])) ? true : $this->settings['enablePhpUnit'];
+        $this->settings['enablePhpUnit'] = $this->dialog->askConfirmation(
+            $output,
+            "Do you want to enable PHPunit tests?",
+            $default
+        );
+
+        if (!$this->hasCustomPhpUnitXml($output, $this->settings) && $this->settings['enablePhpUnit']) {
+            $settings = $this->settings;
+            $default = (empty($this->settings['phpTestsPath'])) ? 'tests' : $this->settings['phpTestsPath'];
+            $this->settings['phpTestsPath'] = $this->dialog->askAndValidate(
+                $output,
+                "What is the path to the PHPUnit tests? [{$default}] ",
+                function ($data) use ($settings) {
+                    if (is_dir($settings->getBaseDir() . '/' . $data)) {
+                        return $data;
+                    }
+                    throw new \Exception("That path doesn't exist");
+                },
+                false,
+                $default
+            );
+
+            $this->enablePhpUnitAutoLoad($output, $this->settings);
+        }
     }
 
     /**
@@ -106,42 +137,6 @@ class PhpUnitConfigurator implements ConfigurationWriterInterface
         );
 
         return true;
-    }
-
-
-    public function configure()
-    {
-        if (!$this->settings['enablePhpTools']) {
-            return false;
-        }
-
-        $output = $this->output;
-        $output->writeln("\n<info>Configuring PHPUnit</info>\n");
-        $default = (empty($this->settings['enablePhpUnit'])) ? true : $this->settings['enablePhpUnit'];
-        $this->settings['enablePhpUnit'] = $this->dialog->askConfirmation(
-            $output,
-            "Do you want to enable PHPunit tests?",
-            $default
-        );
-
-        if (!$this->hasCustomPhpUnitXml($output, $this->settings) &&  $this->settings['enablePhpUnit']) {
-            $settings = $this->settings;
-            $default = (empty($this->settings['phpTestsPath'])) ? 'tests' : $this->settings['phpTestsPath'];
-            $this->settings['phpTestsPath'] = $this->dialog->askAndValidate(
-                $output,
-                "What is the path to the PHPUnit tests? [{$default}] ",
-                function ($data) use ($settings) {
-                    if (is_dir($settings->getBaseDir() . '/' . $data)) {
-                        return $data;
-                    }
-                    throw new \Exception("That path doesn't exist");
-                },
-                false,
-                $default
-            );
-
-            $this->enablePhpUnitAutoLoad($output, $this->settings);
-        }
     }
 
     /**
