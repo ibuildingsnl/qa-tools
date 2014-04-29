@@ -339,7 +339,7 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
             ->expects($this->at($startAt++))->method('askConfirmation')
             ->with(
                 $this->anything(),
-                $this->equalTo('Do you want to run `./composer.phar install` on every commit? [y/N] ')
+                $this->equalTo('Do you want to run `./composer.phar install` on every commit?')
             )
             ->will($this->returnValue(true));
 
