@@ -12,7 +12,9 @@
          bootstrap="{{ phpUnitAutoloadPath }}">
     <testsuites>
         <testsuite name="Test Suite">
-            <directory>{{ phpTestsPath }}</directory>
+{% for path in phpTestsPath %}
+            <directory>{{ path }}</directory>
+{% endfor %}
         </testsuite>
     </testsuites>
     <filter>

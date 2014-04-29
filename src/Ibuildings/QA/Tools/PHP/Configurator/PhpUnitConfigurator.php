@@ -155,19 +155,8 @@ class PhpUnitConfigurator implements ConfigurationWriterInterface
     protected function askForPathsToTests()
     {
         $default = (empty($this->settings['phpTestsPath'])) ? 'tests' : $this->settings['phpTestsPath'];
-        $baseDir = $this->settings->getBaseDir();
-        $validator = function ($data) use ($baseDir) {
-            if (is_dir($baseDir . '/' . $data)) {
-                return $data;
-            }
-            throw new \Exception("That path doesn't exist");
-        };
-
-        return $this->dialog->askAndValidate(
-            $this->output,
-            "What is the path to the PHPUnit tests? [{$default}] ",
-            $validator,
-            false,
+        return $this->multiplePathHelper->askPaths(
+            "On what paths can the PHPUnit tests be found?",
             $default
         );
     }

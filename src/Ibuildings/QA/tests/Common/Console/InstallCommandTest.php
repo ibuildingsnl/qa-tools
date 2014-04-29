@@ -610,9 +610,9 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
             ->method('askAndValidate')
             ->with(
                 $this->anything(),
-                $this->equalTo('What is the path to the PHPUnit tests? [tests] ')
+                $this->equalTo("On what paths can the PHPUnit tests be found? [tests] (comma separated)\n")
             )
-            ->will($this->returnValue('/tmp'));
+            ->will($this->returnValue(array('/tmp')));
 
         $dialog
             ->expects($this->at($startAt++))
