@@ -83,30 +83,32 @@ class PhpCodeSnifferConfigurator implements ConfigurationWriterInterface
      */
     protected function askEnable()
     {
-        $default = (empty($this->settings['enablePhpCodeSniffer'])) ? false : $this->settings['enablePhpCodeSniffer'];
+        $default = (isset($this->settings['enablePhpCodeSniffer'])) ? $this->settings['enablePhpCodeSniffer'] : true;
         $this->settings['enablePhpCodeSniffer'] = $this->dialog->askConfirmation(
             $this->output,
             "Do you want to enable the PHP Code Sniffer?",
             $default
         );
 
-        if ($this->settings['enablePhpCodeSniffer']) {
-            $default = (empty($this->settings['phpCodeSnifferCodingStyle']))
-                ? 'PSR2'
-                : $this->settings['phpCodeSnifferCodingStyle'];
-            $this->settings['phpCodeSnifferCodingStyle'] = $this->dialog->askAndValidate(
-                $this->output,
-                "  - Which coding standard do you want to use? (PEAR, PHPCS, PSR1, PSR2, Squiz, Zend) [{$default}] ",
-                function ($data) {
-                    if (in_array($data, array("PEAR", "PHPCS", "PSR1", "PSR2", "Squiz", "Zend"))) {
-                        return $data;
-                    }
-                    throw new \Exception("That coding style is not supported");
-                },
-                false,
-                $default
-            );
+        if (!$this->settings['enablePhpCodeSniffer']) {
+            return;
         }
+
+        $default = (empty($this->settings['phpCodeSnifferCodingStyle']))
+            ? 'PSR2'
+            : $this->settings['phpCodeSnifferCodingStyle'];
+        $this->settings['phpCodeSnifferCodingStyle'] = $this->dialog->askAndValidate(
+            $this->output,
+            "  - Which coding standard do you want to use? (PEAR, PHPCS, PSR1, PSR2, Squiz, Zend) [{$default}] ",
+            function ($data) {
+                if (in_array($data, array("PEAR", "PHPCS", "PSR1", "PSR2", "Squiz", "Zend"))) {
+                    return $data;
+                }
+                throw new \Exception("That coding style is not supported");
+            },
+            false,
+            $default
+        );
     }
 
     /**
@@ -167,10 +169,14 @@ class PhpCodeSnifferConfigurator implements ConfigurationWriterInterface
     public function configure()
     {
         if (!$this->settings['enablePhpTools']) {
-            return false;
+            return;
         }
 
         $this->askEnable();
+
+        if (!$this->settings['enablePhpCodeSniffer']) {
+            return;
+        }
 
         // Exclude symfony patterns
         $symfonyPatterns = $this->askExcludeSymfony();
