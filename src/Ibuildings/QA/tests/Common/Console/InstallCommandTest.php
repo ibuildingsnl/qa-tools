@@ -557,6 +557,7 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
             )
             ->will($this->returnValue(false));
 
+        // @todo move to securityConfiguratorExpects()
         $dialog
             ->expects($this->at($startAt++))
             ->method('askConfirmation')
@@ -566,6 +567,8 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
             )
             ->will($this->returnValue(true));
 
+        // @todo move to sourcePathSinglePathExpects(), add sourcePathMultiPathExpects()
+        // @todo after security, before phpunit
         $dialog
             ->expects($this->at($startAt++))
             ->method('askAndValidate')

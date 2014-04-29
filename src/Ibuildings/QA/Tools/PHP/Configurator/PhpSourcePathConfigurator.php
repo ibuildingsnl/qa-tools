@@ -79,9 +79,14 @@ class PhpSourcePathConfigurator implements ConfiguratorInterface
 
     private function isEnabled()
     {
-        return ($this->settings['enablePhpMessDetector']
-            || $this->settings['enablePhpCodeSniffer']
-            || $this->settings['enablePhpCopyPasteDetection']
-            || $this->settings['enablePhpLint']);
+        return (
+            $this->settings['enablePhpTools']
+            &&
+            ( $this->settings['enablePhpMessDetector']
+                || $this->settings['enablePhpCodeSniffer']
+                || $this->settings['enablePhpCopyPasteDetection']
+                || $this->settings['enablePhpLint']
+            )
+        );
     }
 }
