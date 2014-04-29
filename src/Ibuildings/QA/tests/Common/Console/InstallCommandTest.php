@@ -592,7 +592,7 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
             ->method('askConfirmation')
             ->with(
                 $this->anything(),
-                $this->equalTo('Do you want to enable PHPunit tests?')
+                $this->equalTo('Do you want to enable PHPUnit tests?')
             )
             ->will($this->returnValue(true));
 
@@ -647,7 +647,7 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
             ->method('askConfirmation')
             ->with(
                 $this->anything(),
-                $this->equalTo('Do you want to enable PHPunit tests?')
+                $this->equalTo('Do you want to enable PHPUnit tests?')
             )
             ->will($this->returnValue(true));
 
