@@ -12,6 +12,7 @@
 namespace Ibuildings\QA\Tools\PHP\Configurator;
 
 use Ibuildings\QA\Tools\Common\Configurator\ConfigurationWriterInterface;
+use Ibuildings\QA\Tools\Common\Configurator\Helper\MultiplePathHelper;
 use Ibuildings\QA\Tools\Common\Settings;
 
 use Symfony\Component\Console\Helper\DialogHelper;
@@ -39,6 +40,11 @@ class PhpUnitConfigurator implements ConfigurationWriterInterface
     protected $dialog;
 
     /**
+     * @var \Ibuildings\QA\Tools\Common\Configurator\Helper\MultiplePathHelper
+     */
+    protected $multiplePathHelper;
+
+    /**
      * @var \Ibuildings\QA\Tools\Common\Settings
      */
     protected $settings;
@@ -49,19 +55,22 @@ class PhpUnitConfigurator implements ConfigurationWriterInterface
     protected $twig;
 
     /**
-     * @param OutputInterface   $output
-     * @param DialogHelper      $dialog
-     * @param Settings          $settings
-     * @param \Twig_Environment $twig
+     * @param OutputInterface    $output
+     * @param DialogHelper       $dialog
+     * @param MultiplePathHelper $multiplePathHelper
+     * @param Settings           $settings
+     * @param \Twig_Environment  $twig
      */
     public function __construct(
         OutputInterface $output,
         DialogHelper $dialog,
+        MultiplePathHelper $multiplePathHelper,
         Settings $settings,
         \Twig_Environment $twig
     ) {
         $this->output = $output;
         $this->dialog = $dialog;
+        $this->multiplePathHelper = $multiplePathHelper;
         $this->settings = $settings;
         $this->twig = $twig;
     }

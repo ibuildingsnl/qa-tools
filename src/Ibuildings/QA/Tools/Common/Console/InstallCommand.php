@@ -139,7 +139,7 @@ class InstallCommand extends AbstractCommand
             new PhpSourcePathConfigurator($output, $this->dialog, $multiplePathHelper, $this->settings)
         );
         $configuratorRegistry->register(
-            new PhpUnitConfigurator($output, $this->dialog, $this->settings, $this->twig)
+            new PhpUnitConfigurator($output, $this->dialog, $multiplePathHelper, $this->settings, $this->twig)
         );
 
         // Javascript
