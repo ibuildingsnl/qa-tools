@@ -433,7 +433,7 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
             ->method('askAndValidate')
             ->with(
                 $this->anything(),
-                $this->equalTo('Please enter the required variables, comma separated (e.g. FOO=bar,QUUZ=quux)')
+                $this->equalTo("Please enter the required variables, comma separated (e.g. FOO=bar,QUUZ=quux)\n")
             )
             ->will($this->returnValue(array('FOO=bar', 'QUUZ=quux')));
 

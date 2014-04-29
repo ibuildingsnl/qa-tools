@@ -194,7 +194,7 @@ class TravisConfigurator implements ConfigurationWriterInterface
 
         return $this->dialog->askAndValidate(
             $this->output,
-            'Please enter the required variables, comma separated (e.g. FOO=bar,QUUZ=quux)',
+            "Please enter the required variables, comma separated (e.g. FOO=bar,QUUZ=quux)\n",
             $validator
         );
     }
