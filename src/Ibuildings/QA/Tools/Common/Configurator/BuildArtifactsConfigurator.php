@@ -58,7 +58,10 @@ class BuildArtifactsConfigurator implements ConfiguratorInterface
 
     public function configure()
     {
-        $this->settings['buildArtifacts'] = array();
+        if (!isset($this->settings['buildArtifacts'])) {
+            $this->settings['buildArtifacts'] = array();
+        }
+
         $this->settings['buildArtifacts']['enabled'] = $this->confirmBuildArtifactGeneration();
 
         if (!$this->settings['buildArtifacts']['enabled']) {
@@ -103,7 +106,11 @@ class BuildArtifactsConfigurator implements ConfiguratorInterface
         $question = "By default results are shown on the CLI (recommended if you are using travis)
   - Do you want to generate build artifacts?";
 
-        return $this->dialog->askConfirmation($this->output, $question, false);
+        return $this->dialog->askConfirmation(
+            $this->output,
+            $question,
+            $this->settings->getDefaultValueFor('buildArtifacts.enabled', true)
+        );
     }
 
     /**
@@ -111,7 +118,7 @@ class BuildArtifactsConfigurator implements ConfiguratorInterface
      */
     private function askArtifactWritePath()
     {
-        $default = $this->getDefaultValue();
+        $default = $this->settings->getDefaultValueFor('buildArtifacts.path', self::DEFAULT_ARTIFACT_PATH);
 
         return $this->dialog->askAndValidate(
             $this->output,
@@ -120,17 +127,5 @@ class BuildArtifactsConfigurator implements ConfiguratorInterface
             false,
             $default
         );
-    }
-
-    /**
-     * @return string
-     */
-    private function getDefaultValue()
-    {
-        if (!empty($this->settings['buildArtifacts']['path'])) {
-            return $this->settings['buildArtifacts']['path'];
-        }
-
-        return self::DEFAULT_ARTIFACT_PATH;
     }
 }
