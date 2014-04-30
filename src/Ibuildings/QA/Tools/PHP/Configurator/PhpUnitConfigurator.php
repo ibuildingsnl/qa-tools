@@ -102,7 +102,7 @@ class PhpUnitConfigurator implements ConfigurationWriterInterface
      */
     protected function confirmEnablingPhpUnit()
     {
-        $default = isset($this->settings['enablePhpUnit']) ? $this->settings['enablePhpUnit'] : true;
+        $default = $this->settings->getDefaultValueFor('enablePhpUnit', true);
         return $this->dialog->askConfirmation(
             $this->output,
             "Do you want to enable PHPUnit tests?",
@@ -120,7 +120,7 @@ class PhpUnitConfigurator implements ConfigurationWriterInterface
      */
     protected function hasCustomPhpUnitXml(OutputInterface $output, Settings $settings)
     {
-        $default = (empty($this->settings['customPhpUnitXml'])) ? false : $this->settings['customPhpUnitXml'];
+        $default = $this->settings->getDefaultValueFor('customPhpUnitXml', false);
         $settings['customPhpUnitXml'] = $this->dialog->askConfirmation(
             $output,
             "Do you have a custom PHPUnit config? (for example, Symfony has one in 'app/phpunit.xml.dist')",
@@ -132,7 +132,7 @@ class PhpUnitConfigurator implements ConfigurationWriterInterface
             return false;
         }
 
-        $default = (empty($settings['phpUnitConfigPath'])) ? 'app/phpunit.xml.dist' : $settings['phpUnitConfigPath'];
+        $default = $this->settings->getDefaultValueFor('phpUnitConfigPath', 'app/phpunit.xml.dist');
         $settings['phpUnitConfigPath'] = $this->dialog->askAndValidate(
             $output,
             "What is the path to the custom PHPUnit config? [{$default}] ",
@@ -154,7 +154,7 @@ class PhpUnitConfigurator implements ConfigurationWriterInterface
      */
     protected function askForPathsToTests()
     {
-        $default = (empty($this->settings['phpTestsPath'])) ? 'tests' : $this->settings['phpTestsPath'];
+        $default = $this->settings->getDefaultValueFor('phpTestsPath', 'tests');
         return $this->multiplePathHelper->askPaths(
             "On what paths can the PHPUnit tests be found?",
             $default
@@ -168,7 +168,7 @@ class PhpUnitConfigurator implements ConfigurationWriterInterface
      */
     protected function enablePhpUnitAutoLoad(OutputInterface $output, Settings $settings)
     {
-        $default = (empty($settings['enablePhpUnitAutoload'])) ? true : $settings['enablePhpUnitAutoload'];
+        $default = $this->settings->getDefaultValueFor('enablePhpUnitAutoload', true);
         $settings['enablePhpUnitAutoload'] = $this->dialog->askConfirmation(
             $output,
             "Do you want to enable an autoload script for PHPUnit?",
@@ -180,9 +180,7 @@ class PhpUnitConfigurator implements ConfigurationWriterInterface
         }
 
         if ($settings['enablePhpUnitAutoload']) {
-            $default = (empty($settings['phpUnitAutoloadPath']))
-                ? 'vendor/autoload.php'
-                : $settings['phpUnitAutoloadPath'];
+            $default = $this->settings->getDefaultValueFor('phpUnitAutoloadPath', 'vendor/autoload.php');
             $settings['phpUnitAutoloadPath'] = $this->dialog->askAndValidate(
                 $output,
                 "What is the path to the autoload script for PHPUnit? [{$default}] ",

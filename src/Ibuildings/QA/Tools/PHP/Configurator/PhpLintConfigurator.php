@@ -53,8 +53,6 @@ class PhpLintConfigurator implements ConfiguratorInterface
         $this->output = $output;
         $this->dialog = $dialog;
         $this->settings = $settings;
-
-        $this->settings['enablePhpLint'] = false;
     }
 
     /**
@@ -63,10 +61,11 @@ class PhpLintConfigurator implements ConfiguratorInterface
     public function configure()
     {
         if (!$this->settings['enablePhpTools']) {
+            $this->settings['enablePhpLint'] = false;
             return false;
         }
 
-        $default = (empty($this->settings['enablePhpLint'])) ? true : $this->settings['enablePhpLint'];
+        $default = $this->settings->getDefaultValueFor('enablePhpLint', true);
         $this->settings['enablePhpLint'] = $this->dialog->askConfirmation(
             $this->output,
             "Do you want to enable PHP Lint?",

@@ -53,20 +53,19 @@ class PhpComposerConfigurator implements ConfiguratorInterface
         $this->output = $output;
         $this->dialog = $dialog;
         $this->settings = $settings;
-
-        $this->settings['enableComposer'] = false;
     }
 
     public function configure()
     {
         if (!$this->settings['enablePhpTools']) {
+            $this->settings['enableComposer'] = false;
             return false;
         }
 
         $this->settings['enableComposer'] = $this->dialog->askConfirmation(
             $this->output,
             "Do you want to run `./composer.phar install` on every commit?",
-            false
+            $this->settings->getDefaultValueFor('enableComposer', false)
         );
     }
 }

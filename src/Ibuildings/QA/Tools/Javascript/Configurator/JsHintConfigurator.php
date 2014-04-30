@@ -79,17 +79,16 @@ class JsHintConfigurator implements ConfigurationWriterInterface
         $this->settings = $settings;
         $this->twig = $twig;
         $this->installJsHintCommand = $installJsHintCommand;
-
-        $this->settings['enableJsHint'] = false;
     }
 
     public function configure()
     {
         if (!$this->settings['enableJsTools']) {
+            $this->settings['enableJsHint'] = false;
             return;
         }
 
-        $default = (empty($this->settings['enableJsHint'])) ? true : $this->settings['enableJsHint'];
+        $default = $this->settings->getDefaultValueFor('enableJsHint', true);
         $this->settings['enableJsHint'] = $this->dialog->askConfirmation(
             $this->output,
             "Do you want to enable JSHint?",

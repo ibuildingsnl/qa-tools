@@ -64,7 +64,7 @@ class JavascriptSourcePathConfigurator implements ConfiguratorInterface
             return;
         }
         $baseDir = $this->settings->getBaseDir();
-        $default = (empty($this->settings['javaScriptSrcPath'])) ? 'src' : $this->settings['javaScriptSrcPath'];
+        $default = $this->settings->getDefaultValueFor('javaScriptSrcPath', 'src');
         $this->settings['javaScriptSrcPath'] = $this->dialog->askAndValidate(
             $this->output,
             "What is the path to the JavaScript source code? [{$default}] ",

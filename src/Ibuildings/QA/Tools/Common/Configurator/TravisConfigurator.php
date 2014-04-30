@@ -63,7 +63,10 @@ class TravisConfigurator implements ConfigurationWriterInterface
 
     public function configure()
     {
-        $this->settings['travis'] = array();
+        if (!isset($this->settings['travis'])) {
+            $this->settings['travis'] = array();
+        }
+
         if (!$this->confirmTravisUsage()) {
             $this->settings['travis']['enabled'] = false;
             return;
@@ -120,7 +123,8 @@ class TravisConfigurator implements ConfigurationWriterInterface
     {
         return $this->dialog->askConfirmation(
             $this->output,
-            "Do you want to enable Travis integration for this project?"
+            "Do you want to enable Travis integration for this project?",
+            $this->settings->getDefaultValueFor('travis.enabled', true)
         );
     }
 
@@ -131,15 +135,27 @@ class TravisConfigurator implements ConfigurationWriterInterface
     {
         // see http://docs.travis-ci.com/user/ci-environment/#PHP-versions
         $availableVersions = array(1 => '5.6', 2 => '5.5', 3 => '5.4', 4 => '5.3', 5 => 'hhvm');
+        $default = $this->settings->getDefaultValueFor('travis.phpVersions', array());
+
+        if (empty($default)) {
+            $defaultChoice = 2;
+            $defaultText = '5.5';
+        } else {
+            $defaultChoice = implode(',', array_keys($default));
+            $defaultText = '"' . implode('", "', array_intersect_key($default, $availableVersions)) . '"';
+        }
 
         $done = false;
         $selected = array();
         while (!$done) {
             $selected = $this->dialog->select(
                 $this->output,
-                "Which versions of php do you want to test this project on (enter the keys comma separated) [5.5]? ",
+                sprintf(
+                    'Which versions of php do you want to test this project on (enter the keys comma separated) [%s]? ',
+                    $defaultText
+                ),
                 $availableVersions,
-                2,
+                $defaultChoice,
                 false,
                 'Value "%s" is invalid',
                 true
@@ -164,7 +180,8 @@ class TravisConfigurator implements ConfigurationWriterInterface
     {
         return $this->dialog->askConfirmation(
             $this->output,
-            'Do you need to set any environment variables for the CI server (e.g. SYMFONY_ENV or APPLICATION_ENV)? '
+            'Do you need to set any environment variables for the CI server (e.g. SYMFONY_ENV or APPLICATION_ENV)? ',
+            $this->settings->getDefaultValueFor('travis.env.enabled', true)
         );
     }
 
@@ -195,7 +212,9 @@ class TravisConfigurator implements ConfigurationWriterInterface
         return $this->dialog->askAndValidate(
             $this->output,
             "Please enter the required variables, comma separated (e.g. FOO=bar,QUUZ=quux)\n",
-            $validator
+            $validator,
+            false,
+            $this->settings->getDefaultValueFor('travis.env.vars', null)
         );
     }
 
@@ -206,7 +225,8 @@ class TravisConfigurator implements ConfigurationWriterInterface
     {
         return $this->dialog->askConfirmation(
             $this->output,
-            "Do you want to enable Slack Notifications from Travis for this project?"
+            "Do you want to enable Slack Notifications from Travis for this project?",
+            $this->settings->getDefaultValueFor('travis.slack.enabled', true)
         );
     }
 
@@ -229,6 +249,12 @@ class TravisConfigurator implements ConfigurationWriterInterface
             throw new \Exception("Please enter a valid token");
         };
 
-        return $this->dialog->askAndValidate($this->output, $question, $validator);
+        return $this->dialog->askAndValidate(
+            $this->output,
+            $question,
+            $validator,
+            false,
+            $this->settings->getDefaultValueFor('travis.slack.token', null)
+        );
     }
 }

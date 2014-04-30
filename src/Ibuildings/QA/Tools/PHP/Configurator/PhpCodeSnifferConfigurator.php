@@ -73,8 +73,6 @@ class PhpCodeSnifferConfigurator implements ConfigurationWriterInterface
         $this->multiplePathHelper = $multiplePathHelper;
         $this->settings = $settings;
         $this->twig = $twig;
-
-        $this->settings['enablePhpCodeSniffer'] = false;
     }
 
     /**
@@ -83,7 +81,7 @@ class PhpCodeSnifferConfigurator implements ConfigurationWriterInterface
      */
     protected function askEnable()
     {
-        $default = (isset($this->settings['enablePhpCodeSniffer'])) ? $this->settings['enablePhpCodeSniffer'] : true;
+        $default = $this->settings->getDefaultValueFor('enablePhpCodeSniffer', true);
         $this->settings['enablePhpCodeSniffer'] = $this->dialog->askConfirmation(
             $this->output,
             "Do you want to enable the PHP Code Sniffer?",
@@ -94,9 +92,7 @@ class PhpCodeSnifferConfigurator implements ConfigurationWriterInterface
             return;
         }
 
-        $default = (empty($this->settings['phpCodeSnifferCodingStyle']))
-            ? 'PSR2'
-            : $this->settings['phpCodeSnifferCodingStyle'];
+        $default = $this->settings->getDefaultValueFor('phpCodeSnifferCodingStyle', 'PSR2');
         $this->settings['phpCodeSnifferCodingStyle'] = $this->dialog->askAndValidate(
             $this->output,
             "  - Which coding standard do you want to use? (PEAR, PHPCS, PSR1, PSR2, Squiz, Zend) [{$default}] ",
@@ -120,7 +116,7 @@ class PhpCodeSnifferConfigurator implements ConfigurationWriterInterface
     {
         $symfonyPatterns = array();
 
-        $default = (empty($this->settings['phpCsExcludeSymfony'])) ? false : $this->settings['phpCsExcludeSymfony'];
+        $default = $this->settings->getDefaultValueFor('phpCsExcludeSymfony', false);
         $this->settings['phpCsExcludeSymfony'] = $this->dialog->askConfirmation(
             $this->output,
             "  - Do you want to exclude some default Symfony patterns for PHP Code Sniffer?",
@@ -147,9 +143,7 @@ class PhpCodeSnifferConfigurator implements ConfigurationWriterInterface
     protected function askExcludePatterns(array $symfonyPatterns)
     {
         // Exclude default patterns
-        $default = (empty($this->settings['phpCsExcludeCustomPatterns']))
-            ? false
-            : $this->settings['phpCsExcludeCustomPatterns'];
+        $default = $this->settings->getDefaultValueFor('phpCsExcludeCustomPatterns', false);
         $this->settings['phpCsExcludeCustomPatterns'] = $this->multiplePathHelper->askPatterns(
             "  - Which patterns should be excluded for PHP Code Sniffer?",
             '',
@@ -169,6 +163,7 @@ class PhpCodeSnifferConfigurator implements ConfigurationWriterInterface
     public function configure()
     {
         if (!$this->settings['enablePhpTools']) {
+            $this->settings['enablePhpCodeSniffer'] = false;
             return;
         }
 

@@ -51,7 +51,6 @@ class PhpConfigurator implements ConfiguratorInterface, DialogInterface
     ) {
         $this->output = $output;
         $this->settings = $settings;
-
     }
 
     /**
@@ -59,7 +58,7 @@ class PhpConfigurator implements ConfiguratorInterface, DialogInterface
      */
     public function configure()
     {
-        $default = (empty($this->settings['enablePhpTools'])) ? true : $this->settings['enablePhpTools'];
+        $default = $this->settings->getDefaultValueFor('enablePhpTools', true);
         $this->settings['enablePhpTools'] = $this->dialog->askConfirmation(
             $this->output,
             "\nDo you want to install the QA tools for PHP?",

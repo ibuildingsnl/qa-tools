@@ -53,8 +53,6 @@ class JavascriptConfigurator implements ConfiguratorInterface
         $this->output = $output;
         $this->dialog = $dialog;
         $this->settings = $settings;
-
-        $this->settings['enableJsTools'] = false;
     }
 
     /**
@@ -62,7 +60,7 @@ class JavascriptConfigurator implements ConfiguratorInterface
      */
     public function configure()
     {
-        $default = (empty($this->settings['enableJsTools'])) ? true : $this->settings['enableJsTools'];
+        $default = $this->settings->getDefaultValueFor('enableJsTools', true);
         $this->settings['enableJsTools'] = $this->dialog->askConfirmation(
             $this->output,
             "\nDo you want to install the QA tools for Javascript?",
