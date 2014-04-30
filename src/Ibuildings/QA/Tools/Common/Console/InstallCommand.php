@@ -82,9 +82,9 @@ class InstallCommand extends AbstractCommand
             return;
         }
 
-        // if the qa-tools are loaded, we support the --no-interaction (-n) flag. This is achieved by
-        // making the dialog input-aware, see \Symfony\Console\Helper\DialogHelper::ask() lines 101-103 and
-        // \Symfony\Console\Helper\InputAwareHelper
+        // if the qa-tools.json of a full previous run are loaded, we support the --no-interaction (-n) flag.
+        // This is achieved by making the dialog input-aware, see \Symfony\Console\Helper\DialogHelper::ask()
+        // lines 101-103 and \Symfony\Console\Helper\InputAwareHelper
         if (!$this->settings->hasLoadedJsonFile() || !$this->settings->previousRunWasCompleted()) {
             $output->writeln(
                 '<error>Previous run was not completed fully, cannot run in non-interactive mode</error>'
