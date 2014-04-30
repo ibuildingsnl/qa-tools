@@ -73,33 +73,29 @@ class PhpMessDetectorConfigurator implements ConfigurationWriterInterface
         $this->multiplePathHelper = $multiplePathHelper;
         $this->settings = $settings;
         $this->twig = $twig;
-
-        $this->settings['enablePhpMessDetector'] = false;
     }
 
     public function configure()
     {
         if (!$this->settings['enablePhpTools']) {
+            $this->settings['enablePhpMessDetector'] = false;
             return false;
         }
 
-        $default = (empty($this->settings['enablePhpMessDetector'])) ? true : $this->settings['enablePhpMessDetector'];
+        $default = $this->settings->getDefaultValueFor('enablePhpMessDetector', true);
         $this->settings['enablePhpMessDetector'] = $this->dialog->askConfirmation(
             $this->output,
             "Do you want to enable the PHP Mess Detector?",
             $default
         );
 
-
         // Exclude default patterns
-        $default = (!empty($this->settings['phpMdExcludePatterns']))
-            ? implode(',', $this->settings['phpMdExcludePatterns'])
-            : '';
+        $default = $this->settings->getDefaultValueFor('phpMdExcludePatterns', array());
         $excludePatterns = $this->multiplePathHelper->askPatterns(
             "  - Which patterns should be excluded for PHP Mess Detector?",
-            $default,
+            implode(',', $default),
             "  - Do you want to exclude custom patterns for PHP Mess Detector?",
-            isset($this->settings['phpMdExcludePatterns'])||false
+            !empty($default)
         );
 
         $this->settings['phpMdExcludePatterns'] = $excludePatterns;

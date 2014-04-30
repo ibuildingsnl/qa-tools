@@ -70,10 +70,10 @@ class PhpSourcePathConfigurator implements ConfiguratorInterface
             return;
         }
 
-        $default = (isset($this->settings['phpSrcPath'])) ? $this->settings['phpSrcPath'] : 'src';
+        $default = $this->settings->getDefaultValueFor('phpSrcPath', array('src'));
         $this->settings['phpSrcPath'] = $this->multiplePathHelper->askPaths(
             "At which paths is the PHP source code located?",
-            $default
+            implode(',', $default)
         );
     }
 

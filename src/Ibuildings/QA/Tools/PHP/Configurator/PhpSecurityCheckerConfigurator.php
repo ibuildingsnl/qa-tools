@@ -53,19 +53,16 @@ class PhpSecurityCheckerConfigurator implements ConfiguratorInterface
         $this->output = $output;
         $this->dialog = $dialog;
         $this->settings = $settings;
-
-        $this->settings['enablePhpSecurityChecker'] = false;
     }
 
     public function configure()
     {
         if (!$this->settings['enablePhpTools']) {
+            $this->settings['enablePhpSecurityChecker'] = false;
             return false;
         }
 
-        $default  = (empty($this->settings['enablePhpSecurityChecker']))
-            ? true
-            : $this->settings['enablePhpSecurityChecker'];
+        $default = $this->settings->getDefaultValueFor('enablePhpSecurityChecker', true);
         $this->settings['enablePhpSecurityChecker'] = $this->dialog->askConfirmation(
             $this->output,
             "Do you want to enable the Sensiolabs Security Checker?",

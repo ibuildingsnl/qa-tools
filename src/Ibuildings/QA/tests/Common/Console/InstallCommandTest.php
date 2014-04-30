@@ -559,7 +559,7 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
             ->method('askConfirmation')
             ->with(
                 $this->anything(),
-                $this->equalTo("Do you want to exclude patterns for PHP Copy Paste detection?")
+                $this->equalTo(" - Do you want to exclude patterns for PHP Copy Paste detection?")
             )
             ->will($this->returnValue(false));
 
