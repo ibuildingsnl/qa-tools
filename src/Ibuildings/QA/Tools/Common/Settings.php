@@ -87,6 +87,35 @@ class Settings extends \ArrayObject
     }
 
     /**
+     * Get the default value for a certain key/path. Nested arrays can be traversed by defining
+     * the path as listing all the keys from top to bottom, separated by a dot ".". If the value
+     * cannot be retrieved, the fallback value is returned.
+     *
+     * @param string $path
+     * @param mixed  $fallback
+     * @return mixed
+     */
+    public function getDefaultValueFor($path, $fallback)
+    {
+        $keys = explode('.', $path);
+
+        $current = $this;
+        while (!empty($keys)) {
+            $key = reset($keys);
+            if (!isset($current[$key])) {
+                return $fallback;
+            }
+
+            if (count($keys) === 1) {
+                return $current[$key];
+            }
+
+            $current = $current[$key];
+            array_shift($keys);
+        }
+    }
+
+    /**
      * Destructor. Will write app config to file
      * to keep configuration persistent across app
      * runs.
