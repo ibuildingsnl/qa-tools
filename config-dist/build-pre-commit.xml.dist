@@ -175,7 +175,7 @@
 {% if phpMdExcludePatterns %}
             <arg value="--exclude {{ phpMdExcludePatterns|join(',') }}"/>
 {% endif %}
-            <arg line="${changeset.php.absolute.commasep} text ${test-tree-location}/phpmd.xml"/>
+            <arg line="${changeset.php.absolute.commasep} text ${test-tree-location}/phpmd-pre-commit.xml"/>
         </exec>
         <echo message="OK"/>
     </target>

@@ -186,6 +186,12 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
                 'Ibuildings\QA\Tools\PHP\Configurator\PhpMessDetectorConfigurator')->outputString
         );
 
+        $this->assertXmlStringEqualsXmlFile(
+            __DIR__ . '/fixtures/phpmd-pre-commit.xml',
+            $command->getConfiguratorRegistry()->getConfiguratorByName(
+                'Ibuildings\QA\Tools\PHP\Configurator\PhpMessDetectorConfigurator')->preCommitOutputString
+        );
+
         $this->assertStringEqualsFile(
             __DIR__ . '/fixtures/phpunit.test',
             $command->getConfiguratorRegistry()->getConfiguratorByName(
