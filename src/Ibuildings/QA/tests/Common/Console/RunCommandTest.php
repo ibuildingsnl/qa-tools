@@ -42,7 +42,7 @@ class RunCommandTest extends \PHPUnit_Framework_TestCase
         $preCommitHookCommand = new RunCommand();
         $preCommitHookCommand->setChecker($checker);
 
-        $this->application = new Application('ibuildings qa tools', '1.1.17', $settings);
+        $this->application = new Application('ibuildings qa tools', $settings);
 
         $this->application->add($preCommitHookCommand);
     }

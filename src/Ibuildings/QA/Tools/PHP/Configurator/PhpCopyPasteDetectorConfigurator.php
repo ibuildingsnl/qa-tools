@@ -72,9 +72,9 @@ class PhpCopyPasteDetectorConfigurator implements ConfiguratorInterface
             return false;
         }
 
-        $default = (empty($this->settings['enablePhpCopyPasteDetection']))
-            ? true
-            : $this->settings['enablePhpCopyPasteDetection'];
+        $default = (isset($this->settings['enablePhpCopyPasteDetection']))
+            ? $this->settings['enablePhpCopyPasteDetection']
+            : false;
         $this->settings['enablePhpCopyPasteDetection'] = $this->dialog->askConfirmation(
             $this->output,
             "Do you want to enable PHP Copy Paste Detection?",

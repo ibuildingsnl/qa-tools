@@ -41,7 +41,7 @@ class InstallPreCommitHookCommandTest extends \PHPUnit_Framework_TestCase
         $preCommitHookCommand = new InstallPreCommitHookCommand();
         $preCommitHookCommand->setChecker($checker);
 
-        $this->application = $this->getMock('Ibuildings\QA\Tools\Common\Application', array('getDialogHelper'), array('ibuildings qa tools', '1.1.17', $settings));
+        $this->application = $this->getMock('Ibuildings\QA\Tools\Common\Application', array('getDialogHelper'), array('ibuildings qa tools', $settings));
 
         $dialog = $this->getMock('Ibuildings\QA\Tools\Common\Console\Helper\DialogHelper', array('askConfirmation', 'askAndValidate'));
 
@@ -241,7 +241,7 @@ class InstallPreCommitHookCommandTest extends \PHPUnit_Framework_TestCase
         $preCommitHookCommand->setChecker($checker);
         $preCommitHookCommand->expects($this->any())->method('gitHooksDirExists')->will($this->returnValue(false));
 
-        $application = $this->getMock('Ibuildings\QA\Tools\Common\Application', array('getDialogHelper'), array('ibuildings qa tools', '1.1.11', $settings));
+        $application = $this->getMock('Ibuildings\QA\Tools\Common\Application', array('getDialogHelper'), array('ibuildings qa tools', $settings));
 
         $dialog = $this->getMock('Ibuildings\QA\Tools\Common\Console\Helper\DialogHelper', array('askConfirmation', 'askAndValidate'));
 
@@ -299,7 +299,7 @@ class InstallPreCommitHookCommandTest extends \PHPUnit_Framework_TestCase
         $preCommitHookCommand->setChecker($checker);
         $preCommitHookCommand->expects($this->any())->method('preCommitHookExists')->will($this->returnValue(true));
 
-        $application = $this->getMock('Ibuildings\QA\Tools\Common\Application', array('getDialogHelper'), array('ibuildings qa tools', '1.1.11', $settings));
+        $application = $this->getMock('Ibuildings\QA\Tools\Common\Application', array('getDialogHelper'), array('ibuildings qa tools', $settings));
 
         $dialog = $this->getMock('Ibuildings\QA\Tools\Common\Console\Helper\DialogHelper', array('askConfirmation', 'askAndValidate'));
 

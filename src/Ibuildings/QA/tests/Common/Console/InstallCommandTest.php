@@ -37,7 +37,7 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
         $packageBaseDir = realpath(__DIR__ . '/../../../../../../');
         $settings = new SettingsMock($baseDir, $packageBaseDir);
 
-        $this->application = $this->getMock('Ibuildings\QA\Tools\Common\Application', array('getDialogHelper'), array('ibuildings qa tools', '1.1.17', $settings));
+        $this->application = $this->getMock('Ibuildings\QA\Tools\Common\Application', array('getDialogHelper'), array('ibuildings qa tools', $settings));
 
         $dialog = $this->getMock('Ibuildings\QA\Tools\Common\Console\Helper\DialogHelper', array('askConfirmation', 'askAndValidate', 'select'));
 
@@ -345,7 +345,7 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
             ->expects($this->at($startAt++))->method('askConfirmation')
             ->with(
                 $this->anything(),
-                $this->equalTo('Do you want to run `./composer.phar install` on every commit? [y/N] ')
+                $this->equalTo('Do you want to run `./composer.phar install` on every commit?')
             )
             ->will($this->returnValue(true));
 
@@ -439,7 +439,7 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
             ->method('askAndValidate')
             ->with(
                 $this->anything(),
-                $this->equalTo('Please enter the required variables, comma separated (e.g. FOO=bar,QUUZ=quux)')
+                $this->equalTo("Please enter the required variables, comma separated (e.g. FOO=bar,QUUZ=quux)\n")
             )
             ->will($this->returnValue(array('FOO=bar', 'QUUZ=quux')));
 

@@ -17,6 +17,8 @@ use Symfony\Component\Console\Application as BaseApplication;
 
 class Application extends BaseApplication
 {
+    const VERSION = '1.1.17';
+
     /**
      * @var Settings
      */
@@ -37,13 +39,12 @@ class Application extends BaseApplication
 
     /**
      * @param $name
-     * @param $version
      * @param Settings $settings
      */
-    public function __construct($name, $version, Settings $settings)
+    public function __construct($name, Settings $settings)
     {
         $this->settings = $settings;
-        parent::__construct($name, $version);
+        parent::__construct($name, self::VERSION);
     }
 
     /**
