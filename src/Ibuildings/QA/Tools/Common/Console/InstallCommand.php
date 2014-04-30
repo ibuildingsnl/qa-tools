@@ -135,9 +135,11 @@ class InstallCommand extends AbstractCommand
             new PhpSecurityCheckerConfigurator($output, $this->dialog, $this->settings)
         );
 
-        $configuratorRegistry->register(new PhpSourcePathConfigurator($output, $this->dialog, $this->settings));
         $configuratorRegistry->register(
-            new PhpUnitConfigurator($output, $this->dialog, $this->settings, $this->twig)
+            new PhpSourcePathConfigurator($output, $this->dialog, $multiplePathHelper, $this->settings)
+        );
+        $configuratorRegistry->register(
+            new PhpUnitConfigurator($output, $this->dialog, $multiplePathHelper, $this->settings, $this->twig)
         );
 
         // Javascript

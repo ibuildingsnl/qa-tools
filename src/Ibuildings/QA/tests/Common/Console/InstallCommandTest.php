@@ -186,6 +186,12 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
                 'Ibuildings\QA\Tools\PHP\Configurator\PhpMessDetectorConfigurator')->outputString
         );
 
+        $this->assertXmlStringEqualsXmlFile(
+            __DIR__ . '/fixtures/phpmd-pre-commit.xml',
+            $command->getConfiguratorRegistry()->getConfiguratorByName(
+                'Ibuildings\QA\Tools\PHP\Configurator\PhpMessDetectorConfigurator')->preCommitOutputString
+        );
+
         $this->assertStringEqualsFile(
             __DIR__ . '/fixtures/phpunit.test',
             $command->getConfiguratorRegistry()->getConfiguratorByName(
@@ -557,6 +563,7 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
             )
             ->will($this->returnValue(false));
 
+        // @todo move to securityConfiguratorExpects()
         $dialog
             ->expects($this->at($startAt++))
             ->method('askConfirmation')
@@ -566,14 +573,16 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
             )
             ->will($this->returnValue(true));
 
+        // @todo move to sourcePathSinglePathExpects(), add sourcePathMultiPathExpects()
+        // @todo after security, before phpunit
         $dialog
             ->expects($this->at($startAt++))
             ->method('askAndValidate')
             ->with(
                 $this->anything(),
-                $this->equalTo("What is the path to the PHP source code? [src] ")
+                $this->equalTo("At which paths is the PHP source code located? [src] (comma separated)\n")
             )
-            ->will($this->returnValue('/tmp'));
+            ->will($this->returnValue(array('/tmp')));
     }
 
     /**
@@ -589,7 +598,7 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
             ->method('askConfirmation')
             ->with(
                 $this->anything(),
-                $this->equalTo('Do you want to enable PHPunit tests?')
+                $this->equalTo('Do you want to enable PHPUnit tests?')
             )
             ->will($this->returnValue(true));
 
@@ -607,9 +616,9 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
             ->method('askAndValidate')
             ->with(
                 $this->anything(),
-                $this->equalTo('What is the path to the PHPUnit tests? [tests] ')
+                $this->equalTo("On what paths can the PHPUnit tests be found? [tests] (comma separated)\n")
             )
-            ->will($this->returnValue('/tmp'));
+            ->will($this->returnValue(array('/tmp')));
 
         $dialog
             ->expects($this->at($startAt++))
@@ -644,7 +653,7 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
             ->method('askConfirmation')
             ->with(
                 $this->anything(),
-                $this->equalTo('Do you want to enable PHPunit tests?')
+                $this->equalTo('Do you want to enable PHPUnit tests?')
             )
             ->will($this->returnValue(true));
 

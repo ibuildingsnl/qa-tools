@@ -16,6 +16,7 @@ use Ibuildings\QA\Tools\Common\Configurator\ConfiguratorInterface;
 use Ibuildings\QA\Tools\Common\Configurator\Helper\MultiplePathHelper;
 use Ibuildings\QA\Tools\Common\Settings;
 use Ibuildings\QA\Tools\Javascript\Console\InstallJsHintCommand;
+use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -23,8 +24,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * Class Registry
  *
- * This mock class is intented to catch certain special configurations and create mock classes for them so we can
- * make sure we don;t write to the file system for those configurations
+ * This mock class is intended to catch certain special configurations and create mock classes for them so we can
+ * make sure we don't write to the file system for those configurations
  *
  * @package Ibuildings\QA\tests\mock
  */
@@ -84,6 +85,7 @@ class Registry extends \Ibuildings\QA\Tools\Common\Configurator\Registry
 
     /**
      * @param ConfiguratorInterface $configurator
+     * @throws \RuntimeException
      */
     public function register(ConfiguratorInterface $configurator)
     {
@@ -105,7 +107,12 @@ class Registry extends \Ibuildings\QA\Tools\Common\Configurator\Registry
             ));
         }
 
-        if (in_array($className, array('PhpMessDetectorConfigurator', 'PhpCodeSnifferConfigurator'))) {
+        $requiresMultiplePathHelper = array(
+            'PhpMessDetectorConfigurator',
+            'PhpCodeSnifferConfigurator',
+            'PhpUnitConfigurator'
+        );
+        if (in_array($className, $requiresMultiplePathHelper)) {
             $multiplePathHelper = new MultiplePathHelper(
                 $this->outputInterface,
                 $this->dialogHelper,

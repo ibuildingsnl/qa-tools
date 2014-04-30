@@ -26,6 +26,8 @@ class PhpMessDetectorConfigurator extends \Ibuildings\QA\Tools\PHP\Configurator\
      */
     public $outputString;
 
+    public $preCommitOutputString;
+
     /**
      * @inheritdoc
      */
@@ -33,6 +35,8 @@ class PhpMessDetectorConfigurator extends \Ibuildings\QA\Tools\PHP\Configurator\
     {
         if ($this->shouldWrite()) {
             $this->outputString = $this->twig->render('phpmd.xml.dist', $this->settings->getArrayCopy());
+            $this->preCommitOutputString = $this->twig
+                ->render('phpmd-pre-commit.xml.dist', $this->settings->getArrayCopy());
             $this->output->writeln("\n<info>Config file for PHP Mess Detector written</info>");
         }
     }

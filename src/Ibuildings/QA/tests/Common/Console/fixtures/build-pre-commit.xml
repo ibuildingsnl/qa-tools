@@ -159,7 +159,7 @@
             depends="get-changeset.php-commasep"
             if="changeset.php.notempty">
         <exec executable="${test-tree-location}/vendor/bin/phpmd" failonerror="true">
-            <arg line="${changeset.php.absolute.commasep} text ${test-tree-location}/phpmd.xml"/>
+            <arg line="${changeset.php.absolute.commasep} text ${test-tree-location}/phpmd-pre-commit.xml"/>
         </exec>
         <echo message="OK"/>
     </target>

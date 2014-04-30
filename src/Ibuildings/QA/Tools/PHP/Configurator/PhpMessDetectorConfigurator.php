@@ -117,6 +117,11 @@ class PhpMessDetectorConfigurator implements ConfigurationWriterInterface
                 $this->settings->getBaseDir() . '/phpmd.xml',
                 $this->twig->render('phpmd.xml.dist', $this->settings->getArrayCopy())
             );
+
+            $filesystem->dumpFile(
+                $this->settings->getBaseDir() . '/phpmd-pre-commit.xml',
+                $this->twig->render('phpmd-pre-commit.xml.dist', $this->settings->getArrayCopy())
+            );
         } catch (IOException $e) {
             $this->output->writeln(sprintf(
                 '<error>Could not write phpmd.xml, error: "%s"</error>',

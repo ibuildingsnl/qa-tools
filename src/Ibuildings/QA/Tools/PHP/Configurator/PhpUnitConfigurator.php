@@ -12,6 +12,7 @@
 namespace Ibuildings\QA\Tools\PHP\Configurator;
 
 use Ibuildings\QA\Tools\Common\Configurator\ConfigurationWriterInterface;
+use Ibuildings\QA\Tools\Common\Configurator\Helper\MultiplePathHelper;
 use Ibuildings\QA\Tools\Common\Settings;
 
 use Symfony\Component\Console\Helper\DialogHelper;
@@ -39,6 +40,11 @@ class PhpUnitConfigurator implements ConfigurationWriterInterface
     protected $dialog;
 
     /**
+     * @var \Ibuildings\QA\Tools\Common\Configurator\Helper\MultiplePathHelper
+     */
+    protected $multiplePathHelper;
+
+    /**
      * @var \Ibuildings\QA\Tools\Common\Settings
      */
     protected $settings;
@@ -49,26 +55,61 @@ class PhpUnitConfigurator implements ConfigurationWriterInterface
     protected $twig;
 
     /**
-     * @param OutputInterface   $output
-     * @param DialogHelper      $dialog
-     * @param Settings          $settings
-     * @param \Twig_Environment $twig
+     * @param OutputInterface    $output
+     * @param DialogHelper       $dialog
+     * @param MultiplePathHelper $multiplePathHelper
+     * @param Settings           $settings
+     * @param \Twig_Environment  $twig
      */
     public function __construct(
         OutputInterface $output,
         DialogHelper $dialog,
+        MultiplePathHelper $multiplePathHelper,
         Settings $settings,
         \Twig_Environment $twig
     ) {
         $this->output = $output;
         $this->dialog = $dialog;
+        $this->multiplePathHelper = $multiplePathHelper;
         $this->settings = $settings;
         $this->twig = $twig;
-
-        $this->settings['enablePhpUnit'] = false;
-        $this->settings['customPhpUnitXml'] = false;
-        $this->settings['phpUnitConfigPath'] = '';
     }
+
+    public function configure()
+    {
+        if (!$this->settings['enablePhpTools']) {
+            $this->settings['enablePhpUnit'] = false;
+            return;
+        }
+
+        $this->output->writeln("\n<info>Configuring PHPUnit</info>\n");
+
+        $this->settings['enablePhpUnit'] = $this->confirmEnablingPhpUnit();
+        if (!$this->settings['enablePhpUnit']) {
+            return;
+        }
+
+        if ($this->hasCustomPhpUnitXml($this->output, $this->settings)) {
+            return;
+        }
+
+        $this->settings['phpTestsPath'] = $this->askForPathsToTests();
+        $this->enablePhpUnitAutoLoad($this->output, $this->settings);
+    }
+
+    /**
+     * @return bool
+     */
+    protected function confirmEnablingPhpUnit()
+    {
+        $default = isset($this->settings['enablePhpUnit']) ? $this->settings['enablePhpUnit'] : true;
+        return $this->dialog->askConfirmation(
+            $this->output,
+            "Do you want to enable PHPUnit tests?",
+            $default
+        );
+    }
+
 
     /**
      * Custom PHPUnit configuration?
@@ -108,40 +149,16 @@ class PhpUnitConfigurator implements ConfigurationWriterInterface
         return true;
     }
 
-
-    public function configure()
+    /**
+     * @return mixed
+     */
+    protected function askForPathsToTests()
     {
-        if (!$this->settings['enablePhpTools']) {
-            return false;
-        }
-
-        $output = $this->output;
-        $output->writeln("\n<info>Configuring PHPUnit</info>\n");
-        $default = (empty($this->settings['enablePhpUnit'])) ? true : $this->settings['enablePhpUnit'];
-        $this->settings['enablePhpUnit'] = $this->dialog->askConfirmation(
-            $output,
-            "Do you want to enable PHPunit tests?",
+        $default = (empty($this->settings['phpTestsPath'])) ? 'tests' : $this->settings['phpTestsPath'];
+        return $this->multiplePathHelper->askPaths(
+            "On what paths can the PHPUnit tests be found?",
             $default
         );
-
-        if (!$this->hasCustomPhpUnitXml($output, $this->settings) &&  $this->settings['enablePhpUnit']) {
-            $settings = $this->settings;
-            $default = (empty($this->settings['phpTestsPath'])) ? 'tests' : $this->settings['phpTestsPath'];
-            $this->settings['phpTestsPath'] = $this->dialog->askAndValidate(
-                $output,
-                "What is the path to the PHPUnit tests? [{$default}] ",
-                function ($data) use ($settings) {
-                    if (is_dir($settings->getBaseDir() . '/' . $data)) {
-                        return $data;
-                    }
-                    throw new \Exception("That path doesn't exist");
-                },
-                false,
-                $default
-            );
-
-            $this->enablePhpUnitAutoLoad($output, $this->settings);
-        }
     }
 
     /**
@@ -181,7 +198,6 @@ class PhpUnitConfigurator implements ConfigurationWriterInterface
         }
         return true;
     }
-
 
     /**
      * @inheritdoc
