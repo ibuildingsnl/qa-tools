@@ -67,9 +67,6 @@ class BehatConfigurator implements ConfigurationWriterInterface
         $this->dialog = $dialog;
         $this->settings = $settings;
         $this->twig = $twig;
-
-        $this->settings['enableBehat'] = false;
-        $this->settings['featuresDir'] = null;
     }
 
     /**
@@ -77,7 +74,7 @@ class BehatConfigurator implements ConfigurationWriterInterface
      */
     public function configure()
     {
-        $default = (empty($this->settings['enableBehat'])) ? true : $this->settings['enableBehat'];
+        $default = $this->settings->getDefaultValueFor('enableBehat', true);
         $this->settings['enableBehat'] = $this->dialog->askConfirmation(
             $this->output,
             "\nDo you want to install the Behat framework?",
@@ -94,9 +91,6 @@ class BehatConfigurator implements ConfigurationWriterInterface
      */
     public function writeConfig()
     {
-        if ($this->shouldWrite() === false) {
-            return;
-        }
         $this->askAdditionalQuestions($this->output);
 
         $this->writeBehatYamlFiles($this->output);
@@ -120,7 +114,7 @@ class BehatConfigurator implements ConfigurationWriterInterface
      */
     protected function askBaseProduction(OutputInterface $output)
     {
-        $default = (empty($this->settings['baseUrl'])) ? 'http://www.ibuildings.nl' : $this->settings['baseUrl'];
+        $default = $this->settings->getDefaultValueFor('baseUrl', 'http://www.ibuildings.nl');
         $this->settings['baseUrl'] = $this->dialog->askAndValidate(
             $output,
             "What is base url of your application? [{$default}] ",
@@ -143,13 +137,14 @@ class BehatConfigurator implements ConfigurationWriterInterface
      */
     protected function askBaseDifferentEnvironment(OutputInterface $output, $environment)
     {
-        $baseUrlCi = (empty($this->settings['baseUrl' . $environment]))
-            ? $this->suggestDomain($this->settings['baseUrl'], strtolower($environment))
-            : $this->settings['baseUrlCi'];
+        $default = $this->settings->getDefaultValueFor(
+            'baseUrl' . $environment,
+            $this->suggestDomain($this->settings['baseUrl'], strtolower($environment))
+        );
 
         $this->settings['baseUrl' . $environment] = $this->dialog->askAndValidate(
             $output,
-            "What is base url of the " . strtolower($environment) . " environment? [$baseUrlCi] ",
+            "What is base url of the " . strtolower($environment) . " environment? [$default] ",
             function ($data) {
                 if (substr($data, 0, 4) == 'http') {
                     return $data;
@@ -157,7 +152,7 @@ class BehatConfigurator implements ConfigurationWriterInterface
                 throw new \Exception("Url needs to start with http");
             },
             false,
-            $baseUrlCi
+            $default
         );
     }
 
