@@ -12,12 +12,16 @@
          bootstrap="{{ phpUnitAutoloadPath }}">
     <testsuites>
         <testsuite name="Test Suite">
-            <directory>{{ phpTestsPath }}</directory>
+{% for path in phpTestsPath %}
+            <directory>{{ path }}</directory>
+{% endfor %}
         </testsuite>
     </testsuites>
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">
-            <directory>{{ phpSrcPath }}</directory>
+{% for path in phpSrcPath %}
+            <directory>{{ path }}</directory>
+{% endfor %}
         </whitelist>
     </filter>
 </phpunit>

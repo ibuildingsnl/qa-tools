@@ -109,6 +109,7 @@ class MultiplePathHelper
         $callback = function ($data) use ($baseDir) {
             $paths = explode(',', $data);
             $trimmedPaths = array();
+            $nonExistent = array();
 
             foreach ($paths as $path) {
                 $trimmedPath = trim($path);
@@ -116,10 +117,15 @@ class MultiplePathHelper
                 // Check paths
                 $fullPath = $baseDir . DIRECTORY_SEPARATOR . $trimmedPath;
                 if (!is_dir($fullPath)) {
-                    throw new \Exception("path '{$fullPath}' doesn't exist");
+                    $nonExistent[] = $fullPath;
                 }
 
                 $trimmedPaths[] = $trimmedPath;
+            }
+
+            if (!empty($nonExistent)) {
+                $paths = implode("', '", $nonExistent);
+                throw new \Exception("Error: Path(s) '{$paths}' do not exist, please try again");
             }
 
             return $trimmedPaths;
@@ -180,7 +186,7 @@ class MultiplePathHelper
 
         return $this->dialog->askAndValidate(
             $this->output,
-            $pathQuestion . ' (comma separated)',
+            $pathQuestion . " (comma separated)\n",
             $callback,
             false,
             $defaultPaths
