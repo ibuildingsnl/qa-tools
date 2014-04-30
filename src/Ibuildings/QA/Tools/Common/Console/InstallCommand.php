@@ -70,6 +70,7 @@ class InstallCommand extends AbstractCommand
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
+     * @SuppressWarnings(PHPMD.ExitExpression)
      */
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
