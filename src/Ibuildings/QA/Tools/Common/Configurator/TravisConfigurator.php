@@ -226,7 +226,7 @@ class TravisConfigurator implements ConfigurationWriterInterface
         return $this->dialog->askConfirmation(
             $this->output,
             "Do you want to enable Slack Notifications from Travis for this project?",
-            $this->settings->getDefaultValueFor('travis.slack.enabled', 'banana')
+            $this->settings->getDefaultValueFor('travis.slack.enabled', true)
         );
     }
 
