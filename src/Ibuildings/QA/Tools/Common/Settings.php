@@ -51,7 +51,7 @@ class Settings extends \ArrayObject
     {
         $configurationFile = $this->configurationFile();
         if (is_readable($configurationFile)) {
-            $loadedConfiguration = json_decode(file_get_contents($configurationFile));
+            $loadedConfiguration = json_decode(file_get_contents($configurationFile), true);
             $this->exchangeArray($loadedConfiguration);
         }
     }
