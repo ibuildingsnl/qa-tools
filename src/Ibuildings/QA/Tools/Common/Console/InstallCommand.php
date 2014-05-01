@@ -70,6 +70,7 @@ class InstallCommand extends AbstractCommand
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
+     * @SuppressWarnings(PHPMD.ExitExpression)
      */
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
@@ -77,6 +78,24 @@ class InstallCommand extends AbstractCommand
 
         $this->dialog = $this->getApplication()->getDialogHelper();
         $this->filesystem = new Filesystem();
+
+        if ($input->isInteractive()) {
+            return;
+        }
+
+        // if the qa-tools.json of a full previous run are loaded, we support the --no-interaction (-n) flag.
+        // This is achieved by making the dialog input-aware, see \Symfony\Console\Helper\DialogHelper::ask()
+        // lines 101-103 and \Symfony\Console\Helper\InputAwareHelper
+        if (!$this->settings->hasLoadedJsonFile() || !$this->settings->previousRunWasCompleted()) {
+            $output->writeln(
+                '<error>Previous run was not completed fully, cannot run in non-interactive mode</error>'
+            );
+
+            // stop with error
+            exit(1);
+        }
+
+        $this->dialog->setInput($input);
     }
 
     /**
@@ -166,6 +185,8 @@ class InstallCommand extends AbstractCommand
 
         $command = $this->getApplication()->find('install:pre-commit');
         $command->run($input, $output);
+
+        $this->settings['_qa_tools_run_completed'] = true;
     }
 
     /**

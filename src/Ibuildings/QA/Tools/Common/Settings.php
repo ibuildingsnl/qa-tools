@@ -21,6 +21,11 @@ class Settings extends \ArrayObject
     protected $filename = 'qa-tools.json';
 
     /**
+     * @var bool
+     */
+    protected $hasLoadedJsonFile = false;
+
+    /**
      * Instantiate the object.
      *
      * @param string $baseDir
@@ -53,6 +58,7 @@ class Settings extends \ArrayObject
         if (is_readable($configurationFile)) {
             $loadedConfiguration = json_decode(file_get_contents($configurationFile), true);
             $this->exchangeArray($loadedConfiguration);
+            $this->hasLoadedJsonFile = true;
         }
     }
 
@@ -113,6 +119,22 @@ class Settings extends \ArrayObject
             $current = $current[$key];
             array_shift($keys);
         }
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasLoadedJsonFile()
+    {
+        return $this->hasLoadedJsonFile;
+    }
+
+    /**
+     * @return bool
+     */
+    public function previousRunWasCompleted()
+    {
+        return isset($this['_qa_tools_run_completed']) && $this['_qa_tools_run_completed'];
     }
 
     /**
