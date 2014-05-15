@@ -39,7 +39,8 @@ class InstallJsHintCommand extends AbstractCommand
 
         // Test if node is installed
         $commandExistenceChecker = $this->getCommandExistenceChecker();
-        if (!$commandExistenceChecker->commandExists('node', $message)) {
+        if (!$commandExistenceChecker->commandExists('node', $message)
+            && !$commandExistenceChecker->commandExists('nodejs', $message)) {
             $output->writeln("\n<error>{$message} -> Not enabling JSHint.</error>");
 
             return self::CODE_ERROR;

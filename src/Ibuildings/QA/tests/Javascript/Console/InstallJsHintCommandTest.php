@@ -74,17 +74,7 @@ class InstallJsHintCommandTest extends \PHPUnit_Framework_TestCase
      */
     public function installFailed()
     {
-        $checker = $this->getMock('Ibuildings\QA\Tools\Common\CommandExistenceChecker', array('commandExists'));
-        $checker->expects($this->at(0))->method('commandExists')->will($this->returnValue(true));
-        $checker->expects($this->at(1))->method('commandExists')->will($this->returnValue(true));
-
-        $command = $this->getMock(
-            'Ibuildings\QA\tests\mock\InstallJsHintCommand',
-            array('installNpmDependencies', 'getCommandExistenceChecker'));
-        $command
-            ->expects($this->once())
-            ->method('getCommandExistenceChecker')
-            ->will($this->returnValue($checker));
+        $command = $this->getMock('Ibuildings\QA\tests\mock\InstallJsHintCommand', array('installNpmDependencies'));
         $command
             ->expects($this->any())
             ->method('installNpmDependencies')
