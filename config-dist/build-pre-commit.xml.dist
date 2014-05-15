@@ -3,10 +3,9 @@
 <project name="{{ projectName }}-pre-commit" default="build">
 
     <target name="build"
-            depends="prepare-environment{% if enablePhpLint %},php-lint{% endif %}{% if enableJsHint %},jshint{% endif %}{% if enablePhpMessDetector %},phpmd{% endif %}{% if enablePhpCodeSniffer %},phpcs{% endif %}{% if enablePhpUnit %},phpunit{% endif %}"/>
+            depends="prepare-environment{% if enablePhpLint %},php-lint{% endif %}{% if enableJsHint %},jshint{% endif %}{% if enablePhpMessDetector %},phpmd{% endif %}{% if enablePhpCodeSniffer %},phpcs{% endif %}{% if enablePhpUnit %},phpunit{% endif %}{% if enableBehat %},behat{% endif %}"/>
 
-    <target name="prepare-environment"
-            depends="set-test-tree-location,get-changeset{% if enableComposer %},composer-run-install{% endif %}">
+    <target name="prepare-environment" depends="set-test-tree-location,get-changeset{% if enableComposer %},composer-run-install{% endif %}">
         <echo message="OK"/>
     </target>
 
@@ -30,8 +29,7 @@
     </target>
 
     <!-- Assign changeset absolute filenames to property and quote filenames -->
-    <target name="get-changeset.php-absolute.newlinesep" depends="get-changeset.php"
-            if="changeset.php.notempty">
+    <target name="get-changeset.php-absolute.newlinesep" depends="get-changeset.php" if="changeset.php.notempty">
         <loadresource property="changeset.php.absolute.newlinesep">
             <propertyresource name="changeset.php.newlinesep"/>
             <filterchain>
@@ -45,8 +43,7 @@
     </target>
 
     <!-- Assign changeset relative and quote filenames -->
-    <target name="get-changeset.php-relative.newlinesep" depends="get-changeset.php"
-            if="changeset.php.notempty">
+    <target name="get-changeset.php-relative.newlinesep" depends="get-changeset.php" if="changeset.php.notempty">
         <loadresource property="changeset.php.relative.newlinesep">
             <propertyresource name="changeset.php.newlinesep"/>
             <filterchain>
@@ -92,9 +89,9 @@
             </filterchain>
         </loadresource>
     </target>
+{% if enableJsTools %}
 
-    {% if enableJsTools %}<target name="get-changeset.js"
-            unless="changeset.js.executed">
+    <target name="get-changeset.js" unless="changeset.js.executed">
         <property name="changeset.js.executed" value="true"/>
         <exec executable="${basedir}/{{ composerBinDir }}/qa-tools" outputProperty="changeset.js.spacesep">
             <arg line="changeset:pre-commit --filter-path={{ javaScriptSrcPath }} --filter-ext=js --separator=' '"/>
@@ -127,6 +124,7 @@
             <isset property="working-dir"/>
         </condition>
     </target>
+{% if enableComposer %}
 
     <target name="check-composer">
         <available file="${test-tree-location}/composer.phar" property="composer.installed"/>
@@ -138,16 +136,15 @@
         <get src="http://getcomposer.org/composer.phar" dest="${test-tree-location}/composer.phar"/>
     </target>
 
-    <target name="composer-run-install"
-            depends="composer-download">
+    <target name="composer-run-install" depends="composer-download">
         <exec executable="php" failonerror="true">
             <arg line="${test-tree-location}/composer.phar install --prefer-dist --quiet --no-interaction --working-dir ${test-tree-location}"/>
         </exec>
     </target>
+{% endif %}
+{% if enablePhpLint%}
 
-    {% if enablePhpLint%}<target name="php-lint"
-            depends="get-changeset.php-absolute.newlinesep"
-            if="changeset.php.notempty">
+    <target name="php-lint" depends="get-changeset.php-absolute.newlinesep" if="changeset.php.notempty">
         <exec executable="sh" failonerror="true">
             <arg value="-c"/>
             <arg value="echo '${changeset.php.absolute.newlinesep}' | xargs -n 1 -P 4 php -l 1>/dev/null"/>
@@ -155,10 +152,9 @@
         <echo message="OK"/>
     </target>
 {% endif %}
+{% if enableJsHint %}
 
-    {% if enableJsHint %}<target name="jshint"
-            depends="set-test-tree-location,get-changeset.js-absolute.spacesep"
-            if="changeset.js.notempty">
+    <target name="jshint" depends="set-test-tree-location,get-changeset.js-absolute.spacesep" if="changeset.js.notempty">
         <exec executable="node" failonerror="true">
             <arg value="${test-tree-location}/{{ composerBinDir }}/jshint"/>
             <arg value="--config=${test-tree-location}/.jshintrc"/>
@@ -167,23 +163,21 @@
         <echo message="OK"/>
     </target>
 {% endif %}
+{% if enablePhpMessDetector %}
 
-    {% if enablePhpMessDetector %}<target name="phpmd"
-            depends="get-changeset.php-commasep"
-            if="changeset.php.notempty">
+    <target name="phpmd" depends="get-changeset.php-commasep" if="changeset.php.notempty">
         <exec executable="${test-tree-location}/{{ composerBinDir }}/phpmd" failonerror="true">
+            <arg line="${changeset.php.absolute.commasep} text ${test-tree-location}/phpmd-pre-commit.xml"/>
 {% if phpMdExcludePatterns %}
             <arg value="--exclude {{ phpMdExcludePatterns|join(',') }}"/>
 {% endif %}
-            <arg line="${changeset.php.absolute.commasep} text ${test-tree-location}/phpmd-pre-commit.xml"/>
         </exec>
         <echo message="OK"/>
     </target>
 {% endif %}
+{% if enablePhpCodeSniffer %}
 
-    {% if enablePhpCodeSniffer %}<target name="phpcs"
-            depends="get-changeset.php-spacesep"
-            if="changeset.php.notempty">
+    <target name="phpcs" depends="get-changeset.php-spacesep" if="changeset.php.notempty">
         <exec executable="${test-tree-location}/{{ composerBinDir }}/phpcs" failonerror="true">
             <arg value="--standard=${test-tree-location}/phpcs.xml"/>
             <arg value="--warning-severity=0"/> <!-- Don't show warnings-->
@@ -194,8 +188,9 @@
         <echo message="OK"/>
     </target>
 {% endif %}
+{% if enablePhpUnit %}
 
-    {% if enablePhpUnit %}<!--
+    <!--
         PHPUnit always runs, regardless of there being changes in PHP src.
         This is because other changes, e.g. config, can also break tests
     -->
@@ -215,8 +210,9 @@
         </fail>
     </target>
 {% endif %}
+{% if enableBehat %}
 
-    {% if enableBehat %}<target name="behat" depends="set-test-tree-location">
+    <target name="behat" depends="set-test-tree-location">
         <exec executable="php" failonerror="true">
             <arg line="${test-tree-location}/{{ composerBinDir }}/behat --config ${test-tree-location}/behat.yml --ansi --profile dev ${test-tree-location}/features --tags=~skip"/>
         </exec>

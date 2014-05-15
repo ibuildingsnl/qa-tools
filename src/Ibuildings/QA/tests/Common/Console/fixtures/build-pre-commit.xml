@@ -3,7 +3,7 @@
 <project name="test1-pre-commit" default="build">
 
     <target name="build"
-            depends="prepare-environment,php-lint,phpmd,phpcs,phpunit"/>
+            depends="prepare-environment,php-lint,phpmd,phpcs,phpunit,behat"/>
 
     <target name="prepare-environment"
             depends="set-test-tree-location,get-changeset,composer-run-install">
