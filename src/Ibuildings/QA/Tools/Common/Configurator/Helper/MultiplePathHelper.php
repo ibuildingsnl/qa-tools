@@ -170,7 +170,7 @@ class MultiplePathHelper
         }
 
         if ($defaultPaths) {
-            $pathQuestion .= " [$defaultPaths]";
+            $pathQuestion .= ' [' . (is_array($defaultPaths) ? implode(',', $defaultPaths) : $defaultPaths) . ']';
         }
 
         if ($confirmationQuestion) {
