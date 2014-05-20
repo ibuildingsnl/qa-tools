@@ -13,6 +13,7 @@ namespace Ibuildings\QA\tests\Common\Console;
 
 use Ibuildings\QA\tests\mock\InstallJsHintCommand;
 use Ibuildings\QA\Tools\Common\Application;
+use Ibuildings\QA\Tools\Common\CommandExistenceChecker;
 use Ibuildings\QA\Tools\Common\Console\InstallCommand;
 use Ibuildings\QA\Tools\Common\Settings;
 use Symfony\Component\Console\Helper\DialogHelper;
@@ -73,6 +74,16 @@ class InstallJsHintCommandTest extends \PHPUnit_Framework_TestCase
      */
     public function installFailed()
     {
+        $commandChecker = new CommandExistenceChecker();
+        if (!($commandChecker->commandExists('node', $m) || $commandChecker->commandExists('nodejs', $m))
+            || !$commandChecker->commandExists('npm', $m)
+        ) {
+            $this->markTestSkipped(
+                'Cannot run InstallJsHintCommandTest::installFailed, requires both node(js) and npm to be installed'
+            );
+            return;
+        }
+
         $command = $this->getMock('Ibuildings\QA\tests\mock\InstallJsHintCommand', array('installNpmDependencies'));
         $command
             ->expects($this->any())
