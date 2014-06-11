@@ -91,10 +91,12 @@
 {% endif %}
 {% if enableJsHint %}
     <target name="jshint-ci">
-        <exec executable="node" failonerror="true" output="{{ buildArtifactsPath }}/logs/checkstyle-jshint.xml">
+        <exec executable="node" failonerror="true" {% if buildArtifacts.enabled %}output="{{ buildArtifacts.path }}/logs/checkstyle-jshint.xml"{% endif %}>
             <arg value="{{ composerBinDir }}/jshint"/>
             <arg value="--config=.jshintrc"/>
+            {% if buildArtifacts.enabled %}
             <arg value="--reporter=checkstyle"/>
+            {% endif %}
             <arg value="{{ javaScriptSrcPath }}"/>
         </exec>
     </target>
