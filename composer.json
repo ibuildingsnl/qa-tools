@@ -11,7 +11,7 @@
         "symfony/filesystem": "~2.1",
         "twig/twig": "~1.12",
         "sensiolabs/security-checker": "~1.1",
-        "phpunit/phpunit": "~3.7",
+        "phpunit/phpunit": "~4",
         "sebastian/phpcpd": "~1.4",
         "behat/behat": "~2.5",
         "behat/mink": "*",
