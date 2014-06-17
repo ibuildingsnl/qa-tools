@@ -18,14 +18,14 @@ output of this script as a base and configure it manually.
  - PHP Copy/Paste Detector (1.4.*)
  - PHP Codesniffer (1.5.*)
  - PHP Mess Detector (1.5.*)
- - JSHint (1.0.0)
+ - JSHint (2.4.*)
 
 ## Testing
- - PHPUnit (3.7.*)
+ - PHPUnit (4.*)
  - Behat Framework setup
 
 ## Other
- - Sensiolabs Security Checker (1.2-dev)
+ - Sensiolabs Security Checker (1.3.*)
  - Git Pre-Commit Hook
 
 # Requirements
