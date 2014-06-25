@@ -17,7 +17,7 @@ use Symfony\Component\Console\Application as BaseApplication;
 
 class Application extends BaseApplication
 {
-    const VERSION = '1.1.19';
+    const VERSION = '1.1.23';
 
     /**
      * @var Settings
