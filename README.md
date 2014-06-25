@@ -1,7 +1,7 @@
 [![Build Status](https://travis-ci.org/ibuildingsnl/qa-tools.svg?branch=master)](https://travis-ci.org/ibuildingsnl/qa-tools)
 
-qa-tools
-======
+The Ibuildings QA Tools
+=======================
 
 Home of the Ibuildings QA Tools
 
@@ -15,9 +15,9 @@ output of this script as a base and configure it manually.
 # Included tools
 ## Inspections
  - PHP Lint
- - PHP Copy/Paste Detector (1.4.*)
- - PHP Codesniffer (1.5.*)
- - PHP Mess Detector (1.5.*)
+ - PHP Copy/Paste Detector (2.*)
+ - PHP Codesniffer (1.*)
+ - PHP Mess Detector (2.*)
  - JSHint (2.4.*)
 
 ## Testing
@@ -25,7 +25,7 @@ output of this script as a base and configure it manually.
  - Behat Framework setup
 
 ## Other
- - Sensiolabs Security Checker (1.3.*)
+ - Sensiolabs Security Checker (1.*)
  - Git Pre-Commit Hook
 
 # Requirements
@@ -62,9 +62,12 @@ Why `require-dev`? Because you only want the QA tools on your dev environment.
 On test and production environments, you should run composer install with --no-dev so that the qa-tools don't get installed.
 
 # Usage
-After installation, you can run `$ vendor/bin/qa-tools install`. This script will ask you which tools you want to enable and writes the build.xml file that can be used for Jenkins.
-In Jenkins, use the QA-Tools template for you project, or base your project on it manually.
-> If you want more options or some config that this script doesn't provide, you can simply edit the generated build.xml and config files to suit your needs. An example would be when your sources are in many different directories or when you need to exclude specific files for specific tools
+After installation, you can run `$ vendor/bin/qa-tools install`. This script will ask you which tools you want to enable and writes a few files:
+- the build.xml file that can be used with Ant on your CI server
+- the build-pre-commit.xml that is used with Ant for the Git pre-commit hook
+- qa-tools.json, this files contains all settings.
+
+> If you want more options or some config that this script doesn't provide, you can simply edit the generated build.xml and config files to suit your needs.
 
 Locally on your development environment, you can run the QA-Tools by running `$ vendor/bin/qa-tools run`. See the help on that command for more options
 
@@ -75,14 +78,14 @@ You can run your Behat features with `$ vendor/bin/qa-tools run behat`.
 Start using phantomjs web driver using: `$ phantomjs --webdriver=4444`
 
 # Generated config
-When running the QA Tools a QA-settings.json settings file is generated for you. All answered questions will be saved here. Next time you will execute the QA Tools again the default values are the ones you answered before.
+When running the QA Tools a qa-tools.json settings file is generated for you. All answered questions will be saved here. Next time you execute the QA Tools, the default values are the ones you answered before.
 This also makes it possible to create different distributions of the file based on much used functionality for your projects.
 
-This can be helpfull if you know all new projects have to work with the same set of QA tools by adding the qa-settings.json file to the project all default answers will be the correct ones.
+This can be helpful if you know all new projects have to work with the same set of QA tools by adding the qa-tools.json file to the project. If you subsequently run the QA Tools installer in non-interactive mode, all settings form the qa-tools.json settings file will be used.
 
 # Notes
 Important note: the pre-commit hook runs on the source you actually staged for commit with `$ git add`, untracked file are ignored. This is to make sure that successful or failing builds reflect what is actually being committed.
 
 # Contributing
-If something is broken or you have a feature request, please create an issue here on the github repo. 
+If something is broken or you have a feature request, please create an issue here on the github repo.
 Better yet, create a feature branch, fix it and create a pull request! Please **do not** push directly to master or to a release branch.
