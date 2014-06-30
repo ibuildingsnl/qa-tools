@@ -16,7 +16,7 @@
         "behat/mink-extension": "*",
         "behat/mink-goutte-driver": "*",
         "behat/mink-selenium2-driver": "*",
-        "camspiers/json-pretty": "0.1.*"
+        "camspiers/json-pretty": "~1.0"
     },
     "bin": [
         "bin/qa-tools",
