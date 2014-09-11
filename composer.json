@@ -8,7 +8,7 @@
         "symfony/console": "~2.1",
         "symfony/filesystem": "~2.1",
         "twig/twig": "~1.12",
-        "sensiolabs/security-checker": "~1",
+        "sensiolabs/security-checker": "~2.0",
         "phpunit/phpunit": "~4",
         "sebastian/phpcpd": "~2",
         "behat/behat": "~2.5",
