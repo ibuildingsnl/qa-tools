@@ -47,18 +47,13 @@ please add the following to your composer.json:
 ```
 
 # Installation
-The QA tools can easily be installed by using composer
+The QA tools can easily be installed by using composer:
 
-Add the following to your composer.json
-```json
-    "require-dev": {
-        "ibuildings/qa-tools": "~1.1"
-    },
+```bash
+composer require --dev ibuildings/qa-tools=~1.1
 ```
 
-And run `composer install`
-
-Why `require-dev`? Because you only want the QA tools on your dev environment.
+Why `--dev`? Because you only want the QA tools on your dev environment.
 On test and production environments, you should run composer install with --no-dev so that the qa-tools don't get installed.
 
 # Usage
