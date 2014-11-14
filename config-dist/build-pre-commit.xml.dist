@@ -169,7 +169,8 @@
         <exec executable="${test-tree-location}/{{ composerBinDir }}/phpmd" failonerror="true">
             <arg line="${changeset.php.absolute.commasep} text ${test-tree-location}/phpmd-pre-commit.xml"/>
 {% if phpMdExcludePatterns %}
-            <arg value="--exclude {{ phpMdExcludePatterns|join(',') }}"/>
+            <arg value="--exclude"/>
+            <arg value="{{ phpMdExcludePatterns|join(',') }}"/>
 {% endif %}
         </exec>
         <echo message="OK"/>
