@@ -33,3 +33,10 @@ branches:
 matrix:
   allow_failures:
     - php: hhvm
+addons:
+  artifacts:
+    key:
+      secure: jeKWOjWGjBoSCJ2bWtZiwp8dAS+qWPhEeOMfSHW005Mkxbb7jTnbYqJoJLK5LCCvyVol2DLNQZwC+ierNM8nnO8lgw8ReZ7aatrui+yVYkg9Ao8sArOGUlEx2cHWOE3XMhnws/Np5XFIbwEaX8yPaqgH8OEzglSi23ntn/XPWeQ=
+    secret:
+      secure: ZDqbhxzYnhfFaqNloJKesx7/5jiPwyzmDVRbTM9LKwEhu6V3oUPpR1B4+PuXzEPURWrHgzNycvOZH9OjNepAH7aKFHLRPAyAT7oo9MuG9fRl9Z7HTs8QBDIHug00xcRngGfxULcWOlhXdAX2nWGeVTK/TUmy95ugUZT9WxxgvOA=
+    bucket: travis-artifacts-qatools
