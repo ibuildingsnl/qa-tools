@@ -199,7 +199,7 @@
 
     <target name="behat" depends="set-test-tree-location">
         <exec executable="php" failonerror="true">
-            <arg line="${test-tree-location}/vendor/bin/behat --config ${test-tree-location}/behat.yml --ansi --profile dev ${test-tree-location}/features --tags=~skip"/>
+            <arg line="${test-tree-location}/vendor/bin/behat --config ${test-tree-location}/behat.yml --profile dev ${test-tree-location}/features --tags=~skip"/>
         </exec>
     </target>
 
