@@ -12,6 +12,8 @@ default:
             sessions:
               default:
                 goutte: ~
+              goutte:
+                goutte: ~
             selenium2:
               wd_host: "http://localhost:4444/wd/hub"
               capabilities: { "browser": "firefox", "version": "14"}
