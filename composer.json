@@ -11,10 +11,10 @@
         "sensiolabs/security-checker": "~2.0",
         "phpunit/phpunit": "~4",
         "sebastian/phpcpd": "~2",
-        "behat/behat": "~2.5",
+        "behat/behat": "~3.0",
         "behat/mink": "*",
         "behat/mink-extension": "*",
-        "behat/mink-goutte-driver": ">=1.0.9",
+        "behat/mink-goutte-driver": "~1.1@dev",
         "behat/mink-selenium2-driver": "*",
         "camspiers/json-pretty": "~1.0"
     },
@@ -25,6 +25,7 @@
     "extra": {
         "branch-alias": {
             "dev-master": "2.0-dev"
+
         }
     },
     "autoload" : {
