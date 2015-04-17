@@ -243,7 +243,6 @@ class InstallCommand extends AbstractCommand
             || $this->settings['enableJsHint']
             || $this->settings['enableBehat']
         ) {
-
             $written = $this->writeContentTo(
                 $this->settings->getBaseDir() . '/build.xml',
                 $this->twig->render('build.xml.dist', $this->settings->getArrayCopy()),
