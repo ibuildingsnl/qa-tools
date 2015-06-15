@@ -195,6 +195,10 @@
                 <isfailure code="${phpunit-exitcode}"/>
             </condition>
         </fail>
+        <exec executable="vendor/bin/qa-tools" failonerror="true">
+            <arg value="minimum-code-coverage"/>
+            <arg value="100"/>
+        </exec>
     </target>
 
     <target name="behat" depends="set-test-tree-location">
