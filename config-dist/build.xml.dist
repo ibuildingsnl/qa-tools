@@ -180,6 +180,14 @@
 {% endif %}
             <arg line="--coverage-text"/>
         </exec>
+
+{% if buildArtifacts.enabled %}
+        <!-- Check code coverage percentage -->
+        <exec executable="minimum-code-coverage.php" failonerror="true">
+            <arg value="{{ composerBinDir }}/qa-tools minimum-code-coverage" />
+            <arg value="100" />
+        </exec>
+{% endif %}
     </target>
 
 {% endif %}

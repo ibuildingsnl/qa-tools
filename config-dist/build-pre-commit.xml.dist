@@ -208,6 +208,12 @@
                 <isfailure code="${phpunit-exitcode}"/>
             </condition>
         </fail>
+
+        <!-- Check code coverage percentage -->
+        <exec executable="minimum-code-coverage.php" failonerror="true">
+            <arg value="{{ composerBinDir }}/qa-tools minimum-code-coverage" />
+            <arg value="100" />
+        </exec>
     </target>
 {% endif %}
 {% if enableBehat %}
