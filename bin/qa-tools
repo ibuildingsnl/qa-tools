@@ -29,5 +29,6 @@ $application->add(new \Ibuildings\QA\Tools\Javascript\Console\InstallJsHintComma
 $application->add(new \Ibuildings\QA\Tools\Common\Console\InstallPreCommitHookCommand());
 $application->add(new \Ibuildings\QA\Tools\Common\Console\ChangeSetPreCommitCommand());
 $application->add(new \Ibuildings\QA\Tools\Common\Console\RunCommand());
+$application->add(new \Ibuildings\QA\Tools\PHP\CodeCoverage\MinimumCodeCoverageCommand());
 
 $application->run();
