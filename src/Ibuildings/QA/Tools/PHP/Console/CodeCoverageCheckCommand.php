@@ -8,19 +8,32 @@
  * file that was distributed with this source code.
  */
 
-namespace Ibuildings\QA\Tools\PHP\CodeCoverage;
+namespace Ibuildings\QA\Tools\PHP\Console;
 
-use Ibuildings\QA\Tools\Common\Console\AbstractCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use RuntimeException;
 
 /**
  * Class MiniumCodeCoverageCommand
- * @package Ibuildings\QA\Tools\PHP\CodeCoverage
+ * @package Ibuildings\QA\Tools\PHP\Console
  */
-class MinimumCodeCoverageCommand extends AbstractCommand
+class CodeCoverageCheckCommand extends Command
 {
+    /**
+     * @var string
+     */
+    private $cloverReportFile;
+
+    /**
+     * @param string $cloverReportFile
+     */
+    public function setCloverReportFile($cloverReportFile)
+    {
+        $this->cloverReportFile = $cloverReportFile;
+    }
 
     protected function configure()
     {
@@ -29,7 +42,7 @@ class MinimumCodeCoverageCommand extends AbstractCommand
             ->setDescription('Checks if the amount of code that is covered by unit tests')
             ->setHelp('Runs the Ibuildings QA Tools on the current changeset')
             ->addArgument(
-                'minimum-coverage',
+                'minimum',
                 InputArgument::REQUIRED,
                 'Minimum coverage'
             );
@@ -40,12 +53,12 @@ class MinimumCodeCoverageCommand extends AbstractCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $minimumCoverage = $input->getArgument('minimum-coverage');
+        $minimumCoverage = $input->getArgument('minimum');
         $coverage = $this->loadLineCoverage();
 
         if ($coverage < $minimumCoverage) {
-            echo "Coverage of {$coverage}% is lower than minimum coverage of {$minimumCoverage}%" . PHP_EOL;
-            exit(1);
+            $output->writeln("Coverage of {$coverage}% is lower than minimum coverage of {$minimumCoverage}%");
+            return 1;
         }
     }
 
@@ -56,7 +69,7 @@ class MinimumCodeCoverageCommand extends AbstractCommand
      */
     protected function loadLineCoverage()
     {
-        $cloverReport = simplexml_load_file('build/artifacts/logs/clover.xml');
+        $cloverReport = simplexml_load_file($this->cloverReportFile);
         $metrics = $cloverReport->project->metrics;
         $coverage = ($metrics['coveredstatements'] / $metrics['statements']) * 100;
         return round($coverage);

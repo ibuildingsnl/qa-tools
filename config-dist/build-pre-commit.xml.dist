@@ -210,8 +210,8 @@
         </fail>
 
         <!-- Check code coverage percentage -->
-        <exec executable="minimum-code-coverage.php" failonerror="true">
-            <arg value="{{ composerBinDir }}/qa-tools minimum-code-coverage" />
+        <exec executable="{{ composerBinDir }}/qa-tools" failonerror="true">
+            <arg value="minimum-code-coverage" />
             <arg value="100" />
         </exec>
     </target>
