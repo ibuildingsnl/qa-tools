@@ -29,11 +29,6 @@ class CodeCoverageCheckTest extends \PHPUnit_Framework_TestCase
      */
     protected $application;
 
-    /**
-     * @var string
-     */
-    private $cloverReportFile;
-
     public function setup()
     {
         $baseDir = realpath(__DIR__ . '/../../../../../../');
@@ -43,8 +38,6 @@ class CodeCoverageCheckTest extends \PHPUnit_Framework_TestCase
         $this->application = new Application('ibuildings qa tools', $settings);
 
         $codeCoverageCheckCommand = new CodeCoverageCheckCommand();
-        $this->cloverReportFile = '/tmp/test-clover-report.xml';
-        $codeCoverageCheckCommand->setCloverReportFile($this->cloverReportFile);
         $this->application->add($codeCoverageCheckCommand);
     }
 
@@ -69,16 +62,15 @@ class CodeCoverageCheckTest extends \PHPUnit_Framework_TestCase
   </project>
 </coverage>
 XML;
-        file_put_contents($this->cloverReportFile, $cloverReport);
+        file_put_contents('/tmp/test-clover-report.xml', $cloverReport);
 
         $exitCode = $commandTester->execute(
             array(
                 'command' => $command->getName(),
+                'clover-report-file' => '/tmp/test-clover-report.xml',
                 'minimum' => 100
             )
         );
-
-//        $this->setExpectedException('RuntimeExceptio, ')
 
         $this->assertEquals(1, $exitCode);
 
