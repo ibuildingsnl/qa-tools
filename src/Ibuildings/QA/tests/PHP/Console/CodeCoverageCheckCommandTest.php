@@ -22,7 +22,7 @@ use Symfony\Component\Console\Tester\CommandTester;
  *
  * @package Ibuildings\QA\tests\PHP\Console
  */
-class CodeCoverageCheckTest extends \PHPUnit_Framework_TestCase
+class CodeCoverageCheckCommandTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var Application
