@@ -231,7 +231,7 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
 
         $startAt = 0;
         $this->addBaseExpects($dialog, $startAt);
-        $this->addBuildArtifactExpects($dialog, $startAt); // @todo pass true as third argument (which breaks)
+        $this->addBuildArtifactExpects($dialog, $startAt, true);
         $this->addTravisExpects($dialog, $startAt);
         $this->addQAExpects($dialog, $startAt);
         $this->addPHPMDExpects($dialog, $startAt);
@@ -410,6 +410,17 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
   - Do you want to generate build artifacts?")
             )
             ->will($this->returnValue($returnValue));
+
+        if ($returnValue) {
+            $dialog
+                ->expects($this->at($startAt++))
+                ->method('askAndValidate')
+                ->with(
+                    $this->anything(),
+                    $this->equalTo("Where do you want to store the build artifacts? [build/artifacts] ")
+                )
+                ->will($this->returnValue('build/artifacts'));
+        }
     }
 
     /**
