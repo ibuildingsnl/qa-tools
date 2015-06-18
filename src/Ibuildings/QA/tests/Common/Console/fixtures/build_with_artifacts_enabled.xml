@@ -125,6 +125,7 @@
 
         <exec executable="vendor/bin/qa-tools" failonerror="true">
             <arg value="minimum-code-coverage"/>
+            <arg value="build/artifacts/logs/clover.xml"/>
             <arg value="100"/>
         </exec>
     </target>
