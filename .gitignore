@@ -1,8 +1,4 @@
-.idea
 vendor
-.DS_Store
 build
-composer.lock
-.scrutinizer.yml
 node_modules/jshint
 cache.properties

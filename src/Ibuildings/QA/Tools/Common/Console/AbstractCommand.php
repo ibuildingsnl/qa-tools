@@ -116,7 +116,6 @@ abstract class AbstractCommand extends Command
         $iname = 'Ibuildings\QA\Tools\Common\Console\Helper\\' . ucfirst(strtolower($name)) . 'Interface';
 
         if ($configurator instanceof $iname) {
-
             $pfunc = ucfirst(strtolower($name)) . 'Helper';
 
             $func = 'get' . $pfunc;
