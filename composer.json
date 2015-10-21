@@ -3,13 +3,13 @@
     "license": "MIT",
     "description": "Ibuildings standard QA Tools",
     "require": {
-        "squizlabs/php_codesniffer": "~2.2",
-        "phpmd/phpmd": "~2.2",
-        "symfony/console": "~2.6",
-        "symfony/filesystem": "~2.6",
-        "twig/twig": "~1.18",
-        "sensiolabs/security-checker": "~2.0",
-        "phpunit/phpunit": "~4",
+        "squizlabs/php_codesniffer": "^2.3",
+        "phpmd/phpmd": "^2.3",
+        "symfony/console": "^2.7",
+        "symfony/filesystem": "^2.7",
+        "twig/twig": "^1.22",
+        "sensiolabs/security-checker": "^3.0",
+        "phpunit/phpunit": "^4",
         "sebastian/phpcpd": "~2",
         "behat/behat": "~3.0",
         "behat/mink": "*",
@@ -25,7 +25,6 @@
     "extra": {
         "branch-alias": {
             "dev-master": "2.0-dev"
-
         }
     },
     "autoload" : {
