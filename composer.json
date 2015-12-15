@@ -3,6 +3,7 @@
     "license": "MIT",
     "description": "Ibuildings standard QA Tools",
     "require": {
+        "php": "<=5.4",
         "squizlabs/php_codesniffer": "^2.3",
         "phpmd/phpmd": "^2.3",
         "symfony/console": "^2.7",
