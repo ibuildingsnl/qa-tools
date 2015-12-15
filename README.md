@@ -48,8 +48,13 @@ please add the following to your composer.json:
 
 # Installation
 The QA tools can easily be installed by using composer:
+```sh
+composer require --dev ibuildings/qa-tools=~2.0
+```
 
-```bash
+
+Alternatively, if you need support for php 5.3 you can use the 1.x releases:
+```sh
 composer require --dev ibuildings/qa-tools=~1.1
 ```
 
