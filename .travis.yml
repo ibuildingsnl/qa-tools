@@ -5,6 +5,8 @@
 # This file should be added to your project repository
 #
 
+sudo: false
+
 language: php
 
 php:
