@@ -13,6 +13,7 @@ php:
   - 5.4
   - 5.3
   - hhvm
+  - 7.0
 
 cache:
   directories:
@@ -33,3 +34,4 @@ branches:
 matrix:
   allow_failures:
     - php: hhvm
+    - php: 7.0
