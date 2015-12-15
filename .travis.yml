@@ -5,6 +5,8 @@
 # This file should be added to your project repository
 #
 
+sudo: false
+
 language: php
 
 php:
@@ -33,4 +35,3 @@ branches:
 matrix:
   allow_failures:
     - php: hhvm
-    - php: 7.0
