@@ -120,7 +120,8 @@
             <arg value="xml"/>
             <arg value="phpmd.xml"/>
 {% if phpMdExcludePatterns %}
-            <arg value="--exclude {{ phpMdExcludePatterns|join(',') }}"/>
+            <arg value="--exclude"/>
+            <arg value="{{ phpMdExcludePatterns|join(',') }}"/>
 {% endif %}
 {% if buildArtifacts.enabled %}
             <arg value="--reportfile"/>
