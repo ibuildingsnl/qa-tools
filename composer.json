@@ -1,0 +1,11 @@
+{
+    "name": "ibuildings/qa-tools",
+    "autoload": {
+        "psr-4": {
+            "Ibuildings\\QaTools\\" : "src/"
+        }
+    },
+    "require": {
+        "symfony/console": "^3.0"
+    }
+}
