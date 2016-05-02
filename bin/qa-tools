@@ -8,7 +8,8 @@ use Ibuildings\QaTools\Core\Application\Command\PreCommitCommand;
 use Ibuildings\QaTools\Core\Application\Command\PrePushCommand;
 use Symfony\Component\Console\Application;
 
-$application = new Application();
+$application = new Application('Ibuildings QA-tools', 'dev');
+
 $application->add(new InstallCommand());
 $application->add(new PreCommitCommand());
 $application->add(new PrePushCommand());
