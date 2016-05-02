@@ -1,0 +1,16 @@
+#!/usr/bin/env php
+<?php
+
+require __DIR__.'/../vendor/autoload.php';
+
+use Ibuildings\QaTools\Core\Application\Command\InstallCommand;
+use Ibuildings\QaTools\Core\Application\Command\PreCommitCommand;
+use Ibuildings\QaTools\Core\Application\Command\PrePushCommand;
+use Symfony\Component\Console\Application;
+
+$application = new Application();
+$application->add(new InstallCommand());
+$application->add(new PreCommitCommand());
+$application->add(new PrePushCommand());
+
+$application->run();
