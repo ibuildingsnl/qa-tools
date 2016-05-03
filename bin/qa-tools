@@ -3,10 +3,10 @@
 
 require __DIR__.'/../vendor/autoload.php';
 
+use Ibuildings\QaTools\Core\Application\Application;
 use Ibuildings\QaTools\Core\Application\Command\InstallCommand;
 use Ibuildings\QaTools\Core\Application\Command\PreCommitCommand;
 use Ibuildings\QaTools\Core\Application\Command\PrePushCommand;
-use Symfony\Component\Console\Application;
 
 $application = new Application('Ibuildings QA-tools', 'dev');
 
