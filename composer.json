@@ -5,10 +5,20 @@
             "Ibuildings\\QaTools\\" : "src/"
         }
     },
+    "scripts": {
+        "post-install-cmd": [
+            "Ibuildings\\QaTools\\Composer\\ScriptHandler::requireBoxPhar"
+        ]
+    },
     "require": {
         "symfony/console": "^3.0",
         "symfony/dependency-injection": "^3.0",
         "symfony/config": "^3.0",
         "symfony/yaml": "^3.0"
+    },
+    "extra": {
+        "qa-tools-box-source": "https://github.com/box-project/box2/releases/download/2.7.2/box-2.7.2.phar",
+        "qa-tools-box-install-path": "./bin/box.phar",
+        "qa-tools-box-sha-sum": "47c34f95a322e9f8cc6572696decc6473b9331c5"
     }
 }
