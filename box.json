@@ -1,0 +1,28 @@
+{
+  "algorithm": "OPENSSL",
+  "chmod": "0755",
+  "compression": "GZ",
+  "directories": [
+    "src"
+  ],
+  "files": [
+    "LICENSE"
+  ],
+  "finder": [
+    {
+      "name": "*.php",
+      "exclude": [
+        "bin/box.phar",
+        "src/Composer",
+        "tests"
+      ],
+      "in": "vendor"
+    }
+  ],
+  "git-version": "package_version",
+  "intercept": true,
+  "key": ".travis/phar-private.pem",
+  "main": "bin/qa-tools",
+  "output": "dist/qa-tools.phar",
+  "stub": true
+}
