@@ -1,2 +1,4 @@
 /vendor/
 .travis/phar-private.pem
+dist/qa-tools*
+bin/box.phar
