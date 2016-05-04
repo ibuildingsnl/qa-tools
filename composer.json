@@ -8,6 +8,9 @@
     "scripts": {
         "post-install-cmd": [
             "Ibuildings\\QaTools\\Composer\\ScriptHandler::requireBoxPhar"
+        ],
+        "build": [
+            "Ibuildings\\QaTools\\Composer\\ScriptHandler::buildPhar"
         ]
     },
     "require": {

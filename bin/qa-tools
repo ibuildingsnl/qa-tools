@@ -8,7 +8,8 @@ use Ibuildings\QaTools\Core\Application\Command\InstallCommand;
 use Ibuildings\QaTools\Core\Application\Command\PreCommitCommand;
 use Ibuildings\QaTools\Core\Application\Command\PrePushCommand;
 
-$application = new Application('Ibuildings QA-tools', 'dev');
+// The package_version is automagically replaced when building
+$application = new Application('Ibuildings QA-tools', '@package_version@');
 
 $application->add(new InstallCommand());
 $application->add(new PreCommitCommand());
