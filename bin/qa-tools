@@ -1,18 +1,21 @@
 #!/usr/bin/env php
 <?php
 
+use Ibuildings\QaTools\Core\Application\CompilerPass\CommandsCompilerPass;
+use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
+
 require __DIR__.'/../vendor/autoload.php';
 
-use Ibuildings\QaTools\Core\Application\Application;
-use Ibuildings\QaTools\Core\Application\Command\InstallCommand;
-use Ibuildings\QaTools\Core\Application\Command\PreCommitCommand;
-use Ibuildings\QaTools\Core\Application\Command\PrePushCommand;
+$container = new ContainerBuilder();
+$container->addCompilerPass(new CommandsCompilerPass);
 
-// The package_version is automagically replaced when building
-$application = new Application('Ibuildings QA-tools', '@package_version@');
+$loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/../src/Core/Resources/config'));
+$loader->load('config.yml');
+$loader->load('services.yml');
 
-$application->add(new InstallCommand());
-$application->add(new PreCommitCommand());
-$application->add(new PrePushCommand());
+$container->compile();
 
+$application = $container->get('qa_tools.application');
 $application->run();
