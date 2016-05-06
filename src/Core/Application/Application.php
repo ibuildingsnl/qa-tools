@@ -36,6 +36,7 @@ final class Application extends ConsoleApplication
     public function getRegisteredTools()
     {
         return [
+            new PhpMd(),
         ];
     }
 
