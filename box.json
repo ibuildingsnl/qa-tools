@@ -19,7 +19,7 @@
       "in": "vendor"
     }
   ],
-  "git-version": "@package_version",
+  "git-version": "package_version",
   "intercept": true,
   "key": ".travis/phar-private.pem",
   "main": "bin/qa-tools",

@@ -1,6 +1,0 @@
-imports:
-    - { resource: services.yml }
-parameters:
-    # The package_version is automagically replaced when building the application
-    qa_tools.application_name: 'Ibuildings QA-tools'
-    qa_tools.application_version: '@@package_version@'

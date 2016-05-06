@@ -1,21 +1,21 @@
 #!/usr/bin/env php
 <?php
 
-use Ibuildings\QaTools\Core\Application\CompilerPass\CommandsCompilerPass;
-use Symfony\Component\Config\FileLocator;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
+use Ibuildings\QaTools\Core\Application\Application;
+use Ibuildings\QaTools\Core\Application\Command\ConfigureCommand;
+use Ibuildings\QaTools\Core\Application\Command\InstallCommand;
+use Ibuildings\QaTools\Core\Application\Command\PreCommitCommand;
+use Ibuildings\QaTools\Core\Application\Command\PrePushCommand;
 
 require __DIR__.'/../vendor/autoload.php';
 
-$container = new ContainerBuilder();
-$container->addCompilerPass(new CommandsCompilerPass);
+$application = new Application();
+$application->addCommands([
+    new InstallCommand(),
+    new ConfigureCommand(),
+    new PreCommitCommand(),
+    new PrePushCommand(),
+]);
+$application->boot();
 
-$loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/../src/Core/Resources/config'));
-$loader->load('config.yml');
-$loader->load('services.yml');
-
-$container->compile();
-
-$application = $container->get('qa_tools.application');
 $application->run();
