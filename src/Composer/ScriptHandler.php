@@ -115,7 +115,7 @@ final class ScriptHandler
         }
 
         $event->getIO()->write(
-            sprintf('<info>Building phar with "%s:"</info>', $config['qa-tools-box-install-path'].' build -vv')
+            sprintf('<info>Building phar with "%s"</info>', $config['qa-tools-box-install-path'].' build -vv')
         );
 
         passthru($config['qa-tools-box-install-path'].' build -vv');
