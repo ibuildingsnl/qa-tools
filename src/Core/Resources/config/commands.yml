@@ -1,0 +1,15 @@
+services:
+    qa_tools.install_command:
+        class: Ibuildings\QaTools\Core\Application\Command\InstallCommand
+        tags:
+            - { name: qa_tools.command }
+
+    qa_tools.pre_commit_command:
+        class: Ibuildings\QaTools\Core\Application\Command\PreCommitCommand
+        tags:
+            - { name: qa_tools.command }
+
+    qa_tools.pre_push_command:
+        class: Ibuildings\QaTools\Core\Application\Command\PrePushCommand
+        tags:
+            - { name: qa_tools.command }

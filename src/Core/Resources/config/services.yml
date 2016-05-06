@@ -1,0 +1,9 @@
+imports:
+    - resource: 'commands.yml'
+
+services:
+    qa_tools.application:
+        class: Ibuildings\QaTools\Core\Application\Application
+        arguments:
+            - '%qa_tools.application_name%'
+            - '%qa_tools.application_version%'
