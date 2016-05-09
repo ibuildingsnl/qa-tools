@@ -45,28 +45,23 @@ final class Application extends ConsoleApplication
      */
     public function boot()
     {
-        $container = new ContainerBuilder();
+        $this->container = new ContainerBuilder();
 
-        $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config/'));
+        $loader = new YamlFileLoader($this->container, new FileLocator(__DIR__ . '/../Resources/config/'));
         $loader->load('config.yml');
         $loader->load('services.yml');
 
-        $tools = $this->getRegisteredTools();
-
         /** @var Tool $tool */
-        foreach ($tools as $tool) {
-            $configFileLoader = new YamlFileLoader($container, new FileLocator($tool->getConfigPath()));
-            $configFiles = $tool->getConfigFiles();
+        foreach ($this->getRegisteredTools() as $tool) {
+            $configFileLoader = new YamlFileLoader($this->container, new FileLocator($tool->getConfigPath()));
 
             /** @var string $configFile */
-            foreach ($configFiles as $configFile) {
+            foreach ($tool->getConfigFiles() as $configFile) {
                 $configFileLoader->load($configFile);
             }
         }
 
-        $container->compile();
-
-        $this->container = $container;
+        $this->container->compile();
     }
 
     /**
