@@ -16,19 +16,12 @@ use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
 final class Application extends ConsoleApplication
 {
+    /** The name of the application */
     const NAME = 'Ibuildings QA-tools';
+
+    /** The version of the application, replaced automatically on build */
     const VERSION = '@package_version@';
-
-    /**
-     * @var ContainerInterface
-     */
-    private $container;
-
-    public function __construct()
-    {
-        parent::__construct(self::NAME, self::VERSION);
-    }
-
+    
     /**
      * Instantiates and lists the tools that are configurable through the QA-tools in order to properly configure them.
      * @return Tool[]
@@ -41,27 +34,34 @@ final class Application extends ConsoleApplication
     }
 
     /**
+     * @var ContainerInterface
+     */
+    private $container;
+
+    public function __construct()
+    {
+        parent::__construct(self::NAME, self::VERSION);
+    }
+
+    /**
      * Loads application and tool configurations.
      */
     public function boot()
     {
-        $this->container = new ContainerBuilder();
+        $containerBuilder = new ContainerBuilder();
 
-        $loader = new YamlFileLoader($this->container, new FileLocator(__DIR__ . '/../Resources/config/'));
+        $loader = new YamlFileLoader($containerBuilder , new FileLocator(__DIR__ . '/../Resources/config/'));
         $loader->load('config.yml');
         $loader->load('services.yml');
 
         /** @var Tool $tool */
         foreach ($this->getRegisteredTools() as $tool) {
-            $configFileLoader = new YamlFileLoader($this->container, new FileLocator($tool->getConfigPath()));
-
-            /** @var string $configFile */
-            foreach ($tool->getConfigFiles() as $configFile) {
-                $configFileLoader->load($configFile);
-            }
+            $tool->boot($containerBuilder);
         }
 
-        $this->container->compile();
+        $containerBuilder->compile();
+
+        $this->container = $containerBuilder;
     }
 
     /**
