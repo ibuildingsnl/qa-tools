@@ -5,6 +5,11 @@
             "Ibuildings\\QaTools\\" : "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Ibuildings\\QaTools\\": "tests/"
+        }
+    },
     "scripts": {
         "post-install-cmd": [
             "Ibuildings\\QaTools\\Composer\\ScriptHandler::requireBoxPhar"
@@ -24,5 +29,8 @@
         "qa-tools-box-source": "https://github.com/box-project/box2/releases/download/2.7.2/box-2.7.2.phar",
         "qa-tools-box-install-path": "./bin/box.phar",
         "qa-tools-box-sha-sum": "47c34f95a322e9f8cc6572696decc6473b9331c5"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^5.3"
     }
 }

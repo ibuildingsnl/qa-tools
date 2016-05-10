@@ -8,6 +8,8 @@ use Ibuildings\QaTools\Exception\InvalidArgumentException;
 final class Assertion extends BaseAssertion
 {
     const INVALID_NON_EMPTY_STRING  = 1001;
+    const INVALID_STRING_OR_INTEGER = 1002;
+
 
     protected static $exceptionClass = InvalidArgumentException::class;
 
