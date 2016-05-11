@@ -6,6 +6,23 @@ use stdClass;
 
 final class TestDataProvider
 {
+    public static function all()
+    {
+        return array_merge(
+            self::emptyString(),
+            [
+                'integer' => [1],
+                'float'   => [1.23],
+                'true'    => [true],
+                'false'   => [false],
+                'array'   => [[]],
+                'object'   => [new stdClass],
+                'null'    => [null],
+                'string'  => ['ABC'],
+            ]
+        );
+
+    }
     public static function notInteger()
     {
         return array_merge(
