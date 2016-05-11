@@ -1,6 +1,6 @@
 <?php
 
-namespace Ibuildings\QaTools\IO\File;
+namespace Ibuildings\QaTools\Core\IO\File;
 
 use Ibuildings\QaTools\Assert\Assertion;
 use Ibuildings\QaTools\Exception\RuntimeException;

@@ -1,0 +1,39 @@
+services:
+    file_handler:
+        alias: qa_tools.io.filesystem_adapter
+
+    question_handler_factory:
+        alias: qa_tools.io.console_adapter_factory
+
+    installer:
+        alias: qa_tools.project.installer
+
+    qa_tools.io.filesystem_adapter:
+        class: Ibuildings\QaTools\Core\IO\File\FilesystemAdapter
+        arguments:
+            - "@symfony.filesystem"
+
+    qa_tools.io.console_adapter_factory:
+        class: Ibuildings\QaTools\Core\IO\Cli\ConsoleAdapterFactory
+        arguments:
+            - "@symfony.question_helper"
+            - "@symfony.formatter_helper"
+
+    qa_tools.project.interviewer_factory:
+        class: Ibuildings\QaTools\Core\Interviewer\InterviewerFactory
+        arguments:
+            - "@question_handler_factory"
+
+    qa_tools.project.installer:
+        class: Ibuildings\QaTools\Core\Project\Installer
+        arguments:
+            - "@qa_tools.project.interviewer_factory"
+
+    symfony.filesystem:
+        class: Symfony\Component\Filesystem\Filesystem
+
+    symfony.question_helper:
+        class: Symfony\Component\Console\Helper\QuestionHelper
+
+    symfony.formatter_helper:
+        class: Symfony\Component\Console\Helper\FormatterHelper
