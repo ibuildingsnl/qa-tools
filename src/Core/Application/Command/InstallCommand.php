@@ -22,6 +22,13 @@ final class InstallCommand extends Command implements ContainerAwareInterface
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        // Implementation
+        $questionHandler = $this->container
+            ->get('question_handler_factory')
+            ->createWith($input, $output);
+
+        $installer = $this->container
+            ->get('installer');
+
+        $installer->install($questionHandler);
     }
 }
