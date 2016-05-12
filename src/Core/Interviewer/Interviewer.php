@@ -2,6 +2,7 @@
 
 namespace Ibuildings\QaTools\Core\Interviewer;
 
+use Ibuildings\QaTools\Value\Answer\Answer;
 use Ibuildings\QaTools\Value\Question\Question;
 
 final class Interviewer
@@ -9,15 +10,19 @@ final class Interviewer
     /**
      * @var ConversationHandler
      */
-    private $questionHandler;
+    private $conversationHandler;
 
     public function __construct(ConversationHandler $questionHandler)
     {
-        $this->questionHandler = $questionHandler;
+        $this->conversationHandler = $questionHandler;
     }
 
+    /**
+     * @param Question $question
+     * @return Answer
+     */
     public function ask(Question $question)
     {
-        return $this->questionHandler->ask($question);
+        return $this->conversationHandler->ask($question);
     }
 }

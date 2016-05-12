@@ -14,35 +14,47 @@ use Symfony\Component\Console\Question\Question as ConsoleQuestion;
 
 final class ConsoleQuestionFactory
 {
-    public static function createFrom(Question $question)
+    /**
+     * @var ConsoleQuestionFormatter
+     */
+    private $consoleQuestionFormatter;
+
+    public function __construct(ConsoleQuestionFormatter $consoleQuestionFormatter)
+    {
+        $this->consoleQuestionFormatter = $consoleQuestionFormatter;
+    }
+
+    public function createFrom(Question $question)
     {
         switch (get_class($question)) {
             case TextualQuestion::class:
                 /** @var TextualQuestion $question */
                 return new ConsoleQuestion(
-                    $question->getQuestion(),
-                    $question->getDefaultAnswer()->getAnswer()
+                    $this->consoleQuestionFormatter->formatTextualQuestion($question),
+                    $question->getDefaultAnswerAsString()
                 );
                 break;
 
             case YesOrNoQuestion::class:
                 /** @var YesOrNoQuestion $question */
-                return new ConfirmationQuestion($question->getQuestion(), $question->getDefaultAnswer()->getAnswer());
+                return new ConfirmationQuestion(
+                    $this->consoleQuestionFormatter->formatYesOrNoQuestion($question),
+                    $question->getDefaultAnswerAsString());
                 break;
 
             case MultipleChoiceQuestion::class:
                 /** @var MultipleChoiceQuestion $question */
                 return new ChoiceQuestion(
-                    $question->getQuestion(),
+                    $this->consoleQuestionFormatter->formatMultipleChoiceQuestion($question),
                     $question->getPossibleChoicesAsStrings(),
-                    $question->getDefaultAnswer()
+                    $question->getDefaultAnswerAsString()
                 );
                 break;
 
             case ChecklistQuestion::class:
                 /** @var ChecklistQuestion $question */
                 $consoleQuestion = new ChoiceQuestion(
-                    $question->getQuestion(),
+                    $this->consoleQuestionFormatter->formatChecklistQuestion($question),
                     $question->getPossibleChoicesAsStrings(),
                     $question->getDefaultChoicesAsString()
                 );

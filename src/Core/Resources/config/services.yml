@@ -18,6 +18,15 @@ services:
         arguments:
             - "@symfony.question_helper"
             - "@symfony.formatter_helper"
+            - "@qa_tools.io.console_question_factory"
+
+    qa_tools.io.console_question_factory:
+        class: Ibuildings\QaTools\Core\IO\Cli\ConsoleQuestionFactory
+        arguments:
+         - "@qa_tools.io.console_question_formatter"
+
+    qa_tools.io.console_question_formatter:
+        class: Ibuildings\QaTools\Core\IO\Cli\ConsoleQuestionFormatter
 
     qa_tools.project.interviewer_factory:
         class: Ibuildings\QaTools\Core\Interviewer\InterviewerFactory

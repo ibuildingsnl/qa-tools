@@ -1,0 +1,168 @@
+<?php
+
+use Ibuildings\QaTools\Core\IO\Cli\ConsoleQuestionFactory;
+use Ibuildings\QaTools\Core\IO\Cli\ConsoleQuestionFormatter;
+use Ibuildings\QaTools\Exception\InvalidArgumentException;
+use Ibuildings\QaTools\Value\Answer\Choices;
+use Ibuildings\QaTools\Value\Answer\TextualAnswer;
+use Ibuildings\QaTools\Value\Answer\YesOrNoAnswer;
+use Ibuildings\QaTools\Value\Question\ChecklistQuestion;
+use Ibuildings\QaTools\Value\Question\MultipleChoiceQuestion;
+use Ibuildings\QaTools\Value\Question\TextualQuestion;
+use Ibuildings\QaTools\Value\Question\Question as QaToolsQuestion;
+use Ibuildings\QaTools\Value\Question\YesOrNoQuestion;
+use PHPUnit_Framework_TestCase as TestCase;
+use Symfony\Component\Console\Question\ChoiceQuestion;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
+use Symfony\Component\Console\Question\Question;
+
+class ConsoleQuestionFactoryTest extends TestCase
+{
+    /**
+     * @test
+     * @group Conversation
+     * @group IO
+     * @group Interviewer
+     * @group Console
+     */
+    public function factory_throws_exception_when_a_non_supported_question_type_is_given()
+    {
+        $formatterDummy = Mockery::mock(ConsoleQuestionFormatter::class);
+        $questionDummy  = Mockery::mock(QaToolsQuestion::class);
+
+        $this->expectException(InvalidArgumentException::class);
+
+        $factory = new ConsoleQuestionFactory($formatterDummy);
+        $factory->createFrom($questionDummy);
+    }
+
+    /**
+     * @test
+     * @group Conversation
+     * @group IO
+     * @group Interviewer
+     * @group Console
+     */
+    public function factory_creates_a_console_question_from_positive_yes_or_no_question()
+    {
+        $question      = 'The question?';
+        $defaultAnswer = YesOrNoAnswer::yes();
+
+        $expectedConsoleQuestion = new ConfirmationQuestion($question, $defaultAnswer->getAnswer());
+
+        $formatterMock = Mockery::mock(ConsoleQuestionFormatter::class);
+        $formatterMock
+            ->shouldReceive('formatYesOrNoQuestion')
+            ->andReturn($question);
+
+        $factory = new ConsoleQuestionFactory($formatterMock);
+        $actualConsoleQuestion = $factory->createFrom(new YesOrNoQuestion($question, $defaultAnswer));
+
+        $this->assertEquals($expectedConsoleQuestion, $actualConsoleQuestion);
+    }
+
+    /**
+     * @test
+     * @group Conversation
+     * @group IO
+     * @group Interviewer
+     * @group Console
+     */
+    public function factory_creates_a_console_question_from_negative_yes_or_no_question()
+    {
+        $question      = 'The question?';
+        $defaultAnswer = YesOrNoAnswer::no();
+
+        $expectedConsoleQuestion = new ConfirmationQuestion($question, $defaultAnswer->getAnswer());
+
+        $formatterMock = Mockery::mock(ConsoleQuestionFormatter::class);
+        $formatterMock
+            ->shouldReceive('formatYesOrNoQuestion')
+            ->andReturn($question);
+
+        $factory = new ConsoleQuestionFactory($formatterMock);
+        $actualConsoleQuestion = $factory->createFrom(new YesOrNoQuestion($question, $defaultAnswer));
+
+        $this->assertEquals($expectedConsoleQuestion, $actualConsoleQuestion);
+    }
+
+    /**
+     * @test
+     * @group Conversation
+     * @group IO
+     * @group Interviewer
+     * @group Console
+     */
+    public function factory_creates_a_console_question_from_textual_question()
+    {
+        $question      = 'The question?';
+        $defaultAnswer = new TextualAnswer('The answer');
+
+        $expectedConsoleQuestion = new Question($question, $defaultAnswer->getAnswer());
+
+        $formatterMock = Mockery::mock(ConsoleQuestionFormatter::class);
+        $formatterMock
+            ->shouldReceive('formatTextualQuestion')
+            ->andReturn($question);
+
+        $factory = new ConsoleQuestionFactory($formatterMock);
+        $actualConsoleQuestion = $factory->createFrom(new TextualQuestion($question, $defaultAnswer));
+
+        $this->assertEquals($expectedConsoleQuestion, $actualConsoleQuestion);
+    }
+
+    /**
+     * @test
+     * @group Conversation
+     * @group IO
+     * @group Interviewer
+     * @group Console
+     */
+    public function factory_creates_a_console_question_from_multiple_choice_question()
+    {
+        $question        = 'The question?';
+        $answerText      = 'The answer';
+        $possibleChoices =  new Choices([new TextualAnswer($answerText)]);
+        $defaultAnswer   = new TextualAnswer('The answer');
+
+        $expectedConsoleQuestion = new ChoiceQuestion($question, [$answerText], $defaultAnswer->getAnswer());
+
+        $formatterMock = Mockery::mock(ConsoleQuestionFormatter::class);
+        $formatterMock
+            ->shouldReceive('formatMultipleChoiceQuestion')
+            ->andReturn($question);
+
+        $factory = new ConsoleQuestionFactory($formatterMock);
+        $actualConsoleQuestion = $factory->createFrom(new MultipleChoiceQuestion($question, $possibleChoices, $defaultAnswer));
+
+        $this->assertEquals($expectedConsoleQuestion, $actualConsoleQuestion);
+    }
+
+    /**
+     * @test
+     * @group Conversation
+     * @group IO
+     * @group Interviewer
+     * @group Console
+     */
+    public function factory_creates_a_console_question_from_checklist_question()
+    {
+        $question        = 'The question?';
+        $answerText      = 'The answer';
+        $possibleChoices =  new Choices([new TextualAnswer($answerText)]);
+        $defaultChoices  = new Choices([new TextualAnswer($answerText)]);
+
+        $expectedConsoleQuestion = new ChoiceQuestion($question, [$answerText], $answerText);
+        $expectedConsoleQuestion->setMultiselect(true);
+
+        $formatterMock = Mockery::mock(ConsoleQuestionFormatter::class);
+        $formatterMock
+            ->shouldReceive('formatChecklistQuestion')
+            ->andReturn($question);
+
+        $factory = new ConsoleQuestionFactory($formatterMock);
+        $actualConsoleQuestion = $factory->createFrom(new ChecklistQuestion($question, $possibleChoices, $defaultChoices));
+
+        $this->assertEquals($expectedConsoleQuestion, $actualConsoleQuestion);
+    }
+}

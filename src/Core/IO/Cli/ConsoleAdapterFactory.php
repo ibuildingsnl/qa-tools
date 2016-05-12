@@ -19,14 +19,29 @@ final class ConsoleAdapterFactory
      */
     private $formatterHelper;
 
-    public function __construct(QuestionHelper $questionHelper, FormatterHelper $formatterHelper)
-    {
-        $this->questionHelper = $questionHelper;
-        $this->formatterHelper = $formatterHelper;
+    /**
+     * @var ConsoleQuestionFactory
+     */
+    private $consoleQuestionFactory;
+
+    public function __construct(
+        QuestionHelper $questionHelper,
+        FormatterHelper $formatterHelper,
+        ConsoleQuestionFactory $consoleQuestionFactory
+    ) {
+        $this->questionHelper           = $questionHelper;
+        $this->formatterHelper          = $formatterHelper;
+        $this->consoleQuestionFactory   = $consoleQuestionFactory;
     }
 
     public function createWith(InputInterface $input, OutputInterface $output)
     {
-        return new ConsoleAdapter($input, $output, $this->questionHelper, $this->formatterHelper);
+        return new ConsoleAdapter(
+            $input,
+            $output,
+            $this->questionHelper,
+            $this->formatterHelper,
+            $this->consoleQuestionFactory
+        );
     }
 }
