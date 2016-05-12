@@ -16,25 +16,26 @@ final class TestDataProvider
                 'true'    => [true],
                 'false'   => [false],
                 'array'   => [[]],
-                'object'   => [new stdClass],
+                'object'  => [new stdClass],
                 'null'    => [null],
                 'string'  => ['ABC'],
             ]
         );
 
     }
+
     public static function notInteger()
     {
         return array_merge(
             self::emptyString(),
             [
-                'float'   => [1.234],
-                'true'    => [true],
-                'false'   => [false],
-                'array'   => [[]],
-                'object'  => [new stdClass()],
-                'null'    => [null],
-                'string'  => ['string']
+                'float'  => [1.234],
+                'true'   => [true],
+                'false'  => [false],
+                'array'  => [[]],
+                'object' => [new stdClass()],
+                'null'   => [null],
+                'string' => ['string'],
             ]
         );
     }
@@ -110,9 +111,12 @@ final class TestDataProvider
 
     public static function notNullAndNotStringOrEmptyString()
     {
-        return array_filter(self::notStringOrEmptyString(), function ($value) {
-            return reset($value) !== null;
-        });
+        return array_filter(
+            self::notStringOrEmptyString(),
+            function ($value) {
+                return reset($value) !== null;
+            }
+        );
     }
 
     public static function emptyString()
@@ -128,12 +132,12 @@ final class TestDataProvider
     public static function notStringOrInteger()
     {
         return [
-            'float'   => [1.234],
-            'true'    => [true],
-            'false'   => [false],
-            'array'   => [[]],
-            'object'  => [new stdClass()],
-            'null'    => [null],
+            'float'  => [1.234],
+            'true'   => [true],
+            'false'  => [false],
+            'array'  => [[]],
+            'object' => [new stdClass()],
+            'null'   => [null],
         ];
     }
 }

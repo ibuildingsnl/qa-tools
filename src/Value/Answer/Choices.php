@@ -7,25 +7,29 @@ use Countable;
 use Ibuildings\QaTools\Assert\Assertion;
 use IteratorAggregate;
 
-final class MultipleAnswers implements Answer, IteratorAggregate, Countable
+final class Choices implements Answer, IteratorAggregate, Countable
 {
     /**
-     * @var Answer[]
+     * @var TextualAnswer[]
      */
     private $answers;
 
     /**
-     * @param Answer[] $answers
+     * @param TextualAnswer[] $answers
      */
     public function __construct(array $answers)
     {
-        Assertion::allIsInstanceOf($answers, Answer::class);
-
+        Assertion::allIsInstanceOf($answers, TextualAnswer::class);
         $this->answers = $answers;
     }
 
-    public function contains(Answer $other)
+    /**
+     * @param TextualAnswer $other
+     * @return bool
+     */
+    public function contain(TextualAnswer $other)
     {
+        /** @var TextualAnswer $answer */
         foreach ($this->answers as $answer) {
             if ($answer->equals($other)) {
                 return true;
@@ -35,18 +39,18 @@ final class MultipleAnswers implements Answer, IteratorAggregate, Countable
         return false;
     }
 
-    public function equals(Answer $other)
+    /**
+     * @param Choices $other
+     * @return bool
+     */
+    public function equal(Choices $other)
     {
-        if (!$other instanceof $this) {
-            return false;
-        }
-
         if (count($other) !== count($this)) {
             return false;
         }
 
         foreach ($other as $otherAnswer) {
-            if (!$this->contains($otherAnswer)) {
+            if (!$this->contain($otherAnswer)) {
                 return false;
             }
         }
@@ -54,7 +58,10 @@ final class MultipleAnswers implements Answer, IteratorAggregate, Countable
         return true;
     }
 
-    public function getAnswer()
+    /**
+     * @return TextualAnswer[]
+     */
+    public function getAnswers()
     {
         return $this->answers;
     }

@@ -4,7 +4,7 @@ namespace Ibuildings\QaTools\Value\Answer;
 
 use Ibuildings\QaTools\Assert\Assertion;
 
-final class SingleAnswer implements Answer
+final class TextualAnswer implements Answer
 {
     /**
      * @var string
@@ -17,12 +17,12 @@ final class SingleAnswer implements Answer
         $this->answer = $answer;
     }
 
-    public function equals(Answer $other)
+    /**
+     * @param TextualAnswer $other
+     * @return bool
+     */
+    public function equals(TextualAnswer $other)
     {
-        if (!$other instanceof $this) {
-            return false;
-        }
-
         return $this->answer === $other->answer;
     }
 

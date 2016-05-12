@@ -46,7 +46,7 @@ final class ConsoleAdapter implements ConversationHandler
 
     public function ask(Question $question)
     {
-        $consoleQuestion = ConsoleQuestionMapper::mapToConsoleQuestion($question);
+        $consoleQuestion = ConsoleQuestionFactory::createFrom($question);
 
         $consoleAnswer = $this->questionHelper->ask($this->input, $this->output, $consoleQuestion);
 

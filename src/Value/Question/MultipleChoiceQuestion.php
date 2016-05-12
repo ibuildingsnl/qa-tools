@@ -3,8 +3,8 @@
 namespace Ibuildings\QaTools\Value\Question;
 
 use Assert\Assertion;
-use Ibuildings\QaTools\Value\Answer\MultipleAnswers;
-use Ibuildings\QaTools\Value\Answer\SingleAnswer;
+use Ibuildings\QaTools\Value\Answer\Choices;
+use Ibuildings\QaTools\Value\Answer\TextualAnswer;
 use LogicException;
 
 final class MultipleChoiceQuestion implements Question
@@ -15,20 +15,20 @@ final class MultipleChoiceQuestion implements Question
     private $question;
 
     /**
-     * @var MultipleAnswers
+     * @var Choices
      */
-    private $possibleAnswers;
+    private $possibleChoices;
 
     /**
-     * @var SingleAnswer
+     * @var TextualAnswer
      */
     private $defaultAnswer;
 
-    public function __construct($question, MultipleAnswers $possibleAnswers, SingleAnswer $defaultAnswer)
+    public function __construct($question, Choices $possibleAnswers, TextualAnswer $defaultAnswer)
     {
         Assertion::string($question);
 
-        if (!$possibleAnswers->contains($defaultAnswer)) {
+        if (!$possibleAnswers->contain($defaultAnswer)) {
             throw new LogicException(
                 sprintf(
                     'Cannot create question: default answer "%s" is not a possible answer',
@@ -37,20 +37,36 @@ final class MultipleChoiceQuestion implements Question
             );
         }
 
-        $this->question = $question;
-        $this->possibleAnswers = $possibleAnswers;
-        $this->defaultAnswer = $defaultAnswer;
+        $this->question        = $question;
+        $this->possibleChoices = $possibleAnswers;
+        $this->defaultAnswer   = $defaultAnswer;
     }
 
-    public function equals(Question $other)
+    public function equals(MultipleChoiceQuestion $other)
     {
-        if (!$other instanceof $this) {
-            return false;
-        }
-
         return $this->question === $other->question
-            && $this->defaultAnswer->equals($other->defaultAnswer)
-            && $this->possibleAnswers->equals($other->possibleAnswers);
+        && $this->defaultAnswer->equals($other->defaultAnswer)
+        && $this->possibleChoices->equal($other->possibleChoices);
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getPossibleChoicesAsStrings()
+    {
+        return array_map(
+            function (TextualAnswer $answer) {
+                return $answer->getAnswer();
+            },
+            iterator_to_array(
+                $this->getPossibleChoices()
+            )
+        );
+    }
+
+    public function getDefaultAnswerAsString()
+    {
+        return $this->defaultAnswer->getAnswer();
     }
 
     /**
@@ -62,15 +78,15 @@ final class MultipleChoiceQuestion implements Question
     }
 
     /**
-     * @return MultipleAnswers
+     * @return Choices
      */
-    public function getPossibleAnswers()
+    public function getPossibleChoices()
     {
-        return $this->possibleAnswers;
+        return $this->possibleChoices;
     }
 
     /**
-     * @return SingleAnswer
+     * @return TextualAnswer
      */
     public function getDefaultAnswer()
     {

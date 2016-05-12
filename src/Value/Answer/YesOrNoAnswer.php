@@ -4,7 +4,7 @@ namespace Ibuildings\QaTools\Value\Answer;
 
 use Ibuildings\QaTools\Assert\Assertion;
 
-final class YesNoAnswer implements Answer
+final class YesOrNoAnswer implements Answer
 {
     /**
      * @var boolean
@@ -12,7 +12,7 @@ final class YesNoAnswer implements Answer
     private $answer;
 
     /**
-     * @return YesNoAnswer<true>
+     * @return YesOrNoAnswer<true>
      */
     public static function yes()
     {
@@ -20,7 +20,7 @@ final class YesNoAnswer implements Answer
     }
 
     /**
-     * @return YesNoAnswer<false>
+     * @return YesOrNoAnswer<false>
      */
     public static function no()
     {
@@ -33,12 +33,12 @@ final class YesNoAnswer implements Answer
         $this->answer = $answer;
     }
 
-    public function equals(Answer $other)
+    /**
+     * @param YesOrNoAnswer $other
+     * @return bool
+     */
+    public function equals(YesOrNoAnswer $other)
     {
-        if (!$other instanceof $this) {
-            return false;
-        }
-
         return $this->answer === $other->answer;
     }
 
@@ -48,5 +48,21 @@ final class YesNoAnswer implements Answer
     public function getAnswer()
     {
         return $this->answer;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isYes()
+    {
+        return $this->answer === true;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isNo()
+    {
+        return $this->answer === false;
     }
 }

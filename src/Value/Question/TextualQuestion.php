@@ -3,10 +3,9 @@
 namespace Ibuildings\QaTools\Value\Question;
 
 use Ibuildings\QaTools\Assert\Assertion;
-use Ibuildings\QaTools\Value\Answer\Answer;
-use Ibuildings\QaTools\Value\Answer\YesNoAnswer;
+use Ibuildings\QaTools\Value\Answer\TextualAnswer;
 
-final class YesNoQuestion implements Question
+final class TextualQuestion implements Question
 {
     /**
      * @var string
@@ -14,33 +13,29 @@ final class YesNoQuestion implements Question
     private $question;
 
     /**
-     * @var YesNoAnswer
+     * @var TextualAnswer
      */
     private $defaultAnswer;
 
-    public function __construct($question, YesNoAnswer $defaultAnswer = null)
+    public function __construct($question, TextualAnswer $defaultAnswer)
     {
         Assertion::string($question);
 
-        if ($defaultAnswer === null) {
-            $defaultAnswer= YesNoAnswer::yes();
-        }
-
-        $this->question = $question;
+        $this->question      = $question;
         $this->defaultAnswer = $defaultAnswer;
     }
 
-    public function equals(Question $other)
+    /**
+     * @param TextualQuestion $other
+     * @return bool
+     */
+    public function equals(TextualQuestion $other)
     {
-        if (!$other instanceof $this) {
-            return false;
-        }
-
         return $this->question === $other->question && $this->defaultAnswer->equals($other->defaultAnswer);
     }
 
     /**
-     * @return string $question
+     * @return string
      */
     public function getQuestion()
     {
@@ -48,10 +43,18 @@ final class YesNoQuestion implements Question
     }
 
     /**
-     * @return Answer $answer
+     * @return TextualAnswer
      */
     public function getDefaultAnswer()
     {
         return $this->defaultAnswer;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDefaultAnswerAsString()
+    {
+        return $this->getDefaultAnswer()->getAnswer();
     }
 }
