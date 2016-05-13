@@ -5,6 +5,7 @@ namespace Ibuildings\QaTools\Core\IO\Cli;
 use Ibuildings\QaTools\Core\Interviewer\ConversationHandler;
 use Ibuildings\QaTools\Value\Answer\Factory\AnswerFactory;
 use Ibuildings\QaTools\Value\Question\Question;
+use Ibuildings\QaTools\Value\Sentence;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -62,5 +63,29 @@ final class ConsoleAdapter implements ConversationHandler
         $consoleAnswer = $this->questionHelper->ask($this->input, $this->output, $consoleQuestion);
 
         return AnswerFactory::createFrom($consoleAnswer);
+    }
+
+    public function say(Sentence $sentence)
+    {
+        $this->output->writeln(sprintf(
+            '<info>%s</info>',
+            $sentence->getSentence()
+        ));
+    }
+
+    public function error(Sentence $sentence)
+    {
+        $this->output->writeln(sprintf(
+            '<error>%s</error>',
+            $sentence->getSentence()
+        ));
+    }
+
+    public function comment(Sentence $sentence)
+    {
+        $this->output->writeln(sprintf(
+            '<comment>%s</comment>',
+            $sentence->getSentence()
+        ));
     }
 }
