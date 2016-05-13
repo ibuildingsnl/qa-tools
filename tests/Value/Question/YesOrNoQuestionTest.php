@@ -1,5 +1,6 @@
 <?php
 
+use Ibuildings\QaTools\Value\Answer\MissingAnswer;
 use Ibuildings\QaTools\Value\Answer\YesOrNoAnswer;
 use Ibuildings\QaTools\Value\Question\YesOrNoQuestion;
 use PHPUnit_Framework_TestCase as TestCase;
@@ -29,14 +30,13 @@ class YesOrNoQuestionTest extends TestCase
      * @group Interviewer
      * @group Question
      */
-    public function yes_or_no_questions_answer_defaults_to_yes_if_none_given()
+    public function yes_or_no_questions_answer_defaults_to_no_answer_if_none_given()
     {
-        $defaultAnswer = YesOrNoAnswer::yes();
+        $expectedDefaultAnswer = new MissingAnswer;
 
-        $question     = new YesOrNoQuestion('A question?');
-        $sameQuestion = new YesOrNoQuestion('A question?', $defaultAnswer);
+        $question = new YesOrNoQuestion('A question?');
 
-        $this->assertTrue($question->equals($sameQuestion));
+        $this->assertEquals($expectedDefaultAnswer, $question->getDefaultAnswer());
     }
 
     /**
@@ -95,7 +95,7 @@ class YesOrNoQuestionTest extends TestCase
      * @group Interviewer
      * @group Question
      */
-    public function yes_no_question_has_a_question_value()
+    public function yes_or_no_question_has_a_question_value()
     {
         $expectedQuestionValue = 'The question?';
 
@@ -111,7 +111,7 @@ class YesOrNoQuestionTest extends TestCase
      * @group Interviewer
      * @group Question
      */
-    public function yes_or_no_question_has_a_default_answer()
+    public function yes_or_no_question_has_the_same_default_answer_as_given()
     {
         $expectedDefaultAnswer = YesOrNoAnswer::yes();
 
@@ -119,5 +119,59 @@ class YesOrNoQuestionTest extends TestCase
         $actualDefaultAnswer = $question->getDefaultAnswer();
 
         $this->assertEquals($expectedDefaultAnswer, $actualDefaultAnswer);
+    }
+
+    /**
+     * @test
+     * @group Conversation
+     * @group Interviewer
+     * @group Question
+     */
+    public function yes_or_no_question_throws_exception_when_determining_default_answer_is_yes_while_no_default_answer_is_given()
+    {
+        $this->expectException(LogicException::class);
+
+        $question = new YesOrNoQuestion('The question?');
+
+        $question->isDefaultAnswerYes();
+    }
+
+    /**
+     * @test
+     * @group Conversation
+     * @group Interviewer
+     * @group Question
+     */
+    public function yes_or_no_questions_default_answer_is_yes_if_yes_answer_given()
+    {
+        $question = new YesOrNoQuestion('The question?', YesOrNoAnswer::yes());
+
+        $this->assertTrue($question->isDefaultAnswerYes());
+    }
+
+    /**
+     * @test
+     * @group Conversation
+     * @group Interviewer
+     * @group Question
+     */
+    public function yes_or_no_question_has_no_default_answer_if_none_given()
+    {
+        $question = new YesOrNoQuestion('The question?');
+
+        $this->assertFalse($question->hasDefaultAnswer());
+    }
+
+    /**
+     * @test
+     * @group Conversation
+     * @group Interviewer
+     * @group Question
+     */
+    public function yes_or_no_question_has_a_default_answer_if_given()
+    {
+        $question = new YesOrNoQuestion('The question?', YesOrNoAnswer::yes());
+
+        $this->assertTrue($question->hasDefaultAnswer());
     }
 }

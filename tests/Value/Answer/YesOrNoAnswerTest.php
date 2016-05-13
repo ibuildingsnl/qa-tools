@@ -11,7 +11,7 @@ class YesOrNoAnswerTest extends TestCase
      * @group Interviewer
      * @group Answer
      */
-    public function yes_or_no_answer_does_not_equal_another_yes_or_no_answer()
+    public function yes_or_no_answer_does_not_equal_a_different_yes_or_no_answer()
     {
         $answer          = YesOrNoAnswer::no();
         $differentAnswer = YesOrNoAnswer::yes();
@@ -25,7 +25,7 @@ class YesOrNoAnswerTest extends TestCase
      * @group Interviewer
      * @group Answer
      */
-    public function yes_or_no_answer_equals_another_yes_or_no_answer()
+    public function yes_or_no_answer_equals_the_same_yes_or_no_answer()
     {
         $answer     = YesOrNoAnswer::yes();
         $sameAnswer = YesOrNoAnswer::yes();
@@ -39,7 +39,7 @@ class YesOrNoAnswerTest extends TestCase
      * @group Interviewer
      * @group Answer
      */
-    public function answer_has_an_answer_value()
+    public function yes_or_no_answer_has_an_answer_value()
     {
         $answer = YesOrNoAnswer::yes();
 

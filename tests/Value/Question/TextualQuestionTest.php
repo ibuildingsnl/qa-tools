@@ -1,5 +1,6 @@
 <?php
 
+use Ibuildings\QaTools\Value\Answer\MissingAnswer;
 use Ibuildings\QaTools\Value\Answer\TextualAnswer;
 use Ibuildings\QaTools\Value\Question\TextualQuestion;
 use PHPUnit_Framework_TestCase as TestCase;
@@ -21,6 +22,21 @@ class TextualQuestionTest extends TestCase
         $defaultAnswer = new TextualAnswer('An answer.');
 
         new TextualQuestion($value, $defaultAnswer);
+    }
+
+    /**
+     * @test
+     * @group Conversation
+     * @group Interviewer
+     * @group Question
+     */
+    public function textual_questions_answer_defaults_to_missing_answer_if_none_given()
+    {
+        $expectedDefaultAnswer = new MissingAnswer;
+
+        $question = new TextualQuestion('A question?');
+
+        $this->assertEquals($expectedDefaultAnswer, $question->getDefaultAnswer());
     }
 
     /**

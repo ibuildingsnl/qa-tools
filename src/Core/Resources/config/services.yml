@@ -17,7 +17,6 @@ services:
         class: Ibuildings\QaTools\Core\IO\Cli\ConsoleAdapterFactory
         arguments:
             - "@symfony.question_helper"
-            - "@symfony.formatter_helper"
             - "@qa_tools.io.console_question_factory"
 
     qa_tools.io.console_question_factory:

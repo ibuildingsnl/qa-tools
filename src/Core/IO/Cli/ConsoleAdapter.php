@@ -5,7 +5,6 @@ namespace Ibuildings\QaTools\Core\IO\Cli;
 use Ibuildings\QaTools\Core\Interviewer\ConversationHandler;
 use Ibuildings\QaTools\Value\Answer\Factory\AnswerFactory;
 use Ibuildings\QaTools\Value\Question\Question;
-use Symfony\Component\Console\Helper\FormatterHelper;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -28,11 +27,6 @@ final class ConsoleAdapter implements ConversationHandler
     private $questionHelper;
 
     /**
-     * @var FormatterHelper
-     */
-    private $formatterHelper;
-
-    /**
      * @var ConsoleQuestionFactory
      */
     private $consoleQuestionFactory;
@@ -42,13 +36,11 @@ final class ConsoleAdapter implements ConversationHandler
         InputInterface $input,
         OutputInterface $output,
         QuestionHelper $questionHelper,
-        FormatterHelper $formatterHelper,
         ConsoleQuestionFactory $consoleQuestionFactory
     ) {
         $this->input = $input;
         $this->output = $output;
         $this->questionHelper = $questionHelper;
-        $this->formatterHelper = $formatterHelper;
         $this->consoleQuestionFactory = $consoleQuestionFactory;
     }
 

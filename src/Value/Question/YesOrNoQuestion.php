@@ -3,7 +3,9 @@
 namespace Ibuildings\QaTools\Value\Question;
 
 use Ibuildings\QaTools\Assert\Assertion;
+use Ibuildings\QaTools\Value\Answer\MissingAnswer;
 use Ibuildings\QaTools\Value\Answer\YesOrNoAnswer;
+use Ibuildings\QaTools\Exception\LogicException;
 
 final class YesOrNoQuestion implements Question
 {
@@ -13,7 +15,7 @@ final class YesOrNoQuestion implements Question
     private $question;
 
     /**
-     * @var YesOrNoAnswer
+     * @var YesOrNoAnswer|MissingAnswer
      */
     private $defaultAnswer;
 
@@ -22,7 +24,7 @@ final class YesOrNoQuestion implements Question
         Assertion::string($question);
 
         if ($defaultAnswer === null) {
-            $defaultAnswer = YesOrNoAnswer::yes();
+            $defaultAnswer = new MissingAnswer();
         }
 
         $this->question      = $question;
@@ -38,19 +40,30 @@ final class YesOrNoQuestion implements Question
         return $this->question === $other->question && $this->defaultAnswer->equals($other->defaultAnswer);
     }
 
+    public function hasDefaultAnswer()
+    {
+        return !$this->defaultAnswer instanceof MissingAnswer;
+    }
+
     /**
      * @return string
      */
-    public function getDefaultAnswerAsString()
+    public function getDefaultAnswerAsValue()
     {
         return $this->getDefaultAnswer()->getAnswer();
     }
 
     /**
-     * @return bool
+     * @return boolean
      */
-    public function defaultAnswerIsYes()
+    public function isDefaultAnswerYes()
     {
+        if (!$this->hasDefaultAnswer()) {
+            throw new LogicException(
+                'Cannot determine if YesNoQuestion has default answer of "yes": no default answer given.'
+            );
+        }
+
         return $this->getDefaultAnswer()->isYes();
     }
 
@@ -63,7 +76,7 @@ final class YesOrNoQuestion implements Question
     }
 
     /**
-     * @return YesOrNoAnswer $answer
+     * @return YesOrNoAnswer|MissingAnswer $answer
      */
     public function getDefaultAnswer()
     {

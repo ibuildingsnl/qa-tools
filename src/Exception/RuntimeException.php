@@ -4,6 +4,6 @@ namespace Ibuildings\QaTools\Exception;
 
 use RuntimeException as BaseRuntimeException;
 
-final class RuntimeException extends BaseRuntimeException
+class RuntimeException extends BaseRuntimeException
 {
 }

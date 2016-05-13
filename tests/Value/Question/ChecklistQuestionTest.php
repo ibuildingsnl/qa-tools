@@ -2,6 +2,7 @@
 
 use Ibuildings\QaTools\Exception\LogicException as LogicException;
 use Ibuildings\QaTools\Value\Answer\Choices;
+use Ibuildings\QaTools\Value\Answer\MissingAnswer;
 use Ibuildings\QaTools\Value\Answer\TextualAnswer;
 use Ibuildings\QaTools\Value\Question\ChecklistQuestion;
 use PHPUnit_Framework_TestCase as TestCase;
@@ -16,13 +17,28 @@ class ChecklistQuestionTest extends TestCase
      *
      * @dataProvider \Ibuildings\QaTools\TestDataProvider::notString()
      */
-    public function question_can_only_be_string($value)
+    public function checklist_questions_question_can_only_be_string($value)
     {
         $this->expectException(InvalidArgumentException::class);
 
         $multipleAnswers = new Choices([new TextualAnswer('An answer.')]);
 
         new ChecklistQuestion($value, $multipleAnswers, $multipleAnswers);
+    }
+
+    /**
+     * @test
+     * @group Conversation
+     * @group Interviewer
+     * @group Question
+     */
+    public function checklist_questions_choices_default_to_missing_answer_if_none_given()
+    {
+        $expectedDefaultAnswer = new MissingAnswer;
+
+        $question = new ChecklistQuestion('A question?', new Choices([new TextualAnswer('An answer.')]));
+
+        $this->assertEquals($expectedDefaultAnswer, $question->getDefaultChoices());
     }
 
     /**
@@ -169,5 +185,18 @@ class ChecklistQuestionTest extends TestCase
         $actualPossibleAnswers = $question->getPossibleChoices();
 
         $this->assertEquals($expectedPossibleAnswers, $actualPossibleAnswers);
+    }
+
+    /**
+     * @test
+     * @group Conversation
+     * @group Interviewer
+     * @group Question
+     */
+    public function checklists_default_choice_values_are_null_if_they_are_missing()
+    {
+        $checklist = new ChecklistQuestion('A question?', new Choices([new TextualAnswer('An answer.')]));
+
+        $this->assertNull($checklist->getDefaultChoiceValues());
     }
 }

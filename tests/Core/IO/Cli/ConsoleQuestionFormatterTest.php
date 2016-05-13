@@ -15,7 +15,7 @@ class ConsoleQuestionFormatterTest extends TestCase
     /**
      * @test
      * @group Conversation
-     * @group IO
+     * @group Formatter
      * @group Interviewer
      * @group Console
      */
@@ -34,7 +34,7 @@ class ConsoleQuestionFormatterTest extends TestCase
     /**
      * @test
      * @group Conversation
-     * @group IO
+     * @group Formatter
      * @group Interviewer
      * @group Console
      */
@@ -53,7 +53,7 @@ class ConsoleQuestionFormatterTest extends TestCase
     /**
      * @test
      * @group Conversation
-     * @group IO
+     * @group Formatter
      * @group Interviewer
      * @group Console
      */
@@ -72,7 +72,7 @@ class ConsoleQuestionFormatterTest extends TestCase
     /**
      * @test
      * @group Conversation
-     * @group IO
+     * @group Formatter
      * @group Interviewer
      * @group Console
      */
@@ -97,7 +97,7 @@ class ConsoleQuestionFormatterTest extends TestCase
     /**
      * @test
      * @group Conversation
-     * @group IO
+     * @group Formatter
      * @group Interviewer
      * @group Console
      */

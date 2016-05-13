@@ -15,22 +15,15 @@ final class ConsoleAdapterFactory
     private $questionHelper;
 
     /**
-     * @var FormatterHelper
-     */
-    private $formatterHelper;
-
-    /**
      * @var ConsoleQuestionFactory
      */
     private $consoleQuestionFactory;
 
     public function __construct(
         QuestionHelper $questionHelper,
-        FormatterHelper $formatterHelper,
         ConsoleQuestionFactory $consoleQuestionFactory
     ) {
         $this->questionHelper           = $questionHelper;
-        $this->formatterHelper          = $formatterHelper;
         $this->consoleQuestionFactory   = $consoleQuestionFactory;
     }
 
@@ -40,7 +33,6 @@ final class ConsoleAdapterFactory
             $input,
             $output,
             $this->questionHelper,
-            $this->formatterHelper,
             $this->consoleQuestionFactory
         );
     }

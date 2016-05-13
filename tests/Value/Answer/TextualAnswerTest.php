@@ -14,7 +14,7 @@ class TextualAnswerTest extends TestCase
      *
      * @dataProvider \Ibuildings\QaTools\TestDataProvider::notString()
      */
-    public function answer_can_only_be_string($value)
+    public function textual_answer_can_only_be_string($value)
     {
         $this->expectException(InvalidArgumentException::class);
 
@@ -27,7 +27,7 @@ class TextualAnswerTest extends TestCase
      * @group Interviewer
      * @group Answer
      */
-    public function answer_does_not_equal_another_answer()
+    public function textual_answer_does_not_equal_another_answer()
     {
         $answer      = new TextualAnswer('The answer.');
         $otherAnswer = new TextualAnswer('Another answer.');
@@ -41,7 +41,7 @@ class TextualAnswerTest extends TestCase
      * @group Interviewer
      * @group Answer
      */
-    public function answer_equals_another_answer()
+    public function textual_answer_equals_another_answer()
     {
         $answer      = new TextualAnswer('The answer.');
         $otherAnswer = new TextualAnswer('The answer.');
@@ -55,7 +55,7 @@ class TextualAnswerTest extends TestCase
      * @group Interviewer
      * @group Answer
      */
-    public function answer_has_an_answer_value()
+    public function textual_answer_has_an_textual_answer_value()
     {
         $expectedValue = 'An answer.';
         $answer        = new TextualAnswer($expectedValue);

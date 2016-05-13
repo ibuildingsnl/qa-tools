@@ -13,7 +13,6 @@ use Ibuildings\QaTools\Value\Question\Question as QaToolsQuestion;
 use Ibuildings\QaTools\Value\Question\YesOrNoQuestion;
 use PHPUnit_Framework_TestCase as TestCase;
 use Symfony\Component\Console\Question\ChoiceQuestion;
-use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Question\Question;
 
 class ConsoleQuestionFactoryTest extends TestCase
@@ -21,7 +20,7 @@ class ConsoleQuestionFactoryTest extends TestCase
     /**
      * @test
      * @group Conversation
-     * @group IO
+     * @group Factory
      * @group Interviewer
      * @group Console
      */
@@ -39,7 +38,7 @@ class ConsoleQuestionFactoryTest extends TestCase
     /**
      * @test
      * @group Conversation
-     * @group IO
+     * @group Factory
      * @group Interviewer
      * @group Console
      */
@@ -48,23 +47,22 @@ class ConsoleQuestionFactoryTest extends TestCase
         $question      = 'The question?';
         $defaultAnswer = YesOrNoAnswer::yes();
 
-        $expectedConsoleQuestion = new ConfirmationQuestion($question, $defaultAnswer->getAnswer());
-
         $formatterMock = Mockery::mock(ConsoleQuestionFormatter::class);
         $formatterMock
             ->shouldReceive('formatYesOrNoQuestion')
             ->andReturn($question);
 
-        $factory = new ConsoleQuestionFactory($formatterMock);
+        $factory               = new ConsoleQuestionFactory($formatterMock);
         $actualConsoleQuestion = $factory->createFrom(new YesOrNoQuestion($question, $defaultAnswer));
 
-        $this->assertEquals($expectedConsoleQuestion, $actualConsoleQuestion);
+        $this->assertInstanceOf(Question::class, $actualConsoleQuestion);
+        $this->assertEquals($question, $actualConsoleQuestion->getQuestion());
     }
 
     /**
      * @test
      * @group Conversation
-     * @group IO
+     * @group Factory
      * @group Interviewer
      * @group Console
      */
@@ -73,23 +71,22 @@ class ConsoleQuestionFactoryTest extends TestCase
         $question      = 'The question?';
         $defaultAnswer = YesOrNoAnswer::no();
 
-        $expectedConsoleQuestion = new ConfirmationQuestion($question, $defaultAnswer->getAnswer());
-
         $formatterMock = Mockery::mock(ConsoleQuestionFormatter::class);
         $formatterMock
             ->shouldReceive('formatYesOrNoQuestion')
             ->andReturn($question);
 
-        $factory = new ConsoleQuestionFactory($formatterMock);
+        $factory               = new ConsoleQuestionFactory($formatterMock);
         $actualConsoleQuestion = $factory->createFrom(new YesOrNoQuestion($question, $defaultAnswer));
 
-        $this->assertEquals($expectedConsoleQuestion, $actualConsoleQuestion);
+        $this->assertInstanceOf(Question::class, $actualConsoleQuestion);
+        $this->assertEquals($question, $actualConsoleQuestion->getQuestion());
     }
 
     /**
      * @test
      * @group Conversation
-     * @group IO
+     * @group Factory
      * @group Interviewer
      * @group Console
      */
@@ -98,23 +95,22 @@ class ConsoleQuestionFactoryTest extends TestCase
         $question      = 'The question?';
         $defaultAnswer = new TextualAnswer('The answer');
 
-        $expectedConsoleQuestion = new Question($question, $defaultAnswer->getAnswer());
-
         $formatterMock = Mockery::mock(ConsoleQuestionFormatter::class);
         $formatterMock
             ->shouldReceive('formatTextualQuestion')
             ->andReturn($question);
 
-        $factory = new ConsoleQuestionFactory($formatterMock);
+        $factory               = new ConsoleQuestionFactory($formatterMock);
         $actualConsoleQuestion = $factory->createFrom(new TextualQuestion($question, $defaultAnswer));
 
-        $this->assertEquals($expectedConsoleQuestion, $actualConsoleQuestion);
+        $this->assertInstanceOf(Question::class, $actualConsoleQuestion);
+        $this->assertEquals($question, $actualConsoleQuestion->getQuestion());
     }
 
     /**
      * @test
      * @group Conversation
-     * @group IO
+     * @group Factory
      * @group Interviewer
      * @group Console
      */
@@ -122,7 +118,7 @@ class ConsoleQuestionFactoryTest extends TestCase
     {
         $question        = 'The question?';
         $answerText      = 'The answer';
-        $possibleChoices =  new Choices([new TextualAnswer($answerText)]);
+        $possibleChoices = new Choices([new TextualAnswer($answerText)]);
         $defaultAnswer   = new TextualAnswer('The answer');
 
         $expectedConsoleQuestion = new ChoiceQuestion($question, [$answerText], $defaultAnswer->getAnswer());
@@ -132,8 +128,10 @@ class ConsoleQuestionFactoryTest extends TestCase
             ->shouldReceive('formatMultipleChoiceQuestion')
             ->andReturn($question);
 
-        $factory = new ConsoleQuestionFactory($formatterMock);
-        $actualConsoleQuestion = $factory->createFrom(new MultipleChoiceQuestion($question, $possibleChoices, $defaultAnswer));
+        $factory               = new ConsoleQuestionFactory($formatterMock);
+        $actualConsoleQuestion = $factory->createFrom(
+            new MultipleChoiceQuestion($question, $possibleChoices, $defaultAnswer)
+        );
 
         $this->assertEquals($expectedConsoleQuestion, $actualConsoleQuestion);
     }
@@ -141,7 +139,7 @@ class ConsoleQuestionFactoryTest extends TestCase
     /**
      * @test
      * @group Conversation
-     * @group IO
+     * @group Factory
      * @group Interviewer
      * @group Console
      */
@@ -149,7 +147,7 @@ class ConsoleQuestionFactoryTest extends TestCase
     {
         $question        = 'The question?';
         $answerText      = 'The answer';
-        $possibleChoices =  new Choices([new TextualAnswer($answerText)]);
+        $possibleChoices = new Choices([new TextualAnswer($answerText)]);
         $defaultChoices  = new Choices([new TextualAnswer($answerText)]);
 
         $expectedConsoleQuestion = new ChoiceQuestion($question, [$answerText], $answerText);
@@ -160,8 +158,10 @@ class ConsoleQuestionFactoryTest extends TestCase
             ->shouldReceive('formatChecklistQuestion')
             ->andReturn($question);
 
-        $factory = new ConsoleQuestionFactory($formatterMock);
-        $actualConsoleQuestion = $factory->createFrom(new ChecklistQuestion($question, $possibleChoices, $defaultChoices));
+        $factory               = new ConsoleQuestionFactory($formatterMock);
+        $actualConsoleQuestion = $factory->createFrom(
+            new ChecklistQuestion($question, $possibleChoices, $defaultChoices)
+        );
 
         $this->assertEquals($expectedConsoleQuestion, $actualConsoleQuestion);
     }

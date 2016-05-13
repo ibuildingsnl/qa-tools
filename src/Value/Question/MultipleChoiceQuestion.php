@@ -4,6 +4,7 @@ namespace Ibuildings\QaTools\Value\Question;
 
 use Assert\Assertion;
 use Ibuildings\QaTools\Value\Answer\Choices;
+use Ibuildings\QaTools\Value\Answer\MissingAnswer;
 use Ibuildings\QaTools\Value\Answer\TextualAnswer;
 use LogicException;
 
@@ -20,21 +21,18 @@ final class MultipleChoiceQuestion implements Question
     private $possibleChoices;
 
     /**
-     * @var TextualAnswer
+     * @var TextualAnswer|MissingAnswer
      */
     private $defaultAnswer;
 
-    public function __construct($question, Choices $possibleAnswers, TextualAnswer $defaultAnswer)
+    public function __construct($question, Choices $possibleAnswers, TextualAnswer $defaultAnswer = null)
     {
         Assertion::string($question);
 
-        if (!$possibleAnswers->contain($defaultAnswer)) {
-            throw new LogicException(
-                sprintf(
-                    'Cannot create question: default answer "%s" is not a possible answer',
-                    $defaultAnswer->getAnswer()
-                )
-            );
+        if ($defaultAnswer === null) {
+            $defaultAnswer = new MissingAnswer();
+        } else {
+            $this->assertDefaultAnswerIsPossible($possibleAnswers, $defaultAnswer);
         }
 
         $this->question        = $question;
@@ -52,7 +50,7 @@ final class MultipleChoiceQuestion implements Question
     /**
      * @return string[]
      */
-    public function getPossibleChoicesAsStrings()
+    public function getPossibleChoiceValues()
     {
         return array_map(
             function (TextualAnswer $answer) {
@@ -64,9 +62,17 @@ final class MultipleChoiceQuestion implements Question
         );
     }
 
-    public function getDefaultAnswerAsString()
+    /**
+     * @return string
+     */
+    public function getDefaultAnswerValue()
     {
         return $this->defaultAnswer->getAnswer();
+    }
+
+    public function hasDefaultAnswer()
+    {
+        return !$this->defaultAnswer instanceof MissingAnswer;
     }
 
     /**
@@ -91,5 +97,21 @@ final class MultipleChoiceQuestion implements Question
     public function getDefaultAnswer()
     {
         return $this->defaultAnswer;
+    }
+
+    /**
+     * @param Choices $possibleAnswers
+     * @param TextualAnswer $defaultAnswer
+     */
+    public function assertDefaultAnswerIsPossible(Choices $possibleAnswers, TextualAnswer $defaultAnswer)
+    {
+        if (!$possibleAnswers->contain($defaultAnswer)) {
+            throw new LogicException(
+                sprintf(
+                    'Cannot create question: default answer "%s" is not a possible answer',
+                    $defaultAnswer->getAnswer()
+                )
+            );
+        }
     }
 }

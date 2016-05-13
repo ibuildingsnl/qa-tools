@@ -1,6 +1,7 @@
 <?php
 
 use Ibuildings\QaTools\Value\Answer\Choices;
+use Ibuildings\QaTools\Value\Answer\MissingAnswer;
 use Ibuildings\QaTools\Value\Answer\TextualAnswer;
 use Ibuildings\QaTools\Value\Question\MultipleChoiceQuestion;
 use PHPUnit_Framework_TestCase as TestCase;
@@ -23,6 +24,21 @@ class MultipleChoiceQuestionTest extends TestCase
         $multipleAnswers = new Choices([new TextualAnswer('An answer.')]);
 
         new MultipleChoiceQuestion($value, $multipleAnswers, $defaultAnswer);
+    }
+
+    /**
+     * @test
+     * @group Conversation
+     * @group Interviewer
+     * @group Question
+     */
+    public function multiple_choice_questions_answer_defaults_to_missing_answer_if_none_given()
+    {
+        $expectedDefaultAnswer = new MissingAnswer;
+
+        $question = new MultipleChoiceQuestion('A question?', new Choices([new TextualAnswer('An answer.')]));
+
+        $this->assertEquals($expectedDefaultAnswer, $question->getDefaultAnswer());
     }
 
     /**

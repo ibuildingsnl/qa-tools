@@ -5,6 +5,7 @@ namespace Ibuildings\QaTools\Value\Question;
 use Ibuildings\QaTools\Assert\Assertion;
 use Ibuildings\QaTools\Exception\LogicException;
 use Ibuildings\QaTools\Value\Answer\Choices;
+use Ibuildings\QaTools\Value\Answer\MissingAnswer;
 use Ibuildings\QaTools\Value\Answer\TextualAnswer;
 
 final class ChecklistQuestion implements Question
@@ -20,24 +21,18 @@ final class ChecklistQuestion implements Question
     private $possibleChoices;
 
     /**
-     * @var Choices
+     * @var Choices|MissingAnswer
      */
     private $defaultChoices;
 
-    public function __construct($question, Choices $possibleChoices, Choices $defaultChoices)
+    public function __construct($question, Choices $possibleChoices, Choices $defaultChoices = null)
     {
         Assertion::string($question);
 
-        /** @var TextualAnswer $defaultAnswer */
-        foreach ($defaultChoices as $defaultAnswer) {
-            if (!$possibleChoices->contain($defaultAnswer)) {
-                throw new LogicException(
-                    sprintf(
-                        'Cannot create question: default answer "%s" is not a possible answer',
-                        $defaultAnswer->getAnswer()
-                    )
-                );
-            }
+        if ($defaultChoices === null) {
+            $defaultChoices = new MissingAnswer;
+        } else {
+            $this->assertDefaultChoiceIsPossible($possibleChoices, $defaultChoices);
         }
 
         $this->question        = $question;
@@ -59,7 +54,7 @@ final class ChecklistQuestion implements Question
     /**
      * @return string[]
      */
-    public function getPossibleChoicesAsStrings()
+    public function getPossibleChoiceValues()
     {
         return array_map(
             function (TextualAnswer $answer) {
@@ -70,10 +65,14 @@ final class ChecklistQuestion implements Question
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getDefaultChoicesAsString()
+    public function getDefaultChoiceValues()
     {
+        if (!$this->hasDefaultChoices()) {
+            return null;
+        }
+
         return implode(
             ', ',
             array_map(
@@ -83,6 +82,14 @@ final class ChecklistQuestion implements Question
                 iterator_to_array($this->getDefaultChoices())
             )
         );
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasDefaultChoices()
+    {
+        return !$this->defaultChoices instanceof MissingAnswer;
     }
 
     /**
@@ -102,10 +109,29 @@ final class ChecklistQuestion implements Question
     }
 
     /**
-     * @return Choices
+     * @return Choices|MissingAnswer
      */
     public function getDefaultChoices()
     {
         return $this->defaultChoices;
+    }
+
+    /**
+     * @param Choices $possibleChoices
+     * @param Choices $defaultChoices
+     */
+    public function assertDefaultChoiceIsPossible(Choices $possibleChoices, Choices $defaultChoices)
+    {
+        /** @var TextualAnswer $defaultAnswer */
+        foreach ($defaultChoices as $defaultAnswer) {
+            if (!$possibleChoices->contain($defaultAnswer)) {
+                throw new LogicException(
+                    sprintf(
+                        'Cannot create question: default answer "%s" is not a possible answer',
+                        $defaultAnswer->getAnswer()
+                    )
+                );
+            }
+        }
     }
 }
