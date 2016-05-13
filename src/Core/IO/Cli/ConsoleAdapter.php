@@ -52,4 +52,15 @@ final class ConsoleAdapter implements ConversationHandler
 
         return AnswerFactory::createFrom($consoleAnswer);
     }
+
+    public function askHidden(Question $question)
+    {
+        $consoleQuestion = $this->consoleQuestionFactory->createFrom($question);
+        $consoleQuestion->setHidden(true);
+        $consoleQuestion->setHiddenFallback(false);
+
+        $consoleAnswer = $this->questionHelper->ask($this->input, $this->output, $consoleQuestion);
+
+        return AnswerFactory::createFrom($consoleAnswer);
+    }
 }

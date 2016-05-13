@@ -11,4 +11,10 @@ interface ConversationHandler
      * @return Answer $answer
      */
     public function ask(Question $question);
+
+    /**
+     * @param Question $question
+     * @return Answer $answer
+     */
+    public function askHidden(Question $question);
 }

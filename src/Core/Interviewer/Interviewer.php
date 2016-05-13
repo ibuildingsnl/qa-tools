@@ -25,4 +25,13 @@ final class Interviewer
     {
         return $this->conversationHandler->ask($question);
     }
+
+    /**
+     * @param Question $question
+     * @return Answer
+     */
+    public function askHidden(Question $question)
+    {
+        return $this->conversationHandler->askHidden($question);
+    }
 }
