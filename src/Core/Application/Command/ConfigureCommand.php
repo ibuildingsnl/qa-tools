@@ -22,6 +22,13 @@ final class ConfigureCommand extends Command implements ContainerAwareInterface
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        // Implementation
+        $conversationHandler = $this->container
+            ->get('conversation_handler_factory')
+            ->createWith($input, $output);
+
+        $configurator = $this->container
+            ->get('configurator');
+
+        $configurator->configure($conversationHandler);
     }
 }

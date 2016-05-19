@@ -5,11 +5,12 @@ namespace Ibuildings\QaTools\Core\Interviewer;
 class InterviewerFactory
 {
     /**
-     * @param ConversationHandler $questionHandler
+     * @param ConversationHandler $conversationHandler
      * @return Interviewer
      */
-    public function createWith(ConversationHandler $questionHandler)
-    {
-        return new Interviewer($questionHandler);
+    public function createWith(
+        ConversationHandler $conversationHandler
+    ) {
+        return new Interviewer($conversationHandler);
     }
 }

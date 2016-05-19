@@ -2,11 +2,11 @@ services:
     file_handler:
         alias: qa_tools.io.filesystem_adapter
 
-    question_handler_factory:
+    conversation_handler_factory:
         alias: qa_tools.io.console_adapter_factory
 
-    installer:
-        alias: qa_tools.project.installer
+    configurator:
+        alias: qa_tools.project.configurator
 
     qa_tools.io.filesystem_adapter:
         class: Ibuildings\QaTools\Core\IO\File\FilesystemAdapter
@@ -30,10 +30,10 @@ services:
     qa_tools.project.interviewer_factory:
         class: Ibuildings\QaTools\Core\Interviewer\InterviewerFactory
         arguments:
-            - "@question_handler_factory"
+            - "@conversation_handler_factory"
 
-    qa_tools.project.installer:
-        class: Ibuildings\QaTools\Core\Project\Installer
+    qa_tools.project.configurator:
+        class: Ibuildings\QaTools\Core\Project\Configurator
         arguments:
             - "@qa_tools.project.interviewer_factory"
 

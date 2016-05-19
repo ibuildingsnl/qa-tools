@@ -1,9 +1,8 @@
 <?php
 namespace Ibuildings\QaTools\Core\Interviewer;
 
-use Ibuildings\QaTools\Value\Answer\Answer;
-use Ibuildings\QaTools\Value\Question\Question;
-use Ibuildings\QaTools\Value\Sentence;
+use Ibuildings\QaTools\Core\Interviewer\Answer\Answer;
+use Ibuildings\QaTools\Core\Interviewer\Question\Question;
 
 interface ConversationHandler
 {

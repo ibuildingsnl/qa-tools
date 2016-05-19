@@ -2,15 +2,15 @@
 
 use Ibuildings\QaTools\Core\IO\Cli\ConsoleQuestionFactory;
 use Ibuildings\QaTools\Core\IO\Cli\ConsoleQuestionFormatter;
-use Ibuildings\QaTools\Exception\InvalidArgumentException;
-use Ibuildings\QaTools\Value\Answer\Choices;
-use Ibuildings\QaTools\Value\Answer\TextualAnswer;
-use Ibuildings\QaTools\Value\Answer\YesOrNoAnswer;
-use Ibuildings\QaTools\Value\Question\ChecklistQuestion;
-use Ibuildings\QaTools\Value\Question\MultipleChoiceQuestion;
-use Ibuildings\QaTools\Value\Question\TextualQuestion;
-use Ibuildings\QaTools\Value\Question\Question as QaToolsQuestion;
-use Ibuildings\QaTools\Value\Question\YesOrNoQuestion;
+use Ibuildings\QaTools\Core\Exception\InvalidArgumentException;
+use Ibuildings\QaTools\Core\Interviewer\Answer\Choices;
+use Ibuildings\QaTools\Core\Interviewer\Answer\TextualAnswer;
+use Ibuildings\QaTools\Core\Interviewer\Answer\YesOrNoAnswer;
+use Ibuildings\QaTools\Core\Interviewer\Question\ChecklistQuestion;
+use Ibuildings\QaTools\Core\Interviewer\Question\MultipleChoiceQuestion;
+use Ibuildings\QaTools\Core\Interviewer\Question\TextualQuestion;
+use Ibuildings\QaTools\Core\Interviewer\Question\Question as QaToolsQuestion;
+use Ibuildings\QaTools\Core\Interviewer\Question\YesOrNoQuestion;
 use PHPUnit_Framework_TestCase as TestCase;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\Question;
@@ -122,6 +122,7 @@ class ConsoleQuestionFactoryTest extends TestCase
         $defaultAnswer   = new TextualAnswer('The answer');
 
         $expectedConsoleQuestion = new ChoiceQuestion($question, [$answerText], $defaultAnswer->getAnswer());
+        $expectedConsoleQuestion->setMaxAttempts(ConsoleQuestionFactory::MAX_ATTEMPTS);
 
         $formatterMock = Mockery::mock(ConsoleQuestionFormatter::class);
         $formatterMock
@@ -133,7 +134,8 @@ class ConsoleQuestionFactoryTest extends TestCase
             new MultipleChoiceQuestion($question, $possibleChoices, $defaultAnswer)
         );
 
-        $this->assertEquals($expectedConsoleQuestion, $actualConsoleQuestion);
+        $this->assertInstanceOf(Question::class, $actualConsoleQuestion);
+        $this->assertEquals($question, $actualConsoleQuestion->getQuestion());
     }
 
     /**
@@ -150,8 +152,9 @@ class ConsoleQuestionFactoryTest extends TestCase
         $possibleChoices = new Choices([new TextualAnswer($answerText)]);
         $defaultChoices  = new Choices([new TextualAnswer($answerText)]);
 
-        $expectedConsoleQuestion = new ChoiceQuestion($question, [$answerText], $answerText);
+        $expectedConsoleQuestion = new ChoiceQuestion($question, [$answerText], [$answerText]);
         $expectedConsoleQuestion->setMultiselect(true);
+        $expectedConsoleQuestion->setMaxAttempts(ConsoleQuestionFactory::MAX_ATTEMPTS);
 
         $formatterMock = Mockery::mock(ConsoleQuestionFormatter::class);
         $formatterMock

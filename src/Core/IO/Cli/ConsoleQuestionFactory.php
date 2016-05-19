@@ -2,13 +2,13 @@
 
 namespace Ibuildings\QaTools\Core\IO\Cli;
 
-use Ibuildings\QaTools\Exception\InvalidAnswerException;
-use Ibuildings\QaTools\Exception\InvalidArgumentException;
-use Ibuildings\QaTools\Value\Question\ChecklistQuestion;
-use Ibuildings\QaTools\Value\Question\MultipleChoiceQuestion;
-use Ibuildings\QaTools\Value\Question\TextualQuestion;
-use Ibuildings\QaTools\Value\Question\Question;
-use Ibuildings\QaTools\Value\Question\YesOrNoQuestion;
+use Ibuildings\QaTools\Core\Exception\InvalidAnswerGivenException;
+use Ibuildings\QaTools\Core\Exception\InvalidArgumentException;
+use Ibuildings\QaTools\Core\Interviewer\Question\ChecklistQuestion;
+use Ibuildings\QaTools\Core\Interviewer\Question\MultipleChoiceQuestion;
+use Ibuildings\QaTools\Core\Interviewer\Question\TextualQuestion;
+use Ibuildings\QaTools\Core\Interviewer\Question\Question;
+use Ibuildings\QaTools\Core\Interviewer\Question\YesOrNoQuestion;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\Question as ConsoleQuestion;
 
@@ -72,10 +72,16 @@ final class ConsoleQuestionFactory
     {
         $consoleQuestion = new ConsoleQuestion(
             $this->consoleQuestionFormatter->formatTextualQuestion($question),
-            $question->getDefaultAnswerValue()
+            $question->getDefaultAnswer()->getAnswer()
         );
 
-        $consoleQuestion->setValidator($this->answerIsPresentValidator());
+        $consoleQuestion->setValidator(function ($answer) {
+            if ($answer === null || trim($answer) === '') {
+                throw new InvalidAnswerGivenException('No answer given. Please provide an answer.');
+            }
+
+            return $answer;
+        });
         $consoleQuestion->setMaxAttempts(self::MAX_ATTEMPTS);
 
         return $consoleQuestion;
@@ -89,17 +95,13 @@ final class ConsoleQuestionFactory
     {
         $consoleQuestion = new ConsoleQuestion(
             $this->consoleQuestionFormatter->formatYesOrNoQuestion($question),
-            $question->getDefaultAnswerAsValue()
+            $question->getDefaultAnswer()->getAnswer()
         );
 
         $consoleQuestion->setValidator(
             function ($answer) {
-                if (is_bool($answer)) {
-                    return $answer;
-                }
-
                 if (preg_match('/^(y|yes|n|no)$/i', $answer) === 0) {
-                    throw new InvalidAnswerException(
+                    throw new InvalidAnswerGivenException(
                         'A yes or no question can only be answered with yes/y or no/n'
                     );
                 }
@@ -107,7 +109,6 @@ final class ConsoleQuestionFactory
                 return strtolower(substr($answer, 0, 1)) === 'y';
             }
         );
-
         $consoleQuestion->setMaxAttempts(self::MAX_ATTEMPTS);
 
         return $consoleQuestion;
@@ -121,11 +122,11 @@ final class ConsoleQuestionFactory
     {
         $consoleQuestion = new ChoiceQuestion(
             $this->consoleQuestionFormatter->formatMultipleChoiceQuestion($question),
-            $question->getPossibleChoiceValues(),
-            $question->getDefaultAnswerValue()
+            $question->getPossibleChoices()->convertToArray(),
+            $question->getDefaultAnswer()->getAnswer()
         );
 
-        $consoleQuestion->setValidator($this->answerIsPresentValidator());
+        $consoleQuestion->setMaxAttempts(self::MAX_ATTEMPTS);
 
         return $consoleQuestion;
     }
@@ -138,28 +139,13 @@ final class ConsoleQuestionFactory
     {
         $consoleQuestion = new ChoiceQuestion(
             $this->consoleQuestionFormatter->formatChecklistQuestion($question),
-            $question->getPossibleChoiceValues(),
-            $question->getDefaultChoiceValues()
+            $question->getPossibleChoices()->convertToArray(),
+            $question->getDefaultAnswer()->convertToString()
         );
 
         $consoleQuestion->setMultiselect(true);
-
-        $consoleQuestion->setValidator($this->answerIsPresentValidator());
+        $consoleQuestion->setMaxAttempts(self::MAX_ATTEMPTS);
 
         return $consoleQuestion;
-    }
-
-    /**
-     * @return \Closure
-     */
-    private function answerIsPresentValidator()
-    {
-        return function ($answer) {
-            if ($answer === null) {
-                throw new InvalidAnswerException('No answer given. Please provide an answer.');
-            }
-
-            return $answer;
-        };
     }
 }

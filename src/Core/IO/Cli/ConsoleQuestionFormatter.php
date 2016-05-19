@@ -2,14 +2,14 @@
 
 namespace Ibuildings\QaTools\Core\IO\Cli;
 
-use Ibuildings\QaTools\Value\Question\ChecklistQuestion;
-use Ibuildings\QaTools\Value\Question\MultipleChoiceQuestion;
-use Ibuildings\QaTools\Value\Question\TextualQuestion;
-use Ibuildings\QaTools\Value\Question\YesOrNoQuestion;
+use Ibuildings\QaTools\Core\Interviewer\Question\ChecklistQuestion;
+use Ibuildings\QaTools\Core\Interviewer\Question\MultipleChoiceQuestion;
+use Ibuildings\QaTools\Core\Interviewer\Question\TextualQuestion;
+use Ibuildings\QaTools\Core\Interviewer\Question\YesOrNoQuestion;
 
 class ConsoleQuestionFormatter
 {
-    const QUESTION_FORMAT = '<info>%s</info>';
+    const QUESTION_FORMAT       = '<info>%s</info>';
     const DEFAULT_ANSWER_FORMAT = ' <comment>[%s]</comment>';
 
     /**
@@ -20,7 +20,7 @@ class ConsoleQuestionFormatter
     {
         $defaultAnswer = '';
         if ($question->hasDefaultAnswer()) {
-            $defaultAnswer = sprintf(self::DEFAULT_ANSWER_FORMAT, $question->getDefaultAnswerValue());
+            $defaultAnswer = sprintf(self::DEFAULT_ANSWER_FORMAT, $question->getDefaultAnswer()->getAnswer());
         }
 
         return sprintf(self::QUESTION_FORMAT . $defaultAnswer . PHP_EOL . ' > ', $question->getQuestion());
@@ -34,7 +34,7 @@ class ConsoleQuestionFormatter
     {
         $defaultAnswerValue = 'y/n';
         if ($question->hasDefaultAnswer()) {
-            $defaultAnswerValue = $question->isDefaultAnswerYes() ? 'Y/n' : 'y/N';
+            $defaultAnswerValue = $question->getDefaultAnswer()->isYes() ? 'Y/n' : 'y/N';
         }
 
         $defaultAnswer = sprintf(self::DEFAULT_ANSWER_FORMAT, $defaultAnswerValue);
@@ -50,7 +50,7 @@ class ConsoleQuestionFormatter
     {
         $defaultAnswer = '';
         if ($question->hasDefaultAnswer()) {
-            $defaultAnswer = sprintf(self::DEFAULT_ANSWER_FORMAT, $question->getDefaultAnswerValue());
+            $defaultAnswer = sprintf(self::DEFAULT_ANSWER_FORMAT, $question->getDefaultAnswer()->convertToString());
         }
 
         return sprintf(self::QUESTION_FORMAT . $defaultAnswer, $question->getQuestion());
@@ -63,8 +63,8 @@ class ConsoleQuestionFormatter
     public function formatChecklistQuestion(ChecklistQuestion $question)
     {
         $defaultAnswer = '';
-        if ($question->hasDefaultChoices()) {
-            $defaultAnswer = sprintf(self::DEFAULT_ANSWER_FORMAT, $question->getDefaultChoiceValues());
+        if ($question->hasDefaultAnswer()) {
+            $defaultAnswer = sprintf(self::DEFAULT_ANSWER_FORMAT, $question->getDefaultAnswer()->convertToString());
         }
 
         return sprintf(self::QUESTION_FORMAT . $defaultAnswer, $question->getQuestion());

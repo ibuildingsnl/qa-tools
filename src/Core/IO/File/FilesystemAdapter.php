@@ -2,8 +2,8 @@
 
 namespace Ibuildings\QaTools\Core\IO\File;
 
-use Ibuildings\QaTools\Assert\Assertion;
-use Ibuildings\QaTools\Exception\RuntimeException;
+use Ibuildings\QaTools\Core\Assert\Assertion;
+use Ibuildings\QaTools\Core\Exception\RuntimeException;
 use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
 

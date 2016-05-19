@@ -1,13 +1,13 @@
 <?php
 
 use Ibuildings\QaTools\Core\IO\Cli\ConsoleQuestionFormatter;
-use Ibuildings\QaTools\Value\Answer\Choices;
-use Ibuildings\QaTools\Value\Answer\TextualAnswer;
-use Ibuildings\QaTools\Value\Answer\YesOrNoAnswer;
-use Ibuildings\QaTools\Value\Question\ChecklistQuestion;
-use Ibuildings\QaTools\Value\Question\MultipleChoiceQuestion;
-use Ibuildings\QaTools\Value\Question\TextualQuestion;
-use Ibuildings\QaTools\Value\Question\YesOrNoQuestion;
+use Ibuildings\QaTools\Core\Interviewer\Answer\Choices;
+use Ibuildings\QaTools\Core\Interviewer\Answer\TextualAnswer;
+use Ibuildings\QaTools\Core\Interviewer\Answer\YesOrNoAnswer;
+use Ibuildings\QaTools\Core\Interviewer\Question\ChecklistQuestion;
+use Ibuildings\QaTools\Core\Interviewer\Question\MultipleChoiceQuestion;
+use Ibuildings\QaTools\Core\Interviewer\Question\TextualQuestion;
+use Ibuildings\QaTools\Core\Interviewer\Question\YesOrNoQuestion;
 use PHPUnit_Framework_TestCase as TestCase;
 
 class ConsoleQuestionFormatterTest extends TestCase

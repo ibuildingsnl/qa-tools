@@ -1,5 +1,6 @@
 <?php
 
+use Ibuildings\QaTools\Core\Exception\RuntimeException;
 use Ibuildings\QaTools\Core\IO\File\FilesystemAdapter;
 use PHPUnit_Framework_TestCase as TestCase;
 use Symfony\Component\Filesystem\Exception\IOException;
@@ -49,7 +50,7 @@ class FilesystemAdapterTest extends TestCase
      * @group IO
      * @group Filesystem
      */
-    public function an_exception_thrown_by_filesystem_when_writing_is_converted_to_an_engineblock_exception()
+    public function an_exception_thrown_by_filesystem_when_writing_is_converted_to_an_qa_tools_exception()
     {
         $filesystemMock = Mockery::mock(Filesystem::class);
         $filesystemMock->shouldReceive('dumpFile')->andThrow(IOException::class);
@@ -59,7 +60,7 @@ class FilesystemAdapterTest extends TestCase
         try {
             $filesystemAdapter->writeTo('data-to-write', '/some/path');
         } catch (Exception $exception) {
-            $this->assertInstanceOf('\Ibuildings\QaTools\Exception\RuntimeException', $exception);
+            $this->assertInstanceOf(RuntimeException::class, $exception);
             $this->assertInstanceOf(IOException::class, $exception->getPrevious());
         }
     }
