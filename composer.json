@@ -12,10 +12,10 @@
     },
     "scripts": {
         "post-install-cmd": [
-            "Ibuildings\\QaTools\\Composer\\ScriptHandler::requireBoxPhar"
+            "Ibuildings\\QaTools\\Composer\\PharScriptHandler::requireBoxPhar"
         ],
         "build": [
-            "Ibuildings\\QaTools\\Composer\\ScriptHandler::buildPhar"
+            "Ibuildings\\QaTools\\Composer\\PharScriptHandler::buildPhar"
         ]
     },
     "require": {

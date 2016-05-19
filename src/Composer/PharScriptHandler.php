@@ -5,7 +5,7 @@ namespace Ibuildings\QaTools\Composer;
 use Composer\Script\Event;
 use Exception;
 
-final class ScriptHandler
+final class PharScriptHandler
 {
     public static function requireBoxPhar(Event $event)
     {
