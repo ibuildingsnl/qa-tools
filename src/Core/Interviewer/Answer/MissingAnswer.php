@@ -13,9 +13,4 @@ final class MissingAnswer implements Answer
     {
         return $other instanceof MissingAnswer;
     }
-
-    public function convertToString()
-    {
-        return null;
-    }
 }

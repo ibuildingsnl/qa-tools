@@ -2,7 +2,7 @@
 
 namespace Ibuildings\QaTools\Core\IO\Cli;
 
-use Ibuildings\QaTools\Core\Interviewer\Question\ChecklistQuestion;
+use Ibuildings\QaTools\Core\Interviewer\Question\ListChoiceQuestion;
 use Ibuildings\QaTools\Core\Interviewer\Question\MultipleChoiceQuestion;
 use Ibuildings\QaTools\Core\Interviewer\Question\TextualQuestion;
 use Ibuildings\QaTools\Core\Interviewer\Question\YesOrNoQuestion;
@@ -57,10 +57,10 @@ class ConsoleQuestionFormatter
     }
 
     /**
-     * @param ChecklistQuestion $question
+     * @param ListChoiceQuestion $question
      * @return string
      */
-    public function formatChecklistQuestion(ChecklistQuestion $question)
+    public function formatListChoiceQuestion(ListChoiceQuestion $question)
     {
         $defaultAnswer = '';
         if ($question->hasDefaultAnswer()) {

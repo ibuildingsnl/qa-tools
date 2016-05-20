@@ -3,12 +3,22 @@
 namespace Ibuildings\QaTools\Core\Interviewer;
 
 use Ibuildings\QaTools\Core\Assert\Assertion;
-use Ibuildings\QaTools\Core\Exception\LogicException;
 use Ibuildings\QaTools\Core\Interviewer\Answer\Answer;
 use Ibuildings\QaTools\Core\Interviewer\Question\Question;
+use Ibuildings\QaTools\Core\IO\File\FileHandler;
 
-final class MemorizingInterviewer implements InterviewerInterface
+final class MemorizingInterviewer implements Interviewer
 {
+    /**
+     * @var FileHandler
+     */
+    private $fileHandler;
+
+    /**
+     * @var Interviewer
+     */
+    private $interviewer;
+
     /**
      * @var Answer[]
      */
@@ -20,19 +30,14 @@ final class MemorizingInterviewer implements InterviewerInterface
     private $givenAnswers = [];
 
     /**
-     * @var InterviewerInterface
-     */
-    private $interviewer;
-
-    /**
      * @var string
      */
     private $scope = '';
 
-    public function __construct(array $previousAnswers, InterviewerInterface $interviewer)
+    public function __construct(FileHandler $fileHandler, Interviewer $interviewer)
     {
-        $this->previousAnswers = $previousAnswers;
-        $this->interviewer     = $interviewer;
+        $this->interviewer = $interviewer;
+        $this->fileHandler = $fileHandler;
     }
 
     /**
@@ -41,92 +46,54 @@ final class MemorizingInterviewer implements InterviewerInterface
     public function setScope($scope)
     {
         Assertion::string($scope);
+
         $this->scope = $scope;
     }
 
-    /**
-     * @param Question $question
-     * @return boolean
-     */
-    public function hasPreviousAnswerFor(Question $question)
-    {
-        return isset($this->previousAnswers[md5($question . $this->scope)]);
-    }
-
-    /**
-     * @param Question $question
-     * @return Answer
-     */
-    public function getPreviousAnswerFor(Question $question)
-    {
-        if (!$this->hasPreviousAnswerFor($question)) {
-            throw new LogicException(sprintf(
-                'Cannot get previous answer for question "%s" and scope "%s": no answer given',
-                $question,
-                $this->scope
-            ));
-        }
-
-        return $this->previousAnswers[md5($question . $this->scope)];
-    }
-
-    /**
-     * @param Question $question
-     * @return Answer
-     */
-    public function hasAnswerFor(Question $question)
-    {
-        return isset($this->givenAnswers[md5($question . $this->scope)]);
-    }
-
-    /**
-     * @param Question $question
-     * @return Answer
-     */
-    public function getAnswerFor(Question $question)
-    {
-        if (!$this->hasAnswerFor($question)) {
-            throw new LogicException(sprintf(
-                'Cannot get previous answer for question "%s" and scope "%s": no answer given',
-                $question,
-                $this->scope
-            ));
-        }
-
-        return $this->givenAnswers[md5($question . $this->scope)];
-    }
-
-    /**
-     * @param Question $question
-     * @return Answer
-     */
     public function ask(Question $question)
     {
-        if ($this->hasPreviousAnswerFor($question)) {
-            $answer = $this->getPreviousAnswerFor($question);
+        $this->ensurePreviousAnswersAreLoaded();
+
+        $questionIdentifier = md5($question.$this->scope);
+
+        if (isset($this->previousAnswers[$questionIdentifier])) {
+            $answer   = $this->previousAnswers[$questionIdentifier];
             $question = $question->withDefaultAnswer($answer);
         }
 
         $givenAnswer = $this->interviewer->ask($question);
 
-        $this->givenAnswers[md5($question . $this->scope)] = $givenAnswer;
+        $this->givenAnswers[$questionIdentifier] = $givenAnswer;
 
         return $givenAnswer;
     }
 
-    /**
-     * @param Sentence $sentence
-     */
-    public function say(Sentence $sentence)
+    public function say($sentence)
     {
         $this->interviewer->say($sentence);
     }
 
-    /**
-     * @param Sentence $sentence
-     */
-    public function error(Sentence $sentence)
+    public function warn($sentence)
     {
-        $this->interviewer->error($sentence);
+        $this->interviewer->warn($sentence);
+    }
+
+    private function ensurePreviousAnswersAreLoaded()
+    {
+        if (isset($this->previousAnswers)) {
+            return;
+        }
+
+        // @todo: For now this suffices, will be reworked to configuration object and handler
+        $configurationData = $this->fileHandler->readFrom('./qa_tools.json');
+        $parsedConfigurationData = json_decode($configurationData, true);
+
+        if (array_key_exists('answers', $parsedConfigurationData)) {
+            $this->previousAnswers = $parsedConfigurationData['answers'];
+
+            return;
+        }
+
+        $this->previousAnswers = [];
     }
 }

@@ -164,4 +164,20 @@ class YesOrNoQuestionTest extends TestCase
         $this->assertNotEquals($question, $updatedQuestion);
         $this->assertEquals($expectedDefaultAnswer, $updatedQuestion->getDefaultAnswer());
     }
+
+    /**
+     * @test
+     * @group Conversation
+     * @group Interviewer
+     * @group Question
+     */
+    public function yes_or_no_question_is_converted_to_string_correctly()
+    {
+        $question = 'A question?';
+        $expectedString = YesOrNoQuestion::class . '(question="' . $question . '")';
+
+        $actualQuestion = new YesOrNoQuestion($question);
+
+        $this->assertEquals($expectedString, (string) $actualQuestion);
+    }
 }

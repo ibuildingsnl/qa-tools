@@ -1,41 +1,37 @@
 services:
     file_handler:
-        alias: qa_tools.io.filesystem_adapter
+        alias: qa_tools.io.file.filesystem_adapter
 
-    conversation_handler_factory:
-        alias: qa_tools.io.console_adapter_factory
+    qa_tools.interviewer_factory:
+        alias: qa_tools.io.cli.interviewer_factory
 
-    configurator:
-        alias: qa_tools.project.configurator
+    qa_tools.project_configurator:
+        alias: qa_tools.project.project_configurator
 
-    qa_tools.io.filesystem_adapter:
+    qa_tools.io.file.filesystem_adapter:
         class: Ibuildings\QaTools\Core\IO\File\FilesystemAdapter
         arguments:
             - "@symfony.filesystem"
 
-    qa_tools.io.console_adapter_factory:
-        class: Ibuildings\QaTools\Core\IO\Cli\ConsoleAdapterFactory
-        arguments:
-            - "@symfony.question_helper"
-            - "@qa_tools.io.console_question_factory"
-
-    qa_tools.io.console_question_factory:
+    qa_tools.io.cli.console_question_factory:
         class: Ibuildings\QaTools\Core\IO\Cli\ConsoleQuestionFactory
         arguments:
-         - "@qa_tools.io.console_question_formatter"
+         - "@qa_tools.io.cli.console_question_formatter"
 
-    qa_tools.io.console_question_formatter:
+    qa_tools.io.cli.console_question_formatter:
         class: Ibuildings\QaTools\Core\IO\Cli\ConsoleQuestionFormatter
 
-    qa_tools.project.interviewer_factory:
-        class: Ibuildings\QaTools\Core\Interviewer\InterviewerFactory
+    qa_tools.io.cli.interviewer_factory:
+        class: Ibuildings\QaTools\Core\IO\Cli\InterviewerFactory
         arguments:
-            - "@conversation_handler_factory"
+            - "@file_handler"
+            - "@symfony.question_helper"
+            - "@qa_tools.io.cli.console_question_factory"
 
-    qa_tools.project.configurator:
-        class: Ibuildings\QaTools\Core\Project\Configurator
+    qa_tools.project.project_configurator:
+        class: Ibuildings\QaTools\Core\Project\ProjectConfigurator
         arguments:
-            - "@qa_tools.project.interviewer_factory"
+            - "@qa_tools.io.cli.interviewer_factory"
 
     symfony.filesystem:
         class: Symfony\Component\Filesystem\Filesystem

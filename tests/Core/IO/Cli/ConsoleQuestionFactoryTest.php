@@ -6,7 +6,7 @@ use Ibuildings\QaTools\Core\Exception\InvalidArgumentException;
 use Ibuildings\QaTools\Core\Interviewer\Answer\Choices;
 use Ibuildings\QaTools\Core\Interviewer\Answer\TextualAnswer;
 use Ibuildings\QaTools\Core\Interviewer\Answer\YesOrNoAnswer;
-use Ibuildings\QaTools\Core\Interviewer\Question\ChecklistQuestion;
+use Ibuildings\QaTools\Core\Interviewer\Question\ListChoiceQuestion;
 use Ibuildings\QaTools\Core\Interviewer\Question\MultipleChoiceQuestion;
 use Ibuildings\QaTools\Core\Interviewer\Question\TextualQuestion;
 use Ibuildings\QaTools\Core\Interviewer\Question\Question as QaToolsQuestion;
@@ -145,7 +145,7 @@ class ConsoleQuestionFactoryTest extends TestCase
      * @group Interviewer
      * @group Console
      */
-    public function factory_creates_a_console_question_from_checklist_question()
+    public function factory_creates_a_console_question_from_list_choice_question()
     {
         $question        = 'The question?';
         $answerText      = 'The answer';
@@ -158,12 +158,12 @@ class ConsoleQuestionFactoryTest extends TestCase
 
         $formatterMock = Mockery::mock(ConsoleQuestionFormatter::class);
         $formatterMock
-            ->shouldReceive('formatChecklistQuestion')
+            ->shouldReceive('formatListChoiceQuestion')
             ->andReturn($question);
 
         $factory               = new ConsoleQuestionFactory($formatterMock);
         $actualConsoleQuestion = $factory->createFrom(
-            new ChecklistQuestion($question, $possibleChoices, $defaultChoices)
+            new ListChoiceQuestion($question, $possibleChoices, $defaultChoices)
         );
 
         $this->assertEquals($expectedConsoleQuestion, $actualConsoleQuestion);

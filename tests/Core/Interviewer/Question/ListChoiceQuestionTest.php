@@ -4,11 +4,10 @@ use Ibuildings\QaTools\Core\Exception\LogicException as LogicException;
 use Ibuildings\QaTools\Core\Interviewer\Answer\Choices;
 use Ibuildings\QaTools\Core\Interviewer\Answer\MissingAnswer;
 use Ibuildings\QaTools\Core\Interviewer\Answer\TextualAnswer;
-use Ibuildings\QaTools\Core\Interviewer\Answer\YesOrNoAnswer;
-use Ibuildings\QaTools\Core\Interviewer\Question\ChecklistQuestion;
+use Ibuildings\QaTools\Core\Interviewer\Question\ListChoiceQuestion;
 use PHPUnit_Framework_TestCase as TestCase;
 
-class ChecklistQuestionTest extends TestCase
+class ListChoiceQuestionTest extends TestCase
 {
     /**
      * @test
@@ -18,13 +17,13 @@ class ChecklistQuestionTest extends TestCase
      *
      * @dataProvider \Ibuildings\QaTools\TestDataProvider::notString()
      */
-    public function checklist_questions_question_can_only_be_string($value)
+    public function list_choice_questions_question_can_only_be_string($value)
     {
         $this->expectException(InvalidArgumentException::class);
 
         $multipleAnswers = new Choices([new TextualAnswer('An answer.')]);
 
-        new ChecklistQuestion($value, $multipleAnswers, $multipleAnswers);
+        new ListChoiceQuestion($value, $multipleAnswers, $multipleAnswers);
     }
 
     /**
@@ -33,11 +32,11 @@ class ChecklistQuestionTest extends TestCase
      * @group Interviewer
      * @group Question
      */
-    public function checklist_questions_choices_default_to_missing_answer_if_none_given()
+    public function list_choice_questions_choices_default_to_missing_answer_if_none_given()
     {
         $expectedDefaultAnswer = new MissingAnswer;
 
-        $question = new ChecklistQuestion('A question?', new Choices([new TextualAnswer('An answer.')]));
+        $question = new ListChoiceQuestion('A question?', new Choices([new TextualAnswer('An answer.')]));
 
         $this->assertEquals($expectedDefaultAnswer, $question->getDefaultAnswer());
     }
@@ -48,14 +47,14 @@ class ChecklistQuestionTest extends TestCase
      * @group Interviewer
      * @group Question
      */
-    public function checklist_cannot_have_default_choices_that_are_not_possible_choices()
+    public function list_choice_question_cannot_have_default_choices_that_are_not_possible_choices()
     {
         $this->expectException(LogicException::class);
 
         $possibleAnswers = new Choices([new TextualAnswer('An answer')]);
         $defaultAnswers  = new Choices([new TextualAnswer('A different answer')]);
 
-        new ChecklistQuestion('A question?', $possibleAnswers, $defaultAnswers);
+        new ListChoiceQuestion('A question?', $possibleAnswers, $defaultAnswers);
     }
 
     /**
@@ -64,15 +63,15 @@ class ChecklistQuestionTest extends TestCase
      * @group Interviewer
      * @group Question
      */
-    public function checklist_does_not_equal_another_checklist_with_a_different_question()
+    public function list_choice_question_does_not_equal_another_list_choice_question_with_a_different_question()
     {
         $possibleAnswers = new Choices([new TextualAnswer('An answer.')]);
         $defaultAnswers  = new Choices([new TextualAnswer('An answer.')]);
 
-        $checklist          = new ChecklistQuestion('The question?', $possibleAnswers, $defaultAnswers);
-        $differentChecklist = new ChecklistQuestion('Another question?', $possibleAnswers, $defaultAnswers);
+        $listchoice          = new ListChoiceQuestion('The question?', $possibleAnswers, $defaultAnswers);
+        $differentlistchoice = new ListChoiceQuestion('Another question?', $possibleAnswers, $defaultAnswers);
 
-        $this->assertFalse($checklist->equals($differentChecklist));
+        $this->assertFalse($listchoice->equals($differentlistchoice));
     }
 
     /**
@@ -81,7 +80,7 @@ class ChecklistQuestionTest extends TestCase
      * @group Interviewer
      * @group Question
      */
-    public function checklist_does_not_equal_another_checklist_with_different_default_choices()
+    public function list_choice_question_does_not_equal_another_list_choice_question_with_different_default_choices()
     {
         $defaultAnswers           = new Choices([new TextualAnswer('An answer.')]);
         $possibleAnswers          = new Choices([new TextualAnswer('An answer.')]);
@@ -92,10 +91,10 @@ class ChecklistQuestionTest extends TestCase
             ]
         );
 
-        $checklist          = new ChecklistQuestion('The question?', $possibleAnswers, $defaultAnswers);
-        $differentChecklist = new ChecklistQuestion('The question?', $differentPossibleAnswers, $defaultAnswers);
+        $listchoice          = new ListChoiceQuestion('The question?', $possibleAnswers, $defaultAnswers);
+        $differentlistchoice = new ListChoiceQuestion('The question?', $differentPossibleAnswers, $defaultAnswers);
 
-        $this->assertFalse($checklist->equals($differentChecklist));
+        $this->assertFalse($listchoice->equals($differentlistchoice));
     }
 
     /**
@@ -104,7 +103,7 @@ class ChecklistQuestionTest extends TestCase
      * @group Interviewer
      * @group Question
      */
-    public function checklist_does_not_equal_another_checklist_with_different_possible_choices()
+    public function list_choice_question_does_not_equal_another_list_choice_question_with_different_possible_choices()
     {
         $possibleAnswers         = new Choices(
             [
@@ -115,10 +114,10 @@ class ChecklistQuestionTest extends TestCase
         $defaultAnswers          = new Choices([new TextualAnswer('An answer.')]);
         $differentDefaultAnswers = new Choices([new TextualAnswer('Another answer.')]);
 
-        $checklist          = new ChecklistQuestion('The question?', $possibleAnswers, $defaultAnswers);
-        $differentChecklist = new ChecklistQuestion('The question?', $possibleAnswers, $differentDefaultAnswers);
+        $listchoice          = new ListChoiceQuestion('The question?', $possibleAnswers, $defaultAnswers);
+        $differentlistchoice = new ListChoiceQuestion('The question?', $possibleAnswers, $differentDefaultAnswers);
 
-        $this->assertFalse($checklist->equals($differentChecklist));
+        $this->assertFalse($listchoice->equals($differentlistchoice));
     }
 
     /**
@@ -127,14 +126,14 @@ class ChecklistQuestionTest extends TestCase
      * @group Interviewer
      * @group Question
      */
-    public function checklist_equals_another_checklist()
+    public function list_choice_question_equals_another_list_choice_question()
     {
         $choices = new Choices([new TextualAnswer('An answer.')]);
 
-        $checklist     = new ChecklistQuestion('The question?', $choices, $choices);
-        $sameChecklist = new ChecklistQuestion('The question?', $choices, $choices);
+        $listchoice     = new ListChoiceQuestion('The question?', $choices, $choices);
+        $samelistchoice = new ListChoiceQuestion('The question?', $choices, $choices);
 
-        $this->assertTrue($checklist->equals($sameChecklist));
+        $this->assertTrue($listchoice->equals($samelistchoice));
     }
 
     /**
@@ -143,13 +142,13 @@ class ChecklistQuestionTest extends TestCase
      * @group Interviewer
      * @group Question
      */
-    public function checklist_has_a_question_value()
+    public function list_choice_question_has_a_question_value()
     {
         $expectedQuestionValue = 'The question?';
 
         $choices             = new Choices([new TextualAnswer('An answer.')]);
-        $checklist           = new ChecklistQuestion($expectedQuestionValue, $choices, $choices);
-        $actualQuestionValue = $checklist->getQuestion();
+        $listchoice           = new ListChoiceQuestion($expectedQuestionValue, $choices, $choices);
+        $actualQuestionValue = $listchoice->getQuestion();
 
         $this->assertEquals($expectedQuestionValue, $actualQuestionValue);
     }
@@ -160,12 +159,12 @@ class ChecklistQuestionTest extends TestCase
      * @group Interviewer
      * @group Question
      */
-    public function checklist_has_default_choices()
+    public function list_choice_question_has_default_choices()
     {
         $expectedDefaultChoices = new Choices([new TextualAnswer('An answer.')]);
 
         $possibleChoices      = new Choices([new TextualAnswer('An answer.'), new TextualAnswer('Another answer')]);
-        $question             = new ChecklistQuestion('A question?', $possibleChoices, $expectedDefaultChoices);
+        $question             = new ListChoiceQuestion('A question?', $possibleChoices, $expectedDefaultChoices);
         $actualDefaultChoices = $question->getDefaultAnswer();
 
         $this->assertEquals($expectedDefaultChoices, $actualDefaultChoices);
@@ -177,12 +176,12 @@ class ChecklistQuestionTest extends TestCase
      * @group Interviewer
      * @group Question
      */
-    public function checklist_has_possible_choices()
+    public function list_choice_question_has_possible_choices()
     {
         $expectedPossibleAnswers = new Choices([new TextualAnswer('An answer.'), new TextualAnswer('Another answer')]);
 
         $defaultAnswers        = new Choices([new TextualAnswer('An answer.')]);
-        $question              = new ChecklistQuestion('A question?', $expectedPossibleAnswers, $defaultAnswers);
+        $question              = new ListChoiceQuestion('A question?', $expectedPossibleAnswers, $defaultAnswers);
         $actualPossibleAnswers = $question->getPossibleChoices();
 
         $this->assertEquals($expectedPossibleAnswers, $actualPossibleAnswers);
@@ -194,11 +193,11 @@ class ChecklistQuestionTest extends TestCase
      * @group Interviewer
      * @group Question
      */
-    public function checklist_can_suggest_given_compatible_choices_that_are_possible_choices_as_default_answer()
+    public function list_choice_question_can_suggest_given_compatible_choices_that_are_possible_choices_as_default_answer()
     {
         $expectedDefaultChoices = new Choices([new TextualAnswer('Another answer')]);
 
-        $question        = new ChecklistQuestion(
+        $question        = new ListChoiceQuestion(
             'A question?',
             new Choices([new TextualAnswer('An answer'), new TextualAnswer('Another answer')]),
             new Choices([new TextualAnswer('An answer')])
@@ -215,17 +214,34 @@ class ChecklistQuestionTest extends TestCase
      * @group Interviewer
      * @group Question
      */
-    public function checklist_cannot_suggest_given_compatible_choices_that_are_not_possible_choices_as_default_answer()
+    public function list_choice_question_question_cannot_suggest_given_compatible_choices_that_are_not_possible_choices_as_default_answer()
     {
         $this->expectException(LogicException::class);
 
         $impossibleDefaultChoices = new Choices([new TextualAnswer('Not possible answer')]);
 
-        $question = new ChecklistQuestion(
+        $question = new ListChoiceQuestion(
             'A question?',
             new Choices([new TextualAnswer('An answer')]),
             new Choices([new TextualAnswer('An answer')])
         );
         $question->withDefaultAnswer($impossibleDefaultChoices);
+    }
+
+    /**
+     * @test
+     * @group Conversation
+     * @group Interviewer
+     * @group Question
+     */
+    public function list_choice_question_is_converted_to_string_correctly()
+    {
+        $question = 'A question?';
+        $answer   = 'An answer';
+        $expectedString = ListChoiceQuestion::class . '(question="' . $question . '", choices="' . $answer . '")';
+
+        $actualQuestion = new ListChoiceQuestion($question, new Choices([new TextualAnswer($answer)]));
+
+        $this->assertEquals($expectedString, (string) $actualQuestion);
     }
 }

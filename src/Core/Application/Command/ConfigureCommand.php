@@ -2,6 +2,8 @@
 
 namespace Ibuildings\QaTools\Core\Application\Command;
 
+use Ibuildings\QaTools\Core\IO\Cli\InterviewerFactory;
+use Ibuildings\QaTools\Core\Project\ProjectConfigurator;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -22,13 +24,25 @@ final class ConfigureCommand extends Command implements ContainerAwareInterface
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $conversationHandler = $this->container
-            ->get('conversation_handler_factory')
-            ->createWith($input, $output);
+        $interviewer         = $this->getInterviewerFactory()->createWith($input, $output);
+        $projectConfigurator = $this->getProjectConfigurator();
 
-        $configurator = $this->container
-            ->get('configurator');
+        $projectConfigurator->configure($interviewer);
+    }
 
-        $configurator->configure($conversationHandler);
+    /**
+     * @return InterviewerFactory
+     */
+    private function getInterviewerFactory()
+    {
+        return $this->container->get('qa_tools.io.cli.interviewer_factory');
+    }
+
+    /**
+     * @return ProjectConfigurator
+     */
+    protected function getProjectConfigurator()
+    {
+        return $this->container->get('qa_tools.project_configurator');
     }
 }

@@ -241,4 +241,21 @@ class MultipleChoiceQuestionTest extends TestCase
         );
         $question->withDefaultAnswer($impossibleDefaultAnswer);
     }
+
+    /**
+     * @test
+     * @group Conversation
+     * @group Interviewer
+     * @group Question
+     */
+    public function multiple_choice_question_is_converted_to_string_correctly()
+    {
+        $question = 'A question?';
+        $answer   = 'An answer';
+        $expectedString = MultipleChoiceQuestion::class . '(question="' . $question . '", choices="' . $answer . '")';
+
+        $actualQuestion = new MultipleChoiceQuestion($question, new Choices([new TextualAnswer($answer)]));
+
+        $this->assertEquals($expectedString, (string) $actualQuestion);
+    }
 }

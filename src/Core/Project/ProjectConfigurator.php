@@ -2,10 +2,10 @@
 
 namespace Ibuildings\QaTools\Core\Project;
 
-use Ibuildings\QaTools\Core\Interviewer\ConversationHandler;
-use Ibuildings\QaTools\Core\Interviewer\InterviewerFactory;
+use Ibuildings\QaTools\Core\Interviewer\Interviewer;
+use Ibuildings\QaTools\Core\IO\Cli\InterviewerFactory;
 
-final class Configurator
+final class ProjectConfigurator
 {
     /**
      * @var InterviewerFactory
@@ -18,9 +18,9 @@ final class Configurator
     }
 
     /**
-     * @param ConversationHandler $conversationHandler
+     * @param Interviewer $interviewer
      */
-    public function configure(ConversationHandler $conversationHandler)
+    public function configure(Interviewer $interviewer)
     {
         // Implementation
     }

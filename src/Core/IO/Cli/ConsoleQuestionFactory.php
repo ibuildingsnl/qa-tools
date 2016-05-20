@@ -4,7 +4,7 @@ namespace Ibuildings\QaTools\Core\IO\Cli;
 
 use Ibuildings\QaTools\Core\Exception\InvalidAnswerGivenException;
 use Ibuildings\QaTools\Core\Exception\InvalidArgumentException;
-use Ibuildings\QaTools\Core\Interviewer\Question\ChecklistQuestion;
+use Ibuildings\QaTools\Core\Interviewer\Question\ListChoiceQuestion;
 use Ibuildings\QaTools\Core\Interviewer\Question\MultipleChoiceQuestion;
 use Ibuildings\QaTools\Core\Interviewer\Question\TextualQuestion;
 use Ibuildings\QaTools\Core\Interviewer\Question\Question;
@@ -45,8 +45,8 @@ final class ConsoleQuestionFactory
                 return $this->createFromMultipleChoiceQuestion($question);
                 break;
 
-            case ChecklistQuestion::class:
-                return $this->createFromChecklistQuestion($question);
+            case ListChoiceQuestion::class:
+                return $this->createFromListChoiceQuestion($question);
                 break;
 
             default:
@@ -128,13 +128,13 @@ final class ConsoleQuestionFactory
     }
 
     /**
-     * @param ChecklistQuestion $question
+     * @param ListChoiceQuestion $question
      * @return ChoiceQuestion
      */
-    public function createFromChecklistQuestion(ChecklistQuestion $question)
+    public function createFromListChoiceQuestion(ListChoiceQuestion $question)
     {
         $consoleQuestion = new ChoiceQuestion(
-            $this->consoleQuestionFormatter->formatChecklistQuestion($question),
+            $this->consoleQuestionFormatter->formatListChoiceQuestion($question),
             $question->getPossibleChoices()->convertToArray(),
             $question->getDefaultAnswer()->convertToString()
         );

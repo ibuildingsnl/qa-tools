@@ -137,4 +137,20 @@ class TextualQuestionTest extends TestCase
         $this->assertNotEquals($question, $updatedQuestion);
         $this->assertEquals($expectedDefaultAnswer, $updatedQuestion->getDefaultAnswer());
     }
+
+    /**
+     * @test
+     * @group Conversation
+     * @group Interviewer
+     * @group Question
+     */
+    public function textual_question_is_converted_to_string_correctly()
+    {
+        $question = 'A question?';
+        $expectedString = TextualQuestion::class . '(question="' . $question . '")';
+
+        $actualQuestion = new TextualQuestion($question);
+
+        $this->assertEquals($expectedString, (string) $actualQuestion);
+    }
 }

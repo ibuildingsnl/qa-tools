@@ -4,7 +4,7 @@ use Ibuildings\QaTools\Core\IO\Cli\ConsoleQuestionFormatter;
 use Ibuildings\QaTools\Core\Interviewer\Answer\Choices;
 use Ibuildings\QaTools\Core\Interviewer\Answer\TextualAnswer;
 use Ibuildings\QaTools\Core\Interviewer\Answer\YesOrNoAnswer;
-use Ibuildings\QaTools\Core\Interviewer\Question\ChecklistQuestion;
+use Ibuildings\QaTools\Core\Interviewer\Question\ListChoiceQuestion;
 use Ibuildings\QaTools\Core\Interviewer\Question\MultipleChoiceQuestion;
 use Ibuildings\QaTools\Core\Interviewer\Question\TextualQuestion;
 use Ibuildings\QaTools\Core\Interviewer\Question\YesOrNoQuestion;
@@ -101,12 +101,12 @@ class ConsoleQuestionFormatterTest extends TestCase
      * @group Interviewer
      * @group Console
      */
-    public function formatter_formats_a_checklist_question()
+    public function formatter_formats_a_list_choice_question()
     {
         $questionFormatter = new ConsoleQuestionFormatter();
 
         $expectedFormattedQuestion = '<info>The question?</info> <comment>[The answer, Another answer]</comment>';
-        $question                  = new ChecklistQuestion(
+        $question                  = new ListChoiceQuestion(
             'The question?', new Choices([
                 new TextualAnswer('The answer'),
                 new TextualAnswer('Another answer'),
@@ -117,7 +117,7 @@ class ConsoleQuestionFormatterTest extends TestCase
             ])
         );
 
-        $actualFormattedQuestion = $questionFormatter->formatChecklistQuestion($question);
+        $actualFormattedQuestion = $questionFormatter->formatListChoiceQuestion($question);
 
         $this->assertEquals($expectedFormattedQuestion, $actualFormattedQuestion);
     }

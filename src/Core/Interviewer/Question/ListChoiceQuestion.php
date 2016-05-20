@@ -8,7 +8,7 @@ use Ibuildings\QaTools\Core\Interviewer\Answer\Choices;
 use Ibuildings\QaTools\Core\Interviewer\Answer\MissingAnswer;
 use Ibuildings\QaTools\Core\Interviewer\Answer\TextualAnswer;
 
-final class ChecklistQuestion implements Question
+final class ListChoiceQuestion implements Question
 {
     /**
      * @var string
@@ -41,10 +41,10 @@ final class ChecklistQuestion implements Question
     }
 
     /**
-     * @param ChecklistQuestion $other
+     * @param ListChoiceQuestion $other
      * @return bool
      */
-    public function equals(ChecklistQuestion $other)
+    public function equals(ListChoiceQuestion $other)
     {
         return $this->question === $other->question
         && $this->defaultAnswer->equal($other->defaultAnswer)
@@ -85,11 +85,11 @@ final class ChecklistQuestion implements Question
 
     /**
      * @param Choices $defaultAnswer
-     * @return ChecklistQuestion
+     * @return ListChoiceQuestion
      */
     public function withDefaultAnswer($defaultAnswer)
     {
-        return new ChecklistQuestion($this->question, $this->possibleChoices, $defaultAnswer);
+        return new ListChoiceQuestion($this->question, $this->possibleChoices, $defaultAnswer);
     }
     /**
      * @return string

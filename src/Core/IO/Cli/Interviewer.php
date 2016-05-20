@@ -2,15 +2,15 @@
 
 namespace Ibuildings\QaTools\Core\IO\Cli;
 
-use Ibuildings\QaTools\Core\Interviewer\ConversationHandler;
+use Ibuildings\QaTools\Core\Assert\Assertion;
 use Ibuildings\QaTools\Core\Interviewer\Answer\Factory\AnswerFactory;
+use Ibuildings\QaTools\Core\Interviewer\Interviewer as InterviewerInterface;
 use Ibuildings\QaTools\Core\Interviewer\Question\Question;
-use Ibuildings\QaTools\Core\Interviewer\Sentence;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-final class ConsoleAdapter implements ConversationHandler
+final class Interviewer implements InterviewerInterface
 {
     /**
      * @var InputInterface
@@ -31,7 +31,6 @@ final class ConsoleAdapter implements ConversationHandler
      * @var ConsoleQuestionFactory
      */
     private $consoleQuestionFactory;
-
 
     public function __construct(
         InputInterface $input,
@@ -54,13 +53,17 @@ final class ConsoleAdapter implements ConversationHandler
         return AnswerFactory::createFrom($consoleAnswer);
     }
 
-    public function say(Sentence $sentence)
+    public function say($sentence)
     {
-        $this->output->writeln(sprintf('<info>%s</info>', $sentence->getSentence()));
+        Assertion::string($sentence);
+
+        $this->output->writeln(sprintf('<info>%s</info>', $sentence));
     }
 
-    public function error(Sentence $sentence)
+    public function warn($sentence)
     {
-        $this->output->writeln(sprintf('<error>%s</error>', $sentence->getSentence()));
+        Assertion::string($sentence);
+
+        $this->output->writeln(sprintf('<error>%s</error>', $sentence));
     }
 }
