@@ -152,7 +152,7 @@ class ConsoleQuestionFactoryTest extends TestCase
         $possibleChoices = new Choices([new TextualAnswer($answerText)]);
         $defaultChoices  = new Choices([new TextualAnswer($answerText)]);
 
-        $expectedConsoleQuestion = new ChoiceQuestion($question, [$answerText], [$answerText]);
+        $expectedConsoleQuestion = new ChoiceQuestion($question, [$answerText], $answerText);
         $expectedConsoleQuestion->setMultiselect(true);
         $expectedConsoleQuestion->setMaxAttempts(ConsoleQuestionFactory::MAX_ATTEMPTS);
 

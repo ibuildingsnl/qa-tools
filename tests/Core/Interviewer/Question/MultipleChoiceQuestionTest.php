@@ -1,9 +1,9 @@
 <?php
 
+use Ibuildings\QaTools\Core\Exception\InvalidArgumentException;
 use Ibuildings\QaTools\Core\Interviewer\Answer\Choices;
 use Ibuildings\QaTools\Core\Interviewer\Answer\MissingAnswer;
 use Ibuildings\QaTools\Core\Interviewer\Answer\TextualAnswer;
-use Ibuildings\QaTools\Core\Interviewer\Answer\YesOrNoAnswer;
 use Ibuildings\QaTools\Core\Interviewer\Question\MultipleChoiceQuestion;
 use PHPUnit_Framework_TestCase as TestCase;
 
@@ -19,7 +19,7 @@ class MultipleChoiceQuestionTest extends TestCase
      */
     public function multiple_choice_questions_question_can_only_be_string($value)
     {
-        $this->expectException(\Ibuildings\QaTools\Core\Exception\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
 
         $defaultAnswer   = new TextualAnswer('An answer.');
         $multipleAnswers = new Choices([new TextualAnswer('An answer.')]);
@@ -240,40 +240,5 @@ class MultipleChoiceQuestionTest extends TestCase
             new TextualAnswer('An answer')
         );
         $question->withDefaultAnswer($impossibleDefaultAnswer);
-    }
-
-    /**
-     * @test
-     * @group Conversation
-     * @group Interviewer
-     * @group Question
-     */
-    public function multiple_choice_question_with_default_answer_can_calculate_its_hash()
-    {
-        $expectedHash = 'bb24e0cb20d9689e6b510449d6d9dd20';
-        $question     = new MultipleChoiceQuestion(
-            'A question?',
-            new Choices([new TextualAnswer('An answer.')]),
-            new TextualAnswer('An answer.')
-        );
-
-        $this->assertEquals($expectedHash, $question->calculateHash());
-    }
-
-    /**
-     * @test
-     * @group Conversation
-     * @group Interviewer
-     * @group Question
-     */
-    public function multiple_choice_question_without_default_answer_can_calculate_its_hash()
-    {
-        $expectedHash = '15a10341eeee07ee726ab550f0437541';
-        $question     = new MultipleChoiceQuestion(
-            'A question?',
-            new Choices([new TextualAnswer('An answer.')])
-        );
-
-        $this->assertEquals($expectedHash, $question->calculateHash());
     }
 }

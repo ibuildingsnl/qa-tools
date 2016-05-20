@@ -2,7 +2,6 @@
 
 use Ibuildings\QaTools\Core\Exception\InvalidArgumentException;
 use Ibuildings\QaTools\Core\Interviewer\Answer\MissingAnswer;
-use Ibuildings\QaTools\Core\Interviewer\Answer\TextualAnswer;
 use Ibuildings\QaTools\Core\Interviewer\Answer\YesOrNoAnswer;
 use Ibuildings\QaTools\Core\Interviewer\Question\YesOrNoQuestion;
 use PHPUnit_Framework_TestCase as TestCase;
@@ -164,33 +163,5 @@ class YesOrNoQuestionTest extends TestCase
 
         $this->assertNotEquals($question, $updatedQuestion);
         $this->assertEquals($expectedDefaultAnswer, $updatedQuestion->getDefaultAnswer());
-    }
-
-    /**
-     * @test
-     * @group Conversation
-     * @group Interviewer
-     * @group Question
-     */
-    public function yes_or_no_question_with_default_answer_can_calculate_its_hash()
-    {
-        $expectedHash = '8c40de1f378f5c4ebb618d0f54be99c2';
-        $question     = new YesOrNoQuestion('A question?', YesOrNoAnswer::yes());
-
-        $this->assertEquals($expectedHash, $question->calculateHash());
-    }
-
-    /**
-     * @test
-     * @group Conversation
-     * @group Interviewer
-     * @group Question
-     */
-    public function yes_or_no_question_without_default_answer_can_calculate_its_hash()
-    {
-        $expectedHash = 'cd8c37dd7a287c9403dc2cc1b33bd550';
-        $question     = new YesOrNoQuestion('A question?');
-
-        $this->assertEquals($expectedHash, $question->calculateHash());
     }
 }

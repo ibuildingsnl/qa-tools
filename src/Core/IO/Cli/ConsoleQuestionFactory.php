@@ -34,22 +34,18 @@ final class ConsoleQuestionFactory
     {
         switch (get_class($question)) {
             case TextualQuestion::class:
-                /** @var TextualQuestion $question */
                 return $this->createFromTextualQuestion($question);
                 break;
 
             case YesOrNoQuestion::class:
-                /** @var YesOrNoQuestion $question */
                 return $this->createFromYesOrNoQuestion($question);
                 break;
 
             case MultipleChoiceQuestion::class:
-                /** @var MultipleChoiceQuestion $question */
                 return $this->createFromMultipleChoiceQuestion($question);
                 break;
 
             case ChecklistQuestion::class:
-                /** @var ChecklistQuestion $question */
                 return $this->createFromChecklistQuestion($question);
                 break;
 

@@ -87,9 +87,4 @@ final class Choices implements Answer, IteratorAggregate, Countable
             return $answer->convertToString();
         }, $this->answers);
     }
-
-    public function serialize()
-    {
-        return $this->convertToArray();
-    }
 }

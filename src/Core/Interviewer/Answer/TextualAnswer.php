@@ -41,9 +41,4 @@ final class TextualAnswer implements Answer
     {
         return $this->answer;
     }
-
-    public function serialize()
-    {
-        return $this->answer;
-    }
 }

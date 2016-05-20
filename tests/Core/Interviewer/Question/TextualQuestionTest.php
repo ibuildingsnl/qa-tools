@@ -2,7 +2,6 @@
 
 use Ibuildings\QaTools\Core\Interviewer\Answer\MissingAnswer;
 use Ibuildings\QaTools\Core\Interviewer\Answer\TextualAnswer;
-use Ibuildings\QaTools\Core\Interviewer\Answer\YesOrNoAnswer;
 use Ibuildings\QaTools\Core\Interviewer\Question\TextualQuestion;
 use PHPUnit_Framework_TestCase as TestCase;
 
@@ -137,33 +136,5 @@ class TextualQuestionTest extends TestCase
 
         $this->assertNotEquals($question, $updatedQuestion);
         $this->assertEquals($expectedDefaultAnswer, $updatedQuestion->getDefaultAnswer());
-    }
-
-    /**
-     * @test
-     * @group Conversation
-     * @group Interviewer
-     * @group Question
-     */
-    public function textual_question_with_default_answer_can_calculate_its_hash()
-    {
-        $expectedHash = '8035fa3d5771022b6db5261efc7d1e9b';
-        $question = new TextualQuestion('A question?', new TextualAnswer('An answer.'));
-
-        $this->assertEquals($expectedHash, $question->calculateHash());
-    }
-
-    /**
-     * @test
-     * @group Conversation
-     * @group Interviewer
-     * @group Question
-     */
-    public function textual_question_without_default_answer_can_calculate_its_hash()
-    {
-        $expectedHash = '45aa2f643c8a4518f1bb9458ed9f2e95';
-        $question = new TextualQuestion('A question?');
-
-        $this->assertEquals($expectedHash, $question->calculateHash());
     }
 }

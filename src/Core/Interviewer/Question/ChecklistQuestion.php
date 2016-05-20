@@ -87,28 +87,22 @@ final class ChecklistQuestion implements Question
      * @param Choices $defaultAnswer
      * @return ChecklistQuestion
      */
-    public function withDefaultAnswer(Choices $defaultAnswer)
+    public function withDefaultAnswer($defaultAnswer)
     {
         return new ChecklistQuestion($this->question, $this->possibleChoices, $defaultAnswer);
     }
-
     /**
      * @return string
      */
-    public function calculateHash()
-    {
-        return md5(self::class
-            . $this->question
-            . $this->getPossibleChoices()->convertToString()
-            . $this->getDefaultAnswer()->convertToString()
-        );
-    }
-
     public function __toString()
     {
-        return $this->question;
+        return sprintf(
+            '%s(question="%s", choices="%s")',
+            self::class,
+            $this->question,
+            $this->getPossibleChoices()->convertToString()
+        );
     }
-
     /**
      * @param Choices $possibleChoices
      * @param Choices $defaultChoices

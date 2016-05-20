@@ -16,7 +16,7 @@ final class MultipleChoiceQuestion implements Question
     private $question;
 
     /**
-     * @var \Ibuildings\QaTools\Core\Interviewer\Answer\Choices
+     * @var Choices
      */
     private $possibleChoices;
 
@@ -83,7 +83,7 @@ final class MultipleChoiceQuestion implements Question
      * @param TextualAnswer $defaultAnswer
      * @return MultipleChoiceQuestion
      */
-    public function withDefaultAnswer(TextualAnswer $defaultAnswer)
+    public function withDefaultAnswer($defaultAnswer)
     {
         return new MultipleChoiceQuestion($this->question, $this->possibleChoices, $defaultAnswer);
     }
@@ -91,18 +91,14 @@ final class MultipleChoiceQuestion implements Question
     /**
      * @return string
      */
-    public function calculateHash()
-    {
-        return md5(self::class
-            . $this->question
-            . $this->getPossibleChoices()->convertToString()
-            . $this->getDefaultAnswer()->convertToString()
-        );
-    }
-
     public function __toString()
     {
-        return $this->question;
+        return sprintf(
+            '%s(question="%s", choices="%s")',
+            self::class,
+            $this->question,
+            $this->getPossibleChoices()->convertToString()
+        );
     }
 
     /**

@@ -68,7 +68,7 @@ final class TextualQuestion implements Question
      * @param TextualAnswer $defaultAnswer
      * @return TextualQuestion
      */
-    public function withDefaultAnswer(TextualAnswer $defaultAnswer)
+    public function withDefaultAnswer($defaultAnswer)
     {
         return new TextualQuestion($this->question, $defaultAnswer);
     }
@@ -76,13 +76,8 @@ final class TextualQuestion implements Question
     /**
      * @return string
      */
-    public function calculateHash()
-    {
-        return md5(self::class . $this->question . $this->getDefaultAnswer()->serialize());
-    }
-
     public function __toString()
     {
-        return $this->question;
+        return sprintf('%s(question="%s")', self::class, $this->question);
     }
 }

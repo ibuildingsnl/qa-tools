@@ -65,9 +65,4 @@ final class YesOrNoAnswer implements Answer
     {
         return $this->answer === false;
     }
-
-    public function serialize()
-    {
-        return $this->answer;
-    }
 }

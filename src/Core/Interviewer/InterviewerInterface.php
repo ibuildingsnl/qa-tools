@@ -3,13 +3,12 @@ namespace Ibuildings\QaTools\Core\Interviewer;
 
 use Ibuildings\QaTools\Core\Interviewer\Answer\Answer;
 use Ibuildings\QaTools\Core\Interviewer\Question\Question;
-use Symfony\Component\Console\Output\OutputInterface;
 
-interface ConversationHandler
+interface InterviewerInterface
 {
     /**
      * @param Question $question
-     * @return Answer $answer
+     * @return Answer
      */
     public function ask(Question $question);
 

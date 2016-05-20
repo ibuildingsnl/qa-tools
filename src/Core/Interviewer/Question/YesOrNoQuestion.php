@@ -48,17 +48,9 @@ final class YesOrNoQuestion implements Question
      * @param YesOrNoAnswer $defaultAnswer
      * @return YesOrNoQuestion
      */
-    public function withDefaultAnswer(YesOrNoAnswer $defaultAnswer)
+    public function withDefaultAnswer($defaultAnswer)
     {
         return new YesOrNoQuestion($this->question, $defaultAnswer);
-    }
-
-    /**
-     * @return string
-     */
-    public function calculateHash()
-    {
-        return md5(self::class . $this->question . $this->getDefaultAnswer()->serialize());
     }
 
     /**
@@ -77,8 +69,11 @@ final class YesOrNoQuestion implements Question
         return $this->defaultAnswer;
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
-        return $this->question;
+        return sprintf('%s(question="%s")', self::class, $this->question);
     }
 }

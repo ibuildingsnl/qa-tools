@@ -228,39 +228,4 @@ class ChecklistQuestionTest extends TestCase
         );
         $question->withDefaultAnswer($impossibleDefaultChoices);
     }
-
-    /**
-     * @test
-     * @group Conversation
-     * @group Interviewer
-     * @group Question
-     */
-    public function checklist_with_default_choices_can_calculate_its_hash()
-    {
-        $expectedHash = '09cfde68bf992136ee7105425d9a3301';
-        $checklist    = new ChecklistQuestion(
-            'A question?',
-            new Choices([new TextualAnswer('An answer.')]),
-            new Choices([new TextualAnswer('An answer.')])
-        );
-
-        $this->assertEquals($expectedHash, $checklist->calculateHash());
-    }
-
-    /**
-     * @test
-     * @group Conversation
-     * @group Interviewer
-     * @group Question
-     */
-    public function checklist_without_default_choices_can_calculate_its_hash()
-    {
-        $expectedHash = '8642a1b71c7885b966deb8f0831bc597';
-        $checklist    = new ChecklistQuestion(
-            'A question?',
-            new Choices([new TextualAnswer('An answer.')])
-        );
-
-        $this->assertEquals($expectedHash, $checklist->calculateHash());
-    }
 }

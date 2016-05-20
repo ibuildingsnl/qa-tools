@@ -54,17 +54,6 @@ final class ConsoleAdapter implements ConversationHandler
         return AnswerFactory::createFrom($consoleAnswer);
     }
 
-    public function askHidden(Question $question)
-    {
-        $consoleQuestion = $this->consoleQuestionFactory->createFrom($question);
-        $consoleQuestion->setHidden(true);
-        $consoleQuestion->setHiddenFallback(false);
-
-        $consoleAnswer = $this->questionHelper->ask($this->input, $this->output, $consoleQuestion);
-
-        return AnswerFactory::createFrom($consoleAnswer);
-    }
-
     public function say(Sentence $sentence)
     {
         $this->output->writeln(sprintf('<info>%s</info>', $sentence->getSentence()));
@@ -73,10 +62,5 @@ final class ConsoleAdapter implements ConversationHandler
     public function error(Sentence $sentence)
     {
         $this->output->writeln(sprintf('<error>%s</error>', $sentence->getSentence()));
-    }
-
-    public function comment(Sentence $sentence)
-    {
-        $this->output->writeln(sprintf('<comment>%s</comment>', $sentence->getSentence()));
     }
 }

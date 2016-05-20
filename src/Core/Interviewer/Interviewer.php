@@ -5,16 +5,15 @@ namespace Ibuildings\QaTools\Core\Interviewer;
 use Ibuildings\QaTools\Core\Interviewer\Answer\Answer;
 use Ibuildings\QaTools\Core\Interviewer\Question\Question;
 
-final class Interviewer
+final class Interviewer implements InterviewerInterface
 {
     /**
      * @var ConversationHandler
      */
     private $conversationHandler;
 
-    public function __construct(
-        ConversationHandler $conversationHandler
-    ) {
+    public function __construct(ConversationHandler $conversationHandler)
+    {
         $this->conversationHandler = $conversationHandler;
     }
 
@@ -25,15 +24,6 @@ final class Interviewer
     public function ask(Question $question)
     {
         return $this->conversationHandler->ask($question);
-    }
-
-    /**
-     * @param Question $question
-     * @return Answer
-     */
-    public function askHidden(Question $question)
-    {
-        return $this->conversationHandler->askHidden($question);
     }
 
     /**
@@ -50,13 +40,5 @@ final class Interviewer
     public function error(Sentence $sentence)
     {
         $this->conversationHandler->error($sentence);
-    }
-
-    /**
-     * @param Sentence $sentence
-     */
-    public function comment(Sentence $sentence)
-    {
-        $this->conversationHandler->comment($sentence);
     }
 }

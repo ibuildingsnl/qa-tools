@@ -18,9 +18,4 @@ final class MissingAnswer implements Answer
     {
         return null;
     }
-
-    public function serialize()
-    {
-        return null;
-    }
 }
