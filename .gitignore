@@ -1,4 +1,5 @@
 /vendor/
 .travis/phar-private.pem
 dist/qa-tools*
+precompiled/container.php
 bin/box.phar

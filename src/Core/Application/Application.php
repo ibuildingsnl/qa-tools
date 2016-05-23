@@ -4,15 +4,12 @@ namespace Ibuildings\QaTools\Core\Application;
 
 use Ibuildings\QaTools\Core\Tool\Tool;
 use Ibuildings\QaTools\Tool\PhpMd\PhpMd;
-use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Console\Application as ConsoleApplication;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
 final class Application extends ConsoleApplication
 {
@@ -48,20 +45,7 @@ final class Application extends ConsoleApplication
      */
     public function boot()
     {
-        $containerBuilder = new ContainerBuilder();
-
-        $loader = new YamlFileLoader($containerBuilder , new FileLocator(__DIR__ . '/../Resources/config/'));
-        $loader->load('config.yml');
-        $loader->load('services.yml');
-
-        /** @var Tool $tool */
-        foreach ($this->getRegisteredTools() as $tool) {
-            $tool->boot($containerBuilder);
-        }
-
-        $containerBuilder->compile();
-
-        $this->container = $containerBuilder;
+        $this->container = ContainerLoader::loadAndCacheFor($this);
     }
 
     /**

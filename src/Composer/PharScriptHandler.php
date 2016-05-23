@@ -4,6 +4,8 @@ namespace Ibuildings\QaTools\Composer;
 
 use Composer\Script\Event;
 use Exception;
+use Ibuildings\QaTools\Core\Application\Application;
+use Ibuildings\QaTools\Core\Application\ContainerLoader;
 
 final class PharScriptHandler
 {
@@ -113,6 +115,9 @@ final class PharScriptHandler
                 )
             );
         }
+
+        // Precompile the container
+        ContainerLoader::loadAndCacheFor(new Application);
 
         $event->getIO()->write(
             sprintf('<info>Building phar with "%s"</info>', $config['qa-tools-box-install-path'].' build -vv')
