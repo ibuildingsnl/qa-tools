@@ -1,7 +1,7 @@
 <?php
 
 use Ibuildings\QaTools\Core\Exception\InvalidArgumentException;
-use Ibuildings\QaTools\Core\Interviewer\Answer\MissingAnswer;
+use Ibuildings\QaTools\Core\Interviewer\Answer\NoDefaultAnswer;
 use Ibuildings\QaTools\Core\Interviewer\Answer\YesOrNoAnswer;
 use Ibuildings\QaTools\Core\Interviewer\Question\YesOrNoQuestion;
 use PHPUnit_Framework_TestCase as TestCase;
@@ -33,7 +33,7 @@ class YesOrNoQuestionTest extends TestCase
      */
     public function yes_or_no_questions_answer_defaults_to_no_answer_if_none_given()
     {
-        $expectedDefaultAnswer = new MissingAnswer;
+        $expectedDefaultAnswer = new NoDefaultAnswer;
 
         $question = new YesOrNoQuestion('A question?');
 

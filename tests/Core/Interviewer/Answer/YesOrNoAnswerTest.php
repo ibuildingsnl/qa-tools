@@ -58,7 +58,7 @@ class YesOrNoAnswerTest extends TestCase
     {
         $answer = YesOrNoAnswer::yes();
 
-        $this->assertTrue($answer->isYes());
+        $this->assertTrue($answer->is(YesOrNoAnswer::YES));
     }
 
     /**
@@ -71,6 +71,6 @@ class YesOrNoAnswerTest extends TestCase
     {
         $answer = YesOrNoAnswer::no();
 
-        $this->assertTrue($answer->isNo());
+        $this->assertTrue($answer->is(YesOrNoAnswer::NO));
     }
 }

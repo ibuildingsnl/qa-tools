@@ -5,7 +5,7 @@ namespace Ibuildings\QaTools\Core\Interviewer\Question;
 use Ibuildings\QaTools\Core\Assert\Assertion;
 use Ibuildings\QaTools\Core\Exception\LogicException;
 use Ibuildings\QaTools\Core\Interviewer\Answer\Choices;
-use Ibuildings\QaTools\Core\Interviewer\Answer\MissingAnswer;
+use Ibuildings\QaTools\Core\Interviewer\Answer\NoDefaultAnswer;
 use Ibuildings\QaTools\Core\Interviewer\Answer\TextualAnswer;
 
 final class ListChoiceQuestion implements Question
@@ -21,7 +21,7 @@ final class ListChoiceQuestion implements Question
     private $possibleChoices;
 
     /**
-     * @var Choices|MissingAnswer
+     * @var Choices|NoDefaultAnswer
      */
     private $defaultAnswer;
 
@@ -30,7 +30,7 @@ final class ListChoiceQuestion implements Question
         Assertion::string($question);
 
         if ($defaultChoices === null) {
-            $defaultChoices = new MissingAnswer;
+            $defaultChoices = new NoDefaultAnswer;
         } else {
             $this->assertDefaultChoiceIsPossible($possibleChoices, $defaultChoices);
         }
@@ -56,7 +56,7 @@ final class ListChoiceQuestion implements Question
      */
     public function hasDefaultAnswer()
     {
-        return !$this->defaultAnswer instanceof MissingAnswer;
+        return !$this->defaultAnswer instanceof NoDefaultAnswer;
     }
 
     /**
@@ -76,7 +76,7 @@ final class ListChoiceQuestion implements Question
     }
 
     /**
-     * @return Choices|MissingAnswer
+     * @return Choices|NoDefaultAnswer
      */
     public function getDefaultAnswer()
     {

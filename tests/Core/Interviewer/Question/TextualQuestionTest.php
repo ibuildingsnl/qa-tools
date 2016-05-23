@@ -1,6 +1,6 @@
 <?php
 
-use Ibuildings\QaTools\Core\Interviewer\Answer\MissingAnswer;
+use Ibuildings\QaTools\Core\Interviewer\Answer\NoDefaultAnswer;
 use Ibuildings\QaTools\Core\Interviewer\Answer\TextualAnswer;
 use Ibuildings\QaTools\Core\Interviewer\Question\TextualQuestion;
 use PHPUnit_Framework_TestCase as TestCase;
@@ -32,7 +32,7 @@ class TextualQuestionTest extends TestCase
      */
     public function textual_questions_answer_defaults_to_missing_answer_if_none_given()
     {
-        $expectedDefaultAnswer = new MissingAnswer;
+        $expectedDefaultAnswer = new NoDefaultAnswer;
 
         $question = new TextualQuestion('A question?');
 

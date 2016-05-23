@@ -57,7 +57,7 @@ final class Interviewer implements InterviewerInterface
     {
         Assertion::string($sentence);
 
-        $this->output->writeln(sprintf('<info>%s</info>', $sentence));
+        $this->output->writeln(sprintf('<comment>%s</comment>', $sentence));
     }
 
     public function warn($sentence)

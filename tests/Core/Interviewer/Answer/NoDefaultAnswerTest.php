@@ -1,10 +1,10 @@
 <?php
 
-use Ibuildings\QaTools\Core\Interviewer\Answer\MissingAnswer;
+use Ibuildings\QaTools\Core\Interviewer\Answer\NoDefaultAnswer;
 use Ibuildings\QaTools\Core\Interviewer\Answer\TextualAnswer;
 use PHPUnit_Framework_TestCase as TestCase;
 
-class MissingAnswerTest extends TestCase
+class NoDefaultAnswerTest extends TestCase
 {
     /**
      * @test
@@ -12,9 +12,9 @@ class MissingAnswerTest extends TestCase
      * @group Interviewer
      * @group Answer
      */
-    public function missing_answer_answer_has_a_null_answer_value()
+    public function no_default_answer_answer_has_a_null_answer_value()
     {
-        $missingAnswer = new MissingAnswer();
+        $missingAnswer = new NoDefaultAnswer();
         
         $this->assertNull($missingAnswer->getAnswer());
     }
@@ -25,9 +25,9 @@ class MissingAnswerTest extends TestCase
      * @group Interviewer
      * @group Answer
      */
-    public function missing_answer_does_not_equal_answer_of_other_type()
+    public function no_default_answer_does_not_equal_answer_of_other_type()
     {
-        $missingAnswer = new MissingAnswer();
+        $missingAnswer = new NoDefaultAnswer();
         $otherAnswer = new TextualAnswer('Test');
 
         $this->assertFalse($missingAnswer->equals($otherAnswer));
@@ -39,10 +39,10 @@ class MissingAnswerTest extends TestCase
      * @group Interviewer
      * @group Answer
      */
-    public function missing_answer_equals_another_missing_answer()
+    public function no_default_answer_equals_another_missing_answer()
     {
-        $missingAnswer = new MissingAnswer();
-        $sameAnswer = new MissingAnswer();
+        $missingAnswer = new NoDefaultAnswer();
+        $sameAnswer = new NoDefaultAnswer();
 
         $this->assertTrue($missingAnswer->equals($sameAnswer));
     }

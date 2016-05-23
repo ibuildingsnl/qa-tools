@@ -2,7 +2,7 @@
 
 use Ibuildings\QaTools\Core\Exception\InvalidArgumentException;
 use Ibuildings\QaTools\Core\Interviewer\Answer\Choices;
-use Ibuildings\QaTools\Core\Interviewer\Answer\MissingAnswer;
+use Ibuildings\QaTools\Core\Interviewer\Answer\NoDefaultAnswer;
 use Ibuildings\QaTools\Core\Interviewer\Answer\TextualAnswer;
 use Ibuildings\QaTools\Core\Interviewer\Question\MultipleChoiceQuestion;
 use PHPUnit_Framework_TestCase as TestCase;
@@ -35,7 +35,7 @@ class MultipleChoiceQuestionTest extends TestCase
      */
     public function multiple_choice_questions_answer_defaults_to_missing_answer_if_none_given()
     {
-        $expectedDefaultAnswer = new MissingAnswer;
+        $expectedDefaultAnswer = new NoDefaultAnswer;
 
         $question = new MultipleChoiceQuestion('A question?', new Choices([new TextualAnswer('An answer.')]));
 

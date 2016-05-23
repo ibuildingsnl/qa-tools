@@ -2,6 +2,7 @@
 
 namespace Ibuildings\QaTools\Core\IO\Cli;
 
+use Ibuildings\QaTools\Core\Interviewer\Answer\YesOrNoAnswer;
 use Ibuildings\QaTools\Core\Interviewer\Question\ListChoiceQuestion;
 use Ibuildings\QaTools\Core\Interviewer\Question\MultipleChoiceQuestion;
 use Ibuildings\QaTools\Core\Interviewer\Question\TextualQuestion;
@@ -34,7 +35,7 @@ class ConsoleQuestionFormatter
     {
         $defaultAnswerValue = 'y/n';
         if ($question->hasDefaultAnswer()) {
-            $defaultAnswerValue = $question->getDefaultAnswer()->isYes() ? 'Y/n' : 'y/N';
+            $defaultAnswerValue = $question->getDefaultAnswer()->is(YesOrNoAnswer::YES) ? 'Y/n' : 'y/N';
         }
 
         $defaultAnswer = sprintf(self::DEFAULT_ANSWER_FORMAT, $defaultAnswerValue);

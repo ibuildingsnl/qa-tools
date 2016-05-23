@@ -2,7 +2,7 @@
 
 namespace Ibuildings\QaTools\Core\Interviewer\Answer;
 
-final class MissingAnswer implements Answer
+final class NoDefaultAnswer implements Answer
 {
     public function getAnswer()
     {
@@ -11,6 +11,11 @@ final class MissingAnswer implements Answer
 
     public function equals(Answer $other)
     {
-        return $other instanceof MissingAnswer;
+        return $other instanceof NoDefaultAnswer;
+    }
+
+    public function convertToString()
+    {
+        return '';
     }
 }

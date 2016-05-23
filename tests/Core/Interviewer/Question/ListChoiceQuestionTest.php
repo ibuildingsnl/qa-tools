@@ -2,7 +2,7 @@
 
 use Ibuildings\QaTools\Core\Exception\LogicException as LogicException;
 use Ibuildings\QaTools\Core\Interviewer\Answer\Choices;
-use Ibuildings\QaTools\Core\Interviewer\Answer\MissingAnswer;
+use Ibuildings\QaTools\Core\Interviewer\Answer\NoDefaultAnswer;
 use Ibuildings\QaTools\Core\Interviewer\Answer\TextualAnswer;
 use Ibuildings\QaTools\Core\Interviewer\Question\ListChoiceQuestion;
 use PHPUnit_Framework_TestCase as TestCase;
@@ -34,7 +34,7 @@ class ListChoiceQuestionTest extends TestCase
      */
     public function list_choice_questions_choices_default_to_missing_answer_if_none_given()
     {
-        $expectedDefaultAnswer = new MissingAnswer;
+        $expectedDefaultAnswer = new NoDefaultAnswer;
 
         $question = new ListChoiceQuestion('A question?', new Choices([new TextualAnswer('An answer.')]));
 

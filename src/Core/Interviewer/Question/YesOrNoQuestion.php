@@ -3,7 +3,7 @@
 namespace Ibuildings\QaTools\Core\Interviewer\Question;
 
 use Ibuildings\QaTools\Core\Assert\Assertion;
-use Ibuildings\QaTools\Core\Interviewer\Answer\MissingAnswer;
+use Ibuildings\QaTools\Core\Interviewer\Answer\NoDefaultAnswer;
 use Ibuildings\QaTools\Core\Interviewer\Answer\YesOrNoAnswer;
 
 final class YesOrNoQuestion implements Question
@@ -14,7 +14,7 @@ final class YesOrNoQuestion implements Question
     private $question;
 
     /**
-     * @var YesOrNoAnswer|MissingAnswer
+     * @var YesOrNoAnswer|NoDefaultAnswer
      */
     private $defaultAnswer;
 
@@ -23,7 +23,7 @@ final class YesOrNoQuestion implements Question
         Assertion::string($question);
 
         if ($defaultAnswer === null) {
-            $defaultAnswer = new MissingAnswer();
+            $defaultAnswer = new NoDefaultAnswer();
         }
 
         $this->question      = $question;
@@ -41,7 +41,7 @@ final class YesOrNoQuestion implements Question
 
     public function hasDefaultAnswer()
     {
-        return !$this->defaultAnswer instanceof MissingAnswer;
+        return !$this->defaultAnswer instanceof NoDefaultAnswer;
     }
 
     /**
@@ -62,7 +62,7 @@ final class YesOrNoQuestion implements Question
     }
 
     /**
-     * @return YesOrNoAnswer|MissingAnswer $answer
+     * @return YesOrNoAnswer|NoDefaultAnswer $answer
      */
     public function getDefaultAnswer()
     {

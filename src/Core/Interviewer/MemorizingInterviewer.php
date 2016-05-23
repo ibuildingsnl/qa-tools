@@ -6,6 +6,7 @@ use Ibuildings\QaTools\Core\Assert\Assertion;
 use Ibuildings\QaTools\Core\Interviewer\Answer\Answer;
 use Ibuildings\QaTools\Core\Interviewer\Question\Question;
 use Ibuildings\QaTools\Core\IO\File\FileHandler;
+use Ibuildings\QaTools\Core\Project\ProjectConfigurator;
 
 final class MemorizingInterviewer implements Interviewer
 {
@@ -32,7 +33,7 @@ final class MemorizingInterviewer implements Interviewer
     /**
      * @var string
      */
-    private $scope = '';
+    private $scope = ProjectConfigurator::class;
 
     public function __construct(FileHandler $fileHandler, Interviewer $interviewer)
     {

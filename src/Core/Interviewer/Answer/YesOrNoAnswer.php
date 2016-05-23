@@ -6,6 +6,9 @@ use Ibuildings\QaTools\Core\Assert\Assertion;
 
 final class YesOrNoAnswer implements Answer
 {
+    const YES = true;
+    const NO  = false;
+
     /**
      * @var boolean
      */
@@ -16,7 +19,7 @@ final class YesOrNoAnswer implements Answer
      */
     public static function yes()
     {
-        return new self(true);
+        return new self(self::YES);
     }
 
     /**
@@ -24,12 +27,13 @@ final class YesOrNoAnswer implements Answer
      */
     public static function no()
     {
-        return new self(false);
+        return new self(self::NO);
     }
 
     private function __construct($answer)
     {
         Assertion::boolean($answer);
+
         $this->answer = $answer;
     }
 
@@ -51,18 +55,13 @@ final class YesOrNoAnswer implements Answer
     }
 
     /**
-     * @return bool
+     * @param $yesOrNo
+     * @return boolean
      */
-    public function isYes()
+    public function is($yesOrNo)
     {
-        return $this->answer === true;
-    }
+        Assertion::boolean($yesOrNo);
 
-    /**
-     * @return bool
-     */
-    public function isNo()
-    {
-        return $this->answer === false;
+        return $this->answer === $yesOrNo;
     }
 }

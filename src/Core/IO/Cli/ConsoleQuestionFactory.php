@@ -96,6 +96,11 @@ final class ConsoleQuestionFactory
 
         $consoleQuestion->setValidator(
             function ($answer) {
+                // A default answer can only be a boolean: if that is the case, pass it through
+                if (is_bool($answer)) {
+                    return $answer;
+                }
+
                 if (preg_match('/^(y|yes|n|no)$/i', $answer) === 0) {
                     throw new InvalidAnswerGivenException(
                         'A yes or no question can only be answered with yes/y or no/n'
