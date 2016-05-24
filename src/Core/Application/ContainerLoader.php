@@ -2,7 +2,7 @@
 
 namespace Ibuildings\QaTools\Core\Application;
 
-use Ibuildings\QaTools\Core\Application\Compiler\RegisterToolsCompilerPass;
+use Ibuildings\QaTools\Core\Application\Compiler\RegisterConfiguratorsCompilerPass;
 use Ibuildings\QaTools\Core\Tool\Tool;
 use Symfony\Component\Config\ConfigCache;
 use Symfony\Component\Config\FileLocator;
@@ -16,17 +16,17 @@ final class ContainerLoader
     {
         // If @package_version@ has not been replaced, we are in debug/dev mode.
         $isDebug = strpos(Application::VERSION, 'package_version') !== false;
-        $file = getcwd() .'/precompiled/container.php';
 
-        $preCompiledContainer = new ConfigCache($file, $isDebug);
+        $file = __DIR__ . '/../../../precompiled/container.php';
+        $precompiledContainer = new ConfigCache($file, $isDebug);
 
-        if ($preCompiledContainer->isFresh()) {
+        if ($precompiledContainer->isFresh() && !$isDebug) {
             require_once $file;
             return new \PrecompiledContainer();
         }
 
         $containerBuilder = new ContainerBuilder();
-        $containerBuilder->addCompilerPass(new RegisterToolsCompilerPass);
+        $containerBuilder->addCompilerPass(new RegisterConfiguratorsCompilerPass);
 
         $loader = new YamlFileLoader($containerBuilder , new FileLocator(__DIR__ . '/../Resources/config/'));
         $loader->load('config.yml');
