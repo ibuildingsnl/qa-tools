@@ -2,6 +2,9 @@
 
 namespace Ibuildings\QaTools\Core\Application\Command;
 
+use Ibuildings\QaTools\Core\ConfigurationBuilder\ConfigurationBuilderFactory;
+use Ibuildings\QaTools\Core\Configurator\Configurator;
+use Ibuildings\QaTools\Core\Configurator\RunList;
 use Ibuildings\QaTools\Core\IO\Cli\InterviewerFactory;
 use Ibuildings\QaTools\Core\Project\ProjectConfigurator;
 use Symfony\Component\Console\Command\Command;
@@ -26,8 +29,15 @@ final class ConfigureCommand extends Command implements ContainerAwareInterface
     {
         $interviewer         = $this->getInterviewerFactory()->createWith($input, $output);
         $projectConfigurator = $this->getProjectConfigurator();
+        $runList             = $this->getRunList();
 
-        $projectConfigurator->configure($interviewer);
+        $project              = $projectConfigurator->configure($interviewer);
+        $configurationBuilder = $this->getConfigurationBuilderFactory()->createWithProject($project);
+
+        /** @var Configurator $configurator */
+        foreach ($runList->getConfiguratorsForProjectTypes($project->getProjectTypes()) as $configurator) {
+            $configurator->configure($configurationBuilder, $interviewer);
+        }
     }
 
     /**
@@ -44,5 +54,21 @@ final class ConfigureCommand extends Command implements ContainerAwareInterface
     protected function getProjectConfigurator()
     {
         return $this->container->get('qa_tools.project_configurator');
+    }
+
+    /**
+     * @return RunList
+     */
+    private function getRunList()
+    {
+        return $this->container->get('qa_tools.run_list');
+    }
+
+    /**
+     * @return ConfigurationBuilderFactory
+     */
+    protected function getConfigurationBuilderFactory()
+    {
+        return $this->container->get('qa_tools.configuration_builder.factory');
     }
 }

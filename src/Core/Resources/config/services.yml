@@ -8,6 +8,15 @@ services:
     qa_tools.project_configurator:
         alias: qa_tools.project.project_configurator
 
+    qa_tools.run_list:
+        alias: qa_tools.configurator.run_list
+
+    qa_tools.configuration_builder.factory:
+        class: Ibuildings\QaTools\Core\ConfigurationBuilder\ConfigurationBuilderFactory
+
+    qa_tools.configurator.run_list:
+        class: Ibuildings\QaTools\Core\Configurator\RunList
+
     qa_tools.io.file.filesystem_adapter:
         class: Ibuildings\QaTools\Core\IO\File\FilesystemAdapter
         arguments:
