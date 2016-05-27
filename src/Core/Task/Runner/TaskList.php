@@ -26,6 +26,15 @@ final class TaskList implements IteratorAggregate, Countable
     }
 
     /**
+     * @param Task $task
+     * @return TaskList
+     */
+    public function add(Task $task)
+    {
+        return new TaskList(array_merge($this->tasks, [$task]));
+    }
+
+    /**
      * @param callable $predicate
      * @return TaskList
      */

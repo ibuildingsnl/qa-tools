@@ -5,11 +5,13 @@ use Ibuildings\QaTools\Core\Task\Task;
 use Ibuildings\QaTools\Core\Task\Runner\TaskList;
 use PHPUnit_Framework_TestCase as TestCase;
 
+/**
+ * @group Task
+ */
 class TaskListTest extends TestCase
 {
     /**
      * @test
-     * @group Task
      */
     public function tasklist_can_be_filtered_according_to_a_predicate_resulting_in_a_tasklist_of_the_filtered_tasks()
     {
@@ -33,7 +35,6 @@ class TaskListTest extends TestCase
 
     /**
      * @test
-     * @group Task
      */
     public function two_tasklists_with_overlapping_tasks_are_merged_resulting_in_one_tasklist()
     {
@@ -52,7 +53,6 @@ class TaskListTest extends TestCase
 
     /**
      * @test
-     * @group Task
      */
     public function two_tasklists_without_overlapping_tasks_are_merged_resulting_in_one_tasklist()
     {
@@ -71,7 +71,20 @@ class TaskListTest extends TestCase
 
     /**
      * @test
-     * @group Task
+     */
+    public function a_task_is_added_to_a_tasklist()
+    {
+        $task = new FakeTask('A');
+        $taskList = new TaskList([]);
+
+        $appendedTaskList = $taskList->add($task);
+
+        $this->assertFalse($taskList->contains($task));
+        $this->assertTrue($appendedTaskList->contains($task));
+    }
+
+    /**
+     * @test
      */
     public function tasklist_with_two_tasks_counts_as_two()
     {
@@ -85,7 +98,6 @@ class TaskListTest extends TestCase
 
     /**
      * @test
-     * @group Task
      */
     public function tasklist_with_no_tasks_counts_as_zero()
     {
@@ -96,7 +108,6 @@ class TaskListTest extends TestCase
 
     /**
      * @test
-     * @group Task
      */
     public function tasklist_is_iterable()
     {
