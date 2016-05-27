@@ -2,34 +2,27 @@
 
 namespace Ibuildings\QaTools\Core\Tool;
 
-use ReflectionClass;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
-/**
- * This class is abstract as these are defaults that can be overwritten by an implementation.
- */
 abstract class Tool
 {
     /**
-     * Gets the base config path in which the tools' configuration files should be located.
-     *
      * @return string
      */
-    public function getConfigPath()
+    public function determineResourcePath()
     {
-        $reflector = new ReflectionClass(get_called_class());
+        $fqcn = explode('\\', get_called_class());
+        $subNamespaces = array_splice($fqcn, 2, -1);
 
-        return dirname($reflector->getFileName()) . '/Resources/config';
+        return implode($subNamespaces, '/') . '/Resources';
     }
 
     /**
-     * Gets the files necessary to configure the tool.
-     *
      * @return string[]
      */
-    public function getConfigFiles()
+    public function getConfigurationFiles()
     {
         return [
             'configurators.yml'
@@ -37,17 +30,20 @@ abstract class Tool
     }
 
     /**
-     * Boots the tool, adding its configuration to the container.
-     *
      * @param ContainerBuilder $containerBuilder
      */
     public function boot(ContainerBuilder $containerBuilder)
     {
-        $configFileLoader = new YamlFileLoader($containerBuilder , new FileLocator($this->getConfigPath()));
+        $resourcePath = $this->determineResourcePath();
 
-        /** @var string $configFile */
-        foreach ($this->getConfigFiles() as $configFile) {
-            $configFileLoader->load($configFile);
+        $containerBuilder->setParameter('tool.' . static::class . '.resource_path', $resourcePath);
+        $configurationFileLoader = new YamlFileLoader(
+            $containerBuilder,
+            new FileLocator(APPLICATION_ROOT_DIR . '/' . $resourcePath . '/config')
+        );
+
+        foreach ($this->getConfigurationFiles() as $configurationFile) {
+            $configurationFileLoader->load($configurationFile);
         }
     }
 }
