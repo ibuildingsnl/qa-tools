@@ -10,6 +10,9 @@
          stopOnFailure="false"
          syntaxCheck="false"
          bootstrap="vendor/autoload.php">
+    <listeners>
+        <listener class="\Mockery\Adapter\Phpunit\TestListener"/>
+    </listeners>
     <testsuites>
         <testsuite name="Test Suite">
             <directory>tests</directory>
