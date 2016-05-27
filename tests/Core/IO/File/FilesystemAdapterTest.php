@@ -1,22 +1,22 @@
 <?php
 
+use Ibuildings\QaTools\Core\Exception\InvalidArgumentException;
 use Ibuildings\QaTools\Core\Exception\RuntimeException;
 use Ibuildings\QaTools\Core\IO\File\FilesystemAdapter;
 use PHPUnit_Framework_TestCase as TestCase;
 use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
 
+/**
+ * @group IO
+ * @group Filesystem
+ */
 class FilesystemAdapterTest extends TestCase
 {
     /**
      * @test
      *
-     * @group IO
-     * @group Filesystem
-     *
      * @dataProvider \Ibuildings\QaTools\TestDataProvider::notString
-     *
-     * @param mixed $nonString
      */
     public function data_to_write_to_file_must_be_a_string($nonString)
     {
@@ -29,12 +29,7 @@ class FilesystemAdapterTest extends TestCase
     /**
      * @test
      *
-     * @group IO
-     * @group Filesystem
-     *
      * @dataProvider \Ibuildings\QaTools\TestDataProvider::notStringOrEmptyString
-     *
-     * @param mixed $nonStringOrEmptyString
      */
     public function in_order_to_write_given_filepath_must_be_a_string($nonStringOrEmptyString)
     {
@@ -46,9 +41,6 @@ class FilesystemAdapterTest extends TestCase
 
     /**
      * @test
-     *
-     * @group IO
-     * @group Filesystem
      */
     public function an_exception_thrown_by_filesystem_when_writing_is_converted_to_an_qa_tools_exception()
     {
@@ -67,9 +59,6 @@ class FilesystemAdapterTest extends TestCase
 
     /**
      * @test
-     *
-     * @group IO
-     * @group Filesystem
      */
     public function attempting_to_read_data_from_a_non_existent_file_fails()
     {
@@ -84,9 +73,6 @@ class FilesystemAdapterTest extends TestCase
 
     /**
      * @test
-     *
-     * @group IO
-     * @group Filesystem
      */
     public function attempting_to_read_data_from_a_file_that_is_not_readable_fails()
     {
@@ -97,5 +83,69 @@ class FilesystemAdapterTest extends TestCase
 
         $this->expectException(RuntimeException::class);
         $filesystemAdapter->readFrom('/this/is/not/readable');
+    }
+
+    /**
+     * @test
+     *
+     * @dataProvider \Ibuildings\QaTools\TestDataProvider::notStringOrEmptyString
+     */
+    public function in_order_to_remove_given_filepath_must_be_a_non_empty_string($filePath)
+    {
+        $filesystemMock = Mockery::mock(Filesystem::class);
+        $filesystemAdapter = new FilesystemAdapter($filesystemMock);
+
+        $this->expectException(InvalidArgumentException::class);
+
+        $filesystemAdapter->remove($filePath);
+    }
+
+    /**
+     * @test
+     */
+    public function an_exception_thrown_by_filesystem_when_removing_is_converted_to_an_qa_tools_exception()
+    {
+        $filesystemMock = Mockery::mock(Filesystem::class);
+        $filesystemMock->shouldReceive('remove')->andThrow(IOException::class);
+
+        $filesystemAdapter = new FilesystemAdapter($filesystemMock);
+
+        try {
+            $filesystemAdapter->remove('/some/path');
+        } catch (Exception $exception) {
+            $this->assertInstanceOf(RuntimeException::class, $exception);
+            $this->assertInstanceOf(IOException::class, $exception->getPrevious());
+        }
+    }
+
+    /**
+     * @test
+     *
+     * @dataProvider \Ibuildings\QaTools\TestDataProvider::notStringOrEmptyString
+     */
+    public function in_order_to_check_if_a_file_exists_given_filepath_must_be_a_non_empty_string($filePath)
+    {
+        $filesystemMock = Mockery::mock(Filesystem::class);
+        $filesystemAdapter = new FilesystemAdapter($filesystemMock);
+
+        $this->expectException(InvalidArgumentException::class);
+
+        $filesystemAdapter->exists($filePath);
+    }
+
+    /**
+     * @test
+     */
+    public function filesystem_is_used_to_check_if_a_file_exists()
+    {
+        $filePath = 'some/file/path';
+
+        $filesystemMock = Mockery::mock(Filesystem::class);
+        $filesystemMock
+            ->shouldReceive('exists')
+            ->with($filePath);
+
+        $filesystemAdapter = new FilesystemAdapter($filesystemMock);
+        $filesystemAdapter->exists($filePath);
     }
 }

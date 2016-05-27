@@ -22,4 +22,10 @@ interface FileHandler
      * @return void
      */
     public function remove($filePath);
+
+    /**
+     * @param string $filePath
+     * @return boolean
+     */
+    public function exists($filePath);
 }

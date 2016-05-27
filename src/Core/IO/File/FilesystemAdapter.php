@@ -54,11 +54,20 @@ final class FilesystemAdapter implements FileHandler
 
     public function remove($filePath)
     {
+        Assertion::nonEmptyString($filePath, 'filePath');
+
         try {
             $this->filesystem->remove($filePath);
         } catch (IOException $exception) {
             $newMessage = sprintf('Could not remove file "%s", "%s"', $filePath, $exception->getMessage());
             throw new RuntimeException($newMessage, null, $exception);
         }
+    }
+
+    public function exists($filePath)
+    {
+        Assertion::nonEmptyString($filePath, 'filePath');
+
+        return $this->filesystem->exists($filePath);
     }
 }
