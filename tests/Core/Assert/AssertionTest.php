@@ -4,11 +4,13 @@ use Ibuildings\QaTools\Core\Assert\Assertion;
 use Ibuildings\QaTools\Core\Exception\InvalidArgumentException;
 use PHPUnit_Framework_TestCase as TestCase;
 
+/**
+ * @group Assertion
+ */
 class AssertionTest extends TestCase
 {
     /**
      * @test
-     * @group Assertion
      */
     public function non_empty_strings_are_valid()
     {
@@ -19,11 +21,8 @@ class AssertionTest extends TestCase
 
     /**
      * @test
-     * @group Assertion
      *
      * @dataProvider \Ibuildings\QaTools\TestDataProvider::notStringOrEmptyString()
-     *
-     * @param mixed $value
      */
     public function non_strings_or_empty_strings_are_invalid($value)
     {
