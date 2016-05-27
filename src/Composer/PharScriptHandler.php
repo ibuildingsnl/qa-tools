@@ -117,7 +117,8 @@ final class PharScriptHandler
         }
 
         // Precompile the container
-        ContainerLoader::loadAndCacheFor(new Application);
+        $event->getIO()->write('<info>Precompiling the container</info>');
+        ContainerLoader::load(new Application(true), true);
 
         $event->getIO()->write(
             sprintf('<info>Building phar with "%s"</info>', $config['qa-tools-box-install-path'].' build -vv')

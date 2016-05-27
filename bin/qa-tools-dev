@@ -8,7 +8,7 @@ use Ibuildings\QaTools\Core\Application\Command\PrePushCommand;
 
 require __DIR__ . '/../vendor/autoload.php';
 
-$application = new Application(false);
+$application = new Application(true);
 $application->addCommands([
     new ConfigureCommand(),
     new PreCommitCommand(),
