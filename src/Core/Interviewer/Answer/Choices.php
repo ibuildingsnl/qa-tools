@@ -78,13 +78,13 @@ final class Choices implements Answer, IteratorAggregate, Countable
 
     public function convertToString()
     {
-        return implode(', ', $this->convertToArray());
+        return implode(', ', $this->convertToArrayOfStrings());
     }
 
-    public function convertToArray()
+    public function convertToArrayOfStrings()
     {
         return array_map(function (TextualAnswer $answer) {
-            return $answer->convertToString();
+            return $answer->getAnswer();
         }, $this->answers);
     }
 }

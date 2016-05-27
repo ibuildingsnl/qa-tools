@@ -15,14 +15,16 @@ use PHPUnit_Framework_TestCase as TestCase;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\Question;
 
+/**
+ * @group Conversation
+ * @group Interviewer
+ * @group Console
+ * @group Question
+ */
 class ConsoleQuestionFactoryTest extends TestCase
 {
     /**
      * @test
-     * @group Conversation
-     * @group Factory
-     * @group Interviewer
-     * @group Console
      */
     public function factory_throws_exception_when_a_non_supported_question_type_is_given()
     {
@@ -37,10 +39,6 @@ class ConsoleQuestionFactoryTest extends TestCase
 
     /**
      * @test
-     * @group Conversation
-     * @group Factory
-     * @group Interviewer
-     * @group Console
      */
     public function factory_creates_a_console_question_from_positive_yes_or_no_question()
     {
@@ -61,10 +59,6 @@ class ConsoleQuestionFactoryTest extends TestCase
 
     /**
      * @test
-     * @group Conversation
-     * @group Factory
-     * @group Interviewer
-     * @group Console
      */
     public function factory_creates_a_console_question_from_negative_yes_or_no_question()
     {
@@ -85,10 +79,6 @@ class ConsoleQuestionFactoryTest extends TestCase
 
     /**
      * @test
-     * @group Conversation
-     * @group Factory
-     * @group Interviewer
-     * @group Console
      */
     public function factory_creates_a_console_question_from_textual_question()
     {
@@ -109,10 +99,6 @@ class ConsoleQuestionFactoryTest extends TestCase
 
     /**
      * @test
-     * @group Conversation
-     * @group Factory
-     * @group Interviewer
-     * @group Console
      */
     public function factory_creates_a_console_question_from_multiple_choice_question()
     {
@@ -140,10 +126,6 @@ class ConsoleQuestionFactoryTest extends TestCase
 
     /**
      * @test
-     * @group Conversation
-     * @group Factory
-     * @group Interviewer
-     * @group Console
      */
     public function factory_creates_a_console_question_from_list_choice_question()
     {

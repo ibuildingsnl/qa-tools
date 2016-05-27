@@ -140,4 +140,12 @@ final class TestDataProvider
             'null'   => [null],
         ];
     }
+
+    public static function boolean()
+    {
+        return [
+            'true'  => [true],
+            'false' => [false],
+        ];
+    }
 }

@@ -9,6 +9,8 @@ use Ibuildings\QaTools\Core\Interviewer\Question\MultipleChoiceQuestion;
 use Ibuildings\QaTools\Core\Interviewer\Question\TextualQuestion;
 use Ibuildings\QaTools\Core\Interviewer\Question\Question;
 use Ibuildings\QaTools\Core\Interviewer\Question\YesOrNoQuestion;
+use Ibuildings\QaTools\Core\IO\Cli\Validator\TextualAnswerValidator;
+use Ibuildings\QaTools\Core\IO\Cli\Validator\YesOrNoAnswerValidator;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\Question as ConsoleQuestion;
 
@@ -70,14 +72,7 @@ final class ConsoleQuestionFactory
             $this->consoleQuestionFormatter->formatTextualQuestion($question),
             $question->getDefaultAnswer()->getAnswer()
         );
-
-        $consoleQuestion->setValidator(function ($answer) {
-            if ($answer === null || trim($answer) === '') {
-                throw new InvalidAnswerGivenException('No answer given. Please provide an answer.');
-            }
-
-            return $answer;
-        });
+        $consoleQuestion->setValidator([TextualAnswerValidator::class, 'validate']);
         $consoleQuestion->setMaxAttempts(self::MAX_ATTEMPTS);
 
         return $consoleQuestion;
@@ -94,22 +89,7 @@ final class ConsoleQuestionFactory
             $question->getDefaultAnswer()->getAnswer()
         );
 
-        $consoleQuestion->setValidator(
-            function ($answer) {
-                // A default answer can only be a boolean: if that is the case, pass it through
-                if (is_bool($answer)) {
-                    return $answer;
-                }
-
-                if (preg_match('/^(y|yes|n|no)$/i', $answer) === 0) {
-                    throw new InvalidAnswerGivenException(
-                        'A yes or no question can only be answered with yes/y or no/n'
-                    );
-                }
-
-                return strtolower(substr($answer, 0, 1)) === 'y';
-            }
-        );
+        $consoleQuestion->setValidator([YesOrNoAnswerValidator::class, 'validate']);
         $consoleQuestion->setMaxAttempts(self::MAX_ATTEMPTS);
 
         return $consoleQuestion;
@@ -123,7 +103,7 @@ final class ConsoleQuestionFactory
     {
         $consoleQuestion = new ChoiceQuestion(
             $this->consoleQuestionFormatter->formatMultipleChoiceQuestion($question),
-            $question->getPossibleChoices()->convertToArray(),
+            $question->getPossibleChoices()->convertToArrayOfStrings(),
             $question->getDefaultAnswer()->getAnswer()
         );
 
@@ -140,7 +120,7 @@ final class ConsoleQuestionFactory
     {
         $consoleQuestion = new ChoiceQuestion(
             $this->consoleQuestionFormatter->formatListChoiceQuestion($question),
-            $question->getPossibleChoices()->convertToArray(),
+            $question->getPossibleChoices()->convertToArrayOfStrings(),
             $question->getDefaultAnswer()->convertToString()
         );
 

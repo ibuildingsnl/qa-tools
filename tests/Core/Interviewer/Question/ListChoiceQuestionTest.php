@@ -7,13 +7,15 @@ use Ibuildings\QaTools\Core\Interviewer\Answer\TextualAnswer;
 use Ibuildings\QaTools\Core\Interviewer\Question\ListChoiceQuestion;
 use PHPUnit_Framework_TestCase as TestCase;
 
+/**
+ * @group Conversation
+ * @group Interviewer
+ * @group Question
+ */
 class ListChoiceQuestionTest extends TestCase
 {
     /**
      * @test
-     * @group Conversation
-     * @group Interviewer
-     * @group Question
      *
      * @dataProvider \Ibuildings\QaTools\TestDataProvider::notString()
      */
@@ -28,9 +30,6 @@ class ListChoiceQuestionTest extends TestCase
 
     /**
      * @test
-     * @group Conversation
-     * @group Interviewer
-     * @group Question
      */
     public function list_choice_questions_choices_default_to_missing_answer_if_none_given()
     {
@@ -43,9 +42,6 @@ class ListChoiceQuestionTest extends TestCase
 
     /**
      * @test
-     * @group Conversation
-     * @group Interviewer
-     * @group Question
      */
     public function list_choice_question_cannot_have_default_choices_that_are_not_possible_choices()
     {
@@ -59,9 +55,6 @@ class ListChoiceQuestionTest extends TestCase
 
     /**
      * @test
-     * @group Conversation
-     * @group Interviewer
-     * @group Question
      */
     public function list_choice_question_does_not_equal_another_list_choice_question_with_a_different_question()
     {
@@ -76,9 +69,6 @@ class ListChoiceQuestionTest extends TestCase
 
     /**
      * @test
-     * @group Conversation
-     * @group Interviewer
-     * @group Question
      */
     public function list_choice_question_does_not_equal_another_list_choice_question_with_different_default_choices()
     {
@@ -99,9 +89,6 @@ class ListChoiceQuestionTest extends TestCase
 
     /**
      * @test
-     * @group Conversation
-     * @group Interviewer
-     * @group Question
      */
     public function list_choice_question_does_not_equal_another_list_choice_question_with_different_possible_choices()
     {
@@ -122,9 +109,6 @@ class ListChoiceQuestionTest extends TestCase
 
     /**
      * @test
-     * @group Conversation
-     * @group Interviewer
-     * @group Question
      */
     public function list_choice_question_equals_another_list_choice_question()
     {
@@ -138,9 +122,6 @@ class ListChoiceQuestionTest extends TestCase
 
     /**
      * @test
-     * @group Conversation
-     * @group Interviewer
-     * @group Question
      */
     public function list_choice_question_has_a_question_value()
     {
@@ -155,9 +136,6 @@ class ListChoiceQuestionTest extends TestCase
 
     /**
      * @test
-     * @group Conversation
-     * @group Interviewer
-     * @group Question
      */
     public function list_choice_question_has_default_choices()
     {
@@ -172,9 +150,6 @@ class ListChoiceQuestionTest extends TestCase
 
     /**
      * @test
-     * @group Conversation
-     * @group Interviewer
-     * @group Question
      */
     public function list_choice_question_has_possible_choices()
     {
@@ -189,9 +164,6 @@ class ListChoiceQuestionTest extends TestCase
 
     /**
      * @test
-     * @group Conversation
-     * @group Interviewer
-     * @group Question
      */
     public function list_choice_question_can_suggest_given_compatible_choices_that_are_possible_choices_as_default_answer()
     {
@@ -210,9 +182,6 @@ class ListChoiceQuestionTest extends TestCase
 
     /**
      * @test
-     * @group Conversation
-     * @group Interviewer
-     * @group Question
      */
     public function list_choice_question_question_cannot_suggest_given_compatible_choices_that_are_not_possible_choices_as_default_answer()
     {
@@ -230,9 +199,6 @@ class ListChoiceQuestionTest extends TestCase
 
     /**
      * @test
-     * @group Conversation
-     * @group Interviewer
-     * @group Question
      */
     public function list_choice_question_is_converted_to_string_correctly()
     {

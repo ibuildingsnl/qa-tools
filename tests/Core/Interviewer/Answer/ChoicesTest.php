@@ -4,13 +4,15 @@ use Ibuildings\QaTools\Core\Interviewer\Answer\Choices;
 use Ibuildings\QaTools\Core\Interviewer\Answer\TextualAnswer;
 use PHPUnit_Framework_TestCase as TestCase;
 
+/**
+ * @group Conversation
+ * @group Interviewer
+ * @group Answer
+ */
 class ChoicesTest extends TestCase
 {
     /**
      * @test
-     * @group Conversation
-     * @group Interviewer
-     * @group Answer
      *
      * @dataProvider \Ibuildings\QaTools\TestDataProvider::all()
      */
@@ -23,9 +25,6 @@ class ChoicesTest extends TestCase
 
     /**
      * @test
-     * @group Conversation
-     * @group Interviewer
-     * @group Answer
      */
     public function choices_do_not_contain_a_given_answer()
     {
@@ -38,9 +37,6 @@ class ChoicesTest extends TestCase
 
     /**
      * @test
-     * @group Conversation
-     * @group Interviewer
-     * @group Answer
      */
     public function choices_contain_a_given_answer()
     {
@@ -53,9 +49,6 @@ class ChoicesTest extends TestCase
 
     /**
      * @test
-     * @group Conversation
-     * @group Interviewer
-     * @group Answer
      */
     public function choices_do_not_equal_other_choices_if_different_length()
     {
@@ -69,9 +62,6 @@ class ChoicesTest extends TestCase
 
     /**
      * @test
-     * @group Conversation
-     * @group Interviewer
-     * @group Answer
      */
     public function choices_do_not_equal_other_choices_with_different_values()
     {
@@ -86,9 +76,6 @@ class ChoicesTest extends TestCase
 
     /**
      * @test
-     * @group Conversation
-     * @group Interviewer
-     * @group Answer
      */
     public function choices_equal_other_choices()
     {
@@ -103,9 +90,6 @@ class ChoicesTest extends TestCase
 
     /**
      * @test
-     * @group Conversation
-     * @group Interviewer
-     * @group Answer
      */
     public function choices_consist_of_multiple_answers()
     {

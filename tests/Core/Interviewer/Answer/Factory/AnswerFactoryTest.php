@@ -6,13 +6,17 @@ use Ibuildings\QaTools\Core\Interviewer\Answer\TextualAnswer;
 use Ibuildings\QaTools\Core\Interviewer\Answer\YesOrNoAnswer;
 use PHPUnit_Framework_TestCase as TestCase;
 
+/**
+ * @group Interviewer
+ * @group Conversation
+ * @group Console
+ * @group Answer
+ */
+
 class AnswerFactoryTest extends TestCase
 {
     /**
      * @test
-     * @group Conversation
-     * @group Console
-     * @group Answer
      */
     public function factory_creates_a_positive_yes_or_no_answer()
     {
@@ -24,9 +28,6 @@ class AnswerFactoryTest extends TestCase
 
     /**
      * @test
-     * @group Conversation
-     * @group Console
-     * @group Answer
      */
     public function factory_creates_a_negative_yes_or_no_answer()
     {
@@ -38,9 +39,6 @@ class AnswerFactoryTest extends TestCase
 
     /**
      * @test
-     * @group Conversation
-     * @group Console
-     * @group Answer
      */
     public function factory_creates_a_textual_answer()
     {
@@ -53,9 +51,6 @@ class AnswerFactoryTest extends TestCase
 
     /**
      * @test
-     * @group Conversation
-     * @group Console
-     * @group Answer
      */
     public function factory_creates_choices()
     {

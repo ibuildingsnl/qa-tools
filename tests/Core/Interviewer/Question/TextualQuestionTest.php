@@ -5,13 +5,15 @@ use Ibuildings\QaTools\Core\Interviewer\Answer\TextualAnswer;
 use Ibuildings\QaTools\Core\Interviewer\Question\TextualQuestion;
 use PHPUnit_Framework_TestCase as TestCase;
 
+/**
+ * @group Conversation
+ * @group Interviewer
+ * @group Question
+ */
 class TextualQuestionTest extends TestCase
 {
     /**
      * @test
-     * @group Conversation
-     * @group Interviewer
-     * @group Question
      *
      * @dataProvider \Ibuildings\QaTools\TestDataProvider::notString()
      */
@@ -26,9 +28,6 @@ class TextualQuestionTest extends TestCase
 
     /**
      * @test
-     * @group Conversation
-     * @group Interviewer
-     * @group Question
      */
     public function textual_questions_answer_defaults_to_missing_answer_if_none_given()
     {
@@ -41,9 +40,6 @@ class TextualQuestionTest extends TestCase
 
     /**
      * @test
-     * @group Conversation
-     * @group Interviewer
-     * @group Question
      */
     public function textual_question_does_not_equal_another_textual_question_with_a_different_question()
     {
@@ -58,9 +54,6 @@ class TextualQuestionTest extends TestCase
 
     /**
      * @test
-     * @group Conversation
-     * @group Interviewer
-     * @group Question
      */
     public function textual_question_does_not_equal_another_textual_question_with_different_default_answer()
     {
@@ -75,9 +68,6 @@ class TextualQuestionTest extends TestCase
 
     /**
      * @test
-     * @group Conversation
-     * @group Interviewer
-     * @group Question
      */
     public function textual_question_equals_another_textual_question()
     {
@@ -91,9 +81,6 @@ class TextualQuestionTest extends TestCase
 
     /**
      * @test
-     * @group Conversation
-     * @group Interviewer
-     * @group Question
      */
     public function textual_question_has_a_question_value()
     {
@@ -107,9 +94,6 @@ class TextualQuestionTest extends TestCase
 
     /**
      * @test
-     * @group Conversation
-     * @group Interviewer
-     * @group Question
      */
     public function textual_question_has_a_default_answer()
     {
@@ -123,9 +107,6 @@ class TextualQuestionTest extends TestCase
 
     /**
      * @test
-     * @group Conversation
-     * @group Interviewer
-     * @group Question
      */
     public function textual_question_can_suggest_a_given_compatible_answer_as_default_answer()
     {
@@ -140,9 +121,6 @@ class TextualQuestionTest extends TestCase
 
     /**
      * @test
-     * @group Conversation
-     * @group Interviewer
-     * @group Question
      */
     public function textual_question_is_converted_to_string_correctly()
     {

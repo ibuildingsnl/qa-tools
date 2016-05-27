@@ -4,46 +4,52 @@ use Ibuildings\QaTools\Core\Interviewer\Answer\NoDefaultAnswer;
 use Ibuildings\QaTools\Core\Interviewer\Answer\TextualAnswer;
 use PHPUnit_Framework_TestCase as TestCase;
 
+/**
+ * @group Conversation
+ * @group Interviewer
+ * @group Answer
+ */
 class NoDefaultAnswerTest extends TestCase
 {
     /**
      * @test
-     * @group Conversation
-     * @group Interviewer
-     * @group Answer
      */
     public function no_default_answer_answer_has_a_null_answer_value()
     {
-        $missingAnswer = new NoDefaultAnswer();
+        $noDefaultAnswer = new NoDefaultAnswer();
         
-        $this->assertNull($missingAnswer->getAnswer());
+        $this->assertNull($noDefaultAnswer->getAnswer());
     }
     
     /**
      * @test
-     * @group Conversation
-     * @group Interviewer
-     * @group Answer
      */
     public function no_default_answer_does_not_equal_answer_of_other_type()
     {
-        $missingAnswer = new NoDefaultAnswer();
+        $noDefaultAnswer = new NoDefaultAnswer();
         $otherAnswer = new TextualAnswer('Test');
 
-        $this->assertFalse($missingAnswer->equals($otherAnswer));
+        $this->assertFalse($noDefaultAnswer->equals($otherAnswer));
     }
 
     /**
      * @test
-     * @group Conversation
-     * @group Interviewer
-     * @group Answer
      */
     public function no_default_answer_equals_another_missing_answer()
     {
-        $missingAnswer = new NoDefaultAnswer();
+        $noDefaultAnswer = new NoDefaultAnswer();
         $sameAnswer = new NoDefaultAnswer();
 
-        $this->assertTrue($missingAnswer->equals($sameAnswer));
+        $this->assertTrue($noDefaultAnswer->equals($sameAnswer));
+    }
+
+    /**
+     * @test
+     */
+    public function no_default_answer_is_converted_to_an_empty_string()
+    {
+        $noDefaultAnswer = new NoDefaultAnswer();
+
+        $this->assertEquals('', $noDefaultAnswer->convertToString());
     }
 }

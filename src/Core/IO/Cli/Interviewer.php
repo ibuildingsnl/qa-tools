@@ -55,14 +55,14 @@ final class Interviewer implements InterviewerInterface
 
     public function say($sentence)
     {
-        Assertion::string($sentence);
+        Assertion::nonEmptyString($sentence, 'sentence');
 
         $this->output->writeln(sprintf('<comment>%s</comment>', $sentence));
     }
 
     public function warn($sentence)
     {
-        Assertion::string($sentence);
+        Assertion::nonEmptyString($sentence, 'sentence');
 
         $this->output->writeln(sprintf('<error>%s</error>', $sentence));
     }

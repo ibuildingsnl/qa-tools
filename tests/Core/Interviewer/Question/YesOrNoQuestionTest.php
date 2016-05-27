@@ -6,13 +6,15 @@ use Ibuildings\QaTools\Core\Interviewer\Answer\YesOrNoAnswer;
 use Ibuildings\QaTools\Core\Interviewer\Question\YesOrNoQuestion;
 use PHPUnit_Framework_TestCase as TestCase;
 
+/**
+ * @group Conversation
+ * @group Interviewer
+ * @group Question
+ */
 class YesOrNoQuestionTest extends TestCase
 {
     /**
      * @test
-     * @group Conversation
-     * @group Interviewer
-     * @group Question
      *
      * @dataProvider \Ibuildings\QaTools\TestDataProvider::notString()
      */
@@ -27,9 +29,6 @@ class YesOrNoQuestionTest extends TestCase
 
     /**
      * @test
-     * @group Conversation
-     * @group Interviewer
-     * @group Question
      */
     public function yes_or_no_questions_answer_defaults_to_no_answer_if_none_given()
     {
@@ -42,9 +41,6 @@ class YesOrNoQuestionTest extends TestCase
 
     /**
      * @test
-     * @group Conversation
-     * @group Interviewer
-     * @group Question
      */
     public function yes_or_no_question_does_not_equal_another_yes_or_no_question_with_a_different_question()
     {
@@ -59,9 +55,6 @@ class YesOrNoQuestionTest extends TestCase
 
     /**
      * @test
-     * @group Conversation
-     * @group Interviewer
-     * @group Question
      */
     public function yes_or_no_question_does_not_equal_another_yes_or_no_question_with_different_default_answer()
     {
@@ -76,9 +69,6 @@ class YesOrNoQuestionTest extends TestCase
 
     /**
      * @test
-     * @group Conversation
-     * @group Interviewer
-     * @group Question
      */
     public function yes_or_no_question_equals_another_yes_or_no_question()
     {
@@ -92,9 +82,6 @@ class YesOrNoQuestionTest extends TestCase
 
     /**
      * @test
-     * @group Conversation
-     * @group Interviewer
-     * @group Question
      */
     public function yes_or_no_question_has_a_question_value()
     {
@@ -108,9 +95,6 @@ class YesOrNoQuestionTest extends TestCase
 
     /**
      * @test
-     * @group Conversation
-     * @group Interviewer
-     * @group Question
      */
     public function yes_or_no_question_has_the_same_default_answer_as_given()
     {
@@ -124,9 +108,6 @@ class YesOrNoQuestionTest extends TestCase
 
     /**
      * @test
-     * @group Conversation
-     * @group Interviewer
-     * @group Question
      */
     public function yes_or_no_question_has_no_default_answer_if_none_given()
     {
@@ -137,9 +118,6 @@ class YesOrNoQuestionTest extends TestCase
 
     /**
      * @test
-     * @group Conversation
-     * @group Interviewer
-     * @group Question
      */
     public function yes_or_no_question_has_a_default_answer_if_given()
     {
@@ -150,9 +128,6 @@ class YesOrNoQuestionTest extends TestCase
 
     /**
      * @test
-     * @group Conversation
-     * @group Interviewer
-     * @group Question
      */
     public function yes_or_no_question_can_suggest_a_given_compatible_answer_as_default_answer()
     {
@@ -167,9 +142,6 @@ class YesOrNoQuestionTest extends TestCase
 
     /**
      * @test
-     * @group Conversation
-     * @group Interviewer
-     * @group Question
      */
     public function yes_or_no_question_is_converted_to_string_correctly()
     {

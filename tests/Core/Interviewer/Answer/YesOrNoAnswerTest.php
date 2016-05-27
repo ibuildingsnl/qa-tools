@@ -3,13 +3,15 @@
 use Ibuildings\QaTools\Core\Interviewer\Answer\YesOrNoAnswer;
 use PHPUnit_Framework_TestCase as TestCase;
 
+/**
+ * @group Conversation
+ * @group Interviewer
+ * @group Answer
+ */
 class YesOrNoAnswerTest extends TestCase
 {
     /**
      * @test
-     * @group Conversation
-     * @group Interviewer
-     * @group Answer
      */
     public function yes_or_no_answer_does_not_equal_a_different_yes_or_no_answer()
     {
@@ -21,9 +23,6 @@ class YesOrNoAnswerTest extends TestCase
 
     /**
      * @test
-     * @group Conversation
-     * @group Interviewer
-     * @group Answer
      */
     public function yes_or_no_answer_equals_the_same_yes_or_no_answer()
     {
@@ -35,9 +34,6 @@ class YesOrNoAnswerTest extends TestCase
 
     /**
      * @test
-     * @group Conversation
-     * @group Interviewer
-     * @group Answer
      */
     public function yes_or_no_answer_has_an_answer_value()
     {
@@ -50,9 +46,6 @@ class YesOrNoAnswerTest extends TestCase
 
     /**
      * @test
-     * @group Conversation
-     * @group Interviewer
-     * @group Answer
      */
     public function yes_or_no_answer_created_as_yes_is_yes()
     {
@@ -63,9 +56,6 @@ class YesOrNoAnswerTest extends TestCase
 
     /**
      * @test
-     * @group Conversation
-     * @group Interviewer
-     * @group Answer
      */
     public function yes_or_no_answer_created_as_no_is_no()
     {

@@ -7,13 +7,15 @@ use Ibuildings\QaTools\Core\Interviewer\Answer\TextualAnswer;
 use Ibuildings\QaTools\Core\Interviewer\Question\MultipleChoiceQuestion;
 use PHPUnit_Framework_TestCase as TestCase;
 
+/**
+ * @group Conversation
+ * @group Interviewer
+ * @group Question
+ */
 class MultipleChoiceQuestionTest extends TestCase
 {
     /**
      * @test
-     * @group Conversation
-     * @group Interviewer
-     * @group Question
      *
      * @dataProvider \Ibuildings\QaTools\TestDataProvider::notString()
      */
@@ -29,9 +31,6 @@ class MultipleChoiceQuestionTest extends TestCase
 
     /**
      * @test
-     * @group Conversation
-     * @group Interviewer
-     * @group Question
      */
     public function multiple_choice_questions_answer_defaults_to_missing_answer_if_none_given()
     {
@@ -44,9 +43,6 @@ class MultipleChoiceQuestionTest extends TestCase
 
     /**
      * @test
-     * @group Conversation
-     * @group Interviewer
-     * @group Question
      */
     public function multiple_choice_question_cannot_have_a_default_answer_that_is_not_a_possible_choice()
     {
@@ -60,9 +56,6 @@ class MultipleChoiceQuestionTest extends TestCase
 
     /**
      * @test
-     * @group Conversation
-     * @group Interviewer
-     * @group Question
      */
     public function multiple_choice_question_does_not_equal_another_multiple_choice_question_with_a_different_question()
     {
@@ -77,9 +70,6 @@ class MultipleChoiceQuestionTest extends TestCase
 
     /**
      * @test
-     * @group Conversation
-     * @group Interviewer
-     * @group Question
      */
     public function multiple_choice_question_does_not_equal_another_multiple_choice_question_with_a_different_default_answer(
     )
@@ -99,9 +89,6 @@ class MultipleChoiceQuestionTest extends TestCase
 
     /**
      * @test
-     * @group Conversation
-     * @group Interviewer
-     * @group Question
      */
     public function multiple_choice_question_does_not_equal_another_multiple_choice_question_with_different_possible_choices(
     )
@@ -124,9 +111,6 @@ class MultipleChoiceQuestionTest extends TestCase
 
     /**
      * @test
-     * @group Conversation
-     * @group Interviewer
-     * @group Question
      */
     public function multiple_choice_question_equals_another_multiple_choice_question()
     {
@@ -141,9 +125,6 @@ class MultipleChoiceQuestionTest extends TestCase
 
     /**
      * @test
-     * @group Conversation
-     * @group Interviewer
-     * @group Question
      */
     public function multiple_choice_question_has_a_question_value()
     {
@@ -162,9 +143,6 @@ class MultipleChoiceQuestionTest extends TestCase
 
     /**
      * @test
-     * @group Conversation
-     * @group Interviewer
-     * @group Question
      */
     public function multiple_choice_question_has_a_default_answer()
     {
@@ -184,9 +162,6 @@ class MultipleChoiceQuestionTest extends TestCase
 
     /**
      * @test
-     * @group Conversation
-     * @group Interviewer
-     * @group Question
      */
     public function multiple_choice_question_has_possible_answers()
     {
@@ -203,9 +178,6 @@ class MultipleChoiceQuestionTest extends TestCase
 
     /**
      * @test
-     * @group Conversation
-     * @group Interviewer
-     * @group Question
      */
     public function multiple_choice_question_can_suggest_a_given_compatible_answer_that_is_a_possible_choice_as_default_answer()
     {
@@ -224,9 +196,6 @@ class MultipleChoiceQuestionTest extends TestCase
 
     /**
      * @test
-     * @group Conversation
-     * @group Interviewer
-     * @group Question
      */
     public function multiple_choice_question_cannot_suggest_a_given_compatible_answer_that_is_not_possible_as_default_answer()
     {
@@ -244,9 +213,6 @@ class MultipleChoiceQuestionTest extends TestCase
 
     /**
      * @test
-     * @group Conversation
-     * @group Interviewer
-     * @group Question
      */
     public function multiple_choice_question_is_converted_to_string_correctly()
     {

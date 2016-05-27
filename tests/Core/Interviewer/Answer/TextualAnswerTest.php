@@ -4,13 +4,15 @@ use Ibuildings\QaTools\Core\Exception\InvalidArgumentException;
 use Ibuildings\QaTools\Core\Interviewer\Answer\TextualAnswer;
 use PHPUnit_Framework_TestCase as TestCase;
 
+/**
+ * @group Conversation
+ * @group Interviewer
+ * @group Answer
+ */
 class TextualAnswerTest extends TestCase
 {
     /**
      * @test
-     * @group Conversation
-     * @group Interviewer
-     * @group Answer
      *
      * @dataProvider \Ibuildings\QaTools\TestDataProvider::notString()
      */
@@ -23,9 +25,6 @@ class TextualAnswerTest extends TestCase
 
     /**
      * @test
-     * @group Conversation
-     * @group Interviewer
-     * @group Answer
      */
     public function textual_answer_does_not_equal_another_answer()
     {
@@ -37,9 +36,6 @@ class TextualAnswerTest extends TestCase
 
     /**
      * @test
-     * @group Conversation
-     * @group Interviewer
-     * @group Answer
      */
     public function textual_answer_equals_another_answer()
     {
@@ -51,9 +47,6 @@ class TextualAnswerTest extends TestCase
 
     /**
      * @test
-     * @group Conversation
-     * @group Interviewer
-     * @group Answer
      */
     public function textual_answer_has_an_textual_answer_value()
     {

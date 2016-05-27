@@ -20,8 +20,8 @@ final class Question
      */
     public static function create($question, $defaultAnswer = null)
     {
-        Assertion::string($question);
-        Assertion::nullOrString($defaultAnswer);
+        Assertion::nonEmptyString($question, 'question');
+        Assertion::nullOrNonEmptyString($defaultAnswer, 'default answer');
 
         if ($defaultAnswer === null) {
             return new TextualQuestion($question);
@@ -37,7 +37,7 @@ final class Question
      */
     public static function createYesOrNo($question, $defaultAnswer = null)
     {
-        Assertion::string($question);
+        Assertion::nonEmptyString($question, 'question');
         Assertion::nullOrBoolean($defaultAnswer);
 
         if ($defaultAnswer === null) {
@@ -59,9 +59,9 @@ final class Question
      */
     public static function createMultipleChoice($question, array $choices, $defaultAnswer = null)
     {
-        Assertion::string($question);
-        Assertion::allString($choices);
-        Assertion::nullOrString($defaultAnswer);
+        Assertion::nonEmptyString($question, 'question');
+        Assertion::allNonEmptyString($choices, 'choices');
+        Assertion::nullOrNonEmptyString($defaultAnswer, 'default answer');
 
         $choicesWithAnswers = new Choices(array_map(function ($choice) {
             return new TextualAnswer($choice);
@@ -82,8 +82,9 @@ final class Question
      */
     public static function createListChoice($question, array $choices, array $defaultAnswer = null)
     {
-        Assertion::string($question);
-        Assertion::allString($choices);
+        Assertion::nonEmptyString($question, 'question');
+        Assertion::allNonEmptyString($choices, 'choices');
+        Assertion::nullOrallNonEmptyString($defaultAnswer, 'default answer');
 
         $choicesWithAnswers = new Choices(array_map(function ($choice) {
             return new TextualAnswer($choice);

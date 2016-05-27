@@ -10,14 +10,17 @@ use Ibuildings\QaTools\Core\Interviewer\Question\TextualQuestion;
 use Ibuildings\QaTools\Core\Interviewer\Question\YesOrNoQuestion;
 use PHPUnit_Framework_TestCase as TestCase;
 
+/**
+ * @group Conversation
+ * @group Interviewer
+ * @group Console
+ * @group Question
+ * @group Formatter
+ */
 class ConsoleQuestionFormatterTest extends TestCase
 {
     /**
      * @test
-     * @group Conversation
-     * @group Formatter
-     * @group Interviewer
-     * @group Console
      */
     public function formatter_formats_a_yes_or_no_question_that_defaults_to_yes()
     {
@@ -33,10 +36,6 @@ class ConsoleQuestionFormatterTest extends TestCase
 
     /**
      * @test
-     * @group Conversation
-     * @group Formatter
-     * @group Interviewer
-     * @group Console
      */
     public function formatter_formats_a_yes_or_no_question_that_defaults_to_no()
     {
@@ -52,10 +51,6 @@ class ConsoleQuestionFormatterTest extends TestCase
 
     /**
      * @test
-     * @group Conversation
-     * @group Formatter
-     * @group Interviewer
-     * @group Console
      */
     public function formatter_formats_a_textual_question()
     {
@@ -71,10 +66,6 @@ class ConsoleQuestionFormatterTest extends TestCase
 
     /**
      * @test
-     * @group Conversation
-     * @group Formatter
-     * @group Interviewer
-     * @group Console
      */
     public function formatter_formats_a_multiple_choice_question()
     {
@@ -96,10 +87,6 @@ class ConsoleQuestionFormatterTest extends TestCase
 
     /**
      * @test
-     * @group Conversation
-     * @group Formatter
-     * @group Interviewer
-     * @group Console
      */
     public function formatter_formats_a_list_choice_question()
     {

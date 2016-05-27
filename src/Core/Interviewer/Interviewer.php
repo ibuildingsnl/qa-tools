@@ -2,15 +2,15 @@
 namespace Ibuildings\QaTools\Core\Interviewer;
 
 use Ibuildings\QaTools\Core\Interviewer\Answer\Answer;
-use Ibuildings\QaTools\Core\Interviewer\Question\Question;
+use Ibuildings\QaTools\Core\Interviewer\Question\Question as QuestionInterface;
 
 interface Interviewer
 {
     /**
-     * @param Question $question
+     * @param QuestionInterface $question
      * @return Answer
      */
-    public function ask(Question $question);
+    public function ask(QuestionInterface $question);
 
     /**
      * @param $sentence
