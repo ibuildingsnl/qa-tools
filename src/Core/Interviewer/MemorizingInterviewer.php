@@ -4,17 +4,11 @@ namespace Ibuildings\QaTools\Core\Interviewer;
 
 use Ibuildings\QaTools\Core\Assert\Assertion;
 use Ibuildings\QaTools\Core\Interviewer\Answer\Answer;
-use Ibuildings\QaTools\Core\Interviewer\Question\Question;
-use Ibuildings\QaTools\Core\IO\File\FileHandler;
+use Ibuildings\QaTools\Core\Interviewer\Question\Question as QuestionInterface;
 use Ibuildings\QaTools\Core\Project\ProjectConfigurator;
 
 final class MemorizingInterviewer implements Interviewer
 {
-    /**
-     * @var FileHandler
-     */
-    private $fileHandler;
-
     /**
      * @var Interviewer
      */
@@ -35,10 +29,13 @@ final class MemorizingInterviewer implements Interviewer
      */
     private $scope = ProjectConfigurator::class;
 
-    public function __construct(FileHandler $fileHandler, Interviewer $interviewer)
+    public function __construct(Interviewer $interviewer, array $previousAnswers)
     {
-        $this->interviewer = $interviewer;
-        $this->fileHandler = $fileHandler;
+        Assertion::allIsInstanceOf($previousAnswers, Answer::class);
+        Assertion::allString(array_keys($previousAnswers), 'Answers key "%s" was expected to be a hash, type %s given.');
+
+        $this->interviewer  = $interviewer;
+        $this->previousAnswers = $previousAnswers;
     }
 
     /**
@@ -51,10 +48,8 @@ final class MemorizingInterviewer implements Interviewer
         $this->scope = $scope;
     }
 
-    public function ask(Question $question)
+    public function ask(QuestionInterface $question)
     {
-        $this->ensurePreviousAnswersAreLoaded();
-
         $questionIdentifier = md5($question.$this->scope);
 
         if (isset($this->previousAnswers[$questionIdentifier])) {
@@ -79,22 +74,11 @@ final class MemorizingInterviewer implements Interviewer
         $this->interviewer->warn($sentence);
     }
 
-    private function ensurePreviousAnswersAreLoaded()
+    /**
+     * @return Answer[]
+     */
+    public function getGivenAnswers()
     {
-        if (isset($this->previousAnswers)) {
-            return;
-        }
-
-        // @todo: For now this suffices, will be reworked to configuration object and handler
-        $configurationData = $this->fileHandler->readFrom('./qa_tools.json');
-        $parsedConfigurationData = json_decode($configurationData, true);
-
-        if (array_key_exists('answers', $parsedConfigurationData)) {
-            $this->previousAnswers = $parsedConfigurationData['answers'];
-
-            return;
-        }
-
-        $this->previousAnswers = [];
+        return $this->givenAnswers;
     }
 }

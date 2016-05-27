@@ -48,10 +48,11 @@ class InterviewerFactory
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
+     * @param array $previousAnswers
      * @return MemorizingInterviewer
      */
-    public function createMemorizingWith(InputInterface $input, OutputInterface $output)
+    public function createMemorizingWith(InputInterface $input, OutputInterface $output, array $previousAnswers)
     {
-        return new MemorizingInterviewer($this->fileHandler, $this->createWith($input, $output));
+        return new MemorizingInterviewer($this->createWith($input, $output), $previousAnswers);
     }
 }
