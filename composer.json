@@ -24,7 +24,8 @@
         "symfony/config": "^3.0",
         "symfony/yaml": "^3.0",
         "beberlei/assert": "^2.5",
-        "twig/twig": "^1.24"
+        "twig/twig": "^1.24",
+        "zendframework/zend-json": "^3.0"
     },
     "extra": {
         "qa-tools-box-source": "https://github.com/box-project/box2/releases/download/2.7.2/box-2.7.2.phar",

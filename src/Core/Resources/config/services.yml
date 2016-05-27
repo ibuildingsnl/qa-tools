@@ -1,5 +1,5 @@
 services:
-    file_handler:
+    qa_tools.file_handler:
         alias: qa_tools.io.file.filesystem_adapter
 
     qa_tools.interviewer_factory:
@@ -13,6 +13,23 @@ services:
 
     qa_tools.template_engine:
         alias: qa_tools.templating.template_engine
+
+    qa_tools.configuration.configuration_loader:
+        class: Ibuildings\QaTools\Core\Configuration\ConfigurationLoader
+        arguments:
+            - "@qa_tools.file_handler"
+            - "%qa_tools.configuration_location%"
+
+    qa_tools.configuration.configuration_dumper:
+        class: Ibuildings\QaTools\Core\Configuration\ConfigurationDumper
+        arguments:
+            - "@qa_tools.file_handler"
+            - "%qa_tools.configuration_location%"
+
+    qa_tools.configuration.configuration_builder.factory:
+        class: Ibuildings\QaTools\Core\Configuration\ConfigurationBuilderFactory
+        arguments:
+            - "@qa_tools.template_engine"
 
     qa_tools.configurator.run_list:
         class: Ibuildings\QaTools\Core\Configurator\RunList
@@ -33,7 +50,7 @@ services:
     qa_tools.io.cli.interviewer_factory:
         class: Ibuildings\QaTools\Core\IO\Cli\InterviewerFactory
         arguments:
-            - "@file_handler"
+            - "@qa_tools.file_handler"
             - "@symfony.question_helper"
             - "@qa_tools.io.cli.console_question_factory"
 
