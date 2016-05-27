@@ -1,0 +1,2 @@
+parameters:
+    qa_tools.configuration_location: "./qa-tools.json"

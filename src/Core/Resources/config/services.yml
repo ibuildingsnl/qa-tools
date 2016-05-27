@@ -11,8 +11,8 @@ services:
     qa_tools.run_list:
         alias: qa_tools.configurator.run_list
 
-    qa_tools.configuration_builder.factory:
-        class: Ibuildings\QaTools\Core\ConfigurationBuilder\ConfigurationBuilderFactory
+    qa_tools.template_engine:
+        alias: qa_tools.templating.template_engine
 
     qa_tools.configurator.run_list:
         class: Ibuildings\QaTools\Core\Configurator\RunList
@@ -42,6 +42,11 @@ services:
         arguments:
             - "@qa_tools.io.cli.interviewer_factory"
 
+    qa_tools.templating.template_engine:
+        class: Ibuildings\QaTools\Core\Templating\TemplateEngine
+        arguments:
+            - "@twig.environment"
+
     symfony.filesystem:
         class: Symfony\Component\Filesystem\Filesystem
 
@@ -50,3 +55,6 @@ services:
 
     symfony.formatter_helper:
         class: Symfony\Component\Console\Helper\FormatterHelper
+
+    twig.environment:
+        class: Twig_Environment
