@@ -4,7 +4,7 @@ namespace Ibuildings\QaTools\Core\Project;
 
 use Ibuildings\QaTools\Core\Assert\Assertion;
 
-final class Project
+class Project
 {
     /**
      * @var string
@@ -14,7 +14,7 @@ final class Project
     /**
      * @var string
      */
-    private $configFileLocation;
+    private $configurationFilesLocation;
 
     /**
      * @var ProjectType[]
@@ -26,17 +26,17 @@ final class Project
      */
     private $travisEnabled;
 
-    public function __construct($name, $configFileLocation, array $projectTypes, $travisEnabled)
+    public function __construct($name, $configurationFilesLocation, array $projectTypes, $travisEnabled)
     {
         Assertion::string($name);
-        Assertion::string($configFileLocation);
+        Assertion::string($configurationFilesLocation);
         Assertion::allIsInstanceOf($projectTypes, ProjectType::class);
         Assertion::boolean($travisEnabled);
 
-        $this->name               = $name;
-        $this->configFileLocation = $configFileLocation;
-        $this->projectTypes       = $projectTypes;
-        $this->travisEnabled      = $travisEnabled;
+        $this->name                       = $name;
+        $this->configurationFilesLocation = $configurationFilesLocation;
+        $this->projectTypes               = $projectTypes;
+        $this->travisEnabled              = $travisEnabled;
     }
 
 
@@ -51,9 +51,9 @@ final class Project
     /**
      * @return string
      */
-    public function getConfigFileLocation()
+    public function getConfigurationFilesLocation()
     {
-        return $this->configFileLocation;
+        return $this->configurationFilesLocation;
     }
 
     /**
