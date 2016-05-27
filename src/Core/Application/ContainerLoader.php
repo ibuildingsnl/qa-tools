@@ -19,7 +19,7 @@ final class ContainerLoader
         $file = __DIR__ . '/../../../precompiled/container.php';
         $precompiledContainer = new ConfigCache($file, $isDebug);
 
-        if (!$precompiledContainer->isFresh()) {
+        if (!$precompiledContainer->isFresh() || $isDebug) {
             $containerBuilder = new ContainerBuilder();
             $containerBuilder->addCompilerPass(new RegisterConfiguratorsCompilerPass);
 
