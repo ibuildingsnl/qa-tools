@@ -1,4 +1,9 @@
 # QA-tools v3
+A set of quality assurance tools that are easily configurable through an installer.
+
+The QA-tools are meant to provide you with a decent base build setup, conforming to Ibuildings standards. 
+They are not meant to provide a solution for every use case. If you want a more complex setup,
+you can use the resulting configurations as a base and configure it manually.
 
 ## Development
 
@@ -11,11 +16,11 @@ This class should be added to the `\Ibuildings\QaTools\Core\Application\Applicat
 method in order for it to be configurable.
 
 Configurators are responsible for configuring a tool for a specific project type.
-By default, the tool's configurators are configured in its `Resources/config/configurators.yml` file. 
+By default, the tool's configurators are configured in its `src/Tool/<ToolName>/Resources/config/configurators.yml` file. 
 To modify which configuration file is used or to add configuration files for this tool, 
 override the inherited `getConfigurationFiles` method.
 
-Configurators should be added under the tool's namespace (i.e. `Tool\<ToolName>\Configurator\<ConfiguratorName>`) and
+Configurators should be added under the tool's namespace (i.e. `\Ibuildings\QaTools\Tool\<ToolName>\Configurator\<ConfiguratorName>`) and
 are defined as a service through the tool's `configurators.yml` file. 
 A tag has to be added to the configurator's definition to indicate which project types it supports:
 
@@ -33,7 +38,9 @@ Which project types apply for a certain project are determined through the inter
 
 The configuration process can be defined in the Configurator's `configure` method, in which it can use the
 `ConfigurationBuilder` and the `Interviewer`. 
-Templating and project configuration are available through the `ConfigurationBuilder`.
+Templating and project configuration are available through the `ConfigurationBuilder`. 
+A tool's templates should reside under `src/Tool/<ToolName>/Resources/templates`.
+
 The `Interviewer` is used for IO interaction.
 
 ### Interview API
