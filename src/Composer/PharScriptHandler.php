@@ -130,8 +130,6 @@ final class PharScriptHandler
             );
         }
 
-        // Precompile the container
-        $event->getIO()->write('<info>Precompiling the container</info>');
         ContainerLoader::load(new Application(true), true);
 
         $boxCommand = sprintf('%s build -vv', escapeshellcmd($config['qa-tools-box-install-path']));
