@@ -2,8 +2,8 @@
 
 namespace Ibuildings\QaTools\Tool\PhpMd;
 
-use Ibuildings\QaTools\Core\Tool\Tool;
+use Ibuildings\QaTools\Core\Tool\AbstractTool;
 
-final class PhpMd extends Tool
+final class PhpMd extends AbstractTool
 {
 }
