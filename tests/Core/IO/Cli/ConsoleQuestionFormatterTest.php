@@ -1,6 +1,5 @@
 <?php
 
-use Ibuildings\QaTools\Core\IO\Cli\ConsoleQuestionFormatter;
 use Ibuildings\QaTools\Core\Interviewer\Answer\Choices;
 use Ibuildings\QaTools\Core\Interviewer\Answer\TextualAnswer;
 use Ibuildings\QaTools\Core\Interviewer\Answer\YesOrNoAnswer;
@@ -8,6 +7,7 @@ use Ibuildings\QaTools\Core\Interviewer\Question\ListChoiceQuestion;
 use Ibuildings\QaTools\Core\Interviewer\Question\MultipleChoiceQuestion;
 use Ibuildings\QaTools\Core\Interviewer\Question\TextualQuestion;
 use Ibuildings\QaTools\Core\Interviewer\Question\YesOrNoQuestion;
+use Ibuildings\QaTools\Core\IO\Cli\ConsoleQuestionFormatter;
 use PHPUnit_Framework_TestCase as TestCase;
 
 /**

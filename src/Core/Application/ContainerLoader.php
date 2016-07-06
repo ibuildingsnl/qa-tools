@@ -35,7 +35,7 @@ final class ContainerLoader
             $containerBuilder->compile();
 
             // Save the compiled container
-            $dumper      = new PhpDumper($containerBuilder);
+            $dumper = new PhpDumper($containerBuilder);
             $compiledContainer = $dumper->dump([
                 'class' => 'CompiledContainer',
                 'namespace' => 'Ibuildings\QaTools\Core\Application'

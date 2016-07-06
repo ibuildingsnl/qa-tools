@@ -1,8 +1,8 @@
 <?php
 
 use Ibuildings\QaTools\Core\Task\FakeTask;
-use Ibuildings\QaTools\Core\Task\Task;
 use Ibuildings\QaTools\Core\Task\Runner\TaskList;
+use Ibuildings\QaTools\Core\Task\Task;
 use PHPUnit_Framework_TestCase as TestCase;
 
 /**

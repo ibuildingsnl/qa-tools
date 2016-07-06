@@ -2,12 +2,11 @@
 
 namespace Ibuildings\QaTools\Core\IO\Cli;
 
-use Ibuildings\QaTools\Core\Exception\InvalidAnswerGivenException;
 use Ibuildings\QaTools\Core\Exception\InvalidArgumentException;
 use Ibuildings\QaTools\Core\Interviewer\Question\ListChoiceQuestion;
 use Ibuildings\QaTools\Core\Interviewer\Question\MultipleChoiceQuestion;
-use Ibuildings\QaTools\Core\Interviewer\Question\TextualQuestion;
 use Ibuildings\QaTools\Core\Interviewer\Question\Question;
+use Ibuildings\QaTools\Core\Interviewer\Question\TextualQuestion;
 use Ibuildings\QaTools\Core\Interviewer\Question\YesOrNoQuestion;
 use Ibuildings\QaTools\Core\IO\Cli\Validator\TextualAnswerValidator;
 use Ibuildings\QaTools\Core\IO\Cli\Validator\YesOrNoAnswerValidator;
