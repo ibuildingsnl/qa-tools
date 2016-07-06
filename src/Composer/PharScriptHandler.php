@@ -138,6 +138,20 @@ final class PharScriptHandler
         $event->getIO()->write(
             sprintf('<info>Building phar with "%s"</info>', $boxCommand)
         );
-        passthru($boxCommand);
+        passthru($boxCommand, $exitCode);
+
+        if ($exitCode !== 0) {
+            $event->getIO()->writeError([
+                '<error>' .
+                '                                                                                                    ',
+                ' Phar build failed. If the error is "", you can try to increase the open file limit of your system: ',
+                '                                                                                                    ',
+                '     ulimit -Sn 4096                                                                                ',
+                '                                                                                                    ',
+                '     See https://github.com/box-project/box2/issues/80#issuecomment-77322046                        ',
+                '                                                                                                    ',
+                '</error>',
+            ]);
+        }
     }
 }
