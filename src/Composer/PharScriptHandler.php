@@ -3,9 +3,9 @@
 namespace Ibuildings\QaTools\Composer;
 
 use Composer\Script\Event;
-use Exception;
 use Ibuildings\QaTools\Core\Application\Application;
 use Ibuildings\QaTools\Core\Application\ContainerLoader;
+use RuntimeException;
 
 final class PharScriptHandler
 {
@@ -32,7 +32,7 @@ final class PharScriptHandler
         }
 
         if (!is_writable(dirname($installPath))) {
-            throw new Exception(
+            throw new RuntimeException(
                 sprintf(
                     'Cannot download Box to "%s": directory is not writable',
                     dirname($installPath)
@@ -46,7 +46,7 @@ final class PharScriptHandler
         if ($boxContents === false) {
             $lastError = error_get_last();
 
-            throw new Exception(
+            throw new RuntimeException(
                 sprintf(
                     'Could not download Box from "%s": %s',
                     $source,
@@ -56,7 +56,7 @@ final class PharScriptHandler
         }
 
         if (sha1($boxContents) !== $shaSum) {
-            throw new Exception(
+            throw new RuntimeException(
                 sprintf(
                     'Hash of downloaded Box ("%s") does not match expected hash ("%s").',
                     sha1($boxContents),
@@ -70,7 +70,7 @@ final class PharScriptHandler
         if ($result === false) {
             $lastError = error_get_last();
 
-            throw new Exception(
+            throw new RuntimeException(
                 sprintf(
                     'Could not save Box to: "%s": %s',
                     $installPath,
@@ -83,7 +83,7 @@ final class PharScriptHandler
             $permissions = fileperms($installPath);
             $lastError   = error_get_last();
 
-            throw new Exception(
+            throw new RuntimeException(
                 sprintf(
                     'Unable to assign execute permissions to "%s", current octal permissions "%o" ("%s")',
                     $installPath,
@@ -99,11 +99,12 @@ final class PharScriptHandler
     public static function buildPhar(Event $event)
     {
         $config = $event->getComposer()->getPackage()->getExtra();
+        $io     = $event->getIO();
 
         $pharIsReadOnly = ini_get('phar.readonly') ? true : false;
 
         if ($pharIsReadOnly) {
-            throw new Exception(
+            throw new RuntimeException(
                 sprintf(
                     'Cannot build phar: the PHP Phar extension is configured to be read-only.'.PHP_EOL.
                     'Please set phar.readonly to "Off" in your php.ini at: "%s"',
@@ -113,7 +114,7 @@ final class PharScriptHandler
         }
 
         if (!file_exists($config['qa-tools-box-install-path'])) {
-            throw new Exception(
+            throw new RuntimeException(
                 sprintf(
                     'Cannot build phar: file "%s" does not exist',
                     $config['qa-tools-box-install-path']
@@ -122,7 +123,7 @@ final class PharScriptHandler
         }
 
         if (!is_executable($config['qa-tools-box-install-path'])) {
-            throw new Exception(
+            throw new RuntimeException(
                 sprintf(
                     'Cannot build phar: file "%s" is not executable',
                     $config['qa-tools-box-install-path']
