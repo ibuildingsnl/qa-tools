@@ -138,6 +138,6 @@ final class PharScriptHandler
             sprintf('<info>Building phar with "%s"</info>', $config['qa-tools-box-install-path'].' build -vv')
         );
 
-        passthru($config['qa-tools-box-install-path'].' build -vv');
+        passthru(sprintf('%s build -vv', escapeshellcmd($config['qa-tools-box-install-path'])));
     }
 }
