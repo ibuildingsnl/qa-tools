@@ -134,10 +134,10 @@ final class PharScriptHandler
         $event->getIO()->write('<info>Precompiling the container</info>');
         ContainerLoader::load(new Application(true), true);
 
+        $boxCommand = sprintf('%s build -vv', escapeshellcmd($config['qa-tools-box-install-path']));
         $event->getIO()->write(
-            sprintf('<info>Building phar with "%s"</info>', $config['qa-tools-box-install-path'].' build -vv')
+            sprintf('<info>Building phar with "%s"</info>', $boxCommand)
         );
-
-        passthru(sprintf('%s build -vv', escapeshellcmd($config['qa-tools-box-install-path'])));
+        passthru($boxCommand);
     }
 }
