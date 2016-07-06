@@ -151,5 +151,9 @@ final class PharScriptHandler
                 '</error>',
             ]);
         }
+
+        $event->getIO()->write(
+            sprintf('<info>Phar built successfully!</info>', $boxCommand)
+        );
     }
 }
