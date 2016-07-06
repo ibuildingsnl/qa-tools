@@ -79,7 +79,21 @@ final class PharScriptHandler
             );
         }
 
-        return $io->write(sprintf('<info>Installed Box at "%s"</info>', $installPath));
+        if (!chmod($installPath, 0775)) {
+            $permissions = fileperms($installPath);
+            $lastError   = error_get_last();
+
+            throw new Exception(
+                sprintf(
+                    'Unable to assign execute permissions to "%s", current octal permissions "%o" ("%s")',
+                    $installPath,
+                    $permissions,
+                    $lastError['message']
+                )
+            );
+        }
+
+        return $io->write(sprintf('<info>Installed Box at "%s".</info>', $installPath));
     }
 
     public static function buildPhar(Event $event)
