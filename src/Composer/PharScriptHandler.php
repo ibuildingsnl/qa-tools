@@ -134,13 +134,13 @@ final class PharScriptHandler
         ContainerLoader::load(new Application(true), true);
 
         $boxCommand = sprintf('%s build -vv', escapeshellcmd($config['qa-tools-box-install-path']));
-        $event->getIO()->write(
+        $io->write(
             sprintf('<info>Building phar with "%s"</info>', $boxCommand)
         );
         passthru($boxCommand, $exitCode);
 
         if ($exitCode !== 0) {
-            $event->getIO()->writeError([
+            $io->writeError([
                 '<error>' .
                 '                                                                                                    ',
                 ' Phar build failed. If the error is "", you can try to increase the open file limit of your system: ',
@@ -153,7 +153,7 @@ final class PharScriptHandler
             ]);
         }
 
-        $event->getIO()->write(
+        $io->write(
             sprintf('<info>Phar built successfully!</info>', $boxCommand)
         );
     }
