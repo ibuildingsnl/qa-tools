@@ -12,11 +12,7 @@
   "finder": [
     {
       "name": "*.php",
-      "exclude": [
-        "bin/box.phar",
-        "src/Composer",
-        "tests"
-      ],
+      "exclude": [],
       "in": "vendor"
     }
   ],
