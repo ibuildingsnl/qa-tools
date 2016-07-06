@@ -23,7 +23,7 @@ final class ContainerLoader
             $containerBuilder = new ContainerBuilder();
             $containerBuilder->addCompilerPass(new RegisterConfiguratorsCompilerPass);
 
-            $loader = new YamlFileLoader($containerBuilder , new FileLocator(__DIR__ . '/../Resources/config/'));
+            $loader = new YamlFileLoader($containerBuilder, new FileLocator(__DIR__ . '/../Resources/config/'));
             $loader->load('config.yml');
             $loader->load('services.yml');
 
@@ -36,12 +36,17 @@ final class ContainerLoader
 
             // Save the compiled container
             $dumper      = new PhpDumper($containerBuilder);
+            $compiledContainer = $dumper->dump([
+                'class' => 'CompiledContainer',
+                'namespace' => 'Ibuildings\QaTools\Core\Application'
+            ]);
+
             $fileHandler = new FilesystemAdapter(new Filesystem());
-            $fileHandler->writeTo($dumper->dump(['class' => 'PrecompiledContainer']), $file);
+            $fileHandler->writeTo($compiledContainer, $file);
         }
 
         require_once $file;
 
-        return new \PrecompiledContainer();
+        return new CompiledContainer();
     }
 }
