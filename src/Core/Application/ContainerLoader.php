@@ -16,7 +16,7 @@ final class ContainerLoader
 {
     public static function load(Application $application, $isDebug)
     {
-        $file = __DIR__ . '/../../../precompiled/container.php';
+        $file = __DIR__ . '/../../../var/cache/container.php';
         $precompiledContainer = new ConfigCache($file, $isDebug);
 
         if (!$precompiledContainer->isFresh() || $isDebug) {
