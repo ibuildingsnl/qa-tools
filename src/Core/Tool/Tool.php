@@ -32,7 +32,7 @@ abstract class Tool
     /**
      * @param ContainerBuilder $containerBuilder
      */
-    public function boot(ContainerBuilder $containerBuilder)
+    public function build(ContainerBuilder $containerBuilder)
     {
         $resourcePath = $this->determineResourcePath();
 

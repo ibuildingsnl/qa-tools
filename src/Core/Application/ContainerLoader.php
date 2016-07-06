@@ -29,7 +29,7 @@ final class ContainerLoader
 
             /** @var Tool $tool */
             foreach ($application->getRegisteredTools() as $tool) {
-                $tool->boot($containerBuilder);
+                $tool->build($containerBuilder);
             }
 
             $containerBuilder->compile();
