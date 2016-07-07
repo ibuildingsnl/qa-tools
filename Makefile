@@ -17,7 +17,6 @@ else
 endif
 
 test: phpunit-fast phpunit-slow
-
 test-fast: phpunit-fast
 
 phpunit-fast: phpunit-unit phpunit-integration
@@ -29,3 +28,7 @@ phpunit-integration:
     phpunit -c . --testsuite integration
 phpunit-functional:
     phpunit -c . --testsuite functional
+
+generate-insecure-signing-key:
+    openssl genrsa -passout pass:insecure -des3 -out .travis/phar-private-passphrase.pem 4096
+    openssl rsa -passin pass:insecure -in .travis/phar-private-passphrase.pem -out .travis/phar-private.pem
