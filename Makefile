@@ -1,12 +1,20 @@
 .RECIPEPREFIX +=
 
+ULIMIT := $(shell command -v ulimit 2>/dev/null)
+
 help:
     @echo
     @echo "\033[0;33mAvailable targets:\033[0m"
     @cat Makefile | sed 's/: /: → /' | GREP_COLORS="ms=00;32" grep --colour=always -P '^[a-z0-9].+:' | column -s ':' -t  | sed 's/^/  /'
 
 build: test
+ifdef ULIMIT
+    # Increase open file limit
+    # See https://github.com/box-project/box2/issues/80#issuecomment-76630852
+    ulimit -Sn 4096 && composer build
+else
     composer build
+endif
 
 test: phpunit-fast phpunit-slow
 
