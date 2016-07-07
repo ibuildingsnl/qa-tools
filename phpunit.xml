@@ -14,8 +14,14 @@
         <listener class="\Mockery\Adapter\Phpunit\TestListener"/>
     </listeners>
     <testsuites>
-        <testsuite name="QaTools unit tests">
+        <testsuite name="unit">
             <directory>tests/unit</directory>
+        </testsuite>
+        <testsuite name="integration">
+            <directory>tests/integration</directory>
+        </testsuite>
+        <testsuite name="functional">
+            <directory>tests/functional</directory>
         </testsuite>
     </testsuites>
     <filter>
