@@ -151,6 +151,7 @@ final class PharScriptHandler
                 '                                                                                                    ',
                 '</error>',
             ]);
+            exit(1);
         }
 
         $io->write(
