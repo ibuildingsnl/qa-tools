@@ -30,6 +30,7 @@ phpunit-functional:
     phpunit -c . --testsuite functional
 
 generate-insecure-signing-key:
+    mkdir -p .travis
     @test ! -e .travis/phar-private.pem || (echo "\n  \033[0;31mA signing key already exists. Remove it if you want to generate a new one.\033[0m\n" && false)
     openssl genrsa -passout pass:insecure -des3 -out .travis/phar-private-passphrase.pem 4096 && \
         openssl rsa -passin pass:insecure -in .travis/phar-private-passphrase.pem -out .travis/phar-private.pem && \
