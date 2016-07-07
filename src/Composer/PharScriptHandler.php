@@ -147,7 +147,7 @@ final class PharScriptHandler
                 '                                                                                                    ',
                 '     ulimit -Sn 4096                                                                                ',
                 '                                                                                                    ',
-                '     See https://github.com/box-project/box2/issues/80#issuecomment-77322046                        ',
+                '     See https://github.com/box-project/box2/issues/80#issuecomment-76630852                        ',
                 '                                                                                                    ',
                 '</error>',
             ]);
