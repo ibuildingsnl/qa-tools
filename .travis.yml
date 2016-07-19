@@ -21,7 +21,7 @@ before_script:
   - make generate-insecure-signing-key
 
 script:
-  - make build
+  - make test
 
 branches:
   only: [master, develop]

@@ -5,4 +5,4 @@ SCRIPT=$(readlink -f "$0")
 # Absolute path this script is in, thus /path/to
 SCRIPTPATH=$(dirname "$SCRIPT")
 
-(cd $SCRIPTPATH/../.. && make build)
+(cd $SCRIPTPATH/../.. && make test)
