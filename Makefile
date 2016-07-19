@@ -39,7 +39,7 @@ phpunit-integration:
 phpunit-smoke:
     phpunit -c . --testsuite smoke
 behat-acceptance:
-    behat
+    vendor/bin/behat
 
 
 verify-build-is-signed: build
