@@ -8,7 +8,7 @@ help:
     @cat Makefile | sed 's/: /: → /' | GREP_COLORS="ms=00;32" grep --colour=always -P '^[a-z0-9].+:' | column -s ':' -t  | sed 's/^/  /'
 
 clean:
-    test -e dist/qa-tools.phar && rm dist/qa-tools.phar
+    test ! -e dist/qa-tools.phar || rm dist/qa-tools.phar
 
 build: dist/qa-tools.phar
 dist/qa-tools.phar:
