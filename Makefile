@@ -33,11 +33,11 @@ test-security: verify-build-is-signed check-security-advisories
 
 
 phpunit-unit:
-    phpunit -c . --testsuite unit
+    vendor/bin/phpunit -c . --testsuite unit
 phpunit-integration:
-    phpunit -c . --testsuite integration
+    vendor/bin/phpunit -c . --testsuite integration
 phpunit-smoke:
-    phpunit -c . --testsuite smoke
+    vendor/bin/phpunit -c . --testsuite smoke
 behat-acceptance:
     vendor/bin/behat
 
