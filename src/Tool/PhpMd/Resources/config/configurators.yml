@@ -1,0 +1,6 @@
+services:
+    qa_tools.tool.configurator.phpmd.sf2:
+        class: Ibuildings\QaTools\Tool\PhpMd\Configurator\PhpMdSf2Configurator
+        tags:
+            - name: qa_tools.tool
+              project_type: 'php.sf2'

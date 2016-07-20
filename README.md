@@ -1,6 +1,15 @@
-# qa-tools-v3
-QA-Tools v3 repo - just staging for development.
+# Ibuildings QA Tools v3 [![Build Status](https://travis-ci.com/ibuildingsnl/qa-tools-v3.svg?token=JEaBsbhAuRqMRnCxyjuy&branch=master)](https://travis-ci.com/ibuildingsnl/qa-tools-v3)
+A set of quality assurance tools that are easily configurable through an installer.
 
-# TODO
+The QA Tools are meant to provide you with a decent base build setup, conforming to Ibuildings standards. 
+They are not meant to provide a solution for every use case. If you want a more complex setup,
+you can use the resulting configurations as a base and configure it manually.
 
-- rewrite this README to make sense.
+## Documentation
+
+ * [Contributing guidelines](CONTRIBUTING.md)
+ * [Development](docs/development.md)
+ * [Phar](docs/phar.md)
+ * [Reporting a bug](docs/reporting-a-bug.md)
+ * [Tool development](docs/tool-development.md)
+ * [Ubiquitous language](docs/ubiquitous-language.md)

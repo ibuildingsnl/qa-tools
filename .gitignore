@@ -1,0 +1,5 @@
+/vendor/
+/.travis/phar-private.pem
+/dist/qa-tools*
+/var/cache/*
+/bin/box

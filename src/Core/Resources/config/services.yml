@@ -1,0 +1,77 @@
+services:
+    qa_tools.file_handler:
+        alias: qa_tools.io.file.filesystem_adapter
+
+    qa_tools.interviewer_factory:
+        alias: qa_tools.io.cli.interviewer_factory
+
+    qa_tools.project_configurator:
+        alias: qa_tools.project.project_configurator
+
+    qa_tools.run_list:
+        alias: qa_tools.configurator.run_list
+
+    qa_tools.template_engine:
+        alias: qa_tools.templating.template_engine
+
+    qa_tools.configuration.configuration_loader:
+        class: Ibuildings\QaTools\Core\Configuration\ConfigurationLoader
+        arguments:
+            - "@qa_tools.file_handler"
+            - "%qa_tools.configuration_location%"
+
+    qa_tools.configuration.configuration_dumper:
+        class: Ibuildings\QaTools\Core\Configuration\ConfigurationDumper
+        arguments:
+            - "@qa_tools.file_handler"
+            - "%qa_tools.configuration_location%"
+
+    qa_tools.configuration.configuration_builder.factory:
+        class: Ibuildings\QaTools\Core\Configuration\ConfigurationBuilderFactory
+        arguments:
+            - "@qa_tools.template_engine"
+
+    qa_tools.configurator.run_list:
+        class: Ibuildings\QaTools\Core\Configurator\RunList
+
+    qa_tools.io.file.filesystem_adapter:
+        class: Ibuildings\QaTools\Core\IO\File\FilesystemAdapter
+        arguments:
+            - "@symfony.filesystem"
+
+    qa_tools.io.cli.console_question_factory:
+        class: Ibuildings\QaTools\Core\IO\Cli\ConsoleQuestionFactory
+        arguments:
+         - "@qa_tools.io.cli.console_question_formatter"
+
+    qa_tools.io.cli.console_question_formatter:
+        class: Ibuildings\QaTools\Core\IO\Cli\ConsoleQuestionFormatter
+
+    qa_tools.io.cli.interviewer_factory:
+        class: Ibuildings\QaTools\Core\IO\Cli\InterviewerFactory
+        arguments:
+            - "@qa_tools.file_handler"
+            - "@symfony.question_helper"
+            - "@qa_tools.io.cli.console_question_factory"
+
+    qa_tools.project.project_configurator:
+        class: Ibuildings\QaTools\Core\Project\ProjectConfigurator
+        arguments:
+            - "@qa_tools.io.cli.interviewer_factory"
+
+    qa_tools.templating.template_engine:
+        class: Ibuildings\QaTools\Core\Templating\TemplateEngine
+        arguments:
+            - "@twig.environment"
+
+    symfony.filesystem:
+        class: Symfony\Component\Filesystem\Filesystem
+
+    symfony.question_helper:
+        class: Symfony\Component\Console\Helper\QuestionHelper
+
+    symfony.formatter_helper:
+        class: Symfony\Component\Console\Helper\FormatterHelper
+
+    twig.environment:
+        class: Twig_Environment

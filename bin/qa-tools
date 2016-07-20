@@ -1,0 +1,20 @@
+#!/usr/bin/env php
+<?php
+
+use Ibuildings\QaTools\Core\Application\Application;
+use Ibuildings\QaTools\Core\Application\Command\ConfigureCommand;
+use Ibuildings\QaTools\Core\Application\Command\PreCommitCommand;
+use Ibuildings\QaTools\Core\Application\Command\PrePushCommand;
+
+require __DIR__ . '/../vendor/autoload.php';
+
+$isDebug = Phar::running() === '';
+$application = new Application($isDebug);
+$application->addCommands([
+    new ConfigureCommand(),
+    new PreCommitCommand(),
+    new PrePushCommand(),
+]);
+$application->boot();
+
+$application->run();

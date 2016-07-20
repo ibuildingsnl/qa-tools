@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+# Absolute path to this script, e.g. /path/to/pre-push
+SCRIPT=$(readlink -f "$0")
+# Absolute path this script is in, thus /path/to
+SCRIPTPATH=$(dirname "$SCRIPT")
+
+(cd $SCRIPTPATH/../.. && make test)

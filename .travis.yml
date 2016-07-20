@@ -1,0 +1,27 @@
+sudo: false
+language: php
+php:
+  - 5.6
+  - 7.0
+  - nightly
+
+cache:
+  directories:
+    - ~/.composer/cache/files/
+
+before_install:
+  - phpenv config-add .travis.php.ini
+
+install:
+  - composer install --prefer-dist
+
+before_script:
+  # Ancient make binary at TravisCI doesn't support indentation with spaces
+  - unexpand -t 4 Makefile > Makefile.tmp && mv Makefile.tmp Makefile
+  - make generate-insecure-signing-key
+
+script:
+  - make test
+
+branches:
+  only: [master, develop]
