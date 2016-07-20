@@ -133,7 +133,7 @@ final class PharScriptHandler
 
         ContainerLoader::load(new Application(true), true);
 
-        $boxCommand = sprintf('%s build -vv', escapeshellcmd($config['qa-tools-box-install-path']));
+        $boxCommand = sprintf('%s build', escapeshellcmd($config['qa-tools-box-install-path']));
         $io->write(
             sprintf('<info>Building phar with "%s"</info>', $boxCommand)
         );
