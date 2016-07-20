@@ -38,7 +38,7 @@ A tool's templates should reside under `src/Tool/<ToolName>/Resources/templates`
 The `Interviewer` is used for IO interaction.
 
 ## Interview API
-The `Interviewer` is responsible for the interaction with the user. It can provide the user with information using the
+The `Interviewer` is responsible for the interaction with the developer. It can provide the developer with information using the
 `tell` and `warn` methods and acquire information from him using the `ask` method. While the `tell` and `warn` methods
 accept strings as their arguments, the `ask` method is requires a specific `Question`.
 
