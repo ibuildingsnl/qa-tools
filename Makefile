@@ -12,14 +12,14 @@ clean:
 
 build: dist/qa-tools.phar
 dist/qa-tools.phar:
+    composer install --no-dev
 ifdef ULIMIT
     # Increase open file limit
     # See https://github.com/box-project/box2/issues/80#issuecomment-76630852
-    ulimit -Sn 4096 && composer build
+    (ulimit -Sn 4096 && composer build && composer install --dev) || (ret=$$?; composer install --dev && exit $$ret)
 else
-    composer build
+    (composer build && composer install --dev) || (ret=$$?; composer install --dev && exit $$ret)
 endif
-
 
 test: test-unit test-integration test-acceptance clean build test-smoke test-security
 test-fast: test-unit test-integration test-acceptance
