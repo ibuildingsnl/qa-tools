@@ -16,8 +16,8 @@ final class PrePushCommand extends Command implements ContainerAwareInterface
     {
         $this
             ->setName('configure:pre-push')
-            ->setDescription('Configure up the pre-push hook for the Ibuildings QA-tools')
-            ->setHelp('Configure the pre-push hook for the Ibuildings QA-tools');
+            ->setDescription('Configure up the pre-push hook for the Ibuildings QA Tools')
+            ->setHelp('Configure the pre-push hook for the Ibuildings QA Tools');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)

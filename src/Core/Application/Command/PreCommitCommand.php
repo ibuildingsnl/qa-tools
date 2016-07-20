@@ -16,8 +16,8 @@ final class PreCommitCommand extends Command implements ContainerAwareInterface
     {
         $this
             ->setName('configure:pre-commit')
-            ->setDescription('Configure the pre-commit hook for the Ibuildings QA-tools')
-            ->setHelp('Configure the pre-commit hook for the Ibuildings QA-tools');
+            ->setDescription('Configure the pre-commit hook for the Ibuildings QA Tools')
+            ->setHelp('Configure the pre-commit hook for the Ibuildings QA Tools');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)

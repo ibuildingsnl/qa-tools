@@ -15,7 +15,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 final class Application extends ConsoleApplication
 {
-    const NAME = 'Ibuildings QA-tools';
+    const NAME = 'Ibuildings QA Tools';
 
     /** The version of the application, replaced automatically on build */
     const VERSION = '@package_version@';

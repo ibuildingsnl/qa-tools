@@ -25,8 +25,8 @@ final class ConfigureCommand extends Command implements ContainerAwareInterface
     {
         $this
             ->setName('configure')
-            ->setDescription('Configure the Ibuildings QA-tools')
-            ->setHelp('Configure the Ibuildings QA-tools');
+            ->setDescription('Configure the Ibuildings QA Tools')
+            ->setHelp('Configure the Ibuildings QA Tools');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
