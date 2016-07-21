@@ -40,45 +40,11 @@ final class SystemTest extends TestCase
 
     private function expect($script, $workingDirectory)
     {
-        $header = <<<'HEADER'
-set timeout 1
-
-proc timed_out { expected } {
-    puts "Expected string \"$expected\" did not appear in time. It is likely another question is pending. Aborting..."
-    exit 1
-}
-proc early_eof { expected } {
-    puts "Command terminated early while waiting for \"$expected\"."
-    exit 1
-}
-proc should_see { expected } {
-    expect {
-        $expected {}
-        timeout { timed_out $expected }
-        eof { early_eof $expected }
-    }
-}
-proc answer { expected with answer } {
-    expect {
-        $expected { send "$answer\n" }
-        timeout { timed_out $expected }
-        eof { early_eof $expected }
-    }
-}
-proc expect_eof {} {
-    puts "Waiting for command to terminate..."
-    expect {
-        eof     { puts "Test completed." }
-        timeout {
-            puts "Command failed to terminate in time. Perhaps there's still a question pending?"
-            exit 1
-        }
-    }
-}
-HEADER;
+        $scriptHarness = file_get_contents(__DIR__ . '/harness.tcl');
+        $fullScript = str_replace('# SCRIPT #', $script, $scriptHarness);
 
         $process = ProcessBuilder::create(['expect'])
-            ->setInput("$header\n\n$script")
+            ->setInput($fullScript)
             ->setWorkingDirectory($workingDirectory)
             ->getProcess();
         $process->run();
