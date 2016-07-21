@@ -33,7 +33,7 @@ final class SystemTest extends TestCase
     {
         foreach (glob(__DIR__ . '/specs/*.php') as $specPath) {
             $specName = preg_replace('~\\.php$~', '', basename($specPath));
-            $scriptPath = preg_replace('~\\.php$~', '.expect', $specPath);
+            $scriptPath = preg_replace('~\\.php$~', '.tcl', $specPath);
             yield $specName => [$scriptPath, $specPath];
         }
     }
