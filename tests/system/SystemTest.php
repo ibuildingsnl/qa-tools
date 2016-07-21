@@ -13,7 +13,7 @@ final class SystemTest extends TestCase
      */
     public function execute_specs($scriptPath, $specPath)
     {
-        $projectDirectory = sys_get_temp_dir() . '/' . uniqid('qa-tools_smoke', true);
+        $projectDirectory = sys_get_temp_dir() . '/' . uniqid('qa-tools_system', true);
         mkdir($projectDirectory);
         link(__DIR__ . '/../../dist/qa-tools.phar', $projectDirectory . '/qa-tools');
         link(__DIR__ . '/../../dist/qa-tools.phar.pubkey', $projectDirectory . '/qa-tools.pubkey');
