@@ -1,6 +1,10 @@
 Development
 ===========
 
+ * [Writing system tests](development/writing-system-tests.md)
+
+--------------------------------------------------------------------------------
+
 To get ready for contributing to the Ibuildings QA Tools:
 
 ```shell-session
