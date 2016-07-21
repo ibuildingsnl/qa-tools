@@ -61,6 +61,21 @@ expectations can be written.
 [wiki-tcl]: https://en.wikipedia.org/wiki/Tcl
 [expectation-harness]: ../../tests/system/harness.tcl
 
+### Pitfalls
+
+One pitfall is the use of brackets in strings; these execute commands. The below
+snippet, expecting a specific multiple-choice answer, attempts to execute `0`:
+
+```tcl
+answer "[0] Symfony 3" with "0"
+```
+
+The solution is to escape the brackets:
+
+```tcl
+answer "\[0\] Symfony 3" with "0"
+```
+
 ## The assertions file
 
 The assertions file contains plain PHP. It is executed after the dialogue has

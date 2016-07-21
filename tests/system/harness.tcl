@@ -45,7 +45,7 @@ proc should_see { expected } {
 #   answer (string) The string that is sent to the program in return.
 proc answer { expected with answer } {
     expect {
-        $expected { send "$answer\n" }
+        -exact $expected { send "$answer\n" }
         timeout { timed_out $expected }
         eof { early_eof $expected }
     }
