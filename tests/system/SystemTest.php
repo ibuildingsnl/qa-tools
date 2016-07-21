@@ -43,21 +43,36 @@ final class SystemTest extends TestCase
         $header = <<<'HEADER'
 set timeout 1
 
-proc put_timeout_msg { msg } {
-    puts "Expected string \"$msg\"did not appear in time. Aborting..."
+proc timed_out { expected } {
+    puts "Expected string \"$expected\" did not appear in time. It is likely another question is pending. Aborting..."
+    exit 1
+}
+proc early_eof { expected } {
+    puts "Command terminated early while waiting for \"$expected\"."
     exit 1
 }
 proc should_see { expected } {
-    expect $expected {} timeout { put_timeout_msg $expected }
+    expect {
+        $expected {}
+        timeout { timed_out $expected }
+        eof { early_eof $expected }
+    }
 }
 proc answer { expected with answer } {
-    expect $expected { send "$answer\n" } timeout { put_timeout_msg $expected }
+    expect {
+        $expected { send "$answer\n" }
+        timeout { timed_out $expected }
+        eof { early_eof $expected }
+    }
 }
 proc expect_eof {} {
     puts "Waiting for command to terminate..."
     expect {
         eof     { puts "Test completed." }
-        timeout { put_timeout_msg "<EOF>" }
+        timeout {
+            puts "Command failed to terminate in time. Perhaps there's still a question pending?"
+            exit 1
+        }
     }
 }
 HEADER;
