@@ -1,6 +1,6 @@
 <?php
 
-namespace Ibuildings\QaTools;
+namespace Ibuildings\QaTools\UnitTest;
 
 use stdClass;
 

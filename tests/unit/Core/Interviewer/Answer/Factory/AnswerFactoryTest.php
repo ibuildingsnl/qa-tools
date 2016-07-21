@@ -1,5 +1,7 @@
 <?php
 
+namespace Ibuildings\QaTools\UnitTest\Core\Interviewer\Answer\Factory;
+
 use Ibuildings\QaTools\Core\Interviewer\Answer\Choices;
 use Ibuildings\QaTools\Core\Interviewer\Answer\Factory\AnswerFactory;
 use Ibuildings\QaTools\Core\Interviewer\Answer\TextualAnswer;

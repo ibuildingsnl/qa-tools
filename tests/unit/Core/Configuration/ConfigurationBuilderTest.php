@@ -1,11 +1,14 @@
 <?php
 
+namespace Ibuildings\QaTools\UnitTest\Core\Configuration;
+
 use Ibuildings\QaTools\Core\Configuration\ConfigurationBuilder;
 use Ibuildings\QaTools\Core\Exception\InvalidArgumentException;
 use Ibuildings\QaTools\Core\Project\Project;
-use Ibuildings\QaTools\Core\Task\FakeTask;
 use Ibuildings\QaTools\Core\Task\Runner\TaskList;
 use Ibuildings\QaTools\Core\Templating\TemplateEngine;
+use Ibuildings\QaTools\UnitTest\Core\Task\FakeTask;
+use Mockery;
 use PHPUnit_Framework_TestCase as TestCase;
 
 /**
@@ -67,7 +70,7 @@ class ConfigurationBuilderTest extends TestCase
     /**
      * @test
      *
-     * @dataProvider \Ibuildings\QaTools\TestDataProvider::notStringOrEmptyString
+     * @dataProvider \Ibuildings\QaTools\UnitTest\TestDataProvider::notStringOrEmptyString
      */
     public function a_template_path_that_can_be_set_through_the_configuration_builder_can_only_be_a_string($path)
     {
@@ -101,7 +104,7 @@ class ConfigurationBuilderTest extends TestCase
     /**
      * @test
      *
-     * @dataProvider \Ibuildings\QaTools\TestDataProvider::notStringOrEmptyString
+     * @dataProvider \Ibuildings\QaTools\UnitTest\TestDataProvider::notStringOrEmptyString
      */
     public function a_template_that_can_be_rendered_through_the_configuration_builder_can_only_be_a_string($template)
     {

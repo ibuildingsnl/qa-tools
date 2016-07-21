@@ -1,8 +1,12 @@
 <?php
 
+namespace Ibuildings\QaTools\UnitTest\Core\IO\File;
+
+use Exception;
 use Ibuildings\QaTools\Core\Exception\InvalidArgumentException;
 use Ibuildings\QaTools\Core\Exception\RuntimeException;
 use Ibuildings\QaTools\Core\IO\File\FilesystemAdapter;
+use Mockery;
 use PHPUnit_Framework_TestCase as TestCase;
 use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
@@ -16,7 +20,7 @@ class FilesystemAdapterTest extends TestCase
     /**
      * @test
      *
-     * @dataProvider \Ibuildings\QaTools\TestDataProvider::notString
+     * @dataProvider \Ibuildings\QaTools\UnitTest\TestDataProvider::notString
      */
     public function data_to_write_to_file_must_be_a_string($nonString)
     {
@@ -29,7 +33,7 @@ class FilesystemAdapterTest extends TestCase
     /**
      * @test
      *
-     * @dataProvider \Ibuildings\QaTools\TestDataProvider::notStringOrEmptyString
+     * @dataProvider \Ibuildings\QaTools\UnitTest\TestDataProvider::notStringOrEmptyString
      */
     public function in_order_to_write_given_filepath_must_be_a_string($nonStringOrEmptyString)
     {
@@ -88,7 +92,7 @@ class FilesystemAdapterTest extends TestCase
     /**
      * @test
      *
-     * @dataProvider \Ibuildings\QaTools\TestDataProvider::notStringOrEmptyString
+     * @dataProvider \Ibuildings\QaTools\UnitTest\TestDataProvider::notStringOrEmptyString
      */
     public function in_order_to_remove_given_filepath_must_be_a_non_empty_string($filePath)
     {
@@ -121,7 +125,7 @@ class FilesystemAdapterTest extends TestCase
     /**
      * @test
      *
-     * @dataProvider \Ibuildings\QaTools\TestDataProvider::notStringOrEmptyString
+     * @dataProvider \Ibuildings\QaTools\UnitTest\TestDataProvider::notStringOrEmptyString
      */
     public function in_order_to_check_if_a_file_exists_given_filepath_must_be_a_non_empty_string($filePath)
     {

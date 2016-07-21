@@ -7,7 +7,10 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Ibuildings\\QaTools\\": ["tests/unit", "tests/integration", "tests/functional"]
+            "Ibuildings\\QaTools\\UnitTest\\": ["tests/unit"],
+            "Ibuildings\\QaTools\\IntegrationTest\\": ["tests/integration"],
+            "Ibuildings\\QaTools\\SecurityTest\\": ["tests/security"],
+            "Ibuildings\\QaTools\\SmokeTest\\": ["tests/smoke"]
         }
     },
     "scripts": {

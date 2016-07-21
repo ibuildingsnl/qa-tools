@@ -1,5 +1,7 @@
 <?php
 
+namespace Ibuildings\QaTools\UnitTest\Core\Interviewer\Question;
+
 use Ibuildings\QaTools\Core\Exception\InvalidArgumentException;
 use Ibuildings\QaTools\Core\Interviewer\Answer\NoDefaultAnswer;
 use Ibuildings\QaTools\Core\Interviewer\Answer\YesOrNoAnswer;
@@ -16,7 +18,7 @@ class YesOrNoQuestionTest extends TestCase
     /**
      * @test
      *
-     * @dataProvider \Ibuildings\QaTools\TestDataProvider::notString()
+     * @dataProvider \Ibuildings\QaTools\UnitTest\TestDataProvider::notString()
      */
     public function yes_or_no_questions_question_can_only_be_string($value)
     {

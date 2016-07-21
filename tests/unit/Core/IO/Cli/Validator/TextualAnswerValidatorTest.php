@@ -1,5 +1,7 @@
 <?php
 
+namespace Ibuildings\QaTools\UnitTest\Core\IO\Cli\Validator;
+
 use Ibuildings\QaTools\Core\Exception\InvalidAnswerGivenException;
 use Ibuildings\QaTools\Core\Exception\InvalidArgumentException;
 use Ibuildings\QaTools\Core\IO\Cli\Validator\TextualAnswerValidator;
@@ -17,7 +19,7 @@ class TextualAnswerValidatorTest extends TestCase
     /**
      * @test
      *
-     * @dataProvider \Ibuildings\QaTools\TestDataProvider::notString
+     * @dataProvider \Ibuildings\QaTools\UnitTest\TestDataProvider::notString
      */
     public function validator_only_accepts_null_or_string_as_answer($answer)
     {
@@ -33,7 +35,7 @@ class TextualAnswerValidatorTest extends TestCase
     /**
      * @test
      *
-     * @dataProvider \Ibuildings\QaTools\TestDataProvider::emptyString
+     * @dataProvider \Ibuildings\QaTools\UnitTest\TestDataProvider::emptyString
      */
     public function validator_sees_empty_or_emptyish_strings_as_invalid_answers($answer)
     {
