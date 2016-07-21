@@ -1,5 +1,7 @@
 <?php
 
+namespace Ibuildings\QaTools\UnitTest\Core\Interviewer;
+
 use Ibuildings\QaTools\Core\Exception\InvalidArgumentException;
 use Ibuildings\QaTools\Core\Interviewer\Answer\Choices;
 use Ibuildings\QaTools\Core\Interviewer\Answer\TextualAnswer;
@@ -21,7 +23,7 @@ class QuestionTest extends TestCase
     /**
      * @test
      *
-     * @dataProvider \Ibuildings\QaTools\TestDataProvider::notStringOrEmptyString()
+     * @dataProvider \Ibuildings\QaTools\UnitTest\TestDataProvider::notStringOrEmptyString()
      */
     public function question_cannot_create_textual_question_with_something_other_than_non_empty_string_as_question_text($notNonEmptyString)
     {
@@ -33,7 +35,7 @@ class QuestionTest extends TestCase
     /**
      * @test
      *
-     * @dataProvider \Ibuildings\QaTools\TestDataProvider::notStringOrEmptyString()
+     * @dataProvider \Ibuildings\QaTools\UnitTest\TestDataProvider::notStringOrEmptyString()
      */
     public function question_cannot_create_textual_question_with_something_other_than_a_null_or_non_empty_string_as_default_answer($nonNullOrNotNonEmptyString)
     {
@@ -75,7 +77,7 @@ class QuestionTest extends TestCase
     /**
      * @test
      *
-     * @dataProvider \Ibuildings\QaTools\TestDataProvider::notStringOrEmptyString()
+     * @dataProvider \Ibuildings\QaTools\UnitTest\TestDataProvider::notStringOrEmptyString()
      */
     public function question_cannot_create_yes_or_no_question_with_something_other_than_non_empty_string_as_question_text($notNonEmptyString)
     {
@@ -87,7 +89,7 @@ class QuestionTest extends TestCase
     /**
      * @test
      *
-     * @dataProvider \Ibuildings\QaTools\TestDataProvider::notBoolean()
+     * @dataProvider \Ibuildings\QaTools\UnitTest\TestDataProvider::notBoolean()
      */
     public function question_cannot_create_yes_or_no_question_with_something_other_than_null_or_boolean_as_default_answer($notNullOrBoolean)
     {
@@ -139,7 +141,7 @@ class QuestionTest extends TestCase
     /**
      * @test
      *
-     * @dataProvider \Ibuildings\QaTools\TestDataProvider::notStringOrEmptyString()
+     * @dataProvider \Ibuildings\QaTools\UnitTest\TestDataProvider::notStringOrEmptyString()
      */
     public function question_cannot_create_multiple_choice_question_with_something_other_than_non_empty_string_as_question_text($notNonEmptyString)
     {
@@ -151,7 +153,7 @@ class QuestionTest extends TestCase
     /**
      * @test
      *
-     * @dataProvider \Ibuildings\QaTools\TestDataProvider::notStringOrEmptyString()
+     * @dataProvider \Ibuildings\QaTools\UnitTest\TestDataProvider::notStringOrEmptyString()
      */
     public function question_cannot_create_multiple_choice_question_with_something_other_than_non_empty_strings_as_choices($notNonEmptyString)
     {
@@ -163,7 +165,7 @@ class QuestionTest extends TestCase
     /**
      * @test
      *
-     * @dataProvider \Ibuildings\QaTools\TestDataProvider::notStringOrEmptyString()
+     * @dataProvider \Ibuildings\QaTools\UnitTest\TestDataProvider::notStringOrEmptyString()
      */
     public function question_cannot_create_multiple_choice_question_with_something_other_than_a_null_or_non_empty_string_as_default_answer($nonNullOrNotNonEmptyString)
     {
@@ -217,7 +219,7 @@ class QuestionTest extends TestCase
     /**
      * @test
      *
-     * @dataProvider \Ibuildings\QaTools\TestDataProvider::notStringOrEmptyString()
+     * @dataProvider \Ibuildings\QaTools\UnitTest\TestDataProvider::notStringOrEmptyString()
      */
     public function question_cannot_create_list_choice_question_with_something_other_than_non_empty_string_as_question_text($notNonEmptyString)
     {
@@ -229,7 +231,7 @@ class QuestionTest extends TestCase
     /**
      * @test
      *
-     * @dataProvider \Ibuildings\QaTools\TestDataProvider::notStringOrEmptyString()
+     * @dataProvider \Ibuildings\QaTools\UnitTest\TestDataProvider::notStringOrEmptyString()
      */
     public function question_cannot_create_list_choice_question_with_something_other_than_non_empty_strings_as_choices($notNonEmptyString)
     {
@@ -241,7 +243,7 @@ class QuestionTest extends TestCase
     /**
      * @test
      *
-     * @dataProvider \Ibuildings\QaTools\TestDataProvider::notStringOrEmptyString()
+     * @dataProvider \Ibuildings\QaTools\UnitTest\TestDataProvider::notStringOrEmptyString()
      */
     public function question_cannot_create_list_choice_question_with_something_other_than_non_empty_strings_as_default_answer($notNonEmptyString)
     {

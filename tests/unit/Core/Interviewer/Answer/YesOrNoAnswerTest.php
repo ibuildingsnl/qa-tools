@@ -1,5 +1,7 @@
 <?php
 
+namespace Ibuildings\QaTools\UnitTest\Core\Interviewer\Answer;
+
 use Ibuildings\QaTools\Core\Interviewer\Answer\YesOrNoAnswer;
 use PHPUnit_Framework_TestCase as TestCase;
 

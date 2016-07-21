@@ -1,8 +1,11 @@
 <?php
 
+namespace Ibuildings\QaTools\UnitTest\Core\Interviewer\Question;
+
 use Ibuildings\QaTools\Core\Interviewer\Answer\NoDefaultAnswer;
 use Ibuildings\QaTools\Core\Interviewer\Answer\TextualAnswer;
 use Ibuildings\QaTools\Core\Interviewer\Question\TextualQuestion;
+use InvalidArgumentException;
 use PHPUnit_Framework_TestCase as TestCase;
 
 /**
@@ -15,7 +18,7 @@ class TextualQuestionTest extends TestCase
     /**
      * @test
      *
-     * @dataProvider \Ibuildings\QaTools\TestDataProvider::notString()
+     * @dataProvider \Ibuildings\QaTools\UnitTest\TestDataProvider::notString()
      */
     public function textual_questions_question_can_only_be_string($value)
     {

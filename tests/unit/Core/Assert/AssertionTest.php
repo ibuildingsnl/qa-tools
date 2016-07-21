@@ -1,5 +1,7 @@
 <?php
 
+namespace Ibuildings\QaTools\UnitTest\Core\Assert;
+
 use Ibuildings\QaTools\Core\Assert\Assertion;
 use Ibuildings\QaTools\Core\Exception\InvalidArgumentException;
 use PHPUnit_Framework_TestCase as TestCase;
@@ -22,7 +24,7 @@ class AssertionTest extends TestCase
     /**
      * @test
      *
-     * @dataProvider \Ibuildings\QaTools\TestDataProvider::notStringOrEmptyString()
+     * @dataProvider \Ibuildings\QaTools\UnitTest\TestDataProvider::notStringOrEmptyString()
      */
     public function non_strings_or_empty_strings_are_invalid($value)
     {

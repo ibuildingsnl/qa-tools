@@ -1,8 +1,11 @@
 <?php
 
-use Ibuildings\QaTools\Core\Task\FakeTask;
+namespace Ibuildings\QaTools\UnitTest\Core\Task\TaskRunner;
+
 use Ibuildings\QaTools\Core\Task\Runner\TaskList;
 use Ibuildings\QaTools\Core\Task\Task;
+use Ibuildings\QaTools\UnitTest\Core\Task\FakeTask;
+use Mockery;
 use PHPUnit_Framework_TestCase as TestCase;
 
 /**

@@ -1,10 +1,13 @@
 <?php
 
+namespace Ibuildings\QaTools\UnitTest\Core\Interviewer\Question;
+
 use Ibuildings\QaTools\Core\Exception\InvalidArgumentException;
 use Ibuildings\QaTools\Core\Interviewer\Answer\Choices;
 use Ibuildings\QaTools\Core\Interviewer\Answer\NoDefaultAnswer;
 use Ibuildings\QaTools\Core\Interviewer\Answer\TextualAnswer;
 use Ibuildings\QaTools\Core\Interviewer\Question\MultipleChoiceQuestion;
+use LogicException;
 use PHPUnit_Framework_TestCase as TestCase;
 
 /**
@@ -17,7 +20,7 @@ class MultipleChoiceQuestionTest extends TestCase
     /**
      * @test
      *
-     * @dataProvider \Ibuildings\QaTools\TestDataProvider::notString()
+     * @dataProvider \Ibuildings\QaTools\UnitTest\TestDataProvider::notString()
      */
     public function multiple_choice_questions_question_can_only_be_string($value)
     {

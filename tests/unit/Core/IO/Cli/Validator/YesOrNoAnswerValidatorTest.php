@@ -1,5 +1,7 @@
 <?php
 
+namespace Ibuildings\QaTools\UnitTest\Core\IO\Cli\Validator;
+
 use Ibuildings\QaTools\Core\Exception\InvalidAnswerGivenException;
 use Ibuildings\QaTools\Core\Exception\InvalidArgumentException;
 use Ibuildings\QaTools\Core\IO\Cli\Validator\YesOrNoAnswerValidator;
@@ -17,7 +19,7 @@ class YesOrNoAnswerValidatorTest extends TestCase
     /**
      * @test
      *
-     * @dataProvider \Ibuildings\QaTools\TestDataProvider::all
+     * @dataProvider \Ibuildings\QaTools\UnitTest\TestDataProvider::all
      */
     public function validator_only_accepts_booleans_or_strings_as_answers($answer)
     {
@@ -33,7 +35,7 @@ class YesOrNoAnswerValidatorTest extends TestCase
     /**
      * @test
      *
-     * @dataProvider \Ibuildings\QaTools\TestDataProvider::boolean
+     * @dataProvider \Ibuildings\QaTools\UnitTest\TestDataProvider::boolean
      */
     public function validator_passes_through_boolean_answers($answer)
     {

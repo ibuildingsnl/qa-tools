@@ -1,5 +1,7 @@
 <?php
 
+namespace Ibuildings\QaTools\UnitTest\Core\IO\Cli;
+
 use Ibuildings\QaTools\Core\Exception\InvalidArgumentException;
 use Ibuildings\QaTools\Core\Interviewer\Answer\Choices;
 use Ibuildings\QaTools\Core\Interviewer\Answer\TextualAnswer;
@@ -11,6 +13,7 @@ use Ibuildings\QaTools\Core\Interviewer\Question\TextualQuestion;
 use Ibuildings\QaTools\Core\Interviewer\Question\YesOrNoQuestion;
 use Ibuildings\QaTools\Core\IO\Cli\ConsoleQuestionFactory;
 use Ibuildings\QaTools\Core\IO\Cli\ConsoleQuestionFormatter;
+use Mockery;
 use PHPUnit_Framework_TestCase as TestCase;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\Question;

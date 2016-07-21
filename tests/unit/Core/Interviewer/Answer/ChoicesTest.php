@@ -1,7 +1,10 @@
 <?php
 
+namespace Ibuildings\QaTools\UnitTest\Core\Interviewer\Answer;
+
 use Ibuildings\QaTools\Core\Interviewer\Answer\Choices;
 use Ibuildings\QaTools\Core\Interviewer\Answer\TextualAnswer;
+use InvalidArgumentException;
 use PHPUnit_Framework_TestCase as TestCase;
 
 /**
@@ -14,7 +17,7 @@ class ChoicesTest extends TestCase
     /**
      * @test
      *
-     * @dataProvider \Ibuildings\QaTools\TestDataProvider::all()
+     * @dataProvider \Ibuildings\QaTools\UnitTest\TestDataProvider::all()
      */
     public function choices_can_only_be_an_array_of_answers($value)
     {

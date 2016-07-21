@@ -1,0 +1,67 @@
+set timeout 1
+
+# Writes a message to screen informing the contributor the expected string did
+# not appear in time. Afterwards, the script exits with status code 1.
+#
+# Arguments:
+#   expected (string) The string that was expected to appear on screen.
+proc timed_out { expected } {
+    puts "Expected string \"$expected\" did not appear in time. It is likely another question is pending. Aborting..."
+    exit 1
+}
+
+# Writes a message to screen informing the contributor that the program exited
+# early. Afterwards, the script exits with status code 1.
+#
+# Arguments:
+#   expected (string) The string that was expected to appear on screen.
+proc early_eof { expected } {
+    puts "Command terminated early while waiting for \"$expected\"."
+    exit 1
+}
+
+# Asserts that the given string is expected to appear on screen. If it does not
+# within the configured time-out, the script terminates with a failure.
+#
+# Arguments:
+#   expected (string) The string that is expected to appear on screen.
+proc should_see { expected } {
+    expect {
+        $expected {}
+        timeout { timed_out $expected }
+        eof { early_eof $expected }
+    }
+}
+
+# Asserts that the given string is expected to appear on screen. If it appears,
+# the given string is sent to the program. If it does not appear within the
+# configured time-out, the script terminates with a failure.
+# The 'with' argument is merely there for syntactic sugar.
+#
+# Example usage:
+#   answer "What's in a name?" with "Unicode characters!"
+# Arguments:
+#   expected (string) The string that is expected to appear on screen.
+#   answer (string) The string that is sent to the program in return.
+proc answer { expected with answer } {
+    expect {
+        -exact $expected { send "$answer\n" }
+        timeout { timed_out $expected }
+        eof { early_eof $expected }
+    }
+}
+
+# Asserts that the program will exit within the configured time-out. If it
+# doesn't, the script terminates with a failure.
+proc expect_eof {} {
+    puts "Waiting for command to terminate..."
+    expect {
+        eof     { puts "Test completed." }
+        timeout {
+            puts "Command failed to terminate in time. Perhaps there's still a question pending?"
+            exit 1
+        }
+    }
+}
+
+# SCRIPT #

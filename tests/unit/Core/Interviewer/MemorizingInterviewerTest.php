@@ -1,11 +1,14 @@
 <?php
 
+namespace Ibuildings\QaTools\UnitTest\Core\Interviewer;
+
 use Ibuildings\QaTools\Core\Exception\InvalidArgumentException;
 use Ibuildings\QaTools\Core\Interviewer\Answer\TextualAnswer;
 use Ibuildings\QaTools\Core\Interviewer\Interviewer;
 use Ibuildings\QaTools\Core\Interviewer\MemorizingInterviewer;
 use Ibuildings\QaTools\Core\Interviewer\Question\Question;
 use Ibuildings\QaTools\Core\Interviewer\Question\TextualQuestion;
+use Mockery;
 use PHPUnit_Framework_TestCase as TestCase;
 
 /**
@@ -17,7 +20,7 @@ class MemorizingInterviewerTest extends TestCase
     /**
      * @test
      *
-     * @dataProvider \Ibuildings\QaTools\TestDataProvider::all()
+     * @dataProvider \Ibuildings\QaTools\UnitTest\TestDataProvider::all()
      */
     public function memorizing_interviewer_throws_exception_when_previous_answers_are_not_answers($previousAnswers)
     {

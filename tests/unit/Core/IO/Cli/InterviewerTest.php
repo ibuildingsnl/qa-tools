@@ -1,5 +1,7 @@
 <?php
 
+namespace Ibuildings\QaTools\UnitTest\Core\IO\Cli;
+
 use Ibuildings\QaTools\Core\Exception\InvalidArgumentException;
 use Ibuildings\QaTools\Core\IO\Cli\ConsoleQuestionFactory;
 use Ibuildings\QaTools\Core\IO\Cli\ConsoleQuestionFormatter;
@@ -18,7 +20,7 @@ class InterviewerTest extends TestCase
     /**
      * @test
      *
-     * @dataProvider Ibuildings\QaTools\TestDataProvider::notStringOrEmptyString
+     * @dataProvider Ibuildings\QaTools\UnitTest\TestDataProvider::notStringOrEmptyString
      */
     public function interviewer_can_only_say_sentences_that_are_strings($notNonEmptyString)
     {
@@ -37,7 +39,7 @@ class InterviewerTest extends TestCase
     /**
      * @test
      *
-     * @dataProvider Ibuildings\QaTools\TestDataProvider::notStringOrEmptyString
+     * @dataProvider Ibuildings\QaTools\UnitTest\TestDataProvider::notStringOrEmptyString
      */
     public function interviewer_can_only_warn_with_sentences_that_are_strings($notNonEmptyString)
     {
