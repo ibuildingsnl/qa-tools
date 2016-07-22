@@ -29,12 +29,10 @@ abstract class AbstractTool implements Tool
      */
     protected function determineResourcePath()
     {
-        $class = new ReflectionClass($this);
+        $fqcn = explode('\\', get_called_class());
+        $subNamespaces = array_splice($fqcn, 2, -1);
 
-        $toolDirectory = dirname($class->getFileName());
-        $resourcePath = $toolDirectory . '/Resources';
-
-        return $resourcePath;
+        return 'src/' . implode('/', $subNamespaces) . '/Resources';
     }
 
     /**
