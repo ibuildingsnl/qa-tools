@@ -57,7 +57,7 @@ class Project
     }
 
     /**
-     * @return string
+     * @return ProjectType[]
      */
     public function getProjectTypes()
     {

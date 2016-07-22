@@ -14,7 +14,7 @@ final class Configuration
     private $project;
 
     /**
-     * @var string[]
+     * @var Answer[]
      */
     private $answers;
 
@@ -36,7 +36,7 @@ final class Configuration
     }
 
     /**
-     * @return string[]
+     * @return Answer[]
      */
     public function getAnswers()
     {

@@ -4,6 +4,11 @@ namespace Ibuildings\QaTools\Core\Interviewer\Question;
 
 interface Question
 {
-    public function __toString();
+    /**
+     * @param mixed $answer
+     * @return static
+     */
     public function withDefaultAnswer($answer);
+
+    public function __toString();
 }

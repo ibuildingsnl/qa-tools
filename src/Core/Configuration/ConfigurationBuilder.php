@@ -11,7 +11,7 @@ use Ibuildings\QaTools\Core\Templating\TemplateEngine;
 final class ConfigurationBuilder
 {
     /**
-     * @var Project
+     * @var Project|null
      */
     private $project;
 

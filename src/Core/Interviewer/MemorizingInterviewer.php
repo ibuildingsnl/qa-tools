@@ -29,6 +29,10 @@ final class MemorizingInterviewer implements Interviewer
      */
     private $scope = ProjectConfigurator::class;
 
+    /**
+     * @param Interviewer $interviewer
+     * @param Answer[]    $previousAnswers
+     */
     public function __construct(Interviewer $interviewer, array $previousAnswers)
     {
         Assertion::allIsInstanceOf($previousAnswers, Answer::class);
