@@ -3,6 +3,7 @@
 namespace Ibuildings\QaTools\Core\IO\Cli;
 
 use Ibuildings\QaTools\Core\Interviewer\Answer\Answer;
+use Ibuildings\QaTools\Core\Interviewer\Interviewer as InterviewerInterface;
 use Ibuildings\QaTools\Core\Interviewer\MemorizingInterviewer;
 use Ibuildings\QaTools\Core\IO\File\FileHandler;
 use Symfony\Component\Console\Helper\QuestionHelper;
@@ -47,13 +48,12 @@ class InterviewerFactory
     }
 
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
+     * @param InterviewerInterface $interviewer
      * @param Answer[]             $previousAnswers
      * @return MemorizingInterviewer
      */
-    public function createMemorizingWith(InputInterface $input, OutputInterface $output, array $previousAnswers)
+    public function createMemorizingWith(InterviewerInterface $interviewer, array $previousAnswers)
     {
-        return new MemorizingInterviewer($this->createWith($input, $output), $previousAnswers);
+        return new MemorizingInterviewer($interviewer, $previousAnswers);
     }
 }

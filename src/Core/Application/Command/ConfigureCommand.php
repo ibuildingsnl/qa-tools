@@ -11,6 +11,7 @@ use Ibuildings\QaTools\Core\Configurator\Configurator;
 use Ibuildings\QaTools\Core\Configurator\RunList;
 use Ibuildings\QaTools\Core\IO\Cli\InterviewerFactory;
 use Ibuildings\QaTools\Core\Project\ProjectConfigurator;
+use Ibuildings\QaTools\Core\Service\ConfigurationService;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -31,34 +32,17 @@ final class ConfigureCommand extends Command implements ContainerAwareInterface
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $configurationLoader = $this->getConfigurationLoader();
+        $service = new ConfigurationService(
+            $this->getConfigurationLoader(),
+            $this->getProjectConfigurator(),
+            $this->getRunList(),
+            $this->getInterviewerFactory(),
+            $this->getConfigurationBuilderFactory(),
+            $this->container,
+            $this->getConfigurationDumper()
+        );
 
-        $previousAnswers = [];
-        if ($configurationLoader->configurationExists()) {
-            $configuration = $configurationLoader->load();
-            $previousAnswers  = $configuration->getAnswers();
-        }
-
-        $interviewer         = $this->getInterviewerFactory()->createMemorizingWith($input, $output, $previousAnswers);
-        $projectConfigurator = $this->getProjectConfigurator();
-        $runList             = $this->getRunList();
-
-        $project = $projectConfigurator->configure($interviewer);
-
-        $configurationBuilder = $this->getConfigurationBuilderFactory()->createWithProject($project);
-
-        /** @var Configurator $configurator */
-        foreach ($runList->getConfiguratorsForProjectTypes($project->getProjectTypes()) as $configurator) {
-            $interviewer->setScope($configurator->getToolClassName());
-
-            $templatePath = $this->getTemplatePathForTool($configurator->getToolClassName());
-            $configurationBuilder->setTemplatePath($templatePath);
-
-            $configurator->configure($configurationBuilder, $interviewer);
-        }
-
-        $configuration = new Configuration($project, $interviewer->getGivenAnswers());
-        $this->getConfigurationDumper()->dump($configuration);
+        $service->configureProject($this->getInterviewerFactory()->createWith($input, $output));
     }
 
     /**
@@ -91,17 +75,6 @@ final class ConfigureCommand extends Command implements ContainerAwareInterface
     protected function getConfigurationBuilderFactory()
     {
         return $this->container->get('qa_tools.configuration.configuration_builder.factory');
-    }
-
-    /**
-     * @param string $toolClassName
-     * @return string
-     */
-    private function getTemplatePathForTool($toolClassName)
-    {
-        Assertion::string($toolClassName);
-
-        return $this->container->getParameter('tool.' . $toolClassName . '.resource_path') . '/templates';
     }
 
     /**
