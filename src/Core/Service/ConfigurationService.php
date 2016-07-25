@@ -10,6 +10,7 @@ use Ibuildings\QaTools\Core\Configuration\ConfigurationLoader;
 use Ibuildings\QaTools\Core\Configurator\Configurator;
 use Ibuildings\QaTools\Core\Configurator\ConfiguratorRegistry;
 use Ibuildings\QaTools\Core\Interviewer\Interviewer;
+use Ibuildings\QaTools\Core\Interviewer\MemorizingInterviewer;
 use Ibuildings\QaTools\Core\IO\Cli\InterviewerFactory;
 use Ibuildings\QaTools\Core\Project\ProjectConfigurator;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -91,7 +92,7 @@ final class ConfigurationService
             $previousAnswers = [];
         }
 
-        $interviewer = $this->interviewerFactory->createMemorizingWith($interviewer, $previousAnswers);
+        $interviewer = new MemorizingInterviewer($interviewer, $previousAnswers);
 
         $projectConfigurator = $this->projectConfigurator;
 
