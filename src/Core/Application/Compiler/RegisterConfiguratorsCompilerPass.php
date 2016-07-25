@@ -26,12 +26,7 @@ final class RegisterConfiguratorsCompilerPass implements CompilerPassInterface
                 }
 
                 $projectType = new ProjectType($tag['project_type']);
-
                 $projectTypeDefinition = new Definition(ProjectType::class, [$projectType->getProjectType()]);
-                $container->setDefinition(
-                    'qa_tools.project.project_type.' . $projectType->getProjectType(),
-                    $projectTypeDefinition
-                );
 
                 $configuratorRegistryDefinition->addMethodCall(
                     'registerFor',
