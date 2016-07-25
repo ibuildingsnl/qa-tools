@@ -11,7 +11,9 @@ use IteratorAggregate;
 final class ConfiguratorRegistry implements IteratorAggregate
 {
     /**
-     * @var ConfiguratorList[]
+     * Configurators indexed by project type and tool.
+     *
+     * @var Configurator[][]
      */
     private $registeredConfigurators = [];
 
@@ -25,22 +27,24 @@ final class ConfiguratorRegistry implements IteratorAggregate
         $projectTypeKey = $projectType->getProjectType();
 
         if (!key_exists($projectTypeKey, $this->registeredConfigurators)) {
-            $this->registeredConfigurators[$projectTypeKey] = new ConfiguratorList([$configurator]);
-            return;
+            $this->registeredConfigurators[$projectTypeKey] = [];
         }
 
-        if ($this->registeredConfigurators[$projectTypeKey]->contains($configurator)) {
-            throw new LogicException(sprintf(
-                'Cannot register Configurator "%" for ProjectType "%s" with ConfiguratorRegistry; ' .
-                'it has already been registered (%s)',
-                get_class($configurator),
-                $projectType->getProjectType(),
-                implode(', ', $this->registeredConfigurators)
-            ));
+        $toolClassName = $configurator->getToolClassName();
+        if (array_key_exists($toolClassName, $this->registeredConfigurators[$projectTypeKey])) {
+            throw new LogicException(
+                sprintf(
+                    'Cannot register Configurator "%s" under ProjectType "%s"; ' .
+                    'Configurator "%s" has already been registered for the same tool ("%s")',
+                    get_class($configurator),
+                    $projectType->getProjectType(),
+                    get_class($this->registeredConfigurators[$projectTypeKey][$toolClassName]),
+                    $toolClassName
+                )
+            );
         }
 
-        $this->registeredConfigurators[$projectTypeKey] =
-            $this->registeredConfigurators[$projectTypeKey]->append($configurator);
+        $this->registeredConfigurators[$projectTypeKey][$toolClassName] = $configurator;
     }
 
     public function getIterator()
@@ -59,7 +63,7 @@ final class ConfiguratorRegistry implements IteratorAggregate
         foreach ($project->getProjectTypes() as $projectType) {
             if (isset($this->registeredConfigurators[$projectType->getProjectType()])) {
                 $configurators = $configurators->appendList(
-                    $this->registeredConfigurators[$projectType->getProjectType()]
+                    new ConfiguratorList($this->registeredConfigurators[$projectType->getProjectType()])
                 );
             }
         }
