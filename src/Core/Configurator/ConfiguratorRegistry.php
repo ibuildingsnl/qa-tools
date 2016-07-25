@@ -3,8 +3,8 @@
 namespace Ibuildings\QaTools\Core\Configurator;
 
 use ArrayIterator;
-use Ibuildings\QaTools\Core\Assert\Assertion;
 use Ibuildings\QaTools\Core\Exception\LogicException;
+use Ibuildings\QaTools\Core\Project\Project;
 use Ibuildings\QaTools\Core\Project\ProjectType;
 use IteratorAggregate;
 
@@ -49,17 +49,14 @@ final class ConfiguratorRegistry implements IteratorAggregate
     }
 
     /**
-     * @param ProjectType[] $projectTypes
+     * @param Project $project
      * @return ConfiguratorList
      */
-    public function getRunListForProjectTypes(array $projectTypes)
+    public function getRunListForProject(Project $project)
     {
-        Assertion::allIsInstanceOf($projectTypes, ProjectType::class);
-
         $configurators = new ConfiguratorList([]);
 
-        /** @var ProjectType $projectType */
-        foreach ($projectTypes as $projectType) {
+        foreach ($project->getProjectTypes() as $projectType) {
             if (isset($this->registeredConfigurators[$projectType->getProjectType()])) {
                 $configurators = $configurators->appendList(
                     $this->registeredConfigurators[$projectType->getProjectType()]

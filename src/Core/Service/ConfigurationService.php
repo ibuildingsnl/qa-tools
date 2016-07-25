@@ -93,7 +93,7 @@ final class ConfigurationService
         $project = $this->projectConfigurator->configure($interviewer);
         $taskRegistry = $this->taskRegistryFactory->createWithProject($project);
 
-        $runList = $this->configuratorRegistry->getRunListForProjectTypes($project->getProjectTypes());
+        $runList = $this->configuratorRegistry->getRunListForProject($project);
         foreach ($runList as $configurator) {
             /** @var Configurator $configurator */
             $interviewer->setScope($configurator->getToolClassName());
