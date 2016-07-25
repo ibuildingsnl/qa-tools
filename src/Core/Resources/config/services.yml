@@ -59,8 +59,6 @@ services:
 
     qa_tools.project.project_configurator:
         class: Ibuildings\QaTools\Core\Project\ProjectConfigurator
-        arguments:
-            - "@qa_tools.io.cli.interviewer_factory"
 
     qa_tools.templating.template_engine:
         class: Ibuildings\QaTools\Core\Templating\TemplateEngine

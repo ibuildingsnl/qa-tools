@@ -12,16 +12,6 @@ use Ibuildings\QaTools\Core\IO\Cli\InterviewerFactory;
 final class ProjectConfigurator
 {
     /**
-     * @var InterviewerFactory
-     */
-    private $interviewerFactory;
-
-    public function __construct(InterviewerFactory $interviewerFactory)
-    {
-        $this->interviewerFactory = $interviewerFactory;
-    }
-
-    /**
      * @param Interviewer $interviewer
      * @return Project
      */
