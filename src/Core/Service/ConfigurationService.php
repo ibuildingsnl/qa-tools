@@ -83,21 +83,14 @@ final class ConfigurationService
      */
     public function configureProject(Interviewer $interviewer)
     {
-        $configurationLoader = $this->configurationLoader;
-
-        if ($configurationLoader->configurationExists()) {
-            $configuration = $configurationLoader->load();
-            $previousAnswers = $configuration->getAnswers();
-        } else {
-            $previousAnswers = [];
+        $previousAnswers = [];
+        if ($this->configurationLoader->configurationExists()) {
+            $previousAnswers = $this->configurationLoader->load()->getAnswers();
         }
 
         $interviewer = new MemorizingInterviewer($interviewer, $previousAnswers);
 
-        $projectConfigurator = $this->projectConfigurator;
-
-        $project = $projectConfigurator->configure($interviewer);
-
+        $project = $this->projectConfigurator->configure($interviewer);
         $taskRegistry = $this->taskRegistryFactory->createWithProject($project);
 
         $runList = $this->configuratorRegistry->getRunListForProjectTypes($project->getProjectTypes());
