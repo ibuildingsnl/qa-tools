@@ -104,7 +104,9 @@ final class ConfigurationService
             /** @var Configurator $configurator */
             $interviewer->setScope($configurator->getToolClassName());
 
-            $templatePath = $this->container->getParameter(sprintf('tool.%s.resource_path', $configurator->getToolClassName()));
+            $templatePath = $this->container->getParameter(
+                sprintf('tool.%s.resource_path', $configurator->getToolClassName())
+            );
             $this->taskHelperSet->setTemplatePath($templatePath);
 
             $configurator->configure($interviewer, $taskRegistry, $this->taskHelperSet);

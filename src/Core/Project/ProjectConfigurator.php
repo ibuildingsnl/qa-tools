@@ -76,9 +76,12 @@ final class ProjectConfigurator
             );
         }
 
-        $projectTypes = array_map(function (TextualAnswer $answer){
-            return ProjectType::fromHumanReadableString($answer->getAnswer());
-        }, $projectTypeAnswers);
+        $projectTypes = array_map(
+            function (TextualAnswer $answer) {
+                return ProjectType::fromHumanReadableString($answer->getAnswer());
+            },
+            $projectTypeAnswers
+        );
 
         $travisEnabledAnswer = $interviewer->ask(
             Question::createYesOrNo(

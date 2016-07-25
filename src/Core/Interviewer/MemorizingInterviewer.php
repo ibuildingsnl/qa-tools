@@ -36,7 +36,10 @@ final class MemorizingInterviewer implements Interviewer
     public function __construct(Interviewer $interviewer, array $previousAnswers)
     {
         Assertion::allIsInstanceOf($previousAnswers, Answer::class);
-        Assertion::allString(array_keys($previousAnswers), 'Answers key "%s" was expected to be a hash, type %s given.');
+        Assertion::allString(
+            array_keys($previousAnswers),
+            'Answers key "%s" was expected to be a hash, type "%s" given'
+        );
 
         $this->interviewer  = $interviewer;
         $this->previousAnswers = $previousAnswers;

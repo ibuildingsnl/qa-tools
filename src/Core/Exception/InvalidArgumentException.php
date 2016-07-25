@@ -6,7 +6,7 @@ use Assert\InvalidArgumentException as InvalidAssertionException;
 
 class InvalidArgumentException extends InvalidAssertionException
 {
-    public function __construct($message, $code = null, $propertyPath = null, $value = null, array $constraints = array())
+    public function __construct($message, $code = null, $propertyPath = null, $value = null, array $constraints = [])
     {
         if ($propertyPath !== null && strpos($message, $propertyPath) === false) {
             $message = sprintf('Invalid argument given for "%s": %s', $propertyPath, $message);

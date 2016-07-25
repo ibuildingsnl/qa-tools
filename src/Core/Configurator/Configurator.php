@@ -21,4 +21,3 @@ interface Configurator
      */
     public function getToolClassName();
 }
-

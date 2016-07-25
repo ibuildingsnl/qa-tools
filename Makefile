@@ -21,8 +21,8 @@ else
     (composer build && composer install --dev) || (ret=$$?; composer install --dev && exit $$ret)
 endif
 
-test: test-unit test-integration test-acceptance clean build test-system test-security
-test-fast: test-unit test-integration test-acceptance
+test: test-unit test-integration test-acceptance code-style clean build test-system test-security
+test-fast: test-unit test-integration test-acceptance code-style
 
 
 test-unit: phpunit-unit
@@ -30,6 +30,7 @@ test-integration: phpunit-integration
 test-acceptance: behat-acceptance
 test-system: phpunit-system
 test-security: verify-build-is-signed check-security-advisories
+code-style: phpcs
 
 
 phpunit-unit:
@@ -40,6 +41,8 @@ phpunit-system:
     vendor/bin/phpunit -c . --testsuite system
 behat-acceptance:
     vendor/bin/behat
+phpcs:
+    vendor/bin/phpcs --standard=phpcs.xml --extensions=php --report=full src
 
 
 verify-build-is-signed: build
