@@ -8,7 +8,7 @@ use Ibuildings\QaTools\Core\Exception\LogicException;
 use Ibuildings\QaTools\Core\Project\ProjectType;
 use IteratorAggregate;
 
-final class RunList implements IteratorAggregate
+final class ConfiguratorRegistry implements IteratorAggregate
 {
     /**
      * @var ConfiguratorList[]
@@ -31,7 +31,8 @@ final class RunList implements IteratorAggregate
 
         if ($this->registeredConfigurators[$projectTypeKey]->contains($configurator)) {
             throw new LogicException(sprintf(
-                'Cannot register Configurator "%" for ProjectType "%s" to RunList: it has already been registered (%s)',
+                'Cannot register Configurator "%" for ProjectType "%s" with ConfiguratorRegistry; ' .
+                'it has already been registered (%s)',
                 get_class($configurator),
                 $projectType->getProjectType(),
                 implode(', ', $this->registeredConfigurators)
@@ -47,7 +48,11 @@ final class RunList implements IteratorAggregate
         return new ArrayIterator($this->registeredConfigurators);
     }
 
-    public function getConfiguratorsForProjectTypes(array $projectTypes)
+    /**
+     * @param ProjectType[] $projectTypes
+     * @return ConfiguratorList
+     */
+    public function getRunListForProjectTypes(array $projectTypes)
     {
         Assertion::allIsInstanceOf($projectTypes, ProjectType::class);
 
@@ -56,7 +61,9 @@ final class RunList implements IteratorAggregate
         /** @var ProjectType $projectType */
         foreach ($projectTypes as $projectType) {
             if (isset($this->registeredConfigurators[$projectType->getProjectType()])) {
-                $configurators = $configurators->appendList($this->registeredConfigurators[$projectType->getProjectType()]);
+                $configurators = $configurators->appendList(
+                    $this->registeredConfigurators[$projectType->getProjectType()]
+                );
             }
         }
 

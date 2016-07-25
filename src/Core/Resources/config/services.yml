@@ -8,8 +8,8 @@ services:
     qa_tools.project_configurator:
         alias: qa_tools.project.project_configurator
 
-    qa_tools.run_list:
-        alias: qa_tools.configurator.run_list
+    qa_tools.configurator_registry:
+        alias: qa_tools.configurator.configurator_registry
 
     qa_tools.template_engine:
         alias: qa_tools.templating.template_engine
@@ -34,8 +34,8 @@ services:
         arguments:
             - "@qa_tools.template_engine"
 
-    qa_tools.configurator.run_list:
-        class: Ibuildings\QaTools\Core\Configurator\RunList
+    qa_tools.configurator.configurator_registry:
+        class: Ibuildings\QaTools\Core\Configurator\ConfiguratorRegistry
 
     qa_tools.io.file.filesystem_adapter:
         class: Ibuildings\QaTools\Core\IO\File\FilesystemAdapter

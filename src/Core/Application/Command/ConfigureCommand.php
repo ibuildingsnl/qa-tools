@@ -9,7 +9,7 @@ use Ibuildings\QaTools\Core\Configuration\TaskRegistryFactory;
 use Ibuildings\QaTools\Core\Configuration\ConfigurationDumper;
 use Ibuildings\QaTools\Core\Configuration\ConfigurationLoader;
 use Ibuildings\QaTools\Core\Configurator\Configurator;
-use Ibuildings\QaTools\Core\Configurator\RunList;
+use Ibuildings\QaTools\Core\Configurator\ConfiguratorRegistry;
 use Ibuildings\QaTools\Core\IO\Cli\InterviewerFactory;
 use Ibuildings\QaTools\Core\Project\ProjectConfigurator;
 use Ibuildings\QaTools\Core\Service\ConfigurationService;
@@ -36,7 +36,7 @@ final class ConfigureCommand extends Command implements ContainerAwareInterface
         $service = new ConfigurationService(
             $this->getConfigurationLoader(),
             $this->getProjectConfigurator(),
-            $this->getRunList(),
+            $this->getConfiguratorRegistry(),
             $this->getInterviewerFactory(),
             $this->getTaskRegistryFactory(),
             $this->getTaskHelperSet(),
@@ -64,11 +64,11 @@ final class ConfigureCommand extends Command implements ContainerAwareInterface
     }
 
     /**
-     * @return RunList
+     * @return ConfiguratorRegistry
      */
-    private function getRunList()
+    private function getConfiguratorRegistry()
     {
-        return $this->container->get('qa_tools.run_list');
+        return $this->container->get('qa_tools.configurator_registry');
     }
 
     /**

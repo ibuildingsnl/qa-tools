@@ -8,7 +8,7 @@ use Ibuildings\QaTools\Core\Configuration\TaskRegistryFactory;
 use Ibuildings\QaTools\Core\Configuration\ConfigurationDumper;
 use Ibuildings\QaTools\Core\Configuration\ConfigurationLoader;
 use Ibuildings\QaTools\Core\Configurator\Configurator;
-use Ibuildings\QaTools\Core\Configurator\RunList;
+use Ibuildings\QaTools\Core\Configurator\ConfiguratorRegistry;
 use Ibuildings\QaTools\Core\Interviewer\Interviewer;
 use Ibuildings\QaTools\Core\IO\Cli\InterviewerFactory;
 use Ibuildings\QaTools\Core\Project\ProjectConfigurator;
@@ -27,9 +27,9 @@ final class ConfigurationService
     private $projectConfigurator;
 
     /**
-     * @var RunList
+     * @var ConfiguratorRegistry
      */
-    private $runList;
+    private $configuratorRegistry;
 
     /**
      * @var InterviewerFactory
@@ -59,7 +59,7 @@ final class ConfigurationService
     public function __construct(
         ConfigurationLoader $configurationLoader,
         ProjectConfigurator $projectConfigurator,
-        RunList $runList,
+        ConfiguratorRegistry $configuratorRegistry,
         InterviewerFactory $interviewerFactory,
         TaskRegistryFactory $taskRegistryFactory,
         TaskHelperSet $taskHelperSet,
@@ -68,7 +68,7 @@ final class ConfigurationService
     ) {
         $this->configurationLoader         = $configurationLoader;
         $this->projectConfigurator         = $projectConfigurator;
-        $this->runList                     = $runList;
+        $this->configuratorRegistry        = $configuratorRegistry;
         $this->interviewerFactory          = $interviewerFactory;
         $this->taskRegistryFactory         = $taskRegistryFactory;
         $this->taskHelperSet               = $taskHelperSet;
@@ -94,14 +94,14 @@ final class ConfigurationService
         $interviewer = $this->interviewerFactory->createMemorizingWith($interviewer, $previousAnswers);
 
         $projectConfigurator = $this->projectConfigurator;
-        $runList             = $this->runList;
 
         $project = $projectConfigurator->configure($interviewer);
 
         $taskRegistry = $this->taskRegistryFactory->createWithProject($project);
 
-        /** @var Configurator $configurator */
-        foreach ($runList->getConfiguratorsForProjectTypes($project->getProjectTypes()) as $configurator) {
+        $runList = $this->configuratorRegistry->getRunListForProjectTypes($project->getProjectTypes());
+        foreach ($runList as $configurator) {
+            /** @var Configurator $configurator */
             $interviewer->setScope($configurator->getToolClassName());
 
             $templatePath = $this->container->getParameter(sprintf('tool.%s.resource_path', $configurator->getToolClassName()));
