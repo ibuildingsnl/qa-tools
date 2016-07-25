@@ -4,7 +4,8 @@ namespace Ibuildings\QaTools\Core\Application\Command;
 
 use Ibuildings\QaTools\Core\Assert\Assertion;
 use Ibuildings\QaTools\Core\Configuration\Configuration;
-use Ibuildings\QaTools\Core\Configuration\ConfigurationBuilderFactory;
+use Ibuildings\QaTools\Core\Configuration\TaskHelperSet;
+use Ibuildings\QaTools\Core\Configuration\TaskRegistryFactory;
 use Ibuildings\QaTools\Core\Configuration\ConfigurationDumper;
 use Ibuildings\QaTools\Core\Configuration\ConfigurationLoader;
 use Ibuildings\QaTools\Core\Configurator\Configurator;
@@ -37,7 +38,8 @@ final class ConfigureCommand extends Command implements ContainerAwareInterface
             $this->getProjectConfigurator(),
             $this->getRunList(),
             $this->getInterviewerFactory(),
-            $this->getConfigurationBuilderFactory(),
+            $this->getTaskRegistryFactory(),
+            $this->getTaskHelperSet(),
             $this->container,
             $this->getConfigurationDumper()
         );
@@ -70,11 +72,11 @@ final class ConfigureCommand extends Command implements ContainerAwareInterface
     }
 
     /**
-     * @return ConfigurationBuilderFactory
+     * @return TaskRegistryFactory
      */
-    protected function getConfigurationBuilderFactory()
+    protected function getTaskRegistryFactory()
     {
-        return $this->container->get('qa_tools.configuration.configuration_builder.factory');
+        return $this->container->get('qa_tools.configuration.task_registry.factory');
     }
 
     /**
@@ -91,5 +93,13 @@ final class ConfigureCommand extends Command implements ContainerAwareInterface
     private function getConfigurationDumper()
     {
         return $this->container->get('qa_tools.configuration.configuration_dumper');
+    }
+
+    /**
+     * @return TaskHelperSet
+     */
+    private function getTaskHelperSet()
+    {
+        return $this->container->get('qa_tools.configuration.task_helper_set');
     }
 }

@@ -26,8 +26,11 @@ services:
             - "@qa_tools.file_handler"
             - "%qa_tools.configuration_location%"
 
-    qa_tools.configuration.configuration_builder.factory:
-        class: Ibuildings\QaTools\Core\Configuration\ConfigurationBuilderFactory
+    qa_tools.configuration.task_registry.factory:
+        class: Ibuildings\QaTools\Core\Configuration\TaskRegistryFactory
+
+    qa_tools.configuration.task_helper_set:
+        class: Ibuildings\QaTools\Core\Configuration\TaskHelperSet
         arguments:
             - "@qa_tools.template_engine"
 

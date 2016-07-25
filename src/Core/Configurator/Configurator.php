@@ -2,17 +2,19 @@
 
 namespace Ibuildings\QaTools\Core\Configurator;
 
-use Ibuildings\QaTools\Core\Configuration\ConfigurationBuilder;
+use Ibuildings\QaTools\Core\Configuration\TaskHelperSet;
+use Ibuildings\QaTools\Core\Configuration\TaskRegistry;
 use Ibuildings\QaTools\Core\Interviewer\Interviewer;
 
 interface Configurator
 {
     /**
-     * @param ConfigurationBuilder $configurationBuilder
-     * @param Interviewer $interviewer
+     * @param Interviewer   $interviewer
+     * @param TaskRegistry  $taskRegistry
+     * @param TaskHelperSet $taskHelperSet
      * @return void
      */
-    public function configure(ConfigurationBuilder $configurationBuilder, Interviewer $interviewer);
+    public function configure(Interviewer $interviewer, TaskRegistry $taskRegistry, TaskHelperSet $taskHelperSet);
 
     /**
      * @return string
