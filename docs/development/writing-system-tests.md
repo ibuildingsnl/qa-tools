@@ -37,7 +37,7 @@ arguments. It is important you specify that no ANSI colouring be included in the
 QA Tools' output.
 
 ```tcl
-spawn ./qa-tools configure --no-ansi
+test ./qa-tools configure --no-ansi
 ```
 
 For each interactive question, state the expected question text, and the answer

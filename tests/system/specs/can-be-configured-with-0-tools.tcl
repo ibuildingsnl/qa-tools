@@ -1,4 +1,4 @@
-spawn ./qa-tools configure --no-ansi
+test ./qa-tools configure --no-ansi
 
 should_see "Configuring the Ibuildings QA Tools"
 

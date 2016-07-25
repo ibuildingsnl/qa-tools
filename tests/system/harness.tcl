@@ -1,5 +1,17 @@
 set timeout 1
 
+# Wraps the program-under-test inside a dash shell. For some reason, PHP exit
+# codes are not read properly by expect, always returning 0. By wrapping the
+# PHP script in a shell, the exit code propagates properly. This phenomenon is
+# yet to be explained
+#
+# Arguments:
+#   args (...string) The command string for the dash shell to execute
+proc test { args } {
+    global spawn_id
+    spawn sh -c "$args"
+}
+
 # Writes a message to screen informing the contributor the expected string did
 # not appear in time. Afterwards, the script exits with status code 1.
 #
@@ -55,12 +67,23 @@ proc answer { expected with answer } {
 # doesn't, the script terminates with a failure.
 proc expect_eof {} {
     puts "Waiting for command to terminate..."
+
     expect {
         eof     { puts "Test completed." }
         timeout {
             puts "Command failed to terminate in time. Perhaps there's still a question pending?"
             exit 1
         }
+    }
+
+    lassign [wait] pid spawnid os_error_flag value
+
+    if {$os_error_flag == 0} {
+        puts "Exit code: $value"
+        exit $value
+    } else {
+        puts "Operating system error: $value"
+        exit 1
     }
 }
 
