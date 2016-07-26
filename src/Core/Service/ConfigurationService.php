@@ -65,13 +65,13 @@ final class ConfigurationService
             $configuration = Configuration::create();
         }
 
-        $interviewer = new MemorizingInterviewer($interviewer, $configuration);
+        $memorizingInterviewer = new MemorizingInterviewer($interviewer, $configuration);
 
-        $this->projectConfigurator->configure($interviewer, $configuration);
+        $this->projectConfigurator->configure($memorizingInterviewer, $configuration);
         $taskDirectory = $this->taskDirectoryFactory->createWithProject($configuration->getProject());
 
         $runList = $this->configuratorRepository->getRunListForProject($configuration->getProject());
-        $this->runListConfigurator->configure($runList, $interviewer, $taskDirectory);
+        $this->runListConfigurator->configure($runList, $memorizingInterviewer, $taskDirectory);
 
         // Execute tasks from task directory
 
