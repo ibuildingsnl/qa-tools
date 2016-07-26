@@ -3,8 +3,7 @@
 namespace Ibuildings\QaTools\Core\Service;
 
 use Ibuildings\QaTools\Core\Configuration\Configuration;
-use Ibuildings\QaTools\Core\Configuration\ConfigurationDumper;
-use Ibuildings\QaTools\Core\Configuration\ConfigurationLoader;
+use Ibuildings\QaTools\Core\Configuration\ConfigurationRepository;
 use Ibuildings\QaTools\Core\Configuration\ProjectConfigurator;
 use Ibuildings\QaTools\Core\Configuration\RunListConfigurator;
 use Ibuildings\QaTools\Core\Configuration\TaskRegistryFactory;
@@ -15,9 +14,9 @@ use Ibuildings\QaTools\Core\Interviewer\MemorizingInterviewer;
 final class ConfigurationService
 {
     /**
-     * @var ConfigurationLoader
+     * @var ConfigurationRepository
      */
-    private $configurationLoader;
+    private $configurationRepository;
 
     /**
      * @var ProjectConfigurator
@@ -39,24 +38,17 @@ final class ConfigurationService
      */
     private $taskRegistryFactory;
 
-    /**
-     * @var ConfigurationDumper
-     */
-    private $configurationDumper;
-
     public function __construct(
-        ConfigurationLoader $configurationLoader,
+        ConfigurationRepository $configurationRepository,
         ProjectConfigurator $projectConfigurator,
         RunListConfigurator $runListConfigurator,
         ConfiguratorRegistry $configuratorRegistry,
-        TaskRegistryFactory $taskRegistryFactory,
-        ConfigurationDumper $configurationDumper
+        TaskRegistryFactory $taskRegistryFactory
     ) {
-        $this->configurationLoader         = $configurationLoader;
+        $this->configurationRepository     = $configurationRepository;
         $this->projectConfigurator         = $projectConfigurator;
         $this->configuratorRegistry        = $configuratorRegistry;
         $this->taskRegistryFactory         = $taskRegistryFactory;
-        $this->configurationDumper         = $configurationDumper;
         $this->runListConfigurator         = $runListConfigurator;
     }
 
@@ -66,8 +58,8 @@ final class ConfigurationService
      */
     public function configureProject(Interviewer $interviewer)
     {
-        if ($this->configurationLoader->configurationExists()) {
-            $configuration = $this->configurationLoader->load();
+        if ($this->configurationRepository->configurationExists()) {
+            $configuration = $this->configurationRepository->load();
         } else {
             $configuration = Configuration::create();
         }
@@ -80,6 +72,6 @@ final class ConfigurationService
         $runList = $this->configuratorRegistry->getRunListForProject($configuration->getProject());
         $this->runListConfigurator->configure($runList, $interviewer, $taskRegistry);
 
-        $this->configurationDumper->dump($configuration);
+        $this->configurationRepository->save($configuration);
     }
 }

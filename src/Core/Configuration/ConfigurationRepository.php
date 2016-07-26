@@ -3,13 +3,14 @@
 namespace Ibuildings\QaTools\Core\Configuration;
 
 use Ibuildings\QaTools\Core\Assert\Assertion;
+use Ibuildings\QaTools\Core\Interviewer\Answer\Answer;
 use Ibuildings\QaTools\Core\Interviewer\Answer\Factory\AnswerFactory;
 use Ibuildings\QaTools\Core\IO\File\FileHandler;
 use Ibuildings\QaTools\Core\Project\Project;
 use Ibuildings\QaTools\Core\Project\ProjectType;
 use Zend\Json\Json;
 
-final class ConfigurationLoader
+final class ConfigurationRepository
 {
     /**
      * @var FileHandler
@@ -69,5 +70,37 @@ final class ConfigurationLoader
                 $jsonData['answers']
             )
         );
+    }
+
+    /**
+     * @param Configuration $configuration
+     */
+    public function save(Configuration $configuration)
+    {
+        $project = $configuration->getProject();
+
+        $answers = array_map(
+            function (Answer $answer) {
+                return $answer->getRaw();
+            },
+            $configuration->getAnswers()
+        );
+
+        $json = Json::encode(
+            [
+                'projectName'                => $project->getName(),
+                'configurationFilesLocation' => $project->getConfigurationFilesLocation(),
+                'projectTypes'               => array_map(
+                    function (ProjectType $projectType) {
+                        return $projectType->getProjectType();
+                    },
+                    $project->getProjectTypes()
+                ),
+                'travisEnabled'              => $project->isTravisEnabled(),
+                'answers'                    => $answers,
+            ]
+        );
+
+        $this->fileHandler->writeTo(Json::prettyPrint($json), $this->filePath);
     }
 }

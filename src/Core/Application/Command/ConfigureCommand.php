@@ -3,7 +3,7 @@
 namespace Ibuildings\QaTools\Core\Application\Command;
 
 use Ibuildings\QaTools\Core\Configuration\ConfigurationDumper;
-use Ibuildings\QaTools\Core\Configuration\ConfigurationLoader;
+use Ibuildings\QaTools\Core\Configuration\ConfigurationRepository;
 use Ibuildings\QaTools\Core\Configuration\ProjectConfigurator;
 use Ibuildings\QaTools\Core\Configuration\RunListConfigurator;
 use Ibuildings\QaTools\Core\Configuration\TaskRegistryFactory;
@@ -31,12 +31,11 @@ final class ConfigureCommand extends Command implements ContainerAwareInterface
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $service = new ConfigurationService(
-            $this->getConfigurationLoader(),
+            $this->getConfigurationRepository(),
             $this->getProjectConfigurator(),
             $this->getRunListConfigurator(),
             $this->getConfiguratorRegistry(),
-            $this->getTaskRegistryFactory(),
-            $this->getConfigurationDumper()
+            $this->getTaskRegistryFactory()
         );
 
         $service->configureProject($this->getInterviewerFactory()->createWith($input, $output));
@@ -83,18 +82,10 @@ final class ConfigureCommand extends Command implements ContainerAwareInterface
     }
 
     /**
-     * @return ConfigurationLoader
+     * @return ConfigurationRepository
      */
-    private function getConfigurationLoader()
+    private function getConfigurationRepository()
     {
-        return $this->container->get('qa_tools.configuration.configuration_loader');
-    }
-
-    /**
-     * @return ConfigurationDumper
-     */
-    private function getConfigurationDumper()
-    {
-        return $this->container->get('qa_tools.configuration.configuration_dumper');
+        return $this->container->get('qa_tools.configuration.configuration_repository');
     }
 }
