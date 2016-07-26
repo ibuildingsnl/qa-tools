@@ -30,62 +30,12 @@ final class ConfigureCommand extends Command implements ContainerAwareInterface
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $service = new ConfigurationService(
-            $this->getConfigurationRepository(),
-            $this->getProjectConfigurator(),
-            $this->getRunListConfigurator(),
-            $this->getConfiguratorRegistry(),
-            $this->getTaskRegistryFactory()
-        );
+        /** @var InterviewerFactory $interviewerFactory */
+        $interviewerFactory = $this->container->get('qa_tools.io.cli.interviewer_factory');
+        $interviewer = $interviewerFactory->createWith($input, $output);
 
-        $service->configureProject($this->getInterviewerFactory()->createWith($input, $output));
-    }
-
-    /**
-     * @return InterviewerFactory
-     */
-    private function getInterviewerFactory()
-    {
-        return $this->container->get('qa_tools.io.cli.interviewer_factory');
-    }
-
-    /**
-     * @return ProjectConfigurator
-     */
-    protected function getProjectConfigurator()
-    {
-        return $this->container->get('qa_tools.project_configurator');
-    }
-
-    /**
-     * @return RunListConfigurator|object
-     */
-    private function getRunListConfigurator()
-    {
-        return $this->container->get('qa_tools.run_list_configurator');
-    }
-
-    /**
-     * @return ConfiguratorRepository
-     */
-    private function getConfiguratorRegistry()
-    {
-        return $this->container->get('qa_tools.configurator_repository');
-    }
-
-    /**
-     * @return TaskDirectoryFactory
-     */
-    protected function getTaskRegistryFactory()
-    {
-        return $this->container->get('qa_tools.configuration.task_directory.factory');
-    }
-
-    /**
-     * @return ConfigurationRepository
-     */
-    private function getConfigurationRepository()
-    {
-        return $this->container->get('qa_tools.configuration.configuration_repository');
+        /** @var ConfigurationService $service */
+        $service = $this->container->get('qa_tools.configuration_service');
+        $service->configureProject($interviewer);
     }
 }
