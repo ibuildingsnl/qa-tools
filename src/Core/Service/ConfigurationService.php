@@ -6,14 +6,11 @@ use Ibuildings\QaTools\Core\Configuration\Configuration;
 use Ibuildings\QaTools\Core\Configuration\ConfigurationDumper;
 use Ibuildings\QaTools\Core\Configuration\ConfigurationLoader;
 use Ibuildings\QaTools\Core\Configuration\RunListConfigurator;
-use Ibuildings\QaTools\Core\Configuration\TaskHelperSet;
 use Ibuildings\QaTools\Core\Configuration\TaskRegistryFactory;
 use Ibuildings\QaTools\Core\Configurator\ConfiguratorRegistry;
 use Ibuildings\QaTools\Core\Interviewer\Interviewer;
 use Ibuildings\QaTools\Core\Interviewer\MemorizingInterviewer;
-use Ibuildings\QaTools\Core\IO\Cli\InterviewerFactory;
 use Ibuildings\QaTools\Core\Project\ProjectConfigurator;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 final class ConfigurationService
 {
@@ -28,14 +25,14 @@ final class ConfigurationService
     private $projectConfigurator;
 
     /**
+     * @var RunListConfigurator
+     */
+    private $runListConfigurator;
+
+    /**
      * @var ConfiguratorRegistry
      */
     private $configuratorRegistry;
-
-    /**
-     * @var InterviewerFactory
-     */
-    private $interviewerFactory;
 
     /**
      * @var TaskRegistryFactory
@@ -43,38 +40,24 @@ final class ConfigurationService
     private $taskRegistryFactory;
 
     /**
-     * @var ContainerInterface
-     */
-    private $container;
-
-    /**
      * @var ConfigurationDumper
      */
     private $configurationDumper;
 
-    /**
-     * @var TaskHelperSet
-     */
-    private $taskHelperSet;
-
     public function __construct(
         ConfigurationLoader $configurationLoader,
         ProjectConfigurator $projectConfigurator,
+        RunListConfigurator $runListConfigurator,
         ConfiguratorRegistry $configuratorRegistry,
-        InterviewerFactory $interviewerFactory,
         TaskRegistryFactory $taskRegistryFactory,
-        TaskHelperSet $taskHelperSet,
-        ContainerInterface $container,
         ConfigurationDumper $configurationDumper
     ) {
         $this->configurationLoader         = $configurationLoader;
         $this->projectConfigurator         = $projectConfigurator;
         $this->configuratorRegistry        = $configuratorRegistry;
-        $this->interviewerFactory          = $interviewerFactory;
         $this->taskRegistryFactory         = $taskRegistryFactory;
-        $this->taskHelperSet               = $taskHelperSet;
-        $this->container                   = $container;
         $this->configurationDumper         = $configurationDumper;
+        $this->runListConfigurator         = $runListConfigurator;
     }
 
     /**
@@ -94,8 +77,7 @@ final class ConfigurationService
         $taskRegistry = $this->taskRegistryFactory->createWithProject($project);
 
         $runList = $this->configuratorRegistry->getRunListForProject($project);
-        $runListConfigurator = new RunListConfigurator($this->taskHelperSet, $this->container);
-        $runListConfigurator->configure($runList, $interviewer, $taskRegistry);
+        $this->runListConfigurator->configure($runList, $interviewer, $taskRegistry);
 
         $configuration = new Configuration($project, $interviewer->getGivenAnswers());
         $this->configurationDumper->dump($configuration);

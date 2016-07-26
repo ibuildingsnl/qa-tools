@@ -8,6 +8,12 @@ services:
     qa_tools.project_configurator:
         alias: qa_tools.project.project_configurator
 
+    qa_tools.run_list_configurator:
+        class: Ibuildings\QaTools\Core\Configuration\RunListConfigurator
+        arguments:
+            - "@qa_tools.configuration.task_helper_set"
+            - "@service_container"
+
     qa_tools.configurator_registry:
         alias: qa_tools.configurator.configurator_registry
 

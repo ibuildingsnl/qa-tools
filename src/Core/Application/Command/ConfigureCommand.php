@@ -4,7 +4,7 @@ namespace Ibuildings\QaTools\Core\Application\Command;
 
 use Ibuildings\QaTools\Core\Configuration\ConfigurationDumper;
 use Ibuildings\QaTools\Core\Configuration\ConfigurationLoader;
-use Ibuildings\QaTools\Core\Configuration\TaskHelperSet;
+use Ibuildings\QaTools\Core\Configuration\RunListConfigurator;
 use Ibuildings\QaTools\Core\Configuration\TaskRegistryFactory;
 use Ibuildings\QaTools\Core\Configurator\ConfiguratorRegistry;
 use Ibuildings\QaTools\Core\IO\Cli\InterviewerFactory;
@@ -33,11 +33,9 @@ final class ConfigureCommand extends Command implements ContainerAwareInterface
         $service = new ConfigurationService(
             $this->getConfigurationLoader(),
             $this->getProjectConfigurator(),
+            $this->getRunListConfigurator(),
             $this->getConfiguratorRegistry(),
-            $this->getInterviewerFactory(),
             $this->getTaskRegistryFactory(),
-            $this->getTaskHelperSet(),
-            $this->container,
             $this->getConfigurationDumper()
         );
 
@@ -58,6 +56,14 @@ final class ConfigureCommand extends Command implements ContainerAwareInterface
     protected function getProjectConfigurator()
     {
         return $this->container->get('qa_tools.project_configurator');
+    }
+
+    /**
+     * @return RunListConfigurator|object
+     */
+    private function getRunListConfigurator()
+    {
+        return $this->container->get('qa_tools.run_list_configurator');
     }
 
     /**
@@ -90,13 +96,5 @@ final class ConfigureCommand extends Command implements ContainerAwareInterface
     private function getConfigurationDumper()
     {
         return $this->container->get('qa_tools.configuration.configuration_dumper');
-    }
-
-    /**
-     * @return TaskHelperSet
-     */
-    private function getTaskHelperSet()
-    {
-        return $this->container->get('qa_tools.configuration.task_helper_set');
     }
 }
