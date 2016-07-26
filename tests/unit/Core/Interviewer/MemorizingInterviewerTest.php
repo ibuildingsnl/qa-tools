@@ -2,13 +2,14 @@
 
 namespace Ibuildings\QaTools\UnitTest\Core\Interviewer;
 
-use Ibuildings\QaTools\Core\Exception\InvalidArgumentException;
+use Ibuildings\QaTools\Core\Configuration\Configuration;
 use Ibuildings\QaTools\Core\Interviewer\Answer\TextualAnswer;
 use Ibuildings\QaTools\Core\Interviewer\Interviewer;
 use Ibuildings\QaTools\Core\Interviewer\MemorizingInterviewer;
 use Ibuildings\QaTools\Core\Interviewer\Question\Question;
 use Ibuildings\QaTools\Core\Interviewer\Question\TextualQuestion;
 use Mockery;
+use Mockery\MockInterface;
 use PHPUnit_Framework_TestCase as TestCase;
 
 /**
@@ -19,88 +20,11 @@ class MemorizingInterviewerTest extends TestCase
 {
     /**
      * @test
-     *
-     * @dataProvider \Ibuildings\QaTools\UnitTest\TestDataProvider::all()
      */
-    public function memorizing_interviewer_throws_exception_when_previous_answers_are_not_answers($previousAnswers)
-    {
-        $this->expectException(InvalidArgumentException::class);
-
-        $dummyInterviewer = Mockery::mock(Interviewer::class);
-
-        $memorizingInterviewer = new MemorizingInterviewer($dummyInterviewer, [$previousAnswers]);
-    }
-
-    /**
-     * @test
-     */
-    public function memorizing_interviewer_throws_exception_when_previous_answers_have_no_hash_key()
-    {
-        $this->expectException(InvalidArgumentException::class);
-
-        $wrongPreviousAnswers = [
-            0 => new TextualAnswer('Answer'),
-            1 => new TextualAnswer('Another answer'),
-        ];
-
-        $dummyInterviewer = Mockery::mock(Interviewer::class);
-
-        $memorizingInterviewer = new MemorizingInterviewer($dummyInterviewer, $wrongPreviousAnswers);
-    }
-
-    /**
-     * @test
-     */
-    public function memorizing_interviewer_passes_questions_to_interviewer_if_no_previous_answer()
+    public function passes_questions_to_interviewer_if_no_previous_answer()
     {
         $question = new TextualQuestion('A question');
-
-        $mockInterviewer = Mockery::mock(Interviewer::class);
-        $mockInterviewer
-            ->shouldReceive('ask')
-            ->with($question);
-
-        $memorizingInterviewer = new MemorizingInterviewer($mockInterviewer, []);
-        $memorizingInterviewer->ask($question);
-    }
-
-    /**
-     * @test
-     */
-    public function memorizing_interviewer_passes_questions_with_a_suggested_default_answer_to_interviewer_if_previous_answer_present()
-    {
-        $scope = 'A\Class\Scope';
-        $question = new TextualQuestion('A question');
-        $suggestion = new TextualAnswer('Suggestion');
-        $sameQuestionWithSuggestedDefaultAnswer = new TextualQuestion('A question', $suggestion);
-
-        $questionIdentifier = md5($question.$scope);
-
-        $mockInterviewer = Mockery::mock(Interviewer::class);
-        $mockInterviewer
-            ->shouldReceive('ask')
-            ->with(Mockery::on(function (Question $question) use ($sameQuestionWithSuggestedDefaultAnswer) {
-                return $question->equals($sameQuestionWithSuggestedDefaultAnswer);
-            }));
-
-        $memorizingInterviewer = new MemorizingInterviewer($mockInterviewer, [$questionIdentifier => $suggestion]);
-        $memorizingInterviewer->setScope($scope);
-
-        $memorizingInterviewer->ask($question);
-    }
-
-    /**
-     * @test
-     */
-    public function memorizing_interviewer_produces_given_answers_after_an_interview()
-    {
-        $scope = 'A\Class\Scope';
-        $question = new TextualQuestion('A question');
-        $answer   = new TextualAnswer('The answer');
-
-        $questionIdentifier = md5($question.$scope);
-
-        $expectedGivenAnswers = [$questionIdentifier => $answer];
+        $answer = new TextualAnswer('An answer');
 
         $mockInterviewer = Mockery::mock(Interviewer::class);
         $mockInterviewer
@@ -108,18 +32,76 @@ class MemorizingInterviewerTest extends TestCase
             ->with($question)
             ->andReturn($answer);
 
-        $memorizingInterviewer = new MemorizingInterviewer($mockInterviewer, []);
-        $memorizingInterviewer->setScope($scope);
+        /** @var MockInterface|Configuration $configuration */
+        $configuration = Mockery::mock(Configuration::class);
+        $configuration->shouldReceive('hasAnswer')->with(Mockery::type('string'))->andReturn(false);
+        $configuration->shouldReceive('answer');
 
+        $memorizingInterviewer = new MemorizingInterviewer($mockInterviewer, $configuration);
         $memorizingInterviewer->ask($question);
-
-        $this->assertEquals($expectedGivenAnswers, $memorizingInterviewer->getGivenAnswers());
     }
 
     /**
      * @test
      */
-    public function memorizing_interviewer_passes_saying_messages_to_interviewer()
+    public function passes_questions_with_a_suggested_answer_to_interviewer_if_configuration_has_a_previous_answer_stored()
+    {
+        $scope = 'A\Class\Scope';
+        $question = new TextualQuestion('A question');
+        $suggestion = new TextualAnswer('Suggestion');
+        $newAnswer = new TextualAnswer('New answer');
+        $sameQuestionWithSuggestedDefaultAnswer = new TextualQuestion('A question', $suggestion);
+
+        $mockInterviewer = Mockery::mock(Interviewer::class);
+        $mockInterviewer
+            ->shouldReceive('ask')
+            ->with(Mockery::on(function (Question $question) use ($sameQuestionWithSuggestedDefaultAnswer) {
+                return $question->equals($sameQuestionWithSuggestedDefaultAnswer);
+            }))
+            ->andReturn($newAnswer);
+
+        /** @var MockInterface|Configuration $configuration */
+        $configuration = Mockery::mock(Configuration::class);
+        $configuration->shouldReceive('hasAnswer')->with(Mockery::type('string'))->andReturn(true);
+        $configuration->shouldReceive('getAnswer')->with(Mockery::type('string'))->andReturn($suggestion);
+        $configuration->shouldReceive('answer');
+
+        $memorizingInterviewer = new MemorizingInterviewer($mockInterviewer, $configuration);
+        $memorizingInterviewer->setScope($scope);
+
+        $memorizingInterviewer->ask($question);
+    }
+
+    /**
+     * @test
+     */
+    public function stores_given_answers_in_configuration_during_the_interview()
+    {
+        $scope = 'A\Class\Scope';
+        $question = new TextualQuestion('A question');
+        $answer   = new TextualAnswer('The answer');
+
+        $mockInterviewer = Mockery::mock(Interviewer::class);
+        $mockInterviewer
+            ->shouldReceive('ask')
+            ->with($question)
+            ->andReturn($answer);
+
+        /** @var MockInterface|Configuration $configuration */
+        $configuration = Mockery::mock(Configuration::class);
+        $configuration->shouldReceive('hasAnswer')->with(Mockery::type('string'))->andReturn(false);
+        $configuration->shouldReceive('answer')->with(Mockery::type('string'), $answer)->once();
+
+        $memorizingInterviewer = new MemorizingInterviewer($mockInterviewer, $configuration);
+        $memorizingInterviewer->setScope($scope);
+
+        $memorizingInterviewer->ask($question);
+    }
+
+    /**
+     * @test
+     */
+    public function passes_saying_messages_to_interviewer()
     {
         $message = 'test message';
 
@@ -128,14 +110,17 @@ class MemorizingInterviewerTest extends TestCase
             ->shouldReceive('say')
             ->with($message);
 
-        $memorizingInterviewer = new MemorizingInterviewer($mockInterviewer, []);
+        /** @var MockInterface|Configuration $configuration */
+        $configuration = Mockery::mock(Configuration::class);
+
+        $memorizingInterviewer = new MemorizingInterviewer($mockInterviewer, $configuration);
         $memorizingInterviewer->say($message);
     }
 
     /**
      * @test
      */
-    public function memorizing_interviewer_passes_warnings_to_interviewer()
+    public function passes_warnings_to_interviewer()
     {
         $message = 'test message';
 
@@ -144,7 +129,10 @@ class MemorizingInterviewerTest extends TestCase
             ->shouldReceive('warn')
             ->with($message);
 
-        $memorizingInterviewer = new MemorizingInterviewer($mockInterviewer, []);
+        /** @var MockInterface|Configuration $configuration */
+        $configuration = Mockery::mock(Configuration::class);
+
+        $memorizingInterviewer = new MemorizingInterviewer($mockInterviewer, $configuration);
         $memorizingInterviewer->warn($message);
     }
 }

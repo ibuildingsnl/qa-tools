@@ -66,20 +66,20 @@ final class ConfigurationService
      */
     public function configureProject(Interviewer $interviewer)
     {
-        $previousAnswers = [];
         if ($this->configurationLoader->configurationExists()) {
-            $previousAnswers = $this->configurationLoader->load()->getAnswers();
+            $configuration = $this->configurationLoader->load();
+        } else {
+            $configuration = Configuration::create();
         }
 
-        $interviewer = new MemorizingInterviewer($interviewer, $previousAnswers);
+        $interviewer = new MemorizingInterviewer($interviewer, $configuration);
 
-        $project = $this->projectConfigurator->configure($interviewer);
-        $taskRegistry = $this->taskRegistryFactory->createWithProject($project);
+        $this->projectConfigurator->configure($interviewer, $configuration);
+        $taskRegistry = $this->taskRegistryFactory->createWithProject($configuration->getProject());
 
-        $runList = $this->configuratorRegistry->getRunListForProject($project);
+        $runList = $this->configuratorRegistry->getRunListForProject($configuration->getProject());
         $this->runListConfigurator->configure($runList, $interviewer, $taskRegistry);
 
-        $configuration = new Configuration($project, $interviewer->getGivenAnswers());
         $this->configurationDumper->dump($configuration);
     }
 }

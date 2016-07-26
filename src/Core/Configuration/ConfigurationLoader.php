@@ -29,11 +29,17 @@ final class ConfigurationLoader
         $this->filePath = $filePath;
     }
 
+    /**
+     * @return bool
+     */
     public function configurationExists()
     {
         return $this->fileHandler->exists($this->filePath);
     }
 
+    /**
+     * @return Configuration
+     */
     public function load()
     {
         $jsonData = Json::decode($this->fileHandler->readFrom($this->filePath), Json::TYPE_ARRAY);
@@ -44,7 +50,7 @@ final class ConfigurationLoader
         Assertion::keyExists($jsonData, 'travisEnabled');
         Assertion::keyExists($jsonData, 'answers');
 
-        return new Configuration(
+        return Configuration::loaded(
             new Project(
                 $jsonData['projectName'],
                 $jsonData['configurationFilesLocation'],
