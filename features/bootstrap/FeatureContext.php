@@ -35,7 +35,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
     private $configuredProjectName;
     /** @var string */
     private $configuredConfigurationFilesLocation;
-    /** @var ProjectType[] */
+    /** @var ProjectTypeSet */
     private $configuredProjectTypes;
     /** @var bool */
     private $configuredTravisEnabled;
