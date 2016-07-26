@@ -42,7 +42,9 @@ phpunit-system:
 behat-acceptance:
     vendor/bin/behat
 phpcs:
-    vendor/bin/phpcs --standard=phpcs.xml --extensions=php --report=full src
+    # Blank line is needed to provide STDIN input to phpcs when phpcs is called from the Git pre-push hook context
+    # See https://github.com/squizlabs/PHP_CodeSniffer/issues/993
+    echo '' | vendor/bin/phpcs --standard=phpcs.xml --extensions=php --report=full src
 
 
 verify-build-is-signed: build
