@@ -3,7 +3,7 @@
 namespace Ibuildings\QaTools\Core\Application\Command;
 
 use Ibuildings\QaTools\Core\Configuration\ConfigurationDumper;
-use Ibuildings\QaTools\Core\Configuration\ConfigurationRepository;
+use Ibuildings\QaTools\Core\Configuration\FileConfigurationRepository;
 use Ibuildings\QaTools\Core\Configuration\ProjectConfigurator;
 use Ibuildings\QaTools\Core\Configuration\RunListConfigurator;
 use Ibuildings\QaTools\Core\Configuration\TaskDirectoryFactory;

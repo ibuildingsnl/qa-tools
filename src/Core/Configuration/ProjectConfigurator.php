@@ -9,6 +9,7 @@ use Ibuildings\QaTools\Core\Interviewer\Interviewer;
 use Ibuildings\QaTools\Core\Interviewer\Question;
 use Ibuildings\QaTools\Core\Project\Project;
 use Ibuildings\QaTools\Core\Project\ProjectType;
+use Ibuildings\QaTools\Core\Project\ProjectTypeSet;
 
 final class ProjectConfigurator
 {
@@ -78,11 +79,13 @@ final class ProjectConfigurator
             );
         }
 
-        $projectTypes = array_map(
-            function (TextualAnswer $answer) {
-                return ProjectType::fromHumanReadableString($answer->getRaw());
-            },
-            $projectTypeAnswers
+        $projectTypes = new ProjectTypeSet(
+            array_map(
+                function (TextualAnswer $answer) {
+                    return ProjectType::fromHumanReadableString($answer->getRaw());
+                },
+                $projectTypeAnswers
+            )
         );
 
         $travisEnabledAnswer = $interviewer->ask(

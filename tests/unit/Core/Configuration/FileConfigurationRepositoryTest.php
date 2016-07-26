@@ -3,12 +3,13 @@
 namespace Ibuildings\QaTools\UnitTest\Core\Configuration;
 
 use Ibuildings\QaTools\Core\Configuration\Configuration;
-use Ibuildings\QaTools\Core\Configuration\ConfigurationRepository;
+use Ibuildings\QaTools\Core\Configuration\FileConfigurationRepository;
 use Ibuildings\QaTools\Core\Interviewer\Answer\Answer;
 use Ibuildings\QaTools\Core\Interviewer\Answer\TextualAnswer;
 use Ibuildings\QaTools\Core\IO\File\FileHandler;
 use Ibuildings\QaTools\Core\Project\Project;
 use Ibuildings\QaTools\Core\Project\ProjectType;
+use Ibuildings\QaTools\Core\Project\ProjectTypeSet;
 use Mockery;
 use Mockery\Matcher\MatcherAbstract;
 use Mockery\MockInterface;
@@ -18,7 +19,7 @@ use PHPUnit_Framework_Assert as Assert;
 /**
  * @group Configuration
  */
-class ConfigurationRepositoryTest extends TestCase
+class FileConfigurationRepositoryTest extends TestCase
 {
     const FILE_PATH = '/path/to/qa-tools.json';
 
@@ -29,7 +30,7 @@ class ConfigurationRepositoryTest extends TestCase
         $fileHandler = Mockery::mock(FileHandler::class);
         $fileHandler->shouldReceive('exists')->andReturn(true);
 
-        $repository = new ConfigurationRepository($fileHandler, self::FILE_PATH);
+        $repository = new FileConfigurationRepository($fileHandler, self::FILE_PATH);
         $this->assertTrue($repository->configurationExists(), 'Loader should have determined configuration exists');
     }
 
@@ -40,7 +41,7 @@ class ConfigurationRepositoryTest extends TestCase
         $fileHandler = Mockery::mock(FileHandler::class);
         $fileHandler->shouldReceive('exists')->andReturn(false);
 
-        $repository = new ConfigurationRepository($fileHandler, self::FILE_PATH);
+        $repository = new FileConfigurationRepository($fileHandler, self::FILE_PATH);
         $this->assertFalse(
             $repository->configurationExists(),
             'Loader should have determined configuration does not exist'
@@ -73,14 +74,20 @@ JSON;
         $fileHandler->shouldReceive('exists')->andReturn(true);
         $fileHandler->shouldReceive('readFrom')->with(self::FILE_PATH)->andReturn($json);
 
-        $repository = new ConfigurationRepository($fileHandler, self::FILE_PATH);
+        $repository = new FileConfigurationRepository($fileHandler, self::FILE_PATH);
         $configuration = $repository->load();
 
-        $this->assertSame('Boolean Bust', $configuration->getProject()->getName());
-        $this->assertCount(1, $configuration->getProject()->getProjectTypes());
-        $this->assertTrue($configuration->getProject()->getProjectTypes()[0]->equals(new ProjectType('php.sf2')));
-        $this->assertSame('./', $configuration->getProject()->getConfigurationFilesLocation());
-        $this->assertSame(true, $configuration->getProject()->isTravisEnabled());
+        $expectedProject = new Project(
+            'Boolean Bust',
+            './',
+            new ProjectTypeSet([new ProjectType(ProjectType::TYPE_PHP_SF_2)]),
+            true
+        );
+
+        $this->assertTrue(
+            $configuration->getProject()->equals($expectedProject),
+            'Project of loaded configuration doesn\'t match expectations'
+        );
 
         $this->assertTrue($configuration->hasAnswer('0772fd2dbcfb028612dab5899a7e5ed5'));
         $this->assertInstanceOf(Answer::class, $configuration->getAnswer('0772fd2dbcfb028612dab5899a7e5ed5'));
@@ -91,14 +98,14 @@ JSON;
     {
         $configuration = Configuration::create();
         $configuration->reconfigureProject(
-            new Project('Terran Tubers', './qa-tools', [new ProjectType('php.drupal8')], false)
+            new Project('Terran Tubers', './qa-tools', new ProjectTypeSet([new ProjectType('php.drupal8')]), false)
         );
         $configuration->answer('4ee0c41472083a7765b17033aab88207', new TextualAnswer('Spacious Salons'));
 
         /** @var MockInterface|FileHandler $fileHandler */
         $fileHandler = Mockery::spy(FileHandler::class);
 
-        $repository = new ConfigurationRepository($fileHandler, self::FILE_PATH);
+        $repository = new FileConfigurationRepository($fileHandler, self::FILE_PATH);
         $repository->save($configuration);
 
         $expectedJson = <<<'JSON'
@@ -129,6 +136,7 @@ JSON;
         return Mockery::on(
             function ($actual) use ($expected) {
                 Assert::assertEquals($expected, $actual);
+
                 return true;
             }
         );

@@ -17,7 +17,7 @@ class Project
     private $configurationFilesLocation;
 
     /**
-     * @var ProjectType[]
+     * @var ProjectTypeSet
      */
     private $projectTypes;
 
@@ -26,11 +26,10 @@ class Project
      */
     private $travisEnabled;
 
-    public function __construct($name, $configurationFilesLocation, array $projectTypes, $travisEnabled)
+    public function __construct($name, $configurationFilesLocation, ProjectTypeSet $projectTypes, $travisEnabled)
     {
         Assertion::string($name);
         Assertion::string($configurationFilesLocation);
-        Assertion::allIsInstanceOf($projectTypes, ProjectType::class);
         Assertion::boolean($travisEnabled);
 
         $this->name                       = $name;
@@ -39,6 +38,16 @@ class Project
         $this->travisEnabled              = $travisEnabled;
     }
 
+    /**
+     * @param Project $project
+     * @return bool
+     */
+    public function equals(Project $project)
+    {
+        return $this->name === $project->name
+            && $this->configurationFilesLocation === $project->configurationFilesLocation
+            && $this->projectTypes->equals($project->projectTypes);
+    }
 
     /**
      * @return string
@@ -57,7 +66,7 @@ class Project
     }
 
     /**
-     * @return ProjectType[]
+     * @return ProjectTypeSet
      */
     public function getProjectTypes()
     {

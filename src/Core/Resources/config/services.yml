@@ -30,7 +30,7 @@ services:
         alias: qa_tools.templating.template_engine
 
     qa_tools.configuration.configuration_repository:
-        class: Ibuildings\QaTools\Core\Configuration\ConfigurationRepository
+        class: Ibuildings\QaTools\Core\Configuration\FileConfigurationRepository
         arguments:
             - "@qa_tools.file_handler"
             - "%qa_tools.configuration_location%"

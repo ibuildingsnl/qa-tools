@@ -4,6 +4,7 @@ namespace Ibuildings\QaTools\Core\Service;
 
 use Ibuildings\QaTools\Core\Configuration\Configuration;
 use Ibuildings\QaTools\Core\Configuration\ConfigurationRepository;
+use Ibuildings\QaTools\Core\Configuration\FileConfigurationRepository;
 use Ibuildings\QaTools\Core\Configuration\ProjectConfigurator;
 use Ibuildings\QaTools\Core\Configuration\RunListConfigurator;
 use Ibuildings\QaTools\Core\Configuration\TaskDirectoryFactory;

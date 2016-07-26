@@ -5,7 +5,7 @@ namespace Ibuildings\QaTools\Core\Configuration;
 use Ibuildings\QaTools\Core\Assert\Assertion;
 use Ibuildings\QaTools\Core\Templating\TemplateEngine;
 
-final class TaskHelperSet
+class TaskHelperSet
 {
     /**
      * @var TemplateEngine
