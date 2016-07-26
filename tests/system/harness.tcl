@@ -1,4 +1,4 @@
-set timeout 1
+set timeout 2
 
 # Wraps the program-under-test inside a dash shell. For some reason, PHP exit
 # codes are not read properly by expect, always returning 0. By wrapping the
