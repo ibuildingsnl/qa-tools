@@ -7,7 +7,7 @@ use Ibuildings\QaTools\Core\Configuration\ConfigurationRepository;
 use Ibuildings\QaTools\Core\Configuration\ProjectConfigurator;
 use Ibuildings\QaTools\Core\Configuration\RunListConfigurator;
 use Ibuildings\QaTools\Core\Configuration\TaskRegistryFactory;
-use Ibuildings\QaTools\Core\Configurator\ConfiguratorRegistry;
+use Ibuildings\QaTools\Core\Configurator\ConfiguratorRepository;
 use Ibuildings\QaTools\Core\IO\Cli\InterviewerFactory;
 use Ibuildings\QaTools\Core\Service\ConfigurationService;
 use Symfony\Component\Console\Command\Command;
@@ -66,11 +66,11 @@ final class ConfigureCommand extends Command implements ContainerAwareInterface
     }
 
     /**
-     * @return ConfiguratorRegistry
+     * @return ConfiguratorRepository
      */
     private function getConfiguratorRegistry()
     {
-        return $this->container->get('qa_tools.configurator_registry');
+        return $this->container->get('qa_tools.configurator_repository');
     }
 
     /**

@@ -14,8 +14,8 @@ services:
             - "@qa_tools.configuration.task_helper_set"
             - "@service_container"
 
-    qa_tools.configurator_registry:
-        alias: qa_tools.configurator.configurator_registry
+    qa_tools.configurator_repository:
+        alias: qa_tools.configurator.configurator_repository
 
     qa_tools.template_engine:
         alias: qa_tools.templating.template_engine
@@ -34,8 +34,8 @@ services:
         arguments:
             - "@qa_tools.template_engine"
 
-    qa_tools.configurator.configurator_registry:
-        class: Ibuildings\QaTools\Core\Configurator\ConfiguratorRegistry
+    qa_tools.configurator.configurator_repository:
+        class: Ibuildings\QaTools\Core\Configurator\ConfiguratorRepository
 
     qa_tools.io.file.filesystem_adapter:
         class: Ibuildings\QaTools\Core\IO\File\FilesystemAdapter

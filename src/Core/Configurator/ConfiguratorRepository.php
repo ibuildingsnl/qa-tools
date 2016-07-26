@@ -6,7 +6,7 @@ use Ibuildings\QaTools\Core\Exception\LogicException;
 use Ibuildings\QaTools\Core\Project\Project;
 use Ibuildings\QaTools\Core\Project\ProjectType;
 
-final class ConfiguratorRegistry
+final class ConfiguratorRepository
 {
     /**
      * Configurators indexed by project type and tool.
@@ -20,7 +20,7 @@ final class ConfiguratorRegistry
      * @param ProjectType $projectType
      * @return void
      */
-    public function registerFor(Configurator $configurator, ProjectType $projectType)
+    public function add(Configurator $configurator, ProjectType $projectType)
     {
         $projectTypeKey = $projectType->getProjectType();
 

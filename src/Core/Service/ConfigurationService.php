@@ -7,7 +7,7 @@ use Ibuildings\QaTools\Core\Configuration\ConfigurationRepository;
 use Ibuildings\QaTools\Core\Configuration\ProjectConfigurator;
 use Ibuildings\QaTools\Core\Configuration\RunListConfigurator;
 use Ibuildings\QaTools\Core\Configuration\TaskRegistryFactory;
-use Ibuildings\QaTools\Core\Configurator\ConfiguratorRegistry;
+use Ibuildings\QaTools\Core\Configurator\ConfiguratorRepository;
 use Ibuildings\QaTools\Core\Interviewer\Interviewer;
 use Ibuildings\QaTools\Core\Interviewer\MemorizingInterviewer;
 
@@ -29,9 +29,9 @@ final class ConfigurationService
     private $runListConfigurator;
 
     /**
-     * @var ConfiguratorRegistry
+     * @var ConfiguratorRepository
      */
-    private $configuratorRegistry;
+    private $configuratorRepository;
 
     /**
      * @var TaskRegistryFactory
@@ -42,12 +42,12 @@ final class ConfigurationService
         ConfigurationRepository $configurationRepository,
         ProjectConfigurator $projectConfigurator,
         RunListConfigurator $runListConfigurator,
-        ConfiguratorRegistry $configuratorRegistry,
+        ConfiguratorRepository $configuratorRepository,
         TaskRegistryFactory $taskRegistryFactory
     ) {
         $this->configurationRepository     = $configurationRepository;
         $this->projectConfigurator         = $projectConfigurator;
-        $this->configuratorRegistry        = $configuratorRegistry;
+        $this->configuratorRepository      = $configuratorRepository;
         $this->taskRegistryFactory         = $taskRegistryFactory;
         $this->runListConfigurator         = $runListConfigurator;
     }
@@ -69,7 +69,7 @@ final class ConfigurationService
         $this->projectConfigurator->configure($interviewer, $configuration);
         $taskRegistry = $this->taskRegistryFactory->createWithProject($configuration->getProject());
 
-        $runList = $this->configuratorRegistry->getRunListForProject($configuration->getProject());
+        $runList = $this->configuratorRepository->getRunListForProject($configuration->getProject());
         $this->runListConfigurator->configure($runList, $interviewer, $taskRegistry);
 
         $this->configurationRepository->save($configuration);
