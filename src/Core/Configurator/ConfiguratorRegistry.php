@@ -2,13 +2,11 @@
 
 namespace Ibuildings\QaTools\Core\Configurator;
 
-use ArrayIterator;
 use Ibuildings\QaTools\Core\Exception\LogicException;
 use Ibuildings\QaTools\Core\Project\Project;
 use Ibuildings\QaTools\Core\Project\ProjectType;
-use IteratorAggregate;
 
-final class ConfiguratorRegistry implements IteratorAggregate
+final class ConfiguratorRegistry
 {
     /**
      * Configurators indexed by project type and tool.
@@ -45,11 +43,6 @@ final class ConfiguratorRegistry implements IteratorAggregate
         }
 
         $this->registeredConfigurators[$projectTypeKey][$toolClassName] = $configurator;
-    }
-
-    public function getIterator()
-    {
-        return new ArrayIterator($this->registeredConfigurators);
     }
 
     /**
