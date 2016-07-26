@@ -121,7 +121,7 @@ JSON;
     }
 }
 JSON;
-        $fileHandler->shouldHaveReceived('writeTo')->with(self::eq($expectedJson), selF::FILE_PATH)->once();
+        $fileHandler->shouldHaveReceived('writeTo')->with(self::eq($expectedJson), self::FILE_PATH)->once();
     }
 
     /**
