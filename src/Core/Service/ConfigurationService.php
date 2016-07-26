@@ -5,12 +5,12 @@ namespace Ibuildings\QaTools\Core\Service;
 use Ibuildings\QaTools\Core\Configuration\Configuration;
 use Ibuildings\QaTools\Core\Configuration\ConfigurationDumper;
 use Ibuildings\QaTools\Core\Configuration\ConfigurationLoader;
+use Ibuildings\QaTools\Core\Configuration\ProjectConfigurator;
 use Ibuildings\QaTools\Core\Configuration\RunListConfigurator;
 use Ibuildings\QaTools\Core\Configuration\TaskRegistryFactory;
 use Ibuildings\QaTools\Core\Configurator\ConfiguratorRegistry;
 use Ibuildings\QaTools\Core\Interviewer\Interviewer;
 use Ibuildings\QaTools\Core\Interviewer\MemorizingInterviewer;
-use Ibuildings\QaTools\Core\Project\ProjectConfigurator;
 
 final class ConfigurationService
 {

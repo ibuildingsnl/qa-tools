@@ -1,20 +1,23 @@
 <?php
 
-namespace Ibuildings\QaTools\Core\Project;
+namespace Ibuildings\QaTools\Core\Configuration;
 
 use Ibuildings\QaTools\Core\Application\Application;
 use Ibuildings\QaTools\Core\Interviewer\Answer\TextualAnswer;
 use Ibuildings\QaTools\Core\Interviewer\Answer\YesOrNoAnswer;
 use Ibuildings\QaTools\Core\Interviewer\Interviewer;
 use Ibuildings\QaTools\Core\Interviewer\Question;
+use Ibuildings\QaTools\Core\Project\Project;
+use Ibuildings\QaTools\Core\Project\ProjectType;
 
 final class ProjectConfigurator
 {
     /**
-     * @param Interviewer $interviewer
+     * @param Interviewer   $interviewer
+     * @param Configuration $configuration
      * @return Project
      */
-    public function configure(Interviewer $interviewer)
+    public function configure(Interviewer $interviewer, Configuration $configuration)
     {
         $interviewer->say(
             sprintf(
@@ -54,7 +57,7 @@ final class ProjectConfigurator
                         'Symfony 3',
                         'Drupal 7',
                         'Drupal 8',
-                        'Other PHP Project'
+                        'Other PHP Project',
                     ]
                 )
             );
@@ -89,11 +92,13 @@ final class ProjectConfigurator
             )
         );
 
-        return new Project(
-            $nameOfProjectAnswer->getAnswer(),
-            $configFileLocationAnswer->getAnswer(),
-            $projectTypes,
-            $travisEnabledAnswer->getAnswer()
+        $configuration->reconfigureProject(
+            new Project(
+                $nameOfProjectAnswer->getAnswer(),
+                $configFileLocationAnswer->getAnswer(),
+                $projectTypes,
+                $travisEnabledAnswer->getAnswer()
+            )
         );
     }
 }

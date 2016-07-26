@@ -4,11 +4,11 @@ namespace Ibuildings\QaTools\Core\Application\Command;
 
 use Ibuildings\QaTools\Core\Configuration\ConfigurationDumper;
 use Ibuildings\QaTools\Core\Configuration\ConfigurationLoader;
+use Ibuildings\QaTools\Core\Configuration\ProjectConfigurator;
 use Ibuildings\QaTools\Core\Configuration\RunListConfigurator;
 use Ibuildings\QaTools\Core\Configuration\TaskRegistryFactory;
 use Ibuildings\QaTools\Core\Configurator\ConfiguratorRegistry;
 use Ibuildings\QaTools\Core\IO\Cli\InterviewerFactory;
-use Ibuildings\QaTools\Core\Project\ProjectConfigurator;
 use Ibuildings\QaTools\Core\Service\ConfigurationService;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;

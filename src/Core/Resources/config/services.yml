@@ -6,7 +6,7 @@ services:
         alias: qa_tools.io.cli.interviewer_factory
 
     qa_tools.project_configurator:
-        alias: qa_tools.project.project_configurator
+        class: Ibuildings\QaTools\Core\Configuration\ProjectConfigurator
 
     qa_tools.run_list_configurator:
         class: Ibuildings\QaTools\Core\Configuration\RunListConfigurator
@@ -62,9 +62,6 @@ services:
             - "@qa_tools.file_handler"
             - "@symfony.question_helper"
             - "@qa_tools.io.cli.console_question_factory"
-
-    qa_tools.project.project_configurator:
-        class: Ibuildings\QaTools\Core\Project\ProjectConfigurator
 
     qa_tools.templating.template_engine:
         class: Ibuildings\QaTools\Core\Templating\TemplateEngine
