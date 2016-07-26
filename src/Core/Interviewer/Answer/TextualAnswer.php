@@ -18,18 +18,23 @@ final class TextualAnswer implements Answer
     }
 
     /**
-     * @param TextualAnswer $other
+     * @param Answer $other
      * @return bool
      */
-    public function equals(TextualAnswer $other)
+    public function equals(Answer $other)
     {
-        return $this->answer === $other->answer;
+        return $other instanceof self && $this->answer === $other->answer;
     }
 
     /**
      * @return string
      */
     public function getAnswer()
+    {
+        return $this->answer;
+    }
+
+    public function getRaw()
     {
         return $this->answer;
     }

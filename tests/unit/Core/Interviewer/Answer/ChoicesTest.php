@@ -60,7 +60,7 @@ class ChoicesTest extends TestCase
         $choices          = new Choices([$answer]);
         $differentChoices = new Choices([]);
 
-        $this->assertFalse($choices->equal($differentChoices));
+        $this->assertFalse($choices->equals($differentChoices));
     }
 
     /**
@@ -74,7 +74,7 @@ class ChoicesTest extends TestCase
         $choices          = new Choices([$answer]);
         $differentChoices = new Choices([$differentAnswer]);
 
-        $this->assertFalse($choices->equal($differentChoices));
+        $this->assertFalse($choices->equals($differentChoices));
     }
 
     /**
@@ -88,19 +88,6 @@ class ChoicesTest extends TestCase
         $choices     = new Choices([$answer]);
         $sameChoices = new Choices([$sameAnswer]);
 
-        $this->assertTrue($choices->equal($sameChoices));
-    }
-
-    /**
-     * @test
-     */
-    public function choices_consist_of_multiple_answers()
-    {
-        $innerAnswers = [new TextualAnswer('An answer.'), new TextualAnswer('Another answer.')];
-        $choices      = new Choices($innerAnswers);
-
-        $actualValue = $choices->getAnswers();
-
-        $this->assertEquals($innerAnswers, $actualValue);
+        $this->assertTrue($choices->equals($sameChoices));
     }
 }

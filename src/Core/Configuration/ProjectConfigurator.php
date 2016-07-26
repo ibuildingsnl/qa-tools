@@ -80,7 +80,7 @@ final class ProjectConfigurator
 
         $projectTypes = array_map(
             function (TextualAnswer $answer) {
-                return ProjectType::fromHumanReadableString($answer->getAnswer());
+                return ProjectType::fromHumanReadableString($answer->getRaw());
             },
             $projectTypeAnswers
         );
@@ -94,10 +94,10 @@ final class ProjectConfigurator
 
         $configuration->reconfigureProject(
             new Project(
-                $nameOfProjectAnswer->getAnswer(),
-                $configFileLocationAnswer->getAnswer(),
+                $nameOfProjectAnswer->getRaw(),
+                $configFileLocationAnswer->getRaw(),
                 $projectTypes,
-                $travisEnabledAnswer->getAnswer()
+                $travisEnabledAnswer->getRaw()
             )
         );
     }

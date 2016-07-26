@@ -47,8 +47,8 @@ final class ListChoiceQuestion implements Question
     public function equals(ListChoiceQuestion $other)
     {
         return $this->question === $other->question
-        && $this->defaultAnswer->equal($other->defaultAnswer)
-        && $this->possibleChoices->equal($other->possibleChoices);
+        && $this->defaultAnswer->equals($other->defaultAnswer)
+        && $this->possibleChoices->equals($other->possibleChoices);
     }
 
     /**
@@ -115,7 +115,7 @@ final class ListChoiceQuestion implements Question
                 throw new LogicException(
                     sprintf(
                         'Cannot create question: default answer "%s" is not a possible answer',
-                        $defaultAnswer->getAnswer()
+                        $defaultAnswer->getRaw()
                     )
                 );
             }

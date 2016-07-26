@@ -55,7 +55,7 @@ class TextualAnswerTest extends TestCase
         $expectedValue = 'An answer.';
         $answer        = new TextualAnswer($expectedValue);
 
-        $actualValue = $answer->getAnswer();
+        $actualValue = $answer->getRaw();
 
         $this->assertEquals($actualValue, $expectedValue);
     }

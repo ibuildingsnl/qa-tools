@@ -44,7 +44,7 @@ final class MultipleChoiceQuestion implements Question
     {
         return $this->question === $other->question
         && $this->defaultAnswer->equals($other->defaultAnswer)
-        && $this->possibleChoices->equal($other->possibleChoices);
+        && $this->possibleChoices->equals($other->possibleChoices);
     }
 
     /**
@@ -111,7 +111,7 @@ final class MultipleChoiceQuestion implements Question
             throw new LogicException(
                 sprintf(
                     'Cannot create question: default answer "%s" is not a possible answer',
-                    $defaultAnswer->getAnswer()
+                    $defaultAnswer->getRaw()
                 )
             );
         }

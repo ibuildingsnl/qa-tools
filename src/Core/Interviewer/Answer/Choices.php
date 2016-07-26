@@ -40,12 +40,12 @@ final class Choices implements Answer, IteratorAggregate, Countable
     }
 
     /**
-     * @param Choices $other
+     * @param Answer $other
      * @return bool
      */
-    public function equal(Choices $other)
+    public function equals(Answer $other)
     {
-        if (count($other) !== count($this)) {
+        if (!$this instanceof self || count($other) !== count($this)) {
             return false;
         }
 
@@ -58,12 +58,14 @@ final class Choices implements Answer, IteratorAggregate, Countable
         return true;
     }
 
-    /**
-     * @return TextualAnswer[]
-     */
-    public function getAnswers()
+    public function getRaw()
     {
-        return $this->answers;
+        return array_map(
+            function (TextualAnswer $answer) {
+                return $answer->getRaw();
+            },
+            $this->answers
+        );
     }
 
     public function getIterator()
@@ -81,6 +83,9 @@ final class Choices implements Answer, IteratorAggregate, Countable
         return implode(', ', $this->convertToArrayOfStrings());
     }
 
+    /**
+     * @return string[]
+     */
     public function convertToArrayOfStrings()
     {
         return array_map(function (TextualAnswer $answer) {

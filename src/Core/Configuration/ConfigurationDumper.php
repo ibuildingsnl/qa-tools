@@ -38,11 +38,7 @@ final class ConfigurationDumper
 
         $answers = array_map(
             function (Answer $answer) {
-                if ($answer instanceof Choices) {
-                    return $answer->convertToArrayOfStrings();
-                }
-
-                return $answer->getAnswer();
+                return $answer->getRaw();
             },
             $configuration->getAnswers()
         );

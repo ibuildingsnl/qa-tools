@@ -69,7 +69,7 @@ final class ConsoleQuestionFactory
     {
         $consoleQuestion = new ConsoleQuestion(
             $this->consoleQuestionFormatter->formatTextualQuestion($question),
-            $question->getDefaultAnswer()->getAnswer()
+            $question->getDefaultAnswer()->getRaw()
         );
         $consoleQuestion->setValidator([TextualAnswerValidator::class, 'validate']);
         $consoleQuestion->setMaxAttempts(self::MAX_ATTEMPTS);
@@ -85,7 +85,7 @@ final class ConsoleQuestionFactory
     {
         $consoleQuestion = new ConsoleQuestion(
             $this->consoleQuestionFormatter->formatYesOrNoQuestion($question),
-            $question->getDefaultAnswer()->getAnswer()
+            $question->getDefaultAnswer()->getRaw()
         );
 
         $consoleQuestion->setValidator([YesOrNoAnswerValidator::class, 'validate']);
@@ -103,7 +103,7 @@ final class ConsoleQuestionFactory
         $consoleQuestion = new ChoiceQuestion(
             $this->consoleQuestionFormatter->formatMultipleChoiceQuestion($question),
             $question->getPossibleChoices()->convertToArrayOfStrings(),
-            $question->getDefaultAnswer()->getAnswer()
+            $question->getDefaultAnswer()->getRaw()
         );
 
         $consoleQuestion->setMaxAttempts(self::MAX_ATTEMPTS);
