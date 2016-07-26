@@ -73,6 +73,8 @@ final class ConfigurationService
         $runList = $this->configuratorRepository->getRunListForProject($configuration->getProject());
         $this->runListConfigurator->configure($runList, $interviewer, $taskDirectory);
 
+        // Execute tasks from task directory
+
         $this->configurationRepository->save($configuration);
     }
 }
