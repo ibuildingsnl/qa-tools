@@ -6,7 +6,7 @@ use Ibuildings\QaTools\Core\Project\Project;
 use Ibuildings\QaTools\Core\Task\Runner\TaskList;
 use Ibuildings\QaTools\Core\Task\Task;
 
-final class TaskRegistry
+final class TaskDirectory
 {
     /**
      * @var Project

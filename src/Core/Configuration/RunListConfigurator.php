@@ -25,8 +25,11 @@ final class RunListConfigurator
         $this->container = $container;
     }
 
-    public function configure(ConfiguratorList $runList, MemorizingInterviewer $interviewer, TaskRegistry $taskRegistry)
-    {
+    public function configure(
+        ConfiguratorList $runList,
+        MemorizingInterviewer $interviewer,
+        TaskDirectory $taskDirectory
+    ) {
         foreach ($runList as $configurator) {
             /** @var Configurator $configurator */
             $interviewer->setScope($configurator->getToolClassName());
@@ -36,7 +39,7 @@ final class RunListConfigurator
             );
             $this->taskHelperSet->setTemplatePath($templatePath);
 
-            $configurator->configure($interviewer, $taskRegistry, $this->taskHelperSet);
+            $configurator->configure($interviewer, $taskDirectory, $this->taskHelperSet);
         }
     }
 }

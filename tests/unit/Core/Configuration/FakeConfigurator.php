@@ -3,7 +3,7 @@
 namespace Ibuildings\QaTools\UnitTest\Core\Configuration;
 
 use Ibuildings\QaTools\Core\Configuration\TaskHelperSet;
-use Ibuildings\QaTools\Core\Configuration\TaskRegistry;
+use Ibuildings\QaTools\Core\Configuration\TaskDirectory;
 use Ibuildings\QaTools\Core\Configurator\Configurator;
 use Ibuildings\QaTools\Core\Interviewer\Interviewer;
 
@@ -16,7 +16,7 @@ final class FakeConfigurator implements Configurator
         $this->toolClassName = $toolClassName;
     }
 
-    public function configure(Interviewer $interviewer, TaskRegistry $taskRegistry, TaskHelperSet $taskHelperSet)
+    public function configure(Interviewer $interviewer, TaskDirectory $taskDirectory, TaskHelperSet $taskHelperSet)
     {
     }
 

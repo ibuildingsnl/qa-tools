@@ -6,7 +6,7 @@ use Ibuildings\QaTools\Core\Configuration\Configuration;
 use Ibuildings\QaTools\Core\Configuration\ConfigurationRepository;
 use Ibuildings\QaTools\Core\Configuration\ProjectConfigurator;
 use Ibuildings\QaTools\Core\Configuration\RunListConfigurator;
-use Ibuildings\QaTools\Core\Configuration\TaskRegistryFactory;
+use Ibuildings\QaTools\Core\Configuration\TaskDirectoryFactory;
 use Ibuildings\QaTools\Core\Configurator\ConfiguratorRepository;
 use Ibuildings\QaTools\Core\Interviewer\Interviewer;
 use Ibuildings\QaTools\Core\Interviewer\MemorizingInterviewer;
@@ -34,21 +34,21 @@ final class ConfigurationService
     private $configuratorRepository;
 
     /**
-     * @var TaskRegistryFactory
+     * @var TaskDirectoryFactory
      */
-    private $taskRegistryFactory;
+    private $taskDirectoryFactory;
 
     public function __construct(
         ConfigurationRepository $configurationRepository,
         ProjectConfigurator $projectConfigurator,
         RunListConfigurator $runListConfigurator,
         ConfiguratorRepository $configuratorRepository,
-        TaskRegistryFactory $taskRegistryFactory
+        TaskDirectoryFactory $taskDirectoryFactory
     ) {
         $this->configurationRepository     = $configurationRepository;
         $this->projectConfigurator         = $projectConfigurator;
         $this->configuratorRepository      = $configuratorRepository;
-        $this->taskRegistryFactory         = $taskRegistryFactory;
+        $this->taskDirectoryFactory         = $taskDirectoryFactory;
         $this->runListConfigurator         = $runListConfigurator;
     }
 
@@ -67,10 +67,10 @@ final class ConfigurationService
         $interviewer = new MemorizingInterviewer($interviewer, $configuration);
 
         $this->projectConfigurator->configure($interviewer, $configuration);
-        $taskRegistry = $this->taskRegistryFactory->createWithProject($configuration->getProject());
+        $taskDirectory = $this->taskDirectoryFactory->createWithProject($configuration->getProject());
 
         $runList = $this->configuratorRepository->getRunListForProject($configuration->getProject());
-        $this->runListConfigurator->configure($runList, $interviewer, $taskRegistry);
+        $this->runListConfigurator->configure($runList, $interviewer, $taskDirectory);
 
         $this->configurationRepository->save($configuration);
     }

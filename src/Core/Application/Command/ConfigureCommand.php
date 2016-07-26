@@ -6,7 +6,7 @@ use Ibuildings\QaTools\Core\Configuration\ConfigurationDumper;
 use Ibuildings\QaTools\Core\Configuration\ConfigurationRepository;
 use Ibuildings\QaTools\Core\Configuration\ProjectConfigurator;
 use Ibuildings\QaTools\Core\Configuration\RunListConfigurator;
-use Ibuildings\QaTools\Core\Configuration\TaskRegistryFactory;
+use Ibuildings\QaTools\Core\Configuration\TaskDirectoryFactory;
 use Ibuildings\QaTools\Core\Configurator\ConfiguratorRepository;
 use Ibuildings\QaTools\Core\IO\Cli\InterviewerFactory;
 use Ibuildings\QaTools\Core\Service\ConfigurationService;
@@ -74,11 +74,11 @@ final class ConfigureCommand extends Command implements ContainerAwareInterface
     }
 
     /**
-     * @return TaskRegistryFactory
+     * @return TaskDirectoryFactory
      */
     protected function getTaskRegistryFactory()
     {
-        return $this->container->get('qa_tools.configuration.task_registry.factory');
+        return $this->container->get('qa_tools.configuration.task_directory.factory');
     }
 
     /**
