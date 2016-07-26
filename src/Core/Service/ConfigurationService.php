@@ -5,9 +5,9 @@ namespace Ibuildings\QaTools\Core\Service;
 use Ibuildings\QaTools\Core\Configuration\Configuration;
 use Ibuildings\QaTools\Core\Configuration\ConfigurationDumper;
 use Ibuildings\QaTools\Core\Configuration\ConfigurationLoader;
+use Ibuildings\QaTools\Core\Configuration\RunListConfigurator;
 use Ibuildings\QaTools\Core\Configuration\TaskHelperSet;
 use Ibuildings\QaTools\Core\Configuration\TaskRegistryFactory;
-use Ibuildings\QaTools\Core\Configurator\Configurator;
 use Ibuildings\QaTools\Core\Configurator\ConfiguratorRegistry;
 use Ibuildings\QaTools\Core\Interviewer\Interviewer;
 use Ibuildings\QaTools\Core\Interviewer\MemorizingInterviewer;
@@ -94,17 +94,8 @@ final class ConfigurationService
         $taskRegistry = $this->taskRegistryFactory->createWithProject($project);
 
         $runList = $this->configuratorRegistry->getRunListForProject($project);
-        foreach ($runList as $configurator) {
-            /** @var Configurator $configurator */
-            $interviewer->setScope($configurator->getToolClassName());
-
-            $templatePath = $this->container->getParameter(
-                sprintf('tool.%s.resource_path', $configurator->getToolClassName())
-            );
-            $this->taskHelperSet->setTemplatePath($templatePath);
-
-            $configurator->configure($interviewer, $taskRegistry, $this->taskHelperSet);
-        }
+        $runListConfigurator = new RunListConfigurator($this->taskHelperSet, $this->container);
+        $runListConfigurator->configure($runList, $interviewer, $taskRegistry);
 
         $configuration = new Configuration($project, $interviewer->getGivenAnswers());
         $this->configurationDumper->dump($configuration);
