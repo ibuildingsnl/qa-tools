@@ -1,11 +1,11 @@
 <?php
 
-namespace Ibuildings\QaTools\UnitTest\Core\Interviewer;
+namespace Ibuildings\QaTools\UnitTest\Core\Configuration;
 
 use Ibuildings\QaTools\Core\Configuration\Configuration;
+use Ibuildings\QaTools\Core\Configuration\MemorizingInterviewer;
 use Ibuildings\QaTools\Core\Interviewer\Answer\TextualAnswer;
 use Ibuildings\QaTools\Core\Interviewer\Interviewer;
-use Ibuildings\QaTools\Core\Interviewer\MemorizingInterviewer;
 use Ibuildings\QaTools\Core\Interviewer\Question\Question;
 use Ibuildings\QaTools\Core\Interviewer\Question\TextualQuestion;
 use Mockery;

@@ -10,7 +10,7 @@ use Ibuildings\QaTools\Core\Configuration\RunListConfigurator;
 use Ibuildings\QaTools\Core\Configuration\TaskDirectoryFactory;
 use Ibuildings\QaTools\Core\Configurator\ConfiguratorRepository;
 use Ibuildings\QaTools\Core\Interviewer\Interviewer;
-use Ibuildings\QaTools\Core\Interviewer\MemorizingInterviewer;
+use Ibuildings\QaTools\Core\Configuration\MemorizingInterviewer;
 
 final class ConfigurationService
 {

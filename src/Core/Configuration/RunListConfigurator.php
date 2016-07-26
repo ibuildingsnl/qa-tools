@@ -4,7 +4,7 @@ namespace Ibuildings\QaTools\Core\Configuration;
 
 use Ibuildings\QaTools\Core\Configurator\Configurator;
 use Ibuildings\QaTools\Core\Configurator\ConfiguratorList;
-use Ibuildings\QaTools\Core\Interviewer\MemorizingInterviewer;
+use Ibuildings\QaTools\Core\Configuration\MemorizingInterviewer;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 final class RunListConfigurator
