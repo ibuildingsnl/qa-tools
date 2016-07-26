@@ -7,7 +7,6 @@ use Ibuildings\QaTools\Core\Interviewer\Answer\TextualAnswer;
 use Ibuildings\QaTools\Core\Interviewer\Answer\YesOrNoAnswer;
 use Ibuildings\QaTools\Core\Interviewer\Interviewer;
 use Ibuildings\QaTools\Core\Interviewer\Question;
-use Ibuildings\QaTools\Core\IO\Cli\InterviewerFactory;
 
 final class ProjectConfigurator
 {

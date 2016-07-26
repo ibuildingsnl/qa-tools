@@ -2,13 +2,10 @@
 
 namespace Ibuildings\QaTools\Core\Application\Command;
 
-use Ibuildings\QaTools\Core\Assert\Assertion;
-use Ibuildings\QaTools\Core\Configuration\Configuration;
-use Ibuildings\QaTools\Core\Configuration\TaskHelperSet;
-use Ibuildings\QaTools\Core\Configuration\TaskRegistryFactory;
 use Ibuildings\QaTools\Core\Configuration\ConfigurationDumper;
 use Ibuildings\QaTools\Core\Configuration\ConfigurationLoader;
-use Ibuildings\QaTools\Core\Configurator\Configurator;
+use Ibuildings\QaTools\Core\Configuration\TaskHelperSet;
+use Ibuildings\QaTools\Core\Configuration\TaskRegistryFactory;
 use Ibuildings\QaTools\Core\Configurator\ConfiguratorRegistry;
 use Ibuildings\QaTools\Core\IO\Cli\InterviewerFactory;
 use Ibuildings\QaTools\Core\Project\ProjectConfigurator;
