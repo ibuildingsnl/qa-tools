@@ -110,7 +110,7 @@ class ConsoleQuestionFactoryTest extends TestCase
         $possibleChoices = new Choices([new TextualAnswer($answerText)]);
         $defaultAnswer   = new TextualAnswer('The answer');
 
-        $expectedConsoleQuestion = new ChoiceQuestion($question, [$answerText], $defaultAnswer->getAnswer());
+        $expectedConsoleQuestion = new ChoiceQuestion($question, [$answerText], $defaultAnswer->getRaw());
         $expectedConsoleQuestion->setMaxAttempts(ConsoleQuestionFactory::MAX_ATTEMPTS);
 
         $formatterMock = Mockery::mock(ConsoleQuestionFormatter::class);

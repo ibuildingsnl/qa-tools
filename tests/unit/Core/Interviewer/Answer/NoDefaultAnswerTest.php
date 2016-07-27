@@ -20,7 +20,7 @@ class NoDefaultAnswerTest extends TestCase
     {
         $noDefaultAnswer = new NoDefaultAnswer();
         
-        $this->assertNull($noDefaultAnswer->getAnswer());
+        $this->assertNull($noDefaultAnswer->getRaw());
     }
     
     /**

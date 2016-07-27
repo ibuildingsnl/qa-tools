@@ -4,7 +4,7 @@ namespace Ibuildings\QaTools\Core\Interviewer\Answer;
 
 final class NoDefaultAnswer implements Answer
 {
-    public function getAnswer()
+    public function getRaw()
     {
         return null;
     }

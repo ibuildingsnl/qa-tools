@@ -3,6 +3,7 @@
 namespace Ibuildings\QaTools\Core\Interviewer\Question;
 
 use Ibuildings\QaTools\Core\Assert\Assertion;
+use Ibuildings\QaTools\Core\Interviewer\Answer\Answer;
 use Ibuildings\QaTools\Core\Interviewer\Answer\NoDefaultAnswer;
 use Ibuildings\QaTools\Core\Interviewer\Answer\TextualAnswer;
 
@@ -40,37 +41,24 @@ final class TextualQuestion implements Question
         return $this->question === $other->question && $this->defaultAnswer->equals($other->defaultAnswer);
     }
 
-    /**
-     * @return boolean
-     */
     public function hasDefaultAnswer()
     {
         return !$this->defaultAnswer instanceof NoDefaultAnswer;
     }
 
-    /**
-     * @return string
-     */
     public function getQuestion()
     {
         return $this->question;
     }
 
-    /**
-     * @return TextualAnswer|null
-     */
     public function getDefaultAnswer()
     {
         return $this->defaultAnswer;
     }
 
-    /**
-     * @param TextualAnswer $defaultAnswer
-     * @return TextualQuestion
-     */
-    public function withDefaultAnswer($defaultAnswer)
+    public function withDefaultAnswer(Answer $answer)
     {
-        return new TextualQuestion($this->question, $defaultAnswer);
+        return new TextualQuestion($this->question, $answer);
     }
 
     /**

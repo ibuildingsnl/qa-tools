@@ -4,6 +4,7 @@ namespace Ibuildings\QaTools\Core\Interviewer\Question;
 
 use Ibuildings\QaTools\Core\Assert\Assertion;
 use Ibuildings\QaTools\Core\Exception\LogicException;
+use Ibuildings\QaTools\Core\Interviewer\Answer\Answer;
 use Ibuildings\QaTools\Core\Interviewer\Answer\Choices;
 use Ibuildings\QaTools\Core\Interviewer\Answer\NoDefaultAnswer;
 use Ibuildings\QaTools\Core\Interviewer\Answer\TextualAnswer;
@@ -47,21 +48,15 @@ final class ListChoiceQuestion implements Question
     public function equals(ListChoiceQuestion $other)
     {
         return $this->question === $other->question
-        && $this->defaultAnswer->equal($other->defaultAnswer)
-        && $this->possibleChoices->equal($other->possibleChoices);
+        && $this->defaultAnswer->equals($other->defaultAnswer)
+        && $this->possibleChoices->equals($other->possibleChoices);
     }
 
-    /**
-     * @return bool
-     */
     public function hasDefaultAnswer()
     {
         return !$this->defaultAnswer instanceof NoDefaultAnswer;
     }
 
-    /**
-     * @return string
-     */
     public function getQuestion()
     {
         return $this->question;
@@ -75,21 +70,14 @@ final class ListChoiceQuestion implements Question
         return $this->possibleChoices;
     }
 
-    /**
-     * @return Choices|NoDefaultAnswer
-     */
     public function getDefaultAnswer()
     {
         return $this->defaultAnswer;
     }
 
-    /**
-     * @param Choices $defaultAnswer
-     * @return ListChoiceQuestion
-     */
-    public function withDefaultAnswer($defaultAnswer)
+    public function withDefaultAnswer(Answer $answer)
     {
-        return new ListChoiceQuestion($this->question, $this->possibleChoices, $defaultAnswer);
+        return new ListChoiceQuestion($this->question, $this->possibleChoices, $answer);
     }
     /**
      * @return string
@@ -115,7 +103,7 @@ final class ListChoiceQuestion implements Question
                 throw new LogicException(
                     sprintf(
                         'Cannot create question: default answer "%s" is not a possible answer',
-                        $defaultAnswer->getAnswer()
+                        $defaultAnswer->getRaw()
                     )
                 );
             }

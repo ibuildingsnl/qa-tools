@@ -1,4 +1,13 @@
 services:
+    qa_tools.configuration_service:
+        class: Ibuildings\QaTools\Core\Service\ConfigurationService
+        arguments:
+            - "@qa_tools.configuration.configuration_repository"
+            - "@qa_tools.project_configurator"
+            - "@qa_tools.run_list_configurator"
+            - "@qa_tools.configurator.configurator_repository"
+            - "@qa_tools.configuration.task_directory.factory"
+
     qa_tools.file_handler:
         alias: qa_tools.io.file.filesystem_adapter
 
@@ -6,33 +15,36 @@ services:
         alias: qa_tools.io.cli.interviewer_factory
 
     qa_tools.project_configurator:
-        alias: qa_tools.project.project_configurator
+        class: Ibuildings\QaTools\Core\Configuration\ProjectConfigurator
 
-    qa_tools.run_list:
-        alias: qa_tools.configurator.run_list
+    qa_tools.run_list_configurator:
+        class: Ibuildings\QaTools\Core\Configuration\RunListConfigurator
+        arguments:
+            - "@qa_tools.configuration.task_helper_set"
+            - "@service_container"
+
+    qa_tools.configurator_repository:
+        alias: qa_tools.configurator.configurator_repository
 
     qa_tools.template_engine:
         alias: qa_tools.templating.template_engine
 
-    qa_tools.configuration.configuration_loader:
-        class: Ibuildings\QaTools\Core\Configuration\ConfigurationLoader
+    qa_tools.configuration.configuration_repository:
+        class: Ibuildings\QaTools\Core\Configuration\FileConfigurationRepository
         arguments:
             - "@qa_tools.file_handler"
             - "%qa_tools.configuration_location%"
 
-    qa_tools.configuration.configuration_dumper:
-        class: Ibuildings\QaTools\Core\Configuration\ConfigurationDumper
-        arguments:
-            - "@qa_tools.file_handler"
-            - "%qa_tools.configuration_location%"
+    qa_tools.configuration.task_directory.factory:
+        class: Ibuildings\QaTools\Core\Configuration\TaskDirectoryFactory
 
-    qa_tools.configuration.configuration_builder.factory:
-        class: Ibuildings\QaTools\Core\Configuration\ConfigurationBuilderFactory
+    qa_tools.configuration.task_helper_set:
+        class: Ibuildings\QaTools\Core\Configuration\TaskHelperSet
         arguments:
             - "@qa_tools.template_engine"
 
-    qa_tools.configurator.run_list:
-        class: Ibuildings\QaTools\Core\Configurator\RunList
+    qa_tools.configurator.configurator_repository:
+        class: Ibuildings\QaTools\Core\Configurator\ConfiguratorRepository
 
     qa_tools.io.file.filesystem_adapter:
         class: Ibuildings\QaTools\Core\IO\File\FilesystemAdapter
@@ -53,11 +65,6 @@ services:
             - "@qa_tools.file_handler"
             - "@symfony.question_helper"
             - "@qa_tools.io.cli.console_question_factory"
-
-    qa_tools.project.project_configurator:
-        class: Ibuildings\QaTools\Core\Project\ProjectConfigurator
-        arguments:
-            - "@qa_tools.io.cli.interviewer_factory"
 
     qa_tools.templating.template_engine:
         class: Ibuildings\QaTools\Core\Templating\TemplateEngine

@@ -23,11 +23,14 @@ final class AnswerFactory
         }
 
         if (is_array($answer)) {
-            return new Choices(array_map(
-                function ($singleAnswer) {
-                    return new TextualAnswer($singleAnswer);
-                },
-            $answer));
+            return new Choices(
+                array_map(
+                    function ($singleAnswer) {
+                        return new TextualAnswer($singleAnswer);
+                    },
+                    $answer
+                )
+            );
         }
 
         return new TextualAnswer($answer);

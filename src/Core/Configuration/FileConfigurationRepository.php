@@ -3,13 +3,15 @@
 namespace Ibuildings\QaTools\Core\Configuration;
 
 use Ibuildings\QaTools\Core\Assert\Assertion;
+use Ibuildings\QaTools\Core\Interviewer\Answer\Answer;
 use Ibuildings\QaTools\Core\Interviewer\Answer\Factory\AnswerFactory;
 use Ibuildings\QaTools\Core\IO\File\FileHandler;
 use Ibuildings\QaTools\Core\Project\Project;
 use Ibuildings\QaTools\Core\Project\ProjectType;
+use Ibuildings\QaTools\Core\Project\ProjectTypeSet;
 use Zend\Json\Json;
 
-final class ConfigurationLoader
+final class FileConfigurationRepository implements ConfigurationRepository
 {
     /**
      * @var FileHandler
@@ -44,15 +46,17 @@ final class ConfigurationLoader
         Assertion::keyExists($jsonData, 'travisEnabled');
         Assertion::keyExists($jsonData, 'answers');
 
-        return new Configuration(
+        return Configuration::loaded(
             new Project(
                 $jsonData['projectName'],
                 $jsonData['configurationFilesLocation'],
-                array_map(
-                    function ($projectType) {
-                        return new ProjectType($projectType);
-                    },
-                    $jsonData['projectTypes']
+                new ProjectTypeSet(
+                    array_map(
+                        function ($projectType) {
+                            return new ProjectType($projectType);
+                        },
+                        $jsonData['projectTypes']
+                    )
                 ),
                 $jsonData['travisEnabled']
             ),
@@ -63,5 +67,34 @@ final class ConfigurationLoader
                 $jsonData['answers']
             )
         );
+    }
+
+    public function save(Configuration $configuration)
+    {
+        $project = $configuration->getProject();
+
+        $answers = array_map(
+            function (Answer $answer) {
+                return $answer->getRaw();
+            },
+            $configuration->getAnswers()
+        );
+
+        $json = Json::encode(
+            [
+                'projectName'                => $project->getName(),
+                'configurationFilesLocation' => $project->getConfigurationFilesLocation(),
+                'projectTypes'               => array_map(
+                    function (ProjectType $projectType) {
+                        return $projectType->getProjectType();
+                    },
+                    $project->getProjectTypes()->asArray()
+                ),
+                'travisEnabled'              => $project->isTravisEnabled(),
+                'answers'                    => $answers,
+            ]
+        );
+
+        $this->fileHandler->writeTo(Json::prettyPrint($json), $this->filePath);
     }
 }

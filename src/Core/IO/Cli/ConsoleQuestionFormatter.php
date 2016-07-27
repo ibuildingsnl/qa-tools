@@ -21,7 +21,7 @@ class ConsoleQuestionFormatter
     {
         $defaultAnswer = '';
         if ($question->hasDefaultAnswer()) {
-            $defaultAnswer = sprintf(self::DEFAULT_ANSWER_FORMAT, $question->getDefaultAnswer()->getAnswer());
+            $defaultAnswer = sprintf(self::DEFAULT_ANSWER_FORMAT, $question->getDefaultAnswer()->getRaw());
         }
 
         return sprintf(self::QUESTION_FORMAT . $defaultAnswer . PHP_EOL . ' > ', $question->getQuestion());

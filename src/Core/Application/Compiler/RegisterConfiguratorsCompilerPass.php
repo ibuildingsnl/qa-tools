@@ -13,7 +13,7 @@ final class RegisterConfiguratorsCompilerPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)
     {
-        $runListDefinition   = $container->findDefinition('qa_tools.run_list');
+        $configuratorRepositoryDefinition = $container->findDefinition('qa_tools.configurator_repository');
         $taggedConfigurators = $container->findTaggedServiceIds('qa_tools.tool');
 
         foreach ($taggedConfigurators as $configurator => $tags) {
@@ -26,15 +26,10 @@ final class RegisterConfiguratorsCompilerPass implements CompilerPassInterface
                 }
 
                 $projectType = new ProjectType($tag['project_type']);
-
                 $projectTypeDefinition = new Definition(ProjectType::class, [$projectType->getProjectType()]);
-                $container->setDefinition(
-                    'qa_tools.project.project_type.' . $projectType->getProjectType(),
-                    $projectTypeDefinition
-                );
 
-                $runListDefinition->addMethodCall(
-                    'registerFor',
+                $configuratorRepositoryDefinition->addMethodCall(
+                    'add',
                     [
                         new Reference($configurator),
                         $projectTypeDefinition,

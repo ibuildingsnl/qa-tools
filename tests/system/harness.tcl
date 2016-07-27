@@ -1,4 +1,16 @@
-set timeout 1
+set timeout 2
+
+# Wraps the program-under-test inside a dash shell. For some reason, PHP exit
+# codes are not read properly by expect, always returning 0. By wrapping the
+# PHP script in a shell, the exit code propagates properly. This phenomenon is
+# yet to be explained
+#
+# Arguments:
+#   args (...string) The command string for the dash shell to execute
+proc test { args } {
+    global spawn_id
+    spawn sh -c "$args"
+}
 
 # Writes a message to screen informing the contributor the expected string did
 # not appear in time. Afterwards, the script exits with status code 1.
@@ -51,16 +63,47 @@ proc answer { expected with answer } {
     }
 }
 
+# Asserts that the given string is expected to appear on screen. If it appears,
+# an empty string is sent to the QA Tools that should accept the default answer.
+# If the question does not appear within the configured time-out, the script
+# terminates with a failure.
+#
+# Example usage:
+#   accept_default_for "What's in a name?"
+# Arguments:
+#   question (string) The question that is expected to appear on screen.
+proc accept_default_for { question } {
+    expect {
+        -exact $question { send "\n" }
+        timeout { timed_out $question }
+        eof { early_eof $question }
+    }
+}
+
 # Asserts that the program will exit within the configured time-out. If it
-# doesn't, the script terminates with a failure.
-proc expect_eof {} {
+# doesn't, the script terminates with a failure. If the program exits with
+# a non-zero exit code, the expect script exits with the same exit code
+proc assert_success {} {
     puts "Waiting for command to terminate..."
+
     expect {
         eof     { puts "Test completed." }
         timeout {
             puts "Command failed to terminate in time. Perhaps there's still a question pending?"
             exit 1
         }
+    }
+
+    lassign [wait] pid spawnid os_error_flag value
+
+    if {$os_error_flag == 0} {
+        puts "Exit code: $value"
+        if {$value != 0} {
+            exit $value
+        }
+    } else {
+        puts "Operating system error: $value"
+        exit 1
     }
 }
 

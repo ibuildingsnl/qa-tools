@@ -7,7 +7,7 @@ Development
 
 To get ready for contributing to the Ibuildings QA Tools:
 
-```shell-session
+```sh-session
 $ # Check out the repository
 $ git clone git@github.com:ibuildingsnl/qa-tools-v3.git
 $ # Install the Composer dependencies
@@ -24,7 +24,7 @@ $ tools/git/pre-push-install
 The command below will build the QA Tools. For more specifics about building the
 phar, see [Phar](phar.md).
 
-```shell-session
+```sh-session
 $ make build
 ```
 

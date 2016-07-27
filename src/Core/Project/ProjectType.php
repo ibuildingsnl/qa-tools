@@ -70,6 +70,15 @@ final class ProjectType
         return new ProjectType($types[$typeKey]);
     }
 
+    /**
+     * @param ProjectType $other
+     * @return bool
+     */
+    public function equals(ProjectType $other)
+    {
+        return $this->projectType === $other->projectType;
+    }
+
     public function toHumanReadableString()
     {
         return self::$humanReadableTypes[$this->projectType];

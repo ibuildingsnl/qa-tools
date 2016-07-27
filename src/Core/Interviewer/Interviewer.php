@@ -13,12 +13,12 @@ interface Interviewer
     public function ask(QuestionInterface $question);
 
     /**
-     * @param $sentence
+     * @param string $sentence
      */
     public function say($sentence);
 
     /**
-     * @param $sentence
+     * @param string $sentence
      */
     public function warn($sentence);
 }

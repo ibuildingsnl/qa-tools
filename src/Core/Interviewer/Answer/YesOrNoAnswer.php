@@ -38,18 +38,18 @@ final class YesOrNoAnswer implements Answer
     }
 
     /**
-     * @param YesOrNoAnswer $other
+     * @param Answer $other
      * @return bool
      */
-    public function equals(YesOrNoAnswer $other)
+    public function equals(Answer $other)
     {
-        return $this->answer === $other->answer;
+        return $other instanceof self && $this->answer === $other->answer;
     }
 
     /**
      * @return string
      */
-    public function getAnswer()
+    public function getRaw()
     {
         return $this->answer;
     }

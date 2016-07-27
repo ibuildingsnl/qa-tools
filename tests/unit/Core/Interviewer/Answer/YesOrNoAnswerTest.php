@@ -41,7 +41,7 @@ class YesOrNoAnswerTest extends TestCase
     {
         $answer = YesOrNoAnswer::yes();
 
-        $actualValue = $answer->getAnswer();
+        $actualValue = $answer->getRaw();
 
         $this->assertTrue($actualValue);
     }
