@@ -9,6 +9,7 @@ you can use the resulting configurations as a base and configure it manually.
 
  * [Contributing guidelines](CONTRIBUTING.md)
  * [Development](docs/development.md)
+    * [Configuration process](docs/development/configuration-process.md)
     * [Tool development](docs/development/tool-development.md)
     * [Writing system tests](docs/development/writing-system-tests.md)
  * [Phar](docs/phar.md)
