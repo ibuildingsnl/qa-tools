@@ -4,6 +4,7 @@ namespace Ibuildings\QaTools\UnitTest\Core\Configuration;
 
 use Ibuildings\QaTools\Core\Configuration\Configuration;
 use Ibuildings\QaTools\Core\Configuration\FileConfigurationRepository;
+use Ibuildings\QaTools\Core\Configuration\QuestionId;
 use Ibuildings\QaTools\Core\Interviewer\Answer\Answer;
 use Ibuildings\QaTools\Core\Interviewer\Answer\TextualAnswer;
 use Ibuildings\QaTools\Core\IO\File\FileHandler;
@@ -89,8 +90,8 @@ JSON;
             'Project of loaded configuration doesn\'t match expectations'
         );
 
-        $this->assertTrue($configuration->hasAnswer('0772fd2dbcfb028612dab5899a7e5ed5'));
-        $this->assertInstanceOf(Answer::class, $configuration->getAnswer('0772fd2dbcfb028612dab5899a7e5ed5'));
+        $this->assertTrue($configuration->hasAnswer(new QuestionId('0772fd2dbcfb028612dab5899a7e5ed5')));
+        $this->assertInstanceOf(Answer::class, $configuration->getAnswer(new QuestionId('0772fd2dbcfb028612dab5899a7e5ed5')));
     }
 
     /** @test */
@@ -100,7 +101,7 @@ JSON;
         $configuration->reconfigureProject(
             new Project('Terran Tubers', './qa-tools', new ProjectTypeSet([new ProjectType('php.drupal8')]), false)
         );
-        $configuration->answer('4ee0c41472083a7765b17033aab88207', new TextualAnswer('Spacious Salons'));
+        $configuration->answer(new QuestionId('4ee0c41472083a7765b17033aab88207'), new TextualAnswer('Spacious Salons'));
 
         /** @var MockInterface|FileHandler $fileHandler */
         $fileHandler = Mockery::spy(FileHandler::class);

@@ -47,14 +47,12 @@ class Configuration
     }
 
     /**
-     * @param string $questionId
+     * @param QuestionId $questionId
      * @param Answer $answer
      */
-    public function answer($questionId, Answer $answer)
+    public function answer(QuestionId $questionId, Answer $answer)
     {
-        Assertion::string($questionId, 'Question ID expected to be a hash, got "%s" of type "%s"');
-
-        $this->answers[$questionId] = $answer;
+        $this->answers[$questionId->getQuestionId()] = $answer;
     }
 
     /**
@@ -66,27 +64,25 @@ class Configuration
     }
 
     /**
-     * @param string $questionId
+     * @param QuestionId $questionId
      * @return bool
      */
-    public function hasAnswer($questionId)
+    public function hasAnswer(QuestionId $questionId)
     {
-        Assertion::string($questionId, 'Question ID expected to be a hash, got "%s" of type "%s"');
-
-        return isset($this->answers[$questionId]);
+        return isset($this->answers[$questionId->getQuestionId()]);
     }
 
     /**
-     * @param string $questionId
+     * @param QuestionId $questionId
      * @return Answer
      */
-    public function getAnswer($questionId)
+    public function getAnswer(QuestionId $questionId)
     {
         if (!$this->hasAnswer($questionId)) {
             throw new RuntimeException(sprintf('No answer with id "%s" stored in configuration', $questionId));
         }
 
-        return $this->answers[$questionId];
+        return $this->answers[$questionId->getQuestionId()];
     }
 
     /**

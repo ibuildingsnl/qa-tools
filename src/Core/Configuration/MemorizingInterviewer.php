@@ -48,7 +48,7 @@ final class MemorizingInterviewer implements Interviewer
 
     public function ask(QuestionInterface $question)
     {
-        $questionIdentifier = md5($question.$this->scope);
+        $questionIdentifier = QuestionId::fromScopeAndQuestion($this->scope, $question);
 
         if ($this->configuration->hasAnswer($questionIdentifier)) {
             $previousAnswer = $this->configuration->getAnswer($questionIdentifier);

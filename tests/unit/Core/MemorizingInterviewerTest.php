@@ -4,11 +4,13 @@ namespace Ibuildings\QaTools\UnitTest\Core\Configuration;
 
 use Ibuildings\QaTools\Core\Configuration\Configuration;
 use Ibuildings\QaTools\Core\Configuration\MemorizingInterviewer;
+use Ibuildings\QaTools\Core\Configuration\QuestionId;
 use Ibuildings\QaTools\Core\Interviewer\Answer\TextualAnswer;
 use Ibuildings\QaTools\Core\Interviewer\Interviewer;
 use Ibuildings\QaTools\Core\Interviewer\Question\Question;
 use Ibuildings\QaTools\Core\Interviewer\Question\TextualQuestion;
 use Mockery;
+use Mockery\Matcher\MatcherAbstract;
 use Mockery\MockInterface;
 use PHPUnit_Framework_TestCase as TestCase;
 
@@ -23,6 +25,7 @@ class MemorizingInterviewerTest extends TestCase
      */
     public function passes_questions_to_interviewer_if_no_previous_answer()
     {
+        $scope = 'A\Class\Scope';
         $question = new TextualQuestion('A question');
         $answer = new TextualAnswer('An answer');
 
@@ -34,10 +37,14 @@ class MemorizingInterviewerTest extends TestCase
 
         /** @var MockInterface|Configuration $configuration */
         $configuration = Mockery::mock(Configuration::class);
-        $configuration->shouldReceive('hasAnswer')->with(Mockery::type('string'))->andReturn(false);
+        $configuration
+            ->shouldReceive('hasAnswer')
+            ->with(self::voEquals(QuestionId::fromScopeAndQuestion($scope, $question)))
+            ->andReturn(false);
         $configuration->shouldReceive('answer');
 
         $memorizingInterviewer = new MemorizingInterviewer($mockInterviewer, $configuration);
+        $memorizingInterviewer->setScope($scope);
         $memorizingInterviewer->ask($question);
     }
 
@@ -55,15 +62,19 @@ class MemorizingInterviewerTest extends TestCase
         $mockInterviewer = Mockery::mock(Interviewer::class);
         $mockInterviewer
             ->shouldReceive('ask')
-            ->with(Mockery::on(function (Question $question) use ($sameQuestionWithSuggestedDefaultAnswer) {
-                return $question->equals($sameQuestionWithSuggestedDefaultAnswer);
-            }))
+            ->with(self::voEquals($sameQuestionWithSuggestedDefaultAnswer))
             ->andReturn($newAnswer);
 
         /** @var MockInterface|Configuration $configuration */
         $configuration = Mockery::mock(Configuration::class);
-        $configuration->shouldReceive('hasAnswer')->with(Mockery::type('string'))->andReturn(true);
-        $configuration->shouldReceive('getAnswer')->with(Mockery::type('string'))->andReturn($suggestion);
+        $configuration
+            ->shouldReceive('hasAnswer')
+            ->with(self::voEquals(QuestionId::fromScopeAndQuestion($scope, $question)))
+            ->andReturn(true);
+        $configuration
+            ->shouldReceive('getAnswer')
+            ->with(self::voEquals(QuestionId::fromScopeAndQuestion($scope, $question)))
+            ->andReturn($suggestion);
         $configuration->shouldReceive('answer');
 
         $memorizingInterviewer = new MemorizingInterviewer($mockInterviewer, $configuration);
@@ -89,8 +100,14 @@ class MemorizingInterviewerTest extends TestCase
 
         /** @var MockInterface|Configuration $configuration */
         $configuration = Mockery::mock(Configuration::class);
-        $configuration->shouldReceive('hasAnswer')->with(Mockery::type('string'))->andReturn(false);
-        $configuration->shouldReceive('answer')->with(Mockery::type('string'), $answer)->once();
+        $configuration
+            ->shouldReceive('hasAnswer')
+            ->with(self::voEquals(QuestionId::fromScopeAndQuestion($scope, $question)))
+            ->andReturn(false);
+        $configuration
+            ->shouldReceive('answer')
+            ->with(self::voEquals(QuestionId::fromScopeAndQuestion($scope, $question)), $answer)
+            ->once();
 
         $memorizingInterviewer = new MemorizingInterviewer($mockInterviewer, $configuration);
         $memorizingInterviewer->setScope($scope);
@@ -134,5 +151,16 @@ class MemorizingInterviewerTest extends TestCase
 
         $memorizingInterviewer = new MemorizingInterviewer($mockInterviewer, $configuration);
         $memorizingInterviewer->warn($message);
+    }
+
+    /**
+     * @param object $expected
+     * @return MatcherAbstract
+     */
+    public static function voEquals($expected)
+    {
+        return Mockery::on(function ($actual) use ($expected) {
+            return $actual->equals($expected);
+        });
     }
 }
