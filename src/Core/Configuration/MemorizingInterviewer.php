@@ -70,12 +70,4 @@ final class MemorizingInterviewer implements Interviewer
     {
         $this->interviewer->warn($sentence);
     }
-
-    /**
-     * @return Answer[]
-     */
-    public function getGivenAnswers()
-    {
-        return $this->givenAnswers;
-    }
 }
