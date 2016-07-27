@@ -3,6 +3,7 @@
 namespace Ibuildings\QaTools\Core\Interviewer\Question;
 
 use Ibuildings\QaTools\Core\Assert\Assertion;
+use Ibuildings\QaTools\Core\Interviewer\Answer\Answer;
 use Ibuildings\QaTools\Core\Interviewer\Answer\NoDefaultAnswer;
 use Ibuildings\QaTools\Core\Interviewer\Answer\YesOrNoAnswer;
 
@@ -44,26 +45,16 @@ final class YesOrNoQuestion implements Question
         return !$this->defaultAnswer instanceof NoDefaultAnswer;
     }
 
-    /**
-     * @param YesOrNoAnswer $defaultAnswer
-     * @return YesOrNoQuestion
-     */
-    public function withDefaultAnswer($defaultAnswer)
+    public function withDefaultAnswer(Answer $answer)
     {
-        return new YesOrNoQuestion($this->question, $defaultAnswer);
+        return new YesOrNoQuestion($this->question, $answer);
     }
 
-    /**
-     * @return string $question
-     */
     public function getQuestion()
     {
         return $this->question;
     }
 
-    /**
-     * @return YesOrNoAnswer|NoDefaultAnswer $answer
-     */
     public function getDefaultAnswer()
     {
         return $this->defaultAnswer;

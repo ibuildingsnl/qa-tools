@@ -3,6 +3,7 @@
 namespace Ibuildings\QaTools\Core\Interviewer\Question;
 
 use Ibuildings\QaTools\Core\Assert\Assertion;
+use Ibuildings\QaTools\Core\Interviewer\Answer\Answer;
 use Ibuildings\QaTools\Core\Interviewer\Answer\Choices;
 use Ibuildings\QaTools\Core\Interviewer\Answer\NoDefaultAnswer;
 use Ibuildings\QaTools\Core\Interviewer\Answer\TextualAnswer;
@@ -47,17 +48,11 @@ final class MultipleChoiceQuestion implements Question
         && $this->possibleChoices->equals($other->possibleChoices);
     }
 
-    /**
-     * @return boolean
-     */
     public function hasDefaultAnswer()
     {
         return !$this->defaultAnswer instanceof NoDefaultAnswer;
     }
 
-    /**
-     * @return string $question
-     */
     public function getQuestion()
     {
         return $this->question;
@@ -71,21 +66,14 @@ final class MultipleChoiceQuestion implements Question
         return $this->possibleChoices;
     }
 
-    /**
-     * @return TextualAnswer
-     */
     public function getDefaultAnswer()
     {
         return $this->defaultAnswer;
     }
 
-    /**
-     * @param TextualAnswer $defaultAnswer
-     * @return MultipleChoiceQuestion
-     */
-    public function withDefaultAnswer($defaultAnswer)
+    public function withDefaultAnswer(Answer $answer)
     {
-        return new MultipleChoiceQuestion($this->question, $this->possibleChoices, $defaultAnswer);
+        return new MultipleChoiceQuestion($this->question, $this->possibleChoices, $answer);
     }
 
     /**

@@ -2,13 +2,30 @@
 
 namespace Ibuildings\QaTools\Core\Interviewer\Question;
 
+use Ibuildings\QaTools\Core\Interviewer\Answer\Answer;
+
 interface Question
 {
     /**
-     * @param mixed $answer
+     * @param Answer $answer
      * @return static
      */
-    public function withDefaultAnswer($answer);
+    public function withDefaultAnswer(Answer $answer);
+
+    /**
+     * @return bool
+     */
+    public function hasDefaultAnswer();
+
+    /**
+     * @return Answer
+     */
+    public function getDefaultAnswer();
+
+    /**
+     * @return string $question
+     */
+    public function getQuestion();
 
     public function __toString();
 }
