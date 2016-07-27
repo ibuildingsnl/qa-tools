@@ -4,12 +4,15 @@ use Behat\Behat\Context\Context;
 use Behat\Behat\Context\SnippetAcceptingContext;
 use Fake\AutomatedResponseInterviewer;
 use Fake\InMemoryConfigurationRepository;
+use Ibuildings\QaTools\Core\Configuration\Configuration;
 use Ibuildings\QaTools\Core\Configuration\ProjectConfigurator;
+use Ibuildings\QaTools\Core\Configuration\QuestionId;
 use Ibuildings\QaTools\Core\Configuration\RunListConfigurator;
 use Ibuildings\QaTools\Core\Configuration\TaskDirectoryFactory;
 use Ibuildings\QaTools\Core\Configuration\TaskHelperSet;
 use Ibuildings\QaTools\Core\Configurator\ConfiguratorRepository;
 use Ibuildings\QaTools\Core\Interviewer\Answer\Factory\AnswerFactory;
+use Ibuildings\QaTools\Core\Interviewer\Question;
 use Ibuildings\QaTools\Core\Project\Project;
 use Ibuildings\QaTools\Core\Project\ProjectType;
 use Ibuildings\QaTools\Core\Project\ProjectTypeSet;
@@ -88,7 +91,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
         $this->configuredConfigurationFilesLocation = $directory;
         $this->interviewer->recordAnswer(
             'Where would you like to store the generated files?',
-            AnswerFactory::createFrom('./')
+            AnswerFactory::createFrom($directory)
         );
     }
 
@@ -116,14 +119,14 @@ class FeatureContext implements Context, SnippetAcceptingContext
     }
 
     /**
-     * @When I enable Travis
+     * @When I disable Travis
      */
-    public function iEnableTravis()
+    public function iDisableTravis()
     {
-        $this->configuredTravisEnabled = true;
+        $this->configuredTravisEnabled = false;
         $this->interviewer->recordAnswer(
             'Would you like to integrate Travis in your project?',
-            AnswerFactory::createFrom(true)
+            AnswerFactory::createFrom(false)
         );
     }
 
@@ -144,9 +147,99 @@ class FeatureContext implements Context, SnippetAcceptingContext
         $configuration = $this->configurationRepository->load();
         $configuredProject = $configuration->getProject();
 
-        Assert::assertTrue(
-            $configuredProject->equals($expectedProject),
-            'Configured project is not according to expectations'
+        if (!$configuredProject->equals($expectedProject)) {
+            // Display diff.
+            Assert::assertEquals(
+                $expectedProject,
+                $configuredProject,
+                'Configured project is not according to expectations'
+            );
+        }
+    }
+
+    /**
+     * @Given the Trading Service project
+     */
+    public function theTradingServiceProject()
+    {
+        $projectNameQuestionId = QuestionId::fromScopeAndQuestion(
+            ProjectConfigurator::class,
+            Question::create("What is the project's name?")
+        )->getQuestionId();
+        $projectTypeQuestionId = QuestionId::fromScopeAndQuestion(
+            ProjectConfigurator::class,
+            Question::create('What type of project would you like to configure?')
+        )->getQuestionId();
+        $phpProjectTypeQuestionId = QuestionId::fromScopeAndQuestion(
+            ProjectConfigurator::class,
+            Question::create('What type of PHP project would you like to configure?')
+        )->getQuestionId();
+        $travisEnabledQuestionId = QuestionId::fromScopeAndQuestion(
+            ProjectConfigurator::class,
+            Question::createYesOrNo('Would you like to integrate Travis in your project?')
+        )->getQuestionId();
+
+        $this->configurationRepository = new InMemoryConfigurationRepository();
+        $this->configurationRepository->save(
+            Configuration::loaded(
+                new Project(
+                    'Trading Service',
+                    './',
+                    new ProjectTypeSet([new ProjectType(ProjectType::TYPE_PHP_DRUPAL_7)]),
+                    false
+                ),
+                [
+                    $projectNameQuestionId    => AnswerFactory::createFrom('Trading Service'),
+                    $projectTypeQuestionId    => AnswerFactory::createFrom('PHP'),
+                    $phpProjectTypeQuestionId => AnswerFactory::createFrom('Drupal 7'),
+                    $travisEnabledQuestionId  => AnswerFactory::createFrom(false),
+                ]
+            )
         );
+
+        $projectConfigurator = new ProjectConfigurator();
+        $taskHelperSet = Mockery::mock(TaskHelperSet::class);
+        $container = Mockery::mock(ContainerInterface::class);
+        $runListConfigurator = new RunListConfigurator($taskHelperSet, $container);
+        $this->configuratorRepository = new ConfiguratorRepository();
+        $taskDirectoryFactory = new TaskDirectoryFactory();
+
+        $this->interviewer = new AutomatedResponseInterviewer();
+
+        $this->configurationService = new ConfigurationService(
+            $this->configurationRepository,
+            $projectConfigurator,
+            $runListConfigurator,
+            $this->configuratorRepository,
+            $taskDirectoryFactory
+        );
+    }
+
+    /**
+     * @When I keep the project name
+     */
+    public function iKeepTheProjectName()
+    {
+        $this->configuredProjectName = $this->configurationRepository->load()->getProject()->getName();
+        $this->interviewer->respondWithDefaultAnswerTo("What is the project's name?");
+    }
+
+    /**
+     * @When I keep the project types
+     */
+    public function iKeepTheProjectTypes()
+    {
+        $this->configuredProjectTypes = $this->configurationRepository->load()->getProject()->getProjectTypes();
+        $this->interviewer->respondWithDefaultAnswerTo('What type of project would you like to configure?');
+        $this->interviewer->respondWithDefaultAnswerTo('What type of PHP project would you like to configure?');
+    }
+
+    /**
+     * @When I keep Travis disabled
+     */
+    public function iKeepTravisDisabled()
+    {
+        $this->configuredTravisEnabled = $this->configurationRepository->load()->getProject()->isTravisEnabled();
+        $this->interviewer->respondWithDefaultAnswerTo('Would you like to integrate Travis in your project?');
     }
 }

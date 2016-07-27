@@ -46,7 +46,8 @@ class Project
     {
         return $this->name === $project->name
             && $this->configurationFilesLocation === $project->configurationFilesLocation
-            && $this->projectTypes->equals($project->projectTypes);
+            && $this->projectTypes->equals($project->projectTypes)
+            && $this->travisEnabled === $project->travisEnabled;
     }
 
     /**
