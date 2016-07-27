@@ -42,7 +42,7 @@ test ./qa-tools configure --no-ansi
 
 For each interactive question, state the expected question text, and the answer
 `expect` should send in response. The expectation times out after a
-[hard-coded][expectation-harness] 1 second.
+[hard-coded][expectation-harness] 2 seconds.
 
 ```tcl
 answer "What is the project's name?" with "Wobbly Widdershins"
@@ -57,6 +57,15 @@ should_see "Reticulating splines..."
 `answer` and `should_see` are procedures defined in the
 [expectation harness][expectation-harness] so that expressive dialogue
 expectations can be written.
+
+Finally, you can assert that the program will end and will exit with a zero
+exit code. If the program does not end within the configured time-out the expect
+script exits with exit code 1. When the program exits with a non-zero exit code,
+the expect script exits with the same exit code.
+
+```tcl
+assert_success
+```
 
 [wiki-tcl]: https://en.wikipedia.org/wiki/Tcl
 [expectation-harness]: ../../tests/system/harness.tcl
