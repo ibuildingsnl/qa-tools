@@ -1,6 +1,6 @@
 <?php
 
-namespace Ibuildings\QaTools\UnitTest\Core\IO\File;
+namespace Ibuildings\QaTools\IntegrationTest\Core\IO\File;
 
 use Exception;
 use Ibuildings\QaTools\Core\Exception\InvalidArgumentException;
