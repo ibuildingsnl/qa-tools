@@ -20,7 +20,7 @@ use Ibuildings\QaTools\Core\Interviewer\Question\QuestionFactory;
 use Ibuildings\QaTools\Core\Project\Project;
 use Ibuildings\QaTools\Core\Project\ProjectType;
 use Ibuildings\QaTools\Core\Project\ProjectTypeSet;
-use Ibuildings\QaTools\Core\Task\ComposerPackageIsRequiredSpecification;
+use Ibuildings\QaTools\Core\Task\Specification\ComposerPackageIsRequiredSpecification;
 use Ibuildings\QaTools\Tool\PhpMd\Configurator\PhpMdSf2Configurator;
 use Mockery\MockInterface;
 use PHPUnit_Framework_Assert as Assert;

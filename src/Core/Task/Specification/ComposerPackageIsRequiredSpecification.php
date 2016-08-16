@@ -1,9 +1,11 @@
 <?php
 
-namespace Ibuildings\QaTools\Core\Task;
+namespace Ibuildings\QaTools\Core\Task\Specification;
 
 use Ibuildings\QaTools\Core\Assert\Assertion;
 use Ibuildings\QaTools\Core\Task\Composer\Package;
+use Ibuildings\QaTools\Core\Task\RequireComposerPackagesTask;
+use Ibuildings\QaTools\Core\Task\Task;
 
 final class ComposerPackageIsRequiredSpecification implements Specification
 {

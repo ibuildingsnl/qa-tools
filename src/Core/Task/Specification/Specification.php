@@ -1,6 +1,8 @@
 <?php
 
-namespace Ibuildings\QaTools\Core\Task;
+namespace Ibuildings\QaTools\Core\Task\Specification;
+
+use Ibuildings\QaTools\Core\Task\Task;
 
 interface Specification
 {

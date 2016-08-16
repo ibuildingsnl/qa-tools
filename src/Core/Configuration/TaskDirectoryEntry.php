@@ -3,7 +3,7 @@
 namespace Ibuildings\QaTools\Core\Configuration;
 
 use Ibuildings\QaTools\Core\Assert\Assertion;
-use Ibuildings\QaTools\Core\Task\Specification;
+use Ibuildings\QaTools\Core\Task\Specification\Specification;
 use Ibuildings\QaTools\Core\Task\Task;
 
 final class TaskDirectoryEntry

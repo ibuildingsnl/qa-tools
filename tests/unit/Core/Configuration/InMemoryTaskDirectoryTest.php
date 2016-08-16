@@ -4,8 +4,8 @@ namespace Ibuildings\QaTools\UnitTest\Core\Configuration;
 
 use Ibuildings\QaTools\Core\Configuration\InMemoryTaskDirectory;
 use Ibuildings\QaTools\Core\Project\Project;
-use Ibuildings\QaTools\Core\Task\AnySpecification;
-use Ibuildings\QaTools\Core\Task\EqualsSpecification;
+use Ibuildings\QaTools\Core\Task\Specification\AnySpecification;
+use Ibuildings\QaTools\Core\Task\Specification\EqualsSpecification;
 use Ibuildings\QaTools\Core\Task\TaskList;
 use Ibuildings\QaTools\Tool\PhpMd\PhpMd;
 use Ibuildings\QaTools\UnitTest\Core\Task\FakeTask;
