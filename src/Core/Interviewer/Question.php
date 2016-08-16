@@ -32,7 +32,7 @@ final class Question
 
     /**
      * @param string $question
-     * @param null|string $defaultAnswer
+     * @param bool|null $defaultAnswer When boolean, one of the `YesOrNoAnswer::*` constants.
      * @return YesOrNoQuestion
      */
     public static function createYesOrNo($question, $defaultAnswer = null)
