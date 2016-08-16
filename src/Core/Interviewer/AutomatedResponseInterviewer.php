@@ -1,11 +1,10 @@
 <?php
 
-namespace Fake;
+namespace Ibuildings\QaTools\Core\Interviewer;
 
+use Ibuildings\QaTools\Core\Exception\RuntimeException;
 use Ibuildings\QaTools\Core\Interviewer\Answer\Answer;
-use Ibuildings\QaTools\Core\Interviewer\Interviewer;
 use Ibuildings\QaTools\Core\Interviewer\Question\Question;
-use RuntimeException;
 
 final class AutomatedResponseInterviewer implements Interviewer
 {

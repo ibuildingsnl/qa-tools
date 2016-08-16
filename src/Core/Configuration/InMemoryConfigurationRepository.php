@@ -1,10 +1,8 @@
 <?php
 
-namespace Fake;
+namespace Ibuildings\QaTools\Core\Configuration;
 
-use Ibuildings\QaTools\Core\Configuration\Configuration;
-use Ibuildings\QaTools\Core\Configuration\ConfigurationRepository;
-use RuntimeException;
+use Ibuildings\QaTools\Core\Exception\RuntimeException;
 
 final class InMemoryConfigurationRepository implements ConfigurationRepository
 {
@@ -21,7 +19,7 @@ final class InMemoryConfigurationRepository implements ConfigurationRepository
     public function load()
     {
         if (!$this->configurationExists()) {
-            throw new RuntimeException('No configuration stored');
+            throw new RuntimeException('No configuration stored in memory');
         }
 
         return $this->storedConfiguration;

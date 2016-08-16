@@ -2,10 +2,9 @@
 
 use Behat\Behat\Context\Context;
 use Behat\Behat\Context\SnippetAcceptingContext;
-use Fake\AutomatedResponseInterviewer;
-use Fake\InMemoryConfigurationRepository;
 use Ibuildings\QaTools\Core\Configuration\Configuration;
 use Ibuildings\QaTools\Core\Configuration\ConfigurationService;
+use Ibuildings\QaTools\Core\Configuration\InMemoryConfigurationRepository;
 use Ibuildings\QaTools\Core\Configuration\InMemoryTaskDirectoryFactory;
 use Ibuildings\QaTools\Core\Configuration\MemorizingInterviewer;
 use Ibuildings\QaTools\Core\Configuration\ProjectConfigurator;
@@ -16,6 +15,7 @@ use Ibuildings\QaTools\Core\Configuration\TaskHelperSet;
 use Ibuildings\QaTools\Core\Configurator\ConfiguratorRepository;
 use Ibuildings\QaTools\Core\Execution\TaskDirectoryExecutor;
 use Ibuildings\QaTools\Core\Interviewer\Answer\AnswerFactory;
+use Ibuildings\QaTools\Core\Interviewer\AutomatedResponseInterviewer;
 use Ibuildings\QaTools\Core\Interviewer\Question\QuestionFactory;
 use Ibuildings\QaTools\Core\Project\Project;
 use Ibuildings\QaTools\Core\Project\ProjectType;
