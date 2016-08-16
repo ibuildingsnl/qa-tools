@@ -40,7 +40,7 @@ phpunit-integration:
 phpunit-system:
     vendor/bin/phpunit -c . --testsuite system
 behat-acceptance:
-    vendor/bin/behat --append-snippets
+    vendor/bin/behat
 phpcs:
     # Blank line is needed to provide STDIN input to phpcs when phpcs is called from the Git pre-push hook context
     # See https://github.com/squizlabs/PHP_CodeSniffer/issues/993
