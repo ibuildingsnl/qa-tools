@@ -4,7 +4,7 @@ namespace Ibuildings\QaTools\UnitTest\Core\Configuration;
 
 use Ibuildings\QaTools\Core\Configuration\TaskDirectory;
 use Ibuildings\QaTools\Core\Project\Project;
-use Ibuildings\QaTools\Core\Task\Runner\TaskList;
+use Ibuildings\QaTools\Core\Task\TaskList;
 use Ibuildings\QaTools\UnitTest\Core\Task\FakeTask;
 use Mockery;
 use PHPUnit_Framework_TestCase as TestCase;

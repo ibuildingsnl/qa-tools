@@ -1,11 +1,10 @@
 <?php
 
-namespace Ibuildings\QaTools\Core\Task\Runner;
+namespace Ibuildings\QaTools\Core\Task;
 
 use ArrayIterator;
 use Countable;
 use Ibuildings\QaTools\Core\Assert\Assertion;
-use Ibuildings\QaTools\Core\Task\Task;
 use IteratorAggregate;
 
 final class TaskList implements IteratorAggregate, Countable
@@ -76,6 +75,25 @@ final class TaskList implements IteratorAggregate, Countable
                 )
             )
         );
+    }
+
+    /**
+     * @param TaskList $other
+     * @return bool
+     */
+    public function equals(TaskList $other)
+    {
+        if (count($this->tasks) !== count($other->tasks)) {
+            return false;
+        }
+
+        foreach ($this->tasks as $i => $task) {
+            if (!$other->tasks[$i]->equals($task)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public function count()
