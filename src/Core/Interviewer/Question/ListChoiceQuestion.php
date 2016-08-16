@@ -9,6 +9,10 @@ use Ibuildings\QaTools\Core\Interviewer\Answer\Choices;
 use Ibuildings\QaTools\Core\Interviewer\Answer\NoDefaultAnswer;
 use Ibuildings\QaTools\Core\Interviewer\Answer\TextualAnswer;
 
+/**
+ * Describes a list-choice question, where can give multiple answers. The
+ * multiple-choice question is similar, but requires one to give a single answer.
+ */
 final class ListChoiceQuestion implements Question
 {
     /**
