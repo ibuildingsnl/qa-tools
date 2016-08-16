@@ -1,9 +1,9 @@
 <?php
 
-namespace Ibuildings\QaTools\UnitTest\Core\Interviewer\Answer\Factory;
+namespace Ibuildings\QaTools\UnitTest\Core\Interviewer\Answer;
 
+use Ibuildings\QaTools\Core\Interviewer\Answer\AnswerFactory;
 use Ibuildings\QaTools\Core\Interviewer\Answer\Choices;
-use Ibuildings\QaTools\Core\Interviewer\Answer\Factory\AnswerFactory;
 use Ibuildings\QaTools\Core\Interviewer\Answer\TextualAnswer;
 use Ibuildings\QaTools\Core\Interviewer\Answer\YesOrNoAnswer;
 use PHPUnit_Framework_TestCase as TestCase;

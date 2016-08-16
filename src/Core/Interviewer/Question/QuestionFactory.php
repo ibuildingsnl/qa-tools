@@ -1,17 +1,13 @@
 <?php
 
-namespace Ibuildings\QaTools\Core\Interviewer;
+namespace Ibuildings\QaTools\Core\Interviewer\Question;
 
 use Ibuildings\QaTools\Core\Assert\Assertion;
 use Ibuildings\QaTools\Core\Interviewer\Answer\Choices;
 use Ibuildings\QaTools\Core\Interviewer\Answer\TextualAnswer;
 use Ibuildings\QaTools\Core\Interviewer\Answer\YesOrNoAnswer;
-use Ibuildings\QaTools\Core\Interviewer\Question\ListChoiceQuestion;
-use Ibuildings\QaTools\Core\Interviewer\Question\MultipleChoiceQuestion;
-use Ibuildings\QaTools\Core\Interviewer\Question\TextualQuestion;
-use Ibuildings\QaTools\Core\Interviewer\Question\YesOrNoQuestion;
 
-final class Question
+final class QuestionFactory
 {
     /**
      * @param string $question

@@ -15,8 +15,8 @@ use Ibuildings\QaTools\Core\Configuration\TaskDirectory;
 use Ibuildings\QaTools\Core\Configuration\TaskHelperSet;
 use Ibuildings\QaTools\Core\Configurator\ConfiguratorRepository;
 use Ibuildings\QaTools\Core\Execution\TaskDirectoryExecutor;
-use Ibuildings\QaTools\Core\Interviewer\Answer\Factory\AnswerFactory;
-use Ibuildings\QaTools\Core\Interviewer\Question;
+use Ibuildings\QaTools\Core\Interviewer\Answer\AnswerFactory;
+use Ibuildings\QaTools\Core\Interviewer\Question\QuestionFactory;
 use Ibuildings\QaTools\Core\Project\Project;
 use Ibuildings\QaTools\Core\Project\ProjectType;
 use Ibuildings\QaTools\Core\Project\ProjectTypeSet;
@@ -176,19 +176,19 @@ class FeatureContext implements Context, SnippetAcceptingContext
     {
         $projectNameQuestionId = QuestionId::fromScopeAndQuestion(
             ProjectConfigurator::class,
-            Question::create("What is the project's name?")
+            QuestionFactory::create("What is the project's name?")
         )->getQuestionId();
         $projectTypeQuestionId = QuestionId::fromScopeAndQuestion(
             ProjectConfigurator::class,
-            Question::create('What type of project would you like to configure?')
+            QuestionFactory::create('What type of project would you like to configure?')
         )->getQuestionId();
         $phpProjectTypeQuestionId = QuestionId::fromScopeAndQuestion(
             ProjectConfigurator::class,
-            Question::create('What type of PHP project would you like to configure?')
+            QuestionFactory::create('What type of PHP project would you like to configure?')
         )->getQuestionId();
         $travisEnabledQuestionId = QuestionId::fromScopeAndQuestion(
             ProjectConfigurator::class,
-            Question::createYesOrNo('Would you like to integrate Travis in your project?')
+            QuestionFactory::createYesOrNo('Would you like to integrate Travis in your project?')
         )->getQuestionId();
 
         $this->configurationRepository = new InMemoryConfigurationRepository();

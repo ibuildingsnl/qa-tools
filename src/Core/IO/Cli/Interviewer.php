@@ -3,7 +3,7 @@
 namespace Ibuildings\QaTools\Core\IO\Cli;
 
 use Ibuildings\QaTools\Core\Assert\Assertion;
-use Ibuildings\QaTools\Core\Interviewer\Answer\Factory\AnswerFactory;
+use Ibuildings\QaTools\Core\Interviewer\Answer\AnswerFactory;
 use Ibuildings\QaTools\Core\Interviewer\Interviewer as InterviewerInterface;
 use Ibuildings\QaTools\Core\Interviewer\Question\Question;
 use Symfony\Component\Console\Helper\QuestionHelper;

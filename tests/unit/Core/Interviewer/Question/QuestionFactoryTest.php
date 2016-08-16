@@ -1,14 +1,14 @@
 <?php
 
-namespace Ibuildings\QaTools\UnitTest\Core\Interviewer;
+namespace Ibuildings\QaTools\UnitTest\Core\Interviewer\Question;
 
 use Ibuildings\QaTools\Core\Exception\InvalidArgumentException;
 use Ibuildings\QaTools\Core\Interviewer\Answer\Choices;
 use Ibuildings\QaTools\Core\Interviewer\Answer\TextualAnswer;
 use Ibuildings\QaTools\Core\Interviewer\Answer\YesOrNoAnswer;
-use Ibuildings\QaTools\Core\Interviewer\Question;
 use Ibuildings\QaTools\Core\Interviewer\Question\ListChoiceQuestion;
 use Ibuildings\QaTools\Core\Interviewer\Question\MultipleChoiceQuestion;
+use Ibuildings\QaTools\Core\Interviewer\Question\QuestionFactory;
 use Ibuildings\QaTools\Core\Interviewer\Question\TextualQuestion;
 use Ibuildings\QaTools\Core\Interviewer\Question\YesOrNoQuestion;
 use PHPUnit_Framework_TestCase as TestCase;
@@ -18,7 +18,7 @@ use PHPUnit_Framework_TestCase as TestCase;
  * @group Conversation
  * @group Question
  */
-class QuestionTest extends TestCase
+class QuestionFactoryTest extends TestCase
 {
     /**
      * @test
@@ -29,7 +29,7 @@ class QuestionTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
-        Question::create($notNonEmptyString);
+        QuestionFactory::create($notNonEmptyString);
     }
 
     /**
@@ -45,11 +45,9 @@ class QuestionTest extends TestCase
 
         $this->expectException(InvalidArgumentException::class);
 
-        Question::create('Question', $nonNullOrNotNonEmptyString);
+        QuestionFactory::create('QuestionFactory', $nonNullOrNotNonEmptyString);
     }
 
-
-    
     /**
      * @test
      */
@@ -57,11 +55,11 @@ class QuestionTest extends TestCase
     {
         $expectedQuestion = new TextualQuestion('A question?');
 
-        $actualQuestion = Question::create('A question?');
+        $actualQuestion = QuestionFactory::create('A question?');
 
         $this->assertEquals($expectedQuestion, $actualQuestion);
     }
-    
+
     /**
      * @test
      */
@@ -69,7 +67,7 @@ class QuestionTest extends TestCase
     {
         $expectedQuestion = new TextualQuestion('A question?', new TextualAnswer('An answer'));
 
-        $actualQuestion = Question::create('A question?', 'An answer');
+        $actualQuestion = QuestionFactory::create('A question?', 'An answer');
 
         $this->assertEquals($expectedQuestion, $actualQuestion);
     }
@@ -83,7 +81,7 @@ class QuestionTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
-        Question::createYesOrNo($notNonEmptyString);
+        QuestionFactory::createYesOrNo($notNonEmptyString);
     }
 
     /**
@@ -99,7 +97,7 @@ class QuestionTest extends TestCase
 
         $this->expectException(InvalidArgumentException::class);
 
-        Question::createYesOrNo('A question?', $notNullOrBoolean);
+        QuestionFactory::createYesOrNo('A question?', $notNullOrBoolean);
     }
 
     /**
@@ -109,11 +107,11 @@ class QuestionTest extends TestCase
     {
         $expectedQuestion = new YesOrNoQuestion('A question?');
 
-        $actualQuestion = Question::createYesOrNo('A question?');
+        $actualQuestion = QuestionFactory::createYesOrNo('A question?');
 
         $this->assertEquals($expectedQuestion, $actualQuestion);
     }
-    
+
     /**
      * @test
      */
@@ -121,7 +119,7 @@ class QuestionTest extends TestCase
     {
         $expectedQuestion = new YesOrNoQuestion('A question?', YesOrNoAnswer::yes());
 
-        $actualQuestion = Question::createYesOrNo('A question?', YesOrNoAnswer::YES);
+        $actualQuestion = QuestionFactory::createYesOrNo('A question?', YesOrNoAnswer::YES);
 
         $this->assertEquals($expectedQuestion, $actualQuestion);
     }
@@ -133,7 +131,7 @@ class QuestionTest extends TestCase
     {
         $expectedQuestion = new YesOrNoQuestion('A question?', YesOrNoAnswer::no());
 
-        $actualQuestion = Question::createYesOrNo('A question?', YesOrNoAnswer::NO);
+        $actualQuestion = QuestionFactory::createYesOrNo('A question?', YesOrNoAnswer::NO);
 
         $this->assertEquals($expectedQuestion, $actualQuestion);
     }
@@ -147,7 +145,7 @@ class QuestionTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
-        Question::createMultipleChoice($notNonEmptyString, ['An answer']);
+        QuestionFactory::createMultipleChoice($notNonEmptyString, ['An answer']);
     }
 
     /**
@@ -159,7 +157,7 @@ class QuestionTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
-        Question::createMultipleChoice('A question', [$notNonEmptyString]);
+        QuestionFactory::createMultipleChoice('A question', [$notNonEmptyString]);
     }
 
     /**
@@ -175,9 +173,8 @@ class QuestionTest extends TestCase
 
         $this->expectException(InvalidArgumentException::class);
 
-        Question::createMultipleChoice('Question', ['An answer'], $nonNullOrNotNonEmptyString);
+        QuestionFactory::createMultipleChoice('QuestionFactory', ['An answer'], $nonNullOrNotNonEmptyString);
     }
-
 
     /**
      * @test
@@ -192,7 +189,7 @@ class QuestionTest extends TestCase
             ])
         );
 
-        $actualQuestion = Question::createMultipleChoice('A question', ['An answer', 'Another answer']);
+        $actualQuestion = QuestionFactory::createMultipleChoice('A question', ['An answer', 'Another answer']);
 
         $this->assertEquals($expectedQuestion, $actualQuestion);
     }
@@ -211,7 +208,7 @@ class QuestionTest extends TestCase
             new TextualAnswer('An answer')
         );
 
-        $actualQuestion = Question::createMultipleChoice('A question', ['An answer', 'Another answer'], 'An answer');
+        $actualQuestion = QuestionFactory::createMultipleChoice('A question', ['An answer', 'Another answer'], 'An answer');
 
         $this->assertEquals($expectedQuestion, $actualQuestion);
     }
@@ -225,7 +222,7 @@ class QuestionTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
-        Question::createListChoice($notNonEmptyString, ['An answer']);
+        QuestionFactory::createListChoice($notNonEmptyString, ['An answer']);
     }
 
     /**
@@ -237,7 +234,7 @@ class QuestionTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
-        Question::createListChoice('A question', [$notNonEmptyString]);
+        QuestionFactory::createListChoice('A question', [$notNonEmptyString]);
     }
 
     /**
@@ -249,7 +246,7 @@ class QuestionTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
-        Question::createListChoice('A question', ['An answer'], [$notNonEmptyString]);
+        QuestionFactory::createListChoice('A question', ['An answer'], [$notNonEmptyString]);
     }
 
     /**
@@ -268,11 +265,11 @@ class QuestionTest extends TestCase
             ])
         );
 
-        $actualQuestion = Question::createListChoice('A question', ['An answer', 'Another answer'], ['An answer']);
+        $actualQuestion = QuestionFactory::createListChoice('A question', ['An answer', 'Another answer'], ['An answer']);
 
         $this->assertEquals($expectedQuestion, $actualQuestion);
     }
-    
+
     /**
      * @test
      */
@@ -286,7 +283,7 @@ class QuestionTest extends TestCase
             ])
         );
 
-        $actualQuestion = Question::createListChoice('A question', ['An answer', 'Another answer']);
+        $actualQuestion = QuestionFactory::createListChoice('A question', ['An answer', 'Another answer']);
 
         $this->assertEquals($expectedQuestion, $actualQuestion);
     }

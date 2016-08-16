@@ -1,10 +1,6 @@
 <?php
 
-namespace Ibuildings\QaTools\Core\Interviewer\Answer\Factory;
-
-use Ibuildings\QaTools\Core\Interviewer\Answer\Choices;
-use Ibuildings\QaTools\Core\Interviewer\Answer\TextualAnswer;
-use Ibuildings\QaTools\Core\Interviewer\Answer\YesOrNoAnswer;
+namespace Ibuildings\QaTools\Core\Interviewer\Answer;
 
 final class AnswerFactory
 {
