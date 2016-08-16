@@ -9,7 +9,6 @@
         "psr-4": {
             "Ibuildings\\QaTools\\UnitTest\\": ["tests/unit"],
             "Ibuildings\\QaTools\\IntegrationTest\\": ["tests/integration"],
-            "Ibuildings\\QaTools\\SecurityTest\\": ["tests/security"],
             "Ibuildings\\QaTools\\SystemTest\\": ["tests/system"]
         },
         "files": ["tests/system/assert.php"]

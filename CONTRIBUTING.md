@@ -31,7 +31,7 @@ $ tools/git/pre-push-install
 
 If you feel comfortable with testing your contribution, it is good to know that
 we perform various types of testing: unit testing, integration testing,
-acceptance testing, security testing, and smoke testing.
+acceptance testing, system testing, and security testing.
 
 You'll find these tests in the following locations:
 
@@ -41,7 +41,9 @@ You'll find these tests in the following locations:
 | Integration tests           | `./tests/integration` |
 | Acceptance tests            | `./features`          |
 | System tests                | `./tests/system`      |
-| Security tests              | `./tests/security`    |
+
+The only security test is currently located in the `Makefile` target
+`verify-build-is-signed`.
 
 Feel free to read the [Testing strategy](#testing-strategy) to find out what
 testing strategy the QA Tools project employs.
