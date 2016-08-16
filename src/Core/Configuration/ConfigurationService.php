@@ -1,16 +1,10 @@
 <?php
 
-namespace Ibuildings\QaTools\Core\Service;
+namespace Ibuildings\QaTools\Core\Configuration;
 
-use Ibuildings\QaTools\Core\Configuration\Configuration;
-use Ibuildings\QaTools\Core\Configuration\ConfigurationRepository;
-use Ibuildings\QaTools\Core\Configuration\FileConfigurationRepository;
-use Ibuildings\QaTools\Core\Configuration\ProjectConfigurator;
-use Ibuildings\QaTools\Core\Configuration\RunListConfigurator;
-use Ibuildings\QaTools\Core\Configuration\TaskDirectoryFactory;
 use Ibuildings\QaTools\Core\Configurator\ConfiguratorRepository;
+use Ibuildings\QaTools\Core\Execution\TaskDirectoryExecutor;
 use Ibuildings\QaTools\Core\Interviewer\Interviewer;
-use Ibuildings\QaTools\Core\Configuration\MemorizingInterviewer;
 
 final class ConfigurationService
 {
@@ -39,18 +33,25 @@ final class ConfigurationService
      */
     private $taskDirectoryFactory;
 
+    /**
+     * @var TaskDirectoryExecutor
+     */
+    private $taskDirectoryExecutor;
+
     public function __construct(
         ConfigurationRepository $configurationRepository,
         ProjectConfigurator $projectConfigurator,
         RunListConfigurator $runListConfigurator,
         ConfiguratorRepository $configuratorRepository,
-        TaskDirectoryFactory $taskDirectoryFactory
+        TaskDirectoryFactory $taskDirectoryFactory,
+        TaskDirectoryExecutor $taskDirectoryExecutor
     ) {
         $this->configurationRepository     = $configurationRepository;
         $this->projectConfigurator         = $projectConfigurator;
         $this->configuratorRepository      = $configuratorRepository;
         $this->taskDirectoryFactory         = $taskDirectoryFactory;
         $this->runListConfigurator         = $runListConfigurator;
+        $this->taskDirectoryExecutor       = $taskDirectoryExecutor;
     }
 
     /**
@@ -73,7 +74,7 @@ final class ConfigurationService
         $runList = $this->configuratorRepository->getRunListForProject($configuration->getProject());
         $this->runListConfigurator->configure($runList, $memorizingInterviewer, $taskDirectory);
 
-        // Execute tasks from task directory
+        $this->taskDirectoryExecutor->execute($taskDirectory, $memorizingInterviewer);
 
         $this->configurationRepository->save($configuration);
     }

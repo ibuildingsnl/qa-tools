@@ -5,18 +5,24 @@ use Behat\Behat\Context\SnippetAcceptingContext;
 use Fake\AutomatedResponseInterviewer;
 use Fake\InMemoryConfigurationRepository;
 use Ibuildings\QaTools\Core\Configuration\Configuration;
+use Ibuildings\QaTools\Core\Configuration\ConfigurationService;
+use Ibuildings\QaTools\Core\Configuration\InMemoryTaskDirectoryFactory;
+use Ibuildings\QaTools\Core\Configuration\MemorizingInterviewer;
 use Ibuildings\QaTools\Core\Configuration\ProjectConfigurator;
 use Ibuildings\QaTools\Core\Configuration\QuestionId;
 use Ibuildings\QaTools\Core\Configuration\RunListConfigurator;
-use Ibuildings\QaTools\Core\Configuration\TaskDirectoryFactory;
+use Ibuildings\QaTools\Core\Configuration\TaskDirectory;
 use Ibuildings\QaTools\Core\Configuration\TaskHelperSet;
 use Ibuildings\QaTools\Core\Configurator\ConfiguratorRepository;
+use Ibuildings\QaTools\Core\Execution\TaskDirectoryExecutor;
 use Ibuildings\QaTools\Core\Interviewer\Answer\Factory\AnswerFactory;
 use Ibuildings\QaTools\Core\Interviewer\Question;
 use Ibuildings\QaTools\Core\Project\Project;
 use Ibuildings\QaTools\Core\Project\ProjectType;
 use Ibuildings\QaTools\Core\Project\ProjectTypeSet;
-use Ibuildings\QaTools\Core\Service\ConfigurationService;
+use Ibuildings\QaTools\Core\Task\ComposerPackageIsRequiredSpecification;
+use Ibuildings\QaTools\Tool\PhpMd\Configurator\PhpMdSf2Configurator;
+use Mockery\MockInterface;
 use PHPUnit_Framework_Assert as Assert;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -33,6 +39,10 @@ class FeatureContext implements Context, SnippetAcceptingContext
     private $interviewer;
     /** @var ConfigurationService */
     private $configurationService;
+    /** @var TaskDirectoryExecutor|MockInterface */
+    private $taskDirectoryExecutor;
+    /** @var ContainerInterface|MockInterface */
+    private $container;
 
     /** @var string */
     private $configuredProjectName;
@@ -50,11 +60,12 @@ class FeatureContext implements Context, SnippetAcceptingContext
     {
         $this->configurationRepository = new InMemoryConfigurationRepository();
         $projectConfigurator = new ProjectConfigurator();
-        $taskHelperSet = Mockery::mock(TaskHelperSet::class);
-        $container = Mockery::mock(ContainerInterface::class);
-        $runListConfigurator = new RunListConfigurator($taskHelperSet, $container);
+        $taskHelperSet = Mockery::mock(TaskHelperSet::class)->shouldIgnoreMissing();
+        $this->container = Mockery::mock(ContainerInterface::class);
+        $runListConfigurator = new RunListConfigurator($taskHelperSet, $this->container);
         $this->configuratorRepository = new ConfiguratorRepository();
-        $taskDirectoryFactory = new TaskDirectoryFactory();
+        $taskDirectoryFactory = new InMemoryTaskDirectoryFactory();
+        $this->taskDirectoryExecutor = Mockery::spy(TaskDirectoryExecutor::class);
 
         $this->interviewer = new AutomatedResponseInterviewer();
 
@@ -63,7 +74,8 @@ class FeatureContext implements Context, SnippetAcceptingContext
             $projectConfigurator,
             $runListConfigurator,
             $this->configuratorRepository,
-            $taskDirectoryFactory
+            $taskDirectoryFactory,
+            $this->taskDirectoryExecutor
         );
     }
 
@@ -185,24 +197,25 @@ class FeatureContext implements Context, SnippetAcceptingContext
                 new Project(
                     'Trading Service',
                     './',
-                    new ProjectTypeSet([new ProjectType(ProjectType::TYPE_PHP_DRUPAL_7)]),
+                    new ProjectTypeSet([new ProjectType(ProjectType::TYPE_PHP_SF_2)]),
                     false
                 ),
                 [
                     $projectNameQuestionId    => AnswerFactory::createFrom('Trading Service'),
                     $projectTypeQuestionId    => AnswerFactory::createFrom('PHP'),
-                    $phpProjectTypeQuestionId => AnswerFactory::createFrom('Drupal 7'),
+                    $phpProjectTypeQuestionId => AnswerFactory::createFrom('Symfony 2'),
                     $travisEnabledQuestionId  => AnswerFactory::createFrom(false),
                 ]
             )
         );
 
         $projectConfigurator = new ProjectConfigurator();
-        $taskHelperSet = Mockery::mock(TaskHelperSet::class);
-        $container = Mockery::mock(ContainerInterface::class);
-        $runListConfigurator = new RunListConfigurator($taskHelperSet, $container);
+        $taskHelperSet = Mockery::mock(TaskHelperSet::class)->shouldIgnoreMissing();
+        $this->container = Mockery::mock(ContainerInterface::class);
+        $runListConfigurator = new RunListConfigurator($taskHelperSet, $this->container);
         $this->configuratorRepository = new ConfiguratorRepository();
-        $taskDirectoryFactory = new TaskDirectoryFactory();
+        $taskDirectoryFactory = new InMemoryTaskDirectoryFactory();
+        $this->taskDirectoryExecutor = Mockery::spy(TaskDirectoryExecutor::class);
 
         $this->interviewer = new AutomatedResponseInterviewer();
 
@@ -211,35 +224,54 @@ class FeatureContext implements Context, SnippetAcceptingContext
             $projectConfigurator,
             $runListConfigurator,
             $this->configuratorRepository,
-            $taskDirectoryFactory
+            $taskDirectoryFactory,
+            $this->taskDirectoryExecutor
         );
-    }
 
-    /**
-     * @When I keep the project name
-     */
-    public function iKeepTheProjectName()
-    {
         $this->configuredProjectName = $this->configurationRepository->load()->getProject()->getName();
-        $this->interviewer->respondWithDefaultAnswerTo("What is the project's name?");
-    }
-
-    /**
-     * @When I keep the project types
-     */
-    public function iKeepTheProjectTypes()
-    {
         $this->configuredProjectTypes = $this->configurationRepository->load()->getProject()->getProjectTypes();
+        $this->configuredTravisEnabled = $this->configurationRepository->load()->getProject()->isTravisEnabled();
+        $this->configuredConfigurationFilesLocation = $this->configurationRepository->load()->getProject()->getConfigurationFilesLocation();
+        $this->interviewer->respondWithDefaultAnswerTo("What is the project's name?");
         $this->interviewer->respondWithDefaultAnswerTo('What type of project would you like to configure?');
         $this->interviewer->respondWithDefaultAnswerTo('What type of PHP project would you like to configure?');
+        $this->interviewer->respondWithDefaultAnswerTo('Would you like to integrate Travis in your project?');
+        $this->interviewer->respondWithDefaultAnswerTo('Where would you like to store the generated files?');
     }
 
     /**
-     * @When I keep Travis disabled
+     * @Given the PHPMD Symfony 2 configurator is available
      */
-    public function iKeepTravisDisabled()
+    public function thePhpMdSymfony2ConfiguratorIsAvailable()
     {
-        $this->configuredTravisEnabled = $this->configurationRepository->load()->getProject()->isTravisEnabled();
-        $this->interviewer->respondWithDefaultAnswerTo('Would you like to integrate Travis in your project?');
+        $this->container->shouldReceive('getParameter')->with('tool.Ibuildings\QaTools\Tool\PhpMd\PhpMd.resource_path')->andReturn('');
+        $this->configuratorRepository->add(new PhpMdSf2Configurator(), new ProjectType(ProjectType::TYPE_PHP_SF_2));
+    }
+
+    /**
+     * @When the configuration is complete
+     */
+    public function theConfigurationIsComplete()
+    {
+        $this->configurationService->configureProject($this->interviewer);
+    }
+
+    /**
+     * @Then the PHPMD Composer package is installed
+     */
+    public function thePhpMdComposerPackageIsInstalled()
+    {
+        $taskDirectoryContainingSpecifiedTasks = Mockery::on(function (TaskDirectory $taskDirectory) {
+            $anyVersionOfPhpMd = ComposerPackageIsRequiredSpecification::ofAnyVersion('phpmd/phpmd');
+            $matchingTasks = $taskDirectory->matchTasks($anyVersionOfPhpMd);
+            Assert::assertCount(1, $matchingTasks);
+
+            return true;
+        });
+
+        $this->taskDirectoryExecutor
+            ->shouldHaveReceived('execute')
+            ->with($taskDirectoryContainingSpecifiedTasks, Mockery::type(MemorizingInterviewer::class))
+            ->once();
     }
 }

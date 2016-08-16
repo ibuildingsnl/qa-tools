@@ -41,17 +41,17 @@ final class AutomatedResponseInterviewer implements Interviewer
 
     public function ask(Question $question)
     {
+        foreach ($this->recordedAnswers as list($partialQuestionText, $answer)) {
+            if (strpos($question, $partialQuestionText) !== false) {
+                return $answer;
+            }
+        }
         foreach ($this->questionsToAnswerToWithDefault as $partialQuestionText) {
             if (strpos($question, $partialQuestionText) !== false) {
                 if (!$question->hasDefaultAnswer()) {
                     throw new RuntimeException(sprintf('No default answer available for question "%s"', $question));
                 }
                 return $question->getDefaultAnswer();
-            }
-        }
-        foreach ($this->recordedAnswers as list($partialQuestionText, $answer)) {
-            if (strpos($question, $partialQuestionText) !== false) {
-                return $answer;
             }
         }
 

@@ -2,8 +2,8 @@
 
 namespace Ibuildings\QaTools\Core\Configurator;
 
-use Ibuildings\QaTools\Core\Configuration\TaskHelperSet;
 use Ibuildings\QaTools\Core\Configuration\TaskDirectory;
+use Ibuildings\QaTools\Core\Configuration\TaskHelperSet;
 use Ibuildings\QaTools\Core\Interviewer\Interviewer;
 
 interface Configurator

@@ -1,7 +1,7 @@
-Feature: Configuration of QA tools
+Feature: Project configuration
   In order to assure quality in my project
   As a developer
-  I need to be able to configure the QA tools
+  I need to be able to configure the project
 
   Scenario: Setting up the project's QA tools for the first time
     Given a project whose QA tools have not yet been set up
@@ -16,8 +16,5 @@ Feature: Configuration of QA tools
   Scenario: Adjusting the storage location
     Given the Trading Service project
     And no available QA tools
-    When I keep the project name
-    And I keep the project types
-    And I keep Travis disabled
-    But I want the QA-related files stored in "./qa"
+    When I want the QA-related files stored in "./qa"
     Then I have a project configured accordingly

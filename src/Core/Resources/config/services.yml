@@ -1,12 +1,13 @@
 services:
     qa_tools.configuration_service:
-        class: Ibuildings\QaTools\Core\Service\ConfigurationService
+        class: Ibuildings\QaTools\Core\Configuration\ConfigurationService
         arguments:
             - "@qa_tools.configuration.configuration_repository"
             - "@qa_tools.project_configurator"
             - "@qa_tools.run_list_configurator"
             - "@qa_tools.configurator.configurator_repository"
             - "@qa_tools.configuration.task_directory.factory"
+            - "@qa_tools.task.execution.no_op_task_directory_executor"
 
     qa_tools.file_handler:
         alias: qa_tools.io.file.filesystem_adapter
@@ -70,6 +71,9 @@ services:
         class: Ibuildings\QaTools\Core\Templating\TemplateEngine
         arguments:
             - "@twig.environment"
+
+    qa_tools.task.execution.no_op_task_directory_executor:
+        class: Ibuildings\QaTools\Core\Task\Execution\NoOpTaskDirectoryExecutor
 
     symfony.filesystem:
         class: Symfony\Component\Filesystem\Filesystem
