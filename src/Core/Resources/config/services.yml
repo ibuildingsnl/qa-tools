@@ -36,7 +36,7 @@ services:
             - "%qa_tools.configuration_location%"
 
     qa_tools.configuration.task_directory.factory:
-        class: Ibuildings\QaTools\Core\Configuration\TaskDirectoryFactory
+        class: Ibuildings\QaTools\Core\Configuration\InMemoryTaskDirectoryFactory
 
     qa_tools.configuration.task_helper_set:
         class: Ibuildings\QaTools\Core\Configuration\TaskHelperSet
