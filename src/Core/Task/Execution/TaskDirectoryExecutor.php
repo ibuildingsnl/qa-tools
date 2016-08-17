@@ -2,15 +2,15 @@
 
 namespace Ibuildings\QaTools\Core\Task\Execution;
 
-use Ibuildings\QaTools\Core\Configuration\MemorizingInterviewer;
 use Ibuildings\QaTools\Core\Configuration\TaskDirectory;
+use Ibuildings\QaTools\Core\Interviewer\ScopedInterviewer;
 
 interface TaskDirectoryExecutor
 {
     /**
-     * @param TaskDirectory         $taskDirectory
-     * @param MemorizingInterviewer $interviewer
+     * @param TaskDirectory     $taskDirectory
+     * @param ScopedInterviewer $interviewer
      * @return void
      */
-    public function execute(TaskDirectory $taskDirectory, MemorizingInterviewer $interviewer);
+    public function execute(TaskDirectory $taskDirectory, ScopedInterviewer $interviewer);
 }

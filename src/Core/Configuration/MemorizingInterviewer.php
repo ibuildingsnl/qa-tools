@@ -5,8 +5,9 @@ namespace Ibuildings\QaTools\Core\Configuration;
 use Ibuildings\QaTools\Core\Assert\Assertion;
 use Ibuildings\QaTools\Core\Interviewer\Interviewer;
 use Ibuildings\QaTools\Core\Interviewer\Question\Question as QuestionInterface;
+use Ibuildings\QaTools\Core\Interviewer\ScopedInterviewer;
 
-final class MemorizingInterviewer implements Interviewer
+final class MemorizingInterviewer implements ScopedInterviewer
 {
     /**
      * @var Interviewer
@@ -33,9 +34,6 @@ final class MemorizingInterviewer implements Interviewer
         $this->configuration = $configuration;
     }
 
-    /**
-     * @param string $scope
-     */
     public function setScope($scope)
     {
         Assertion::string($scope);

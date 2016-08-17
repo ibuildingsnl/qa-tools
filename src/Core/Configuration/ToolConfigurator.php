@@ -4,6 +4,7 @@ namespace Ibuildings\QaTools\Core\Configuration;
 
 use Ibuildings\QaTools\Core\Configurator\Configurator;
 use Ibuildings\QaTools\Core\Configurator\ConfiguratorList;
+use Ibuildings\QaTools\Core\Interviewer\ScopedInterviewer;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 final class ToolConfigurator
@@ -26,7 +27,7 @@ final class ToolConfigurator
 
     public function configure(
         ConfiguratorList $configurators,
-        MemorizingInterviewer $interviewer,
+        ScopedInterviewer $interviewer,
         TaskDirectory $taskDirectory
     ) {
         foreach ($configurators as $configurator) {
