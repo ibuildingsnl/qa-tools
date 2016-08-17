@@ -39,8 +39,11 @@
         "sebastian/diff": "^1.4",
         "sebastian/exporter": "^1.2",
         "sensiolabs/security-checker": "^3.0",
-        "symfony/process": "^3.1",
-        "squizlabs/php_codesniffer": "^2.6"
+        "squizlabs/php_codesniffer": "^2.6",
+        "symfony/process": "^3.1"
+    },
+    "config": {
+        "sort-packages": true
     },
     "extra": {
         "qa-tools-box-source": "https://github.com/box-project/box2/releases/download/2.7.2/box-2.7.2.phar",
