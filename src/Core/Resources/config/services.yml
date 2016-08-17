@@ -4,7 +4,7 @@ services:
         arguments:
             - "@qa_tools.configuration.configuration_repository"
             - "@qa_tools.project_configurator"
-            - "@qa_tools.run_list_configurator"
+            - "@qa_tools.tool_configurator"
             - "@qa_tools.configurator.configurator_repository"
             - "@qa_tools.configuration.task_directory.factory"
             - "@qa_tools.task.execution.no_op_task_directory_executor"
@@ -18,8 +18,8 @@ services:
     qa_tools.project_configurator:
         class: Ibuildings\QaTools\Core\Configuration\ProjectConfigurator
 
-    qa_tools.run_list_configurator:
-        class: Ibuildings\QaTools\Core\Configuration\RunListConfigurator
+    qa_tools.tool_configurator:
+        class: Ibuildings\QaTools\Core\Configuration\ToolConfigurator
         arguments:
             - "@qa_tools.configuration.task_helper_set"
             - "@service_container"

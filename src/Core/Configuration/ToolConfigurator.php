@@ -6,7 +6,7 @@ use Ibuildings\QaTools\Core\Configurator\Configurator;
 use Ibuildings\QaTools\Core\Configurator\ConfiguratorList;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-final class RunListConfigurator
+final class ToolConfigurator
 {
     /**
      * @var TaskHelperSet
@@ -25,11 +25,11 @@ final class RunListConfigurator
     }
 
     public function configure(
-        ConfiguratorList $runList,
+        ConfiguratorList $configurators,
         MemorizingInterviewer $interviewer,
         TaskDirectory $taskDirectory
     ) {
-        foreach ($runList as $configurator) {
+        foreach ($configurators as $configurator) {
             /** @var Configurator $configurator */
             $interviewer->setScope($configurator->getToolClassName());
 

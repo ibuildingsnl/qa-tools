@@ -49,7 +49,7 @@ final class ConfiguratorRepository
      * @param Project $project
      * @return ConfiguratorList
      */
-    public function getRunListForProject(Project $project)
+    public function getConfiguratorsForProject(Project $project)
     {
         $configurators = new ConfiguratorList([]);
 

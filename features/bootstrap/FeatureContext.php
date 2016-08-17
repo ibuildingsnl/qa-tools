@@ -9,7 +9,7 @@ use Ibuildings\QaTools\Core\Configuration\InMemoryTaskDirectoryFactory;
 use Ibuildings\QaTools\Core\Configuration\MemorizingInterviewer;
 use Ibuildings\QaTools\Core\Configuration\ProjectConfigurator;
 use Ibuildings\QaTools\Core\Configuration\QuestionId;
-use Ibuildings\QaTools\Core\Configuration\RunListConfigurator;
+use Ibuildings\QaTools\Core\Configuration\ToolConfigurator;
 use Ibuildings\QaTools\Core\Configuration\TaskDirectory;
 use Ibuildings\QaTools\Core\Configuration\TaskHelperSet;
 use Ibuildings\QaTools\Core\Configurator\ConfiguratorRepository;
@@ -62,7 +62,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
         $projectConfigurator = new ProjectConfigurator();
         $taskHelperSet = Mockery::mock(TaskHelperSet::class)->shouldIgnoreMissing();
         $this->container = Mockery::mock(ContainerInterface::class);
-        $runListConfigurator = new RunListConfigurator($taskHelperSet, $this->container);
+        $toolConfigurator = new ToolConfigurator($taskHelperSet, $this->container);
         $this->configuratorRepository = new ConfiguratorRepository();
         $taskDirectoryFactory = new InMemoryTaskDirectoryFactory();
         $this->taskDirectoryExecutor = Mockery::spy(TaskDirectoryExecutor::class);
@@ -72,7 +72,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
         $this->configurationService = new ConfigurationService(
             $this->configurationRepository,
             $projectConfigurator,
-            $runListConfigurator,
+            $toolConfigurator,
             $this->configuratorRepository,
             $taskDirectoryFactory,
             $this->taskDirectoryExecutor
@@ -212,7 +212,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
         $projectConfigurator = new ProjectConfigurator();
         $taskHelperSet = Mockery::mock(TaskHelperSet::class)->shouldIgnoreMissing();
         $this->container = Mockery::mock(ContainerInterface::class);
-        $runListConfigurator = new RunListConfigurator($taskHelperSet, $this->container);
+        $toolConfigurator = new ToolConfigurator($taskHelperSet, $this->container);
         $this->configuratorRepository = new ConfiguratorRepository();
         $taskDirectoryFactory = new InMemoryTaskDirectoryFactory();
         $this->taskDirectoryExecutor = Mockery::spy(TaskDirectoryExecutor::class);
@@ -222,7 +222,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
         $this->configurationService = new ConfigurationService(
             $this->configurationRepository,
             $projectConfigurator,
-            $runListConfigurator,
+            $toolConfigurator,
             $this->configuratorRepository,
             $taskDirectoryFactory,
             $this->taskDirectoryExecutor

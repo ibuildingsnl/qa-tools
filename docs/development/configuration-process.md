@@ -7,7 +7,7 @@ The QA Tools configuration process is as follows:
  developer uses Travis, and where all the tools' configuration files ought to be
  stored. These answers influence the type of configuration that takes place
  directly afterwards.
- 0. Based on the project settings (eg. project type), a run list of tool
+ 0. Based on the project settings (eg. project type), a list of tool
  configurators is compiled. Each configurator gets the chance to interview the
  developer for more settings pertinent to each configurator's tool. Based on
  the developer's answers, the configurator adds tasks to the task directory.

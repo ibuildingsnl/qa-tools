@@ -19,9 +19,9 @@ final class ConfigurationService
     private $projectConfigurator;
 
     /**
-     * @var RunListConfigurator
+     * @var ToolConfigurator
      */
-    private $runListConfigurator;
+    private $toolConfigurator;
 
     /**
      * @var ConfiguratorRepository
@@ -41,7 +41,7 @@ final class ConfigurationService
     public function __construct(
         ConfigurationRepository $configurationRepository,
         ProjectConfigurator $projectConfigurator,
-        RunListConfigurator $runListConfigurator,
+        ToolConfigurator $toolConfigurator,
         ConfiguratorRepository $configuratorRepository,
         TaskDirectoryFactory $taskDirectoryFactory,
         TaskDirectoryExecutor $taskDirectoryExecutor
@@ -50,7 +50,7 @@ final class ConfigurationService
         $this->projectConfigurator         = $projectConfigurator;
         $this->configuratorRepository      = $configuratorRepository;
         $this->taskDirectoryFactory         = $taskDirectoryFactory;
-        $this->runListConfigurator         = $runListConfigurator;
+        $this->toolConfigurator            = $toolConfigurator;
         $this->taskDirectoryExecutor       = $taskDirectoryExecutor;
     }
 
@@ -71,8 +71,8 @@ final class ConfigurationService
         $this->projectConfigurator->configure($memorizingInterviewer, $configuration);
         $taskDirectory = $this->taskDirectoryFactory->createWithProject($configuration->getProject());
 
-        $runList = $this->configuratorRepository->getRunListForProject($configuration->getProject());
-        $this->runListConfigurator->configure($runList, $memorizingInterviewer, $taskDirectory);
+        $configurators = $this->configuratorRepository->getConfiguratorsForProject($configuration->getProject());
+        $this->toolConfigurator->configure($configurators, $memorizingInterviewer, $taskDirectory);
 
         $this->taskDirectoryExecutor->execute($taskDirectory, $memorizingInterviewer);
 
