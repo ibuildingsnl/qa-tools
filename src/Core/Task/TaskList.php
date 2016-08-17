@@ -5,12 +5,14 @@ namespace Ibuildings\QaTools\Core\Task;
 use ArrayIterator;
 use Countable;
 use Ibuildings\QaTools\Core\Assert\Assertion;
+use Ibuildings\QaTools\Core\Exception\RuntimeException;
+use Ibuildings\QaTools\Core\Task\Specification\Specification;
 use IteratorAggregate;
 
 final class TaskList implements IteratorAggregate, Countable
 {
     /**
-     * @var Task[] $tasks
+     * @var Task[]
      */
     private $tasks;
 
@@ -25,56 +27,12 @@ final class TaskList implements IteratorAggregate, Countable
     }
 
     /**
-     * @param Task $task
+     * @param Specification $specification
      * @return TaskList
      */
-    public function add(Task $task)
+    public function match(Specification $specification)
     {
-        return new TaskList(array_merge($this->tasks, [$task]));
-    }
-
-    /**
-     * @param callable $predicate
-     * @return TaskList
-     */
-    public function filter(callable $predicate)
-    {
-        return new self(array_filter($this->tasks, $predicate));
-    }
-
-    /**
-     * @param Task $taskToBeFound
-     * @return boolean
-     */
-    public function contains(Task $taskToBeFound)
-    {
-        /** @var Task $task */
-        foreach ($this->tasks as $task) {
-            if ($task->equals($taskToBeFound)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * @param TaskList $other
-     * @return TaskList
-     */
-    public function merge(TaskList $other)
-    {
-        return new TaskList(
-            array_merge(
-                $this->tasks,
-                array_filter(
-                    $other->tasks,
-                    function (Task $task) {
-                        return !$this->contains($task);
-                    }
-                )
-            )
-        );
+        return new TaskList(array_filter($this->tasks, [$specification, 'isSatisfiedBy']));
     }
 
     /**
@@ -94,6 +52,14 @@ final class TaskList implements IteratorAggregate, Countable
         }
 
         return true;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isEmpty()
+    {
+        return count($this->tasks) === 0;
     }
 
     public function count()

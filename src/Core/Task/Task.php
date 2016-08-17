@@ -2,11 +2,25 @@
 
 namespace Ibuildings\QaTools\Core\Task;
 
+use Ibuildings\QaTools\Core\Interviewer\Interviewer;
+
 interface Task
 {
     /**
-     * @param Task $other
-     * @return boolean
+     * Returns a single-line description of what this task will attempt to effect.
+     *
+     * @return string
      */
-    public function equals(Task $other);
+    public function getDescription();
+
+    /**
+     * @param Interviewer $interviewer
+     * @return void
+     */
+    public function checkPrerequisites(Interviewer $interviewer);
+
+    /**
+     * @return Task A task that, when executed, rolls back the changes this task effected.
+     */
+    public function execute();
 }

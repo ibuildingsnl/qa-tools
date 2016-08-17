@@ -4,7 +4,8 @@ namespace Ibuildings\QaTools\Core\Configuration;
 
 use Ibuildings\QaTools\Core\Configurator\ConfiguratorRepository;
 use Ibuildings\QaTools\Core\Interviewer\Interviewer;
-use Ibuildings\QaTools\Core\Task\Execution\TaskDirectoryExecutor;
+use Ibuildings\QaTools\Core\Task\Compiler\TaskListCompiler;
+use Ibuildings\QaTools\Core\Task\Executor\TaskListExecutor;
 
 final class ConfigurationService
 {
@@ -29,29 +30,36 @@ final class ConfigurationService
     private $configuratorRepository;
 
     /**
-     * @var TaskDirectoryFactory
+     * @var RequirementDirectoryFactory
      */
-    private $taskDirectoryFactory;
+    private $requirementDirectoryFactory;
 
     /**
-     * @var TaskDirectoryExecutor
+     * @var TaskListCompiler
      */
-    private $taskDirectoryExecutor;
+    private $taskListCompiler;
+
+    /**
+     * @var TaskListExecutor
+     */
+    private $taskListExecutor;
 
     public function __construct(
         ConfigurationRepository $configurationRepository,
         ProjectConfigurator $projectConfigurator,
         ToolConfigurator $toolConfigurator,
         ConfiguratorRepository $configuratorRepository,
-        TaskDirectoryFactory $taskDirectoryFactory,
-        TaskDirectoryExecutor $taskDirectoryExecutor
+        RequirementDirectoryFactory $requirementDirectoryFactory,
+        TaskListCompiler $taskListCompiler,
+        TaskListExecutor $taskListExecutor
     ) {
-        $this->configurationRepository     = $configurationRepository;
-        $this->projectConfigurator         = $projectConfigurator;
-        $this->configuratorRepository      = $configuratorRepository;
-        $this->taskDirectoryFactory         = $taskDirectoryFactory;
-        $this->toolConfigurator            = $toolConfigurator;
-        $this->taskDirectoryExecutor       = $taskDirectoryExecutor;
+        $this->configurationRepository = $configurationRepository;
+        $this->projectConfigurator = $projectConfigurator;
+        $this->configuratorRepository = $configuratorRepository;
+        $this->requirementDirectoryFactory = $requirementDirectoryFactory;
+        $this->toolConfigurator = $toolConfigurator;
+        $this->taskListCompiler = $taskListCompiler;
+        $this->taskListExecutor = $taskListExecutor;
     }
 
     /**
@@ -69,12 +77,13 @@ final class ConfigurationService
         $memorizingInterviewer = new MemorizingInterviewer($interviewer, $configuration);
 
         $this->projectConfigurator->configure($memorizingInterviewer, $configuration);
-        $taskDirectory = $this->taskDirectoryFactory->createWithProject($configuration->getProject());
+        $requirementDirectory = $this->requirementDirectoryFactory->createWithProject($configuration->getProject());
 
         $configurators = $this->configuratorRepository->getConfiguratorsForProject($configuration->getProject());
-        $this->toolConfigurator->configure($configurators, $memorizingInterviewer, $taskDirectory);
+        $this->toolConfigurator->configure($configurators, $memorizingInterviewer, $requirementDirectory);
 
-        $this->taskDirectoryExecutor->execute($taskDirectory, $memorizingInterviewer);
+        $tasks = $this->taskListCompiler->compile($requirementDirectory, $memorizingInterviewer);
+        $this->taskListExecutor->execute($tasks, $memorizingInterviewer);
 
         $this->configurationRepository->save($configuration);
     }

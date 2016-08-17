@@ -10,25 +10,25 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 final class ToolConfigurator
 {
     /**
-     * @var TaskHelperSet
+     * @var RequirementHelperSet
      */
-    private $taskHelperSet;
+    private $requirementHelperSet;
 
     /**
      * @var ContainerInterface
      */
     private $container;
 
-    public function __construct(TaskHelperSet $taskHelperSet, ContainerInterface $container)
+    public function __construct(RequirementHelperSet $requirementHelperSet, ContainerInterface $container)
     {
-        $this->taskHelperSet = $taskHelperSet;
+        $this->requirementHelperSet = $requirementHelperSet;
         $this->container = $container;
     }
 
     public function configure(
         ConfiguratorList $configurators,
         ScopedInterviewer $interviewer,
-        TaskDirectory $taskDirectory
+        RequirementDirectory $requirementDirectory
     ) {
         foreach ($configurators as $configurator) {
             /** @var Configurator $configurator */
@@ -37,9 +37,9 @@ final class ToolConfigurator
             $templatePath = $this->container->getParameter(
                 sprintf('tool.%s.resource_path', $configurator->getToolClassName())
             );
-            $this->taskHelperSet->setTemplatePath($templatePath);
+            $this->requirementHelperSet->setTemplatePath($templatePath);
 
-            $configurator->configure($interviewer, $taskDirectory, $this->taskHelperSet);
+            $configurator->configure($interviewer, $requirementDirectory, $this->requirementHelperSet);
         }
     }
 }

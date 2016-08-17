@@ -2,25 +2,27 @@
 
 use Behat\Behat\Context\Context;
 use Behat\Behat\Context\SnippetAcceptingContext;
+use Ibuildings\QaTools\Core\Composer\PackageName;
 use Ibuildings\QaTools\Core\Configuration\Configuration;
 use Ibuildings\QaTools\Core\Configuration\ConfigurationService;
 use Ibuildings\QaTools\Core\Configuration\InMemoryConfigurationRepository;
-use Ibuildings\QaTools\Core\Configuration\InMemoryTaskDirectoryFactory;
-use Ibuildings\QaTools\Core\Configuration\MemorizingInterviewer;
+use Ibuildings\QaTools\Core\Configuration\InMemoryRequirementDirectoryFactory;
 use Ibuildings\QaTools\Core\Configuration\ProjectConfigurator;
 use Ibuildings\QaTools\Core\Configuration\QuestionId;
+use Ibuildings\QaTools\Core\Configuration\RequirementHelperSet;
 use Ibuildings\QaTools\Core\Configuration\ToolConfigurator;
-use Ibuildings\QaTools\Core\Configuration\TaskDirectory;
-use Ibuildings\QaTools\Core\Configuration\TaskHelperSet;
 use Ibuildings\QaTools\Core\Configurator\ConfiguratorRepository;
 use Ibuildings\QaTools\Core\Interviewer\Answer\AnswerFactory;
 use Ibuildings\QaTools\Core\Interviewer\AutomatedResponseInterviewer;
 use Ibuildings\QaTools\Core\Interviewer\Question\QuestionFactory;
+use Ibuildings\QaTools\Core\Interviewer\ScopedInterviewer;
 use Ibuildings\QaTools\Core\Project\Project;
 use Ibuildings\QaTools\Core\Project\ProjectType;
 use Ibuildings\QaTools\Core\Project\ProjectTypeSet;
-use Ibuildings\QaTools\Core\Task\Execution\TaskDirectoryExecutor;
-use Ibuildings\QaTools\Core\Task\Specification\ComposerPackageIsRequiredSpecification;
+use Ibuildings\QaTools\Core\Task\Compiler\ComposerTaskListCompiler;
+use Ibuildings\QaTools\Core\Task\Executor\TaskListExecutor;
+use Ibuildings\QaTools\Core\Task\Specification\InstallComposerPackageSpecification;
+use Ibuildings\QaTools\Core\Task\TaskList;
 use Ibuildings\QaTools\Tool\PhpMd\Configurator\PhpMdSf2Configurator;
 use Mockery\MockInterface;
 use PHPUnit_Framework_Assert as Assert;
@@ -39,10 +41,10 @@ class FeatureContext implements Context, SnippetAcceptingContext
     private $interviewer;
     /** @var ConfigurationService */
     private $configurationService;
-    /** @var TaskDirectoryExecutor|MockInterface */
-    private $taskDirectoryExecutor;
     /** @var ContainerInterface|MockInterface */
     private $container;
+    /** @var TaskListExecutor|MockInterface */
+    private $taskListExecutor;
 
     /** @var string */
     private $configuredProjectName;
@@ -60,12 +62,13 @@ class FeatureContext implements Context, SnippetAcceptingContext
     {
         $this->configurationRepository = new InMemoryConfigurationRepository();
         $projectConfigurator = new ProjectConfigurator();
-        $taskHelperSet = Mockery::mock(TaskHelperSet::class)->shouldIgnoreMissing();
+        $requirementHelperSet = Mockery::mock(RequirementHelperSet::class)->shouldIgnoreMissing();
         $this->container = Mockery::mock(ContainerInterface::class);
-        $toolConfigurator = new ToolConfigurator($taskHelperSet, $this->container);
+        $toolConfigurator = new ToolConfigurator($requirementHelperSet, $this->container);
         $this->configuratorRepository = new ConfiguratorRepository();
-        $taskDirectoryFactory = new InMemoryTaskDirectoryFactory();
-        $this->taskDirectoryExecutor = Mockery::spy(TaskDirectoryExecutor::class);
+        $requirementDirectoryFactory = new InMemoryRequirementDirectoryFactory();
+        $taskListCompiler = new ComposerTaskListCompiler();
+        $this->taskListExecutor = Mockery::spy(TaskListExecutor::class);
 
         $this->interviewer = new AutomatedResponseInterviewer();
 
@@ -74,8 +77,9 @@ class FeatureContext implements Context, SnippetAcceptingContext
             $projectConfigurator,
             $toolConfigurator,
             $this->configuratorRepository,
-            $taskDirectoryFactory,
-            $this->taskDirectoryExecutor
+            $requirementDirectoryFactory,
+            $taskListCompiler,
+            $this->taskListExecutor
         );
     }
 
@@ -210,12 +214,13 @@ class FeatureContext implements Context, SnippetAcceptingContext
         );
 
         $projectConfigurator = new ProjectConfigurator();
-        $taskHelperSet = Mockery::mock(TaskHelperSet::class)->shouldIgnoreMissing();
+        $requirementHelperSet = Mockery::mock(RequirementHelperSet::class)->shouldIgnoreMissing();
         $this->container = Mockery::mock(ContainerInterface::class);
-        $toolConfigurator = new ToolConfigurator($taskHelperSet, $this->container);
+        $toolConfigurator = new ToolConfigurator($requirementHelperSet, $this->container);
         $this->configuratorRepository = new ConfiguratorRepository();
-        $taskDirectoryFactory = new InMemoryTaskDirectoryFactory();
-        $this->taskDirectoryExecutor = Mockery::spy(TaskDirectoryExecutor::class);
+        $requirementDirectoryFactory = new InMemoryRequirementDirectoryFactory();
+        $taskListCompiler = new ComposerTaskListCompiler();
+        $this->taskListExecutor = Mockery::spy(TaskListExecutor::class);
 
         $this->interviewer = new AutomatedResponseInterviewer();
 
@@ -224,8 +229,9 @@ class FeatureContext implements Context, SnippetAcceptingContext
             $projectConfigurator,
             $toolConfigurator,
             $this->configuratorRepository,
-            $taskDirectoryFactory,
-            $this->taskDirectoryExecutor
+            $requirementDirectoryFactory,
+            $taskListCompiler,
+            $this->taskListExecutor
         );
 
         $this->configuredProjectName = $this->configurationRepository->load()->getProject()->getName();
@@ -249,6 +255,14 @@ class FeatureContext implements Context, SnippetAcceptingContext
     }
 
     /**
+     * @When I want to use PHPMD
+     */
+    public function iWantToUsePhpmd()
+    {
+        $this->interviewer->recordAnswer('Would you like to use PHP Mess Detector?', AnswerFactory::createFrom(true));
+    }
+
+    /**
      * @When the configuration is complete
      */
     public function theConfigurationIsComplete()
@@ -261,17 +275,19 @@ class FeatureContext implements Context, SnippetAcceptingContext
      */
     public function thePhpMdComposerPackageIsInstalled()
     {
-        $taskDirectoryContainingSpecifiedTasks = Mockery::on(function (TaskDirectory $taskDirectory) {
-            $anyVersionOfPhpMd = ComposerPackageIsRequiredSpecification::ofAnyVersion('phpmd/phpmd');
-            $matchingTasks = $taskDirectory->matchTasks($anyVersionOfPhpMd);
-            Assert::assertCount(1, $matchingTasks);
+        $aTaskThatInstallsPhpMd = Mockery::on(
+            function (TaskList $tasks) {
+                $anyVersionOfPhpMd = InstallComposerPackageSpecification::ofAnyVersion(new PackageName('phpmd/phpmd'));
+                $matchingTasks = $tasks->match($anyVersionOfPhpMd);
+                Assert::assertCount(1, $matchingTasks);
 
-            return true;
-        });
+                return true;
+            }
+        );
 
-        $this->taskDirectoryExecutor
+        $this->taskListExecutor
             ->shouldHaveReceived('execute')
-            ->with($taskDirectoryContainingSpecifiedTasks, Mockery::type(MemorizingInterviewer::class))
+            ->with($aTaskThatInstallsPhpMd, Mockery::type(ScopedInterviewer::class))
             ->once();
     }
 }

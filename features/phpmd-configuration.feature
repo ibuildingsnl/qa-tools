@@ -6,5 +6,6 @@ Feature: PHPMD configuration
   Scenario: Configuring PHPMD
     Given the Trading Service project
     And the PHPMD Symfony 2 configurator is available
-    When the configuration is complete
+    When I want to use PHPMD
+    And the configuration is complete
     Then the PHPMD Composer package is installed

@@ -6,8 +6,9 @@ services:
             - "@qa_tools.project_configurator"
             - "@qa_tools.tool_configurator"
             - "@qa_tools.configurator.configurator_repository"
-            - "@qa_tools.configuration.task_directory.factory"
-            - "@qa_tools.task.execution.no_op_task_directory_executor"
+            - "@qa_tools.configuration.requirement_directory.factory"
+            - "@qa_tools.task.task_list_compiler"
+            - "@qa_tools.task.task_list_executor"
 
     qa_tools.file_handler:
         alias: qa_tools.io.file.filesystem_adapter
@@ -21,7 +22,7 @@ services:
     qa_tools.tool_configurator:
         class: Ibuildings\QaTools\Core\Configuration\ToolConfigurator
         arguments:
-            - "@qa_tools.configuration.task_helper_set"
+            - "@qa_tools.configuration.requirement_helper_set"
             - "@service_container"
 
     qa_tools.configurator_repository:
@@ -36,11 +37,11 @@ services:
             - "@qa_tools.file_handler"
             - "%qa_tools.configuration_location%"
 
-    qa_tools.configuration.task_directory.factory:
-        class: Ibuildings\QaTools\Core\Configuration\InMemoryTaskDirectoryFactory
+    qa_tools.configuration.requirement_directory.factory:
+        class: Ibuildings\QaTools\Core\Configuration\InMemoryRequirementDirectoryFactory
 
-    qa_tools.configuration.task_helper_set:
-        class: Ibuildings\QaTools\Core\Configuration\TaskHelperSet
+    qa_tools.configuration.requirement_helper_set:
+        class: Ibuildings\QaTools\Core\Configuration\RequirementHelperSet
         arguments:
             - "@qa_tools.template_engine"
 
@@ -72,8 +73,11 @@ services:
         arguments:
             - "@twig.environment"
 
-    qa_tools.task.execution.no_op_task_directory_executor:
-        class: Ibuildings\QaTools\Core\Task\Execution\NoOpTaskDirectoryExecutor
+    qa_tools.task.task_list_compiler:
+        class: Ibuildings\QaTools\Core\Task\Compiler\ComposerTaskListCompiler
+
+    qa_tools.task.task_list_executor:
+        class: Ibuildings\QaTools\Core\Task\Executor\NoOpTaskListExecutor
 
     symfony.filesystem:
         class: Symfony\Component\Filesystem\Filesystem
