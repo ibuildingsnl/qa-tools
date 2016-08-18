@@ -20,7 +20,8 @@ interface Task
     public function checkPrerequisites(Interviewer $interviewer);
 
     /**
+     * @param Interviewer $interviewer
      * @return Task A task that, when executed, rolls back the changes this task effected.
      */
-    public function execute();
+    public function execute(Interviewer $interviewer);
 }

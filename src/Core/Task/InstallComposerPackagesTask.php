@@ -26,7 +26,7 @@ final class InstallComposerPackagesTask implements Task
     {
     }
 
-    public function execute()
+    public function execute(Interviewer $interviewer)
     {
         return new NoOpTask();
     }
