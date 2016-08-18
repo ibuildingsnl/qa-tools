@@ -62,4 +62,10 @@ class PackageTest extends TestCase
             'a/a:~1.0 != a/a:dev-master' => [Package::of('a/a', '~1.0'), Package::of('a/a', 'dev-master)')],
         ];
     }
+
+    /** @test */
+    public function has_a_descriptor()
+    {
+        $this->assertSame('ibuildings/qa-tools:1.1.27', Package::of('ibuildings/qa-tools', '1.1.27')->getDescriptor());
+    }
 }

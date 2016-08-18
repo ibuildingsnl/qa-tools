@@ -76,6 +76,21 @@ final class PackageSet implements Countable, IteratorAggregate
     }
 
     /**
+     * Returns an array of package descriptors (eg. "phpmd/phpmd:^2.0").
+     *
+     * @return string[]
+     */
+    public function getDescriptors()
+    {
+        return array_map(
+            function (Package $package) {
+                return $package->getDescriptor();
+            },
+            $this->packages
+        );
+    }
+
+    /**
      * @param Package $package
      */
     private function initializeWith(Package $package)

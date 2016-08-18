@@ -174,4 +174,17 @@ class PackageSetTest extends TestCase
 
         $this->assertTrue($expected->equals($actual), $this->diff($expected, $actual, 'Filtered set of packages is not as expected'));
     }
+
+    /** @test */
+    public function has_package_descriptors()
+    {
+        $packages = new PackageSet(
+            [
+                Package::of('ibuildings/qa-tools', '1.1.27'),
+                Package::of('symfony/console', '4|5'),
+            ]
+        );
+
+        $this->assertSame(['ibuildings/qa-tools:1.1.27', 'symfony/console:4|5'], $packages->getDescriptors());
+    }
 }

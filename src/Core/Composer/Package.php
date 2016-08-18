@@ -59,6 +59,20 @@ final class Package
     }
 
     /**
+     * Returns this package's descriptor, eg. "phpmd/phpmd:^2.0".
+     *
+     * @return string
+     */
+    public function getDescriptor()
+    {
+        return sprintf(
+            '%s:%s',
+            $this->getName()->getName(),
+            $this->getVersionConstraint()->getConstraint()
+        );
+    }
+
+    /**
      * @return PackageName
      */
     public function getName()
