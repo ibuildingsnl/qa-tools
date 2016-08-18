@@ -18,12 +18,17 @@ final class SystemTest extends TestCase
         link(__DIR__ . '/../../dist/qa-tools.phar', $projectDirectory . '/qa-tools');
         link(__DIR__ . '/../../dist/qa-tools.phar.pubkey', $projectDirectory . '/qa-tools.pubkey');
 
-        $this->expect(file_get_contents($scriptPath), $projectDirectory);
+        $expect = function () use ($scriptPath, $projectDirectory) {
+            $this->expect(file_get_contents($scriptPath), $projectDirectory);
+        };
+        $spec = function () use ($expect, $specPath) {
+            require $specPath;
+        };
 
         $cwd = getcwd();
         chdir($projectDirectory);
         try {
-            require $specPath;
+            $spec();
         } finally {
             chdir($cwd);
         }
