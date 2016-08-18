@@ -13,6 +13,7 @@ use Ibuildings\QaTools\Core\Exception\InvalidArgumentException;
 final class Assertion extends BaseAssertion
 {
     const INVALID_NON_EMPTY_STRING   = 1001;
+    const PATH_NOT_EXISTS            = 1002;
 
     protected static $exceptionClass = InvalidArgumentException::class;
 
@@ -30,6 +31,27 @@ final class Assertion extends BaseAssertion
                 $value,
                 sprintf($message, $propertyPath, static::stringify($value)),
                 static::INVALID_NON_EMPTY_STRING,
+                $propertyPath
+            );
+        }
+    }
+
+    /**
+     * @param string      $path
+     * @param string|null $message
+     * @param string|null $propertyPath
+     */
+    public static function pathNotExists($path, $message = null, $propertyPath = null)
+    {
+        self::string($path, 'Expected path to be a string, got "%s" of type "%s"');
+
+        if (file_exists($path)) {
+            $message = $message ?: 'Expected path "%s" to not exist';
+
+            throw static::createException(
+                $path,
+                sprintf($message, $path),
+                static::PATH_NOT_EXISTS,
                 $propertyPath
             );
         }
