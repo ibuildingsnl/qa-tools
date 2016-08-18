@@ -15,6 +15,11 @@ final class PackageVersionConstraint
     private $constraint;
 
     /**
+     * @var string
+     */
+    private $parsedConstraint;
+
+    /**
      * @param string $constraint
      * @return PackageVersionConstraint
      */
@@ -23,22 +28,24 @@ final class PackageVersionConstraint
         Assertion::string($constraint, 'Package version constraint ought to be a string, got "%s" of type "%s"');
 
         try {
-            $constraint = (string) (new VersionParser())->parseConstraints($constraint);
+            $parsedConstraint = (string) (new VersionParser())->parseConstraints($constraint);
         } catch (UnexpectedValueException $e) {
             throw new InvalidArgumentException(
                 sprintf('Package version constraint "%s" is invalid', $constraint)
             );
         }
 
-        return new PackageVersionConstraint($constraint);
+        return new PackageVersionConstraint($constraint, $parsedConstraint);
     }
 
     /**
      * @param string $constraint
+     * @param string $parsedConstraint
      */
-    private function __construct($constraint)
+    private function __construct($constraint, $parsedConstraint)
     {
         $this->constraint = $constraint;
+        $this->parsedConstraint = $parsedConstraint;
     }
 
     /**
@@ -47,7 +54,7 @@ final class PackageVersionConstraint
      */
     public function equals(PackageVersionConstraint $other)
     {
-        return $this->constraint === $other->constraint;
+        return $this->parsedConstraint === $other->parsedConstraint;
     }
 
     /**
@@ -60,6 +67,6 @@ final class PackageVersionConstraint
 
     public function __toString()
     {
-        return sprintf('PackageVersionConstraint("%s")', $this->constraint);
+        return sprintf('PackageVersionConstraint("%s", parsed="%s")', $this->constraint, $this->parsedConstraint);
     }
 }
