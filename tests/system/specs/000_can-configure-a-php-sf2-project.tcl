@@ -17,6 +17,6 @@ answer "Would you like to integrate Travis in your project?" with "Y"
 answer "Would you like to use PHP Mess Detector?" with "Y"
 
 # Allow Composer to do its thing
-set timeout 60
+set timeout 5
 
 exits_with 0
