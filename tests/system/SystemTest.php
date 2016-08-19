@@ -62,8 +62,9 @@ final class SystemTest extends TestCase
         $expectStderr = preg_replace('~^~', '  ', $process->getErrorOutput());
         $this->fail(
             sprintf(
-                "QA Tools distributable terminated with non-zero exit code %d.\n\nSTDOUT:\n%s\nSTDERR:\n%s",
+                "QA Tools distributable terminated with non-zero exit code %d.\n\nCWD:\n  %s\nSTDOUT:\n%s\nSTDERR:\n%s",
                 $process->getExitCode(),
+                getcwd(),
                 $expectStdout,
                 $expectStderr
             )
