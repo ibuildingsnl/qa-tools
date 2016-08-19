@@ -19,11 +19,29 @@ final class TaskList implements IteratorAggregate, Countable
     /**
      * @param Task[] $tasks
      */
-    public function __construct(array $tasks)
+    public function __construct(array $tasks = [])
     {
         Assertion::allIsInstanceOf($tasks, Task::class);
 
         $this->tasks = $tasks;
+    }
+
+    /**
+     * @param Task $task
+     * @return TaskList
+     */
+    public function add(Task $task)
+    {
+        return new TaskList(array_merge($this->tasks, [$task]));
+    }
+
+    /**
+     * @param Task $task
+     * @return TaskList
+     */
+    public function prepend(Task $task)
+    {
+        return new TaskList(array_merge([$task], $this->tasks));
     }
 
     /**

@@ -14,4 +14,10 @@ final class NoOpTask implements Task
     {
         return new NoOpTask();
     }
+
+    public function equals(Task $task)
+    {
+        /** @var self $task */
+        return get_class($this) === get_class($task);
+    }
 }

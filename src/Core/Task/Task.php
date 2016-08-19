@@ -24,4 +24,10 @@ interface Task
      * @return Task A task that, when executed, rolls back the changes this task effected.
      */
     public function execute(Interviewer $interviewer);
+
+    /**
+     * @param Task $task
+     * @return bool
+     */
+    public function equals(Task $task);
 }
