@@ -7,6 +7,7 @@ use Ibuildings\QaTools\Core\Interviewer\Answer\TextualAnswer;
 use Ibuildings\QaTools\Core\Interviewer\Answer\YesOrNoAnswer;
 use Ibuildings\QaTools\Core\Interviewer\Interviewer;
 use Ibuildings\QaTools\Core\Interviewer\Question\QuestionFactory;
+use Ibuildings\QaTools\Core\Project\Directory;
 use Ibuildings\QaTools\Core\Project\Project;
 use Ibuildings\QaTools\Core\Project\ProjectType;
 use Ibuildings\QaTools\Core\Project\ProjectTypeSet;
@@ -16,9 +17,10 @@ final class ProjectConfigurator
     /**
      * @param Interviewer   $interviewer
      * @param Configuration $configuration
+     * @param Directory     $projectDirectory
      * @return Project
      */
-    public function configure(Interviewer $interviewer, Configuration $configuration)
+    public function configure(Interviewer $interviewer, Configuration $configuration, Directory $projectDirectory)
     {
         $interviewer->say(
             sprintf(
@@ -98,7 +100,8 @@ final class ProjectConfigurator
         $configuration->reconfigureProject(
             new Project(
                 $nameOfProjectAnswer->getRaw(),
-                $configFileLocationAnswer->getRaw(),
+                $projectDirectory,
+                new Directory($configFileLocationAnswer->getRaw()),
                 $projectTypes,
                 $travisEnabledAnswer->getRaw()
             )

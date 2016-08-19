@@ -12,7 +12,12 @@ class Project
     private $name;
 
     /**
-     * @var string
+     * @var Directory
+     */
+    private $rootDirectory;
+
+    /**
+     * @var Directory
      */
     private $configurationFilesLocation;
 
@@ -26,13 +31,18 @@ class Project
      */
     private $travisEnabled;
 
-    public function __construct($name, $configurationFilesLocation, ProjectTypeSet $projectTypes, $travisEnabled)
-    {
+    public function __construct(
+        $name,
+        Directory $rootDirectory,
+        Directory $configurationFilesLocation,
+        ProjectTypeSet $projectTypes,
+        $travisEnabled
+    ) {
         Assertion::string($name);
-        Assertion::string($configurationFilesLocation);
         Assertion::boolean($travisEnabled);
 
         $this->name                       = $name;
+        $this->rootDirectory              = $rootDirectory;
         $this->configurationFilesLocation = $configurationFilesLocation;
         $this->projectTypes               = $projectTypes;
         $this->travisEnabled              = $travisEnabled;
@@ -45,7 +55,8 @@ class Project
     public function equals(Project $project)
     {
         return $this->name === $project->name
-            && $this->configurationFilesLocation === $project->configurationFilesLocation
+            && $this->rootDirectory->equals($project->rootDirectory)
+            && $this->configurationFilesLocation->equals($project->configurationFilesLocation)
             && $this->projectTypes->equals($project->projectTypes)
             && $this->travisEnabled === $project->travisEnabled;
     }
@@ -59,7 +70,15 @@ class Project
     }
 
     /**
-     * @return string
+     * @return Directory
+     */
+    public function getRootDirectory()
+    {
+        return $this->rootDirectory;
+    }
+
+    /**
+     * @return Directory
      */
     public function getConfigurationFilesLocation()
     {

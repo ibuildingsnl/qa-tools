@@ -4,6 +4,7 @@ namespace Ibuildings\QaTools\Core\Configuration;
 
 use Ibuildings\QaTools\Core\Configurator\ConfiguratorRepository;
 use Ibuildings\QaTools\Core\Interviewer\Interviewer;
+use Ibuildings\QaTools\Core\Project\Directory;
 use Ibuildings\QaTools\Core\Task\Compiler\TaskListCompiler;
 use Ibuildings\QaTools\Core\Task\Executor\TaskListExecutor;
 
@@ -64,9 +65,10 @@ final class ConfigurationService
 
     /**
      * @param Interviewer $interviewer
+     * @param Directory   $projectDirectory
      * @return void
      */
-    public function configureProject(Interviewer $interviewer)
+    public function configureProject(Interviewer $interviewer, Directory $projectDirectory)
     {
         if ($this->configurationRepository->configurationExists()) {
             $configuration = $this->configurationRepository->load();
@@ -76,7 +78,7 @@ final class ConfigurationService
 
         $memorizingInterviewer = new MemorizingInterviewer($interviewer, $configuration);
 
-        $this->projectConfigurator->configure($memorizingInterviewer, $configuration);
+        $this->projectConfigurator->configure($memorizingInterviewer, $configuration, $projectDirectory);
         $requirementDirectory = $this->requirementDirectoryFactory->createWithProject($configuration->getProject());
 
         $configurators = $this->configuratorRepository->getConfiguratorsForProject($configuration->getProject());

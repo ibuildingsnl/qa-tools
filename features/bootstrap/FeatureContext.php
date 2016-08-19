@@ -16,6 +16,7 @@ use Ibuildings\QaTools\Core\Interviewer\Answer\AnswerFactory;
 use Ibuildings\QaTools\Core\Interviewer\AutomatedResponseInterviewer;
 use Ibuildings\QaTools\Core\Interviewer\Question\QuestionFactory;
 use Ibuildings\QaTools\Core\Interviewer\ScopedInterviewer;
+use Ibuildings\QaTools\Core\Project\Directory;
 use Ibuildings\QaTools\Core\Project\Project;
 use Ibuildings\QaTools\Core\Project\ProjectType;
 use Ibuildings\QaTools\Core\Project\ProjectTypeSet;
@@ -48,7 +49,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
 
     /** @var string */
     private $configuredProjectName;
-    /** @var string */
+    /** @var Directory */
     private $configuredConfigurationFilesLocation;
     /** @var ProjectTypeSet */
     private $configuredProjectTypes;
@@ -104,7 +105,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
      */
     public function iWantTheQARelatedFilesStoredIn($directory)
     {
-        $this->configuredConfigurationFilesLocation = $directory;
+        $this->configuredConfigurationFilesLocation = new Directory($directory);
         $this->interviewer->recordAnswer(
             'Where would you like to store the generated files?',
             AnswerFactory::createFrom($directory)
@@ -153,12 +154,13 @@ class FeatureContext implements Context, SnippetAcceptingContext
     {
         $expectedProject = new Project(
             $this->configuredProjectName,
+            new Directory('.'),
             $this->configuredConfigurationFilesLocation,
             $this->configuredProjectTypes,
             $this->configuredTravisEnabled
         );
 
-        $this->configurationService->configureProject($this->interviewer);
+        $this->configurationService->configureProject($this->interviewer, new Directory('.'));
 
         $configuration = $this->configurationRepository->load();
         $configuredProject = $configuration->getProject();
@@ -200,7 +202,8 @@ class FeatureContext implements Context, SnippetAcceptingContext
             Configuration::loaded(
                 new Project(
                     'Trading Service',
-                    './',
+                    new Directory('.'),
+                    new Directory('./'),
                     new ProjectTypeSet([new ProjectType(ProjectType::TYPE_PHP_SF_2)]),
                     false
                 ),
@@ -237,7 +240,8 @@ class FeatureContext implements Context, SnippetAcceptingContext
         $this->configuredProjectName = $this->configurationRepository->load()->getProject()->getName();
         $this->configuredProjectTypes = $this->configurationRepository->load()->getProject()->getProjectTypes();
         $this->configuredTravisEnabled = $this->configurationRepository->load()->getProject()->isTravisEnabled();
-        $this->configuredConfigurationFilesLocation = $this->configurationRepository->load()->getProject()->getConfigurationFilesLocation();
+        $this->configuredConfigurationFilesLocation =
+            $this->configurationRepository->load()->getProject()->getConfigurationFilesLocation();
         $this->interviewer->respondWithDefaultAnswerTo("What is the project's name?");
         $this->interviewer->respondWithDefaultAnswerTo('What type of project would you like to configure?');
         $this->interviewer->respondWithDefaultAnswerTo('What type of PHP project would you like to configure?');
@@ -267,7 +271,7 @@ class FeatureContext implements Context, SnippetAcceptingContext
      */
     public function theConfigurationIsComplete()
     {
-        $this->configurationService->configureProject($this->interviewer);
+        $this->configurationService->configureProject($this->interviewer, new Directory('.'));
     }
 
     /**
