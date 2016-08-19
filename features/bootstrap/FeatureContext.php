@@ -25,6 +25,7 @@ use Ibuildings\QaTools\Core\Task\Executor\TaskListExecutor;
 use Ibuildings\QaTools\Core\Task\Specification\InstallComposerPackageSpecification;
 use Ibuildings\QaTools\Core\Task\TaskList;
 use Ibuildings\QaTools\Tool\PhpMd\Configurator\PhpMdSf2Configurator;
+use Ibuildings\QaTools\UnitTest\Tasks;
 use Mockery\MockInterface;
 use PHPUnit_Framework_Assert as Assert;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -267,6 +268,14 @@ class FeatureContext implements Context, SnippetAcceptingContext
     }
 
     /**
+     * @When I don't want to use PHPMD
+     */
+    public function iDontWantToUsePhpmd()
+    {
+        $this->interviewer->recordAnswer('Would you like to use PHP Mess Detector?', AnswerFactory::createFrom(false));
+    }
+
+    /**
      * @When the configuration is complete
      */
     public function theConfigurationIsComplete()
@@ -279,19 +288,30 @@ class FeatureContext implements Context, SnippetAcceptingContext
      */
     public function thePhpMdComposerPackageIsInstalled()
     {
-        $aTaskThatInstallsPhpMd = Mockery::on(
-            function (TaskList $tasks) {
-                $anyVersionOfPhpMd = InstallComposerPackageSpecification::ofAnyVersion(new PackageName('phpmd/phpmd'));
-                $matchingTasks = $tasks->match($anyVersionOfPhpMd);
-                Assert::assertCount(1, $matchingTasks);
-
-                return true;
-            }
-        );
-
         $this->taskListExecutor
             ->shouldHaveReceived('execute')
-            ->with($aTaskThatInstallsPhpMd, Mockery::type(ScopedInterviewer::class))
+            ->with(
+                Tasks::anyAmountOfTasksMatching(
+                    InstallComposerPackageSpecification::ofAnyVersion(new PackageName('phpmd/phpmd'))
+                ),
+                Mockery::type(ScopedInterviewer::class)
+            )
+            ->once();
+    }
+
+    /**
+     * @Then the PHPMD Composer package is not installed
+     */
+    public function thePhpmdComposerPackageIsNotInstalled()
+    {
+        $this->taskListExecutor
+            ->shouldHaveReceived('execute')
+            ->with(
+                Tasks::noTasksMatching(
+                    InstallComposerPackageSpecification::ofAnyVersion(new PackageName('phpmd/phpmd'))
+                ),
+                Mockery::type(ScopedInterviewer::class)
+            )
             ->once();
     }
 }

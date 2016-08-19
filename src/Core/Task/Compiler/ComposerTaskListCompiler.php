@@ -25,6 +25,10 @@ final class ComposerTaskListCompiler implements TaskListCompiler
             $packages = $packages->merge($packagesRequirement->getPackages());
         }
 
+        if ($packages->count() === 0) {
+            return new TaskList();
+        }
+
         $task = new InstallComposerPackagesTask($packages);
         $tasks = new TaskList([$task]);
 
