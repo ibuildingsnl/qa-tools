@@ -17,7 +17,7 @@ class PackageTest extends TestCase
     /** @test */
     public function can_compare_version_constraint()
     {
-        $this->assertTrue((Package::of('a/a', '1'))->versionConstraintEquals(PackageVersionConstraint::parse('1.0')));
+        $this->assertTrue(Package::of('a/a', '1')->versionConstraintEquals(PackageVersionConstraint::parse('1.0')));
     }
 
     /**
