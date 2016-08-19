@@ -24,6 +24,9 @@ endif
 test: test-unit test-integration test-acceptance code-style clean build test-system test-security
 test-fast: test-unit test-integration test-acceptance code-style
 
+coverage:
+    vendor/bin/phpunit -c . --testsuite unit,integration --coverage-text
+
 
 test-unit: phpunit-unit
 test-integration: phpunit-integration
