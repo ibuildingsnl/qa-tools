@@ -9,7 +9,7 @@ use Ibuildings\QaTools\Core\Configurator\Configurator;
 use Ibuildings\QaTools\Core\Interviewer\Answer\YesOrNoAnswer;
 use Ibuildings\QaTools\Core\Interviewer\Interviewer;
 use Ibuildings\QaTools\Core\Interviewer\Question\QuestionFactory;
-use Ibuildings\QaTools\Core\Requirement\ComposerPackagesRequirement;
+use Ibuildings\QaTools\Core\Requirement\ComposerDevDependenciesRequirement;
 use Ibuildings\QaTools\Tool\PhpMd\PhpMd;
 
 final class PhpMdSf2Configurator implements Configurator
@@ -26,7 +26,7 @@ final class PhpMdSf2Configurator implements Configurator
         if ($usePhpMd->is(true)) {
             $packagePhpMd2 = Package::of('phpmd/phpmd', '^2.0');
             $requirementDirectory->registerRequirement(
-                new ComposerPackagesRequirement($packagePhpMd2),
+                new ComposerDevDependenciesRequirement($packagePhpMd2),
                 $this->getToolClassName()
             );
         }

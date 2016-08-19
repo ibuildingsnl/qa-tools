@@ -17,7 +17,10 @@ final class NoOpTask implements Task
 
     public function execute(Interviewer $interviewer)
     {
-        return new NoOpTask();
+    }
+
+    public function rollBack(Interviewer $interviewer)
+    {
     }
 
     public function equals(Task $task)

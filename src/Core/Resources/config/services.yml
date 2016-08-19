@@ -75,9 +75,13 @@ services:
 
     qa_tools.task.task_list_compiler:
         class: Ibuildings\QaTools\Core\Task\Compiler\ComposerTaskListCompiler
+        arguments: ["@qa_tools.project_factory"]
 
     qa_tools.task.task_list_executor:
-        class: Ibuildings\QaTools\Core\Task\Executor\NoOpTaskListExecutor
+        class: Ibuildings\QaTools\Core\Task\Executor\CautiousTaskListExecutor
+
+    qa_tools.project_factory:
+        class: Ibuildings\QaTools\Core\Composer\CliComposerProjectFactory
 
     symfony.filesystem:
         class: Symfony\Component\Filesystem\Filesystem

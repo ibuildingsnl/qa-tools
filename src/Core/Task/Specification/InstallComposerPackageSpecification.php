@@ -5,7 +5,7 @@ namespace Ibuildings\QaTools\Core\Task\Specification;
 use Ibuildings\QaTools\Core\Assert\Assertion;
 use Ibuildings\QaTools\Core\Composer\Package;
 use Ibuildings\QaTools\Core\Composer\PackageName;
-use Ibuildings\QaTools\Core\Task\InstallComposerPackagesTask;
+use Ibuildings\QaTools\Core\Task\InstallComposerDevDependenciesTask;
 use Ibuildings\QaTools\Core\Task\Task;
 
 final class InstallComposerPackageSpecification implements Specification
@@ -34,8 +34,8 @@ final class InstallComposerPackageSpecification implements Specification
 
     public function isSatisfiedBy(Task $task)
     {
-        /** @var InstallComposerPackagesTask $task */
-        return get_class($task) === InstallComposerPackagesTask::class
+        /** @var InstallComposerDevDependenciesTask $task */
+        return get_class($task) === InstallComposerDevDependenciesTask::class
             && $task->getPackages()->filter(function (Package $package) {
                 return $package->getName()->equals($this->packageName);
             });

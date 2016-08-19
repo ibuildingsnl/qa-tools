@@ -5,7 +5,7 @@ namespace Ibuildings\QaTools\Core\Requirement;
 use Ibuildings\QaTools\Core\Composer\Package;
 use Ibuildings\QaTools\Core\Composer\PackageSet;
 
-final class ComposerPackagesRequirement implements Requirement
+final class ComposerDevDependenciesRequirement implements Requirement
 {
     /**
      * @var PackageSet
@@ -19,7 +19,7 @@ final class ComposerPackagesRequirement implements Requirement
 
     public function equals(Requirement $other)
     {
-        /** @var ComposerPackagesRequirement $other */
+        /** @var ComposerDevDependenciesRequirement $other */
         return get_class($other) === self::class
             && $this->packages->equals($other->packages);
     }
@@ -34,6 +34,6 @@ final class ComposerPackagesRequirement implements Requirement
 
     public function __toString()
     {
-        return sprintf('ComposerPackagesRequirement(%s)', $this->packages);
+        return sprintf('ComposerDevDependenciesRequirement(%s)', $this->packages);
     }
 }

@@ -3,6 +3,8 @@
 use Behat\Behat\Context\Context;
 use Behat\Behat\Context\SnippetAcceptingContext;
 use Ibuildings\QaTools\Core\Composer\PackageName;
+use Ibuildings\QaTools\Core\Composer\Project as ComposerProject;
+use Ibuildings\QaTools\Core\Composer\ProjectFactory as ComposerProjectFactory;
 use Ibuildings\QaTools\Core\Configuration\Configuration;
 use Ibuildings\QaTools\Core\Configuration\ConfigurationService;
 use Ibuildings\QaTools\Core\Configuration\InMemoryConfigurationRepository;
@@ -69,7 +71,9 @@ class FeatureContext implements Context, SnippetAcceptingContext
         $toolConfigurator = new ToolConfigurator($requirementHelperSet, $this->container);
         $this->configuratorRepository = new ConfiguratorRepository();
         $requirementDirectoryFactory = new InMemoryRequirementDirectoryFactory();
-        $taskListCompiler = new ComposerTaskListCompiler();
+        $projectFactory = Mockery::mock(ComposerProjectFactory::class);
+        $projectFactory->shouldReceive('forDirectory')->andReturn(Mockery::mock(ComposerProject::class));
+        $taskListCompiler = new ComposerTaskListCompiler($projectFactory);
         $this->taskListExecutor = Mockery::spy(TaskListExecutor::class);
 
         $this->interviewer = new AutomatedResponseInterviewer();
@@ -223,7 +227,9 @@ class FeatureContext implements Context, SnippetAcceptingContext
         $toolConfigurator = new ToolConfigurator($requirementHelperSet, $this->container);
         $this->configuratorRepository = new ConfiguratorRepository();
         $requirementDirectoryFactory = new InMemoryRequirementDirectoryFactory();
-        $taskListCompiler = new ComposerTaskListCompiler();
+        $projectFactory = Mockery::mock(ComposerProjectFactory::class);
+        $projectFactory->shouldReceive('forDirectory')->andReturn(Mockery::mock(ComposerProject::class));
+        $taskListCompiler = new ComposerTaskListCompiler($projectFactory);
         $this->taskListExecutor = Mockery::spy(TaskListExecutor::class);
 
         $this->interviewer = new AutomatedResponseInterviewer();
