@@ -11,6 +11,12 @@ final class AnySpecification implements Specification
         return true;
     }
 
+    public function equals(Specification $specification)
+    {
+        /** @var self $specification */
+        return get_class($specification) === self::class;
+    }
+
     public function __toString()
     {
         return sprintf('AnySpecification()');

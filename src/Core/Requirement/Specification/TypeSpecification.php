@@ -27,6 +27,13 @@ final class TypeSpecification implements Specification
         return get_class($requirement) === $this->type;
     }
 
+    public function equals(Specification $specification)
+    {
+        /** @var self $specification */
+        return get_class($specification) === self::class
+            && $this->type === $specification->type;
+    }
+
     public function __toString()
     {
         return sprintf('TypeSpecification("%s")', $this->type);

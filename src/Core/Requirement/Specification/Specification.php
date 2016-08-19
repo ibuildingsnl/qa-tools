@@ -11,4 +11,10 @@ interface Specification
      * @return bool
      */
     public function isSatisfiedBy(Requirement $requirement);
+
+    /**
+     * @param Specification $specification
+     * @return bool
+     */
+    public function equals(Specification $specification);
 }

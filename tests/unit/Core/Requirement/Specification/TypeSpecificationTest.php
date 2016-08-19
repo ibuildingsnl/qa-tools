@@ -2,9 +2,11 @@
 
 namespace Ibuildings\QaTools\UnitTest\Core\Requirement\Specification;
 
+use Ibuildings\QaTools\Core\Requirement\Specification\Specification;
 use Ibuildings\QaTools\Core\Requirement\Specification\TypeSpecification;
 use Ibuildings\QaTools\UnitTest\Core\Requirement\BarRequirement;
 use Ibuildings\QaTools\UnitTest\Core\Requirement\FooRequirement;
+use Mockery;
 use PHPUnit\Framework\TestCase as TestCase;
 
 /**
@@ -30,5 +32,18 @@ class TypeSpecificationTest extends TestCase
             $specification->isSatisfiedBy(new BarRequirement()),
             "BarRequirement satisfied the specification, while it should'nt"
         );
+    }
+
+    /** @test */
+    public function can_be_equal()
+    {
+        $fooSpecA = new TypeSpecification(FooRequirement::class);
+        $fooSpecB = new TypeSpecification(FooRequirement::class);
+        $barSpec = new TypeSpecification(BarRequirement::class);
+        $otherSpec = Mockery::mock(Specification::class);
+
+        $this->assertTrue($fooSpecA->equals($fooSpecB));
+        $this->assertFalse($fooSpecA->equals($barSpec));
+        $this->assertFalse($fooSpecA->equals($otherSpec));
     }
 }
