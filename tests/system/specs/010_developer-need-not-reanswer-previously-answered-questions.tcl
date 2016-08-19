@@ -1,4 +1,4 @@
-test ./qa-tools configure --no-ansi
+test ./qa-tools configure --no-ansi -v
 
 answer "What is the project's name?" with "Boolean Bust"
 
@@ -21,7 +21,7 @@ exits_with 0
 
 ###############
 
-test ./qa-tools configure --no-ansi
+test ./qa-tools configure --no-ansi -v
 
 accept_default_for "What is the project's name?"
 accept_default_for "Where would you like to store the generated files?"
