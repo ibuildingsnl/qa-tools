@@ -19,10 +19,11 @@ final class PhpMdSf2Configurator implements Configurator
         RequirementDirectory $requirementDirectory,
         RequirementHelperSet $requirementHelperSet
     ) {
+        /** @var YesOrNoAnswer $usePhpMd */
         $usePhpMd = $interviewer->ask(
             QuestionFactory::createYesOrNo('Would you like to use PHP Mess Detector?', YesOrNoAnswer::YES)
         );
-        if ($usePhpMd) {
+        if ($usePhpMd->is(true)) {
             $packagePhpMd2 = Package::of('phpmd/phpmd', '^2.0');
             $requirementDirectory->registerRequirement(
                 new ComposerPackagesRequirement($packagePhpMd2),
@@ -31,9 +32,6 @@ final class PhpMdSf2Configurator implements Configurator
         }
     }
 
-    /**
-     * @return string
-     */
     public function getToolClassName()
     {
         return PhpMd::class;
