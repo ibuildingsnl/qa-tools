@@ -11,7 +11,7 @@ use Ibuildings\QaTools\Core\Interviewer\ScopedInterviewer;
 use Ibuildings\QaTools\Core\Project\Directory;
 use Ibuildings\QaTools\Core\Project\Project;
 use Ibuildings\QaTools\Core\Project\ProjectTypeSet;
-use Ibuildings\QaTools\Core\Requirement\ComposerDevDependenciesRequirement;
+use Ibuildings\QaTools\Core\Requirement\ComposerDevDependencyRequirement;
 use Ibuildings\QaTools\Core\Requirement\RequirementList;
 use Ibuildings\QaTools\Core\Requirement\Specification\TypeSpecification;
 use Ibuildings\QaTools\Core\Task\Compiler\ComposerTaskListCompiler;
@@ -54,9 +54,9 @@ class ComposerTaskListCompilerTest extends TestCase
     /** @test */
     public function it_compiles_one_dev_dep_requirement_into_a_single_install_task()
     {
-        $specification = ValueObject::equals(new TypeSpecification(ComposerDevDependenciesRequirement::class));
+        $specification = ValueObject::equals(new TypeSpecification(ComposerDevDependencyRequirement::class));
         $requirements = new RequirementList(
-            [new ComposerDevDependenciesRequirement(Package::of('phpunit/phpunit', '18'))]
+            [new ComposerDevDependencyRequirement(Package::of('phpunit/phpunit', '18'))]
         );
 
         $this->requirementsDirectory
@@ -80,13 +80,13 @@ class ComposerTaskListCompilerTest extends TestCase
     /** @test */
     public function it_compiles_two_dev_dep_requirements_into_a_single_install_task()
     {
-        $specification = ValueObject::equals(new TypeSpecification(ComposerDevDependenciesRequirement::class));
+        $specification = ValueObject::equals(new TypeSpecification(ComposerDevDependencyRequirement::class));
 
         $packageA = Package::of('a/a', '1');
         $packageB = Package::of('b/b', '2');
         $requirements = new RequirementList([
-            new ComposerDevDependenciesRequirement($packageA),
-            new ComposerDevDependenciesRequirement($packageB),
+            new ComposerDevDependencyRequirement($packageA),
+            new ComposerDevDependencyRequirement($packageB),
         ]);
 
         $this->requirementsDirectory

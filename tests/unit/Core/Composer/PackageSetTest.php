@@ -187,4 +187,15 @@ class PackageSetTest extends TestCase
 
         $this->assertSame(['ibuildings/qa-tools:1.1.27', 'symfony/console:4|5'], $packages->getDescriptors());
     }
+
+    /** @test */
+    public function packages_can_be_added()
+    {
+        $setA = new PackageSet([Package::of('a/a', '1')]);
+        $setB = $setA->add(Package::of('b/b', '1'));
+
+        $this->assertNotSame($setA, $setB);
+        $this->assertCount(1, $setA);
+        $this->assertCount(2, $setB);
+    }
 }

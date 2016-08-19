@@ -4,7 +4,7 @@ namespace Ibuildings\QaTools\Core\Requirement\Specification;
 
 use Ibuildings\QaTools\Core\Composer\Package;
 use Ibuildings\QaTools\Core\Composer\PackageName;
-use Ibuildings\QaTools\Core\Requirement\ComposerDevDependenciesRequirement;
+use Ibuildings\QaTools\Core\Requirement\ComposerDevDependencyRequirement;
 use Ibuildings\QaTools\Core\Requirement\Requirement;
 
 final class ComposerDevDependenciesRequirementSpecification implements Specification
@@ -33,11 +33,9 @@ final class ComposerDevDependenciesRequirementSpecification implements Specifica
 
     public function isSatisfiedBy(Requirement $requirement)
     {
-        /** @var ComposerDevDependenciesRequirement $requirement */
-        return get_class($requirement) === ComposerDevDependenciesRequirement::class
-            && $requirement->getPackages()->filter(function (Package $package) {
-                return $package->getName()->equals($this->packageName);
-            });
+        /** @var ComposerDevDependencyRequirement $requirement */
+        return get_class($requirement) === ComposerDevDependencyRequirement::class
+            && $requirement->getPackage()->getName()->equals($this->packageName);
     }
 
     public function equals(Specification $specification)

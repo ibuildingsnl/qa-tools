@@ -24,12 +24,12 @@ final class PackageSet implements Countable, IteratorAggregate
     }
 
     /**
-     * @param PackageSet $other
+     * @param Package $package
      * @return PackageSet
      */
-    public function merge(PackageSet $other)
+    public function add(Package $package)
     {
-        return new PackageSet(array_merge($this->packages, $other->packages));
+        return new PackageSet(array_merge($this->packages, [$package]));
     }
 
     /**

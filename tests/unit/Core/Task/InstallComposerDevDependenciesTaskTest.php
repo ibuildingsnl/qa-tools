@@ -7,7 +7,6 @@ use Ibuildings\QaTools\Core\Composer\Configuration;
 use Ibuildings\QaTools\Core\Composer\Package;
 use Ibuildings\QaTools\Core\Composer\PackageSet;
 use Ibuildings\QaTools\Core\Composer\Project;
-use Ibuildings\QaTools\Core\Composer\RuntimeAssertionException;
 use Ibuildings\QaTools\Core\Exception\RuntimeException;
 use Ibuildings\QaTools\Core\Interviewer\Interviewer;
 use Ibuildings\QaTools\Core\Task\InstallComposerDevDependenciesTask;
