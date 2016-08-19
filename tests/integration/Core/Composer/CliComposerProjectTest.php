@@ -25,7 +25,7 @@ class CliComposerProjectTest extends TestCase
 
     protected function setUp()
     {
-        $this->workingDirectory = sys_get_temp_dir() . '/qa-tools_' . microtime(true) . '_install_composer_task';
+        $this->workingDirectory = sys_get_temp_dir() . '/qa-tools_' . microtime(true) . '_install-composer-task';
         $this->project = new CliComposerProject($this->workingDirectory);
     }
 

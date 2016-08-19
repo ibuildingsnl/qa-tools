@@ -13,7 +13,7 @@ final class SystemTest extends TestCase
      */
     public function execute_specs($scriptPath, $specPath)
     {
-        $projectDirectory = sys_get_temp_dir() . '/qa-tools_' . microtime(true);
+        $projectDirectory = sys_get_temp_dir() . '/qa-tools_' . microtime(true) . '_system-test';
         mkdir($projectDirectory);
         link(__DIR__ . '/../../dist/qa-tools.phar', $projectDirectory . '/qa-tools');
         link(__DIR__ . '/../../dist/qa-tools.phar.pubkey', $projectDirectory . '/qa-tools.pubkey');
