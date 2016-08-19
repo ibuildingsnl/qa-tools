@@ -6,6 +6,11 @@ use Ibuildings\QaTools\Core\Interviewer\Interviewer;
 
 final class NoOpTask implements Task
 {
+    public function getDescription()
+    {
+        return 'No operation.';
+    }
+
     public function checkPrerequisites(Interviewer $interviewer)
     {
     }
