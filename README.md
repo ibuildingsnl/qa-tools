@@ -15,3 +15,7 @@ you can use the resulting configurations as a base and configure it manually.
  * [Phar](docs/phar.md)
  * [Reporting a bug](docs/reporting-a-bug.md)
  * [Ubiquitous language](docs/ubiquitous-language.md)
+
+## Wanna-haves
+
+ * Support verbose messages about which tools are being configured with which configurators, in which tasks they result, etc.
