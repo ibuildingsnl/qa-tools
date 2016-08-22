@@ -104,7 +104,7 @@ Composer::initialise();
 $expect();
 
 assertFileExists('qa-tools.json');
-Composer::assertPackageIsInstalled(new PackageName('phpmd/phpmd'));
+Composer::assertPackageIsInstalled('phpmd/phpmd');
 ```
 
 ## Example specification
