@@ -2,6 +2,7 @@
 
 namespace Ibuildings\QaTools\SystemTest;
 
+use Ibuildings\QaTools\Core\Exception\RuntimeException;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Process\ProcessBuilder;
 
@@ -15,8 +16,14 @@ final class SystemTest extends TestCase
     {
         $projectDirectory = sys_get_temp_dir() . '/qa-tools_' . microtime(true) . '_system-test';
         mkdir($projectDirectory);
-        link(__DIR__ . '/../../dist/qa-tools.phar', $projectDirectory . '/qa-tools');
-        link(__DIR__ . '/../../dist/qa-tools.phar.pubkey', $projectDirectory . '/qa-tools.pubkey');
+
+        switch (getenv('QA_TOOLS_BIN')) {
+            case 'phar':
+                symlink(__DIR__ . '/../../dist/qa-tools.phar', $projectDirectory . '/qa-tools');
+                break;
+            default:
+                symlink(__DIR__ . '/../../bin/qa-tools', $projectDirectory . '/qa-tools');
+        }
 
         $expect = function () use ($scriptPath, $projectDirectory) {
             $this->expect(file_get_contents($scriptPath), $projectDirectory);

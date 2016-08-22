@@ -21,8 +21,8 @@ else
     (composer build && composer install --dev) || (ret=$$?; composer install --dev && exit $$ret)
 endif
 
-test: test-unit test-integration test-acceptance code-style clean build test-system test-security
-test-fast: test-unit test-integration test-acceptance code-style
+test: test-unit test-integration test-system-dev code-style clean build test-system-phar test-security
+test-fast: test-unit test-integration test-system-dev code-style
 
 coverage:
     vendor/bin/phpunit -c . --testsuite unit,integration --coverage-text
@@ -30,8 +30,8 @@ coverage:
 
 test-unit: phpunit-unit
 test-integration: phpunit-integration
-test-acceptance: behat-acceptance
-test-system: phpunit-system
+test-system-dev: phpunit-system-dev
+test-system-phar: phpunit-system-phar
 test-security: verify-build-is-signed check-security-advisories
 code-style: phpcs
 
@@ -40,10 +40,10 @@ phpunit-unit:
     vendor/bin/phpunit -c . --testsuite unit
 phpunit-integration:
     vendor/bin/phpunit -c . --testsuite integration
-phpunit-system:
+phpunit-system-dev:
     vendor/bin/phpunit -c . --testsuite system
-behat-acceptance:
-    vendor/bin/behat
+phpunit-system-phar:
+    QA_TOOLS_BIN=phar vendor/bin/phpunit -c . --testsuite system
 phpcs:
     # Blank line is needed to provide STDIN input to phpcs when phpcs is called from the Git pre-push hook context
     # See https://github.com/squizlabs/PHP_CodeSniffer/issues/993

@@ -2,6 +2,7 @@
 
 namespace Ibuildings\QaTools\Core\Tool;
 
+use ReflectionClass;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
@@ -28,10 +29,11 @@ abstract class AbstractTool implements Tool
      */
     protected function determineResourcePath()
     {
-        $fqcn = explode('\\', get_called_class());
-        $subNamespaces = array_splice($fqcn, 2, -1);
+        $toolReflection = new ReflectionClass($this);
+        $toolFilePath = $toolReflection->getFileName();
+        $resourcesPath = dirname($toolFilePath) . '/Resources';
 
-        return 'src/' . implode('/', $subNamespaces) . '/Resources';
+        return $resourcesPath;
     }
 
     /**
