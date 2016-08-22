@@ -5,6 +5,7 @@ namespace Ibuildings\QaTools\Core\Configuration;
 use Ibuildings\QaTools\Core\Configurator\ConfiguratorRepository;
 use Ibuildings\QaTools\Core\Interviewer\Interviewer;
 use Ibuildings\QaTools\Core\Project\Directory;
+use Ibuildings\QaTools\Core\Requirement\Executor\ExecutorExecutor as RequirementsExecutorExecutor;
 use Ibuildings\QaTools\Core\Task\Compiler\TaskListCompiler;
 use Ibuildings\QaTools\Core\Task\Executor\TaskListExecutor;
 
@@ -36,14 +37,9 @@ final class ConfigurationService
     private $requirementDirectoryFactory;
 
     /**
-     * @var TaskListCompiler
+     * @var RequirementsExecutorExecutor
      */
-    private $taskListCompiler;
-
-    /**
-     * @var TaskListExecutor
-     */
-    private $taskListExecutor;
+    private $requirementsExecutorExecutor;
 
     public function __construct(
         ConfigurationRepository $configurationRepository,
@@ -51,16 +47,14 @@ final class ConfigurationService
         ToolConfigurator $toolConfigurator,
         ConfiguratorRepository $configuratorRepository,
         RequirementDirectoryFactory $requirementDirectoryFactory,
-        TaskListCompiler $taskListCompiler,
-        TaskListExecutor $taskListExecutor
+        RequirementsExecutorExecutor $requirementsExecutorExecutor
     ) {
         $this->configurationRepository = $configurationRepository;
         $this->projectConfigurator = $projectConfigurator;
         $this->configuratorRepository = $configuratorRepository;
         $this->requirementDirectoryFactory = $requirementDirectoryFactory;
         $this->toolConfigurator = $toolConfigurator;
-        $this->taskListCompiler = $taskListCompiler;
-        $this->taskListExecutor = $taskListExecutor;
+        $this->requirementsExecutorExecutor = $requirementsExecutorExecutor;
     }
 
     /**
@@ -84,8 +78,7 @@ final class ConfigurationService
         $configurators = $this->configuratorRepository->getConfiguratorsForProject($configuration->getProject());
         $this->toolConfigurator->configure($configurators, $memorizingInterviewer, $requirementDirectory);
 
-        $tasks = $this->taskListCompiler->compile($requirementDirectory, $memorizingInterviewer);
-        $this->taskListExecutor->execute($tasks, $memorizingInterviewer);
+        $this->requirementsExecutorExecutor->execute($requirementDirectory, $memorizingInterviewer);
 
         $this->configurationRepository->save($configuration);
     }

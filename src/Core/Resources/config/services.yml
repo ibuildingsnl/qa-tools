@@ -7,8 +7,7 @@ services:
             - "@qa_tools.tool_configurator"
             - "@qa_tools.configurator.configurator_repository"
             - "@qa_tools.configuration.requirement_directory.factory"
-            - "@qa_tools.task.task_list_compiler"
-            - "@qa_tools.task.task_list_executor"
+            - "@qa_tools.requirement.executor_executor"
 
     qa_tools.file_handler:
         alias: qa_tools.io.file.filesystem_adapter
@@ -73,14 +72,17 @@ services:
         arguments:
             - "@twig.environment"
 
-    qa_tools.task.task_list_compiler:
-        class: Ibuildings\QaTools\Core\Task\Compiler\ComposerTaskListCompiler
-        arguments: ["@qa_tools.project_factory"]
+    qa_tools.requirement.executor_executor:
+        class: Ibuildings\QaTools\Core\Requirement\Executor\CautiousExecutorExecutor
+        arguments:
+            - ["@qa_tools.requirement.install_composer_dev_dependency_executor"]
 
-    qa_tools.task.task_list_executor:
-        class: Ibuildings\QaTools\Core\Task\Executor\CautiousTaskListExecutor
+    qa_tools.requirement.install_composer_dev_dependency_executor:
+        class: Ibuildings\QaTools\Core\Requirement\Executor\InstallComposerDevDependencyExecutor
+        arguments:
+            - "@qa_tools.composer.project_factory"
 
-    qa_tools.project_factory:
+    qa_tools.composer.project_factory:
         class: Ibuildings\QaTools\Core\Composer\CliComposerProjectFactory
 
     symfony.filesystem:

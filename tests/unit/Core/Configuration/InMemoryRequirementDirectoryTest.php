@@ -29,7 +29,7 @@ class InMemoryRequirementDirectoryTest extends TestCase
 
         $this->assertCount(
             0,
-            $requirementDirectory->matchRequirements(new AnySpecification()),
+            $requirementDirectory->getRequirements(),
             'Requirement directory ought to contain no registered requirements'
         );
     }
@@ -58,11 +58,10 @@ class InMemoryRequirementDirectoryTest extends TestCase
         $fakeRequirement = new FooRequirement('Some requirement');
 
         $requirementDirectory = new InMemoryRequirementDirectory($dummyProject);
-        $requirementDirectory->registerRequirement($fakeRequirement, PhpMd::class);
+        $requirementDirectory->registerRequirement($fakeRequirement);
 
-        $requirementsMatchingTheFakeRequirement = $requirementDirectory->matchRequirements(new AnySpecification());
         $this->assertTrue(
-            $requirementsMatchingTheFakeRequirement->equals(new RequirementList([$fakeRequirement])),
+            $requirementDirectory->getRequirements()->equals(new RequirementList([$fakeRequirement])),
             'Requirement directory ought to contain the registered requirement'
         );
     }

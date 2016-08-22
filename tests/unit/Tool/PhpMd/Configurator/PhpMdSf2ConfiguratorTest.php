@@ -7,6 +7,8 @@ use Ibuildings\QaTools\Core\Configuration\RequirementDirectory;
 use Ibuildings\QaTools\Core\Configuration\RequirementHelperSet;
 use Ibuildings\QaTools\Core\Interviewer\Answer\YesOrNoAnswer;
 use Ibuildings\QaTools\Core\Interviewer\AutomatedResponseInterviewer;
+use Ibuildings\QaTools\Core\Requirement\ComposerDevDependencyRequirement;
+use Ibuildings\QaTools\Core\Requirement\Requirement;
 use Ibuildings\QaTools\Core\Requirement\Specification\ComposerDevDependenciesRequirementSpecification;
 use Ibuildings\QaTools\Tool\PhpMd\Configurator\PhpMdSf2Configurator;
 use Ibuildings\QaTools\Tool\PhpMd\PhpMd;
@@ -46,10 +48,12 @@ class PhpMdSf2ConfiguratorTest extends TestCase
         $this->requirementDirectory
             ->shouldHaveReceived('registerRequirement')
             ->with(
-                Requirements::requirementMatching(
-                    ComposerDevDependenciesRequirementSpecification::ofAnyVersion(new PackageName('phpmd/phpmd'))
-                ),
-                PhpMd::class
+                Mockery::on(
+                    function (Requirement $requirement) {
+                        return $requirement instanceof ComposerDevDependencyRequirement
+                            && $requirement->getPackage()->getName()->getName() === 'phpmd/phpmd';
+                    }
+                )
             );
     }
 

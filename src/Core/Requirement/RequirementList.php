@@ -17,7 +17,7 @@ final class RequirementList implements IteratorAggregate, Countable
     /**
      * @param Requirement[] $requirements
      */
-    public function __construct(array $requirements)
+    public function __construct(array $requirements = [])
     {
         Assertion::allIsInstanceOf($requirements, Requirement::class);
 

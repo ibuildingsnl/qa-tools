@@ -11,16 +11,15 @@ interface RequirementDirectory
 {
     /**
      * @param Requirement $requirement
-     * @param string      $toolClassName
      * @return void
      */
-    public function registerRequirement(Requirement $requirement, $toolClassName);
+    public function registerRequirement(Requirement $requirement);
 
     /**
-     * @param Specification $requirementSpecification
+     * @param callable $predicate
      * @return RequirementList
      */
-    public function matchRequirements(Specification $requirementSpecification);
+    public function filterRequirements(callable $predicate);
 
     /**
      * @return Project

@@ -15,31 +15,36 @@ final class InMemoryRequirementDirectory implements RequirementDirectory
     private $project;
 
     /**
-     * @var RequirementDirectoryEntry[]
+     * @var RequirementList
      */
-    private $entries;
+    private $requirements;
 
     public function __construct(Project $project)
     {
         $this->project = $project;
-        $this->entries = [];
+        $this->requirements = new RequirementList();
     }
 
-    public function registerRequirement(Requirement $requirement, $toolClassName)
+    public function registerRequirement(Requirement $requirement)
     {
-        $this->entries[] = new RequirementDirectoryEntry($requirement, $toolClassName);
+        $this->requirements = $this->requirements->add($requirement);
     }
 
-    public function matchRequirements(Specification $specification)
+    /**
+     * @param callable $predicate
+     * @return RequirementList
+     */
+    public function filterRequirements(callable $predicate)
     {
-        $matchingRequirements = [];
-        foreach ($this->entries as $entry) {
-            if ($entry->requirementSatisfies($specification)) {
-                $matchingRequirements[] = $entry->getRequirement();
-            }
-        }
+        return $this->requirements->filter($predicate);
+    }
 
-        return new RequirementList($matchingRequirements);
+    /**
+     * @return RequirementList
+     */
+    public function getRequirements()
+    {
+        return $this->requirements;
     }
 
     public function getProject()

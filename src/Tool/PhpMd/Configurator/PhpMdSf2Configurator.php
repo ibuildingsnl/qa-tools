@@ -25,10 +25,7 @@ final class PhpMdSf2Configurator implements Configurator
         );
         if ($usePhpMd->is(true)) {
             $packagePhpMd2 = Package::of('phpmd/phpmd', '^2.0');
-            $requirementDirectory->registerRequirement(
-                new ComposerDevDependencyRequirement($packagePhpMd2),
-                $this->getToolClassName()
-            );
+            $requirementDirectory->registerRequirement(new ComposerDevDependencyRequirement($packagePhpMd2));
         }
     }
 
