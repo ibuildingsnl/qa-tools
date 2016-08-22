@@ -98,7 +98,7 @@ class CliComposerProjectTest extends TestCase
         Composer::initialise();
         $this->setupLocalPackages();
 
-        Composer::addConflict(Package::of('phpmd/phpmd', '^2.0'));
+        Composer::addConflict('phpmd/phpmd', '^2.0');
 
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Your requirements could not be resolved to an installable set of packages.');
@@ -111,7 +111,7 @@ class CliComposerProjectTest extends TestCase
         Composer::initialise();
         $this->setupLocalPackages();
 
-        Composer::addConflict(Package::of('phpmd/phpmd', '^2.0'));
+        Composer::addConflict('phpmd/phpmd', '^2.0');
 
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Your requirements could not be resolved to an installable set of packages.');

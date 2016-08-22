@@ -3,8 +3,6 @@
 namespace Ibuildings\QaTools\SystemTest;
 
 use Composer\Json\JsonManipulator;
-use Ibuildings\QaTools\Core\Composer\Package;
-use Ibuildings\QaTools\Core\Composer\PackageName;
 
 final class Composer
 {
@@ -27,27 +25,31 @@ final class Composer
     /**
      * Adds a dependency conflict.
      *
-     * @param Package $package
+     * @param string $packageName
+     * @param string $packageVersionConstraint
      * @return void
      */
-    public static function addConflict(Package $package)
+    public static function addConflict($packageName, $packageVersionConstraint)
     {
-        $packageName = $package->getName()->getName();
-        $versionConstraint = $package->getVersionConstraint()->getConstraint();
-
         $manipulator = new JsonManipulator(file_get_contents('composer.json'));
-        $manipulator->addSubNode('conflict', $packageName, $versionConstraint);
+        $manipulator->addSubNode('conflict', $packageName, $packageVersionConstraint);
 
         file_put_contents('composer.json', $manipulator->getContents());
     }
 
-    public static function assertPackageIsInstalled(PackageName $packageName)
+    /**
+     * @param string $packageName
+     */
+    public static function assertPackageIsInstalled($packageName)
     {
-        assertFileExists(sprintf('vendor/%s/composer.json', $packageName->getName()));
+        assertFileExists(sprintf('vendor/%s/composer.json', $packageName));
     }
 
-    public static function assertPackageIsNotInstalled(PackageName $packageName)
+    /**
+     * @param string $packageName
+     */
+    public static function assertPackageIsNotInstalled($packageName)
     {
-        assertFileNotExists(sprintf('vendor/%s', $packageName->getName()));
+        assertFileNotExists(sprintf('vendor/%s', $packageName));
     }
 }
