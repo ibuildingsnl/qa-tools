@@ -11,7 +11,7 @@ interface Project
      * @param PackageSet $packages
      * @return void
      */
-    public function verifyDevDependenciesWouldntConflict(PackageSet $packages);
+    public function verifyDevDependenciesWillNotConflict(PackageSet $packages);
 
     /**
      * Add and install the set of packages as development dependencies.

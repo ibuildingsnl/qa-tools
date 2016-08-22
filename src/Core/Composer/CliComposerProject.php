@@ -31,7 +31,7 @@ final class CliComposerProject implements Project
         $this->composerBinary = $composerBinary;
     }
 
-    public function verifyDevDependenciesWouldntConflict(PackageSet $packages)
+    public function verifyDevDependenciesWillNotConflict(PackageSet $packages)
     {
         $configurationBackup = $this->getConfiguration();
 

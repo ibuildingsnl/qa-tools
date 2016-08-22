@@ -37,7 +37,7 @@ final class InstallComposerDevDependencyExecutor implements Executor
         $packages = $this->getPackagesToAddAsDevDependency($tasks);
 
         $this->composerProject = $this->composerProjectFactory->forDirectory('.');
-        $this->composerProject->verifyDevDependenciesWouldntConflict($packages);
+        $this->composerProject->verifyDevDependenciesWillNotConflict($packages);
     }
 
     public function execute(TaskList $tasks, Interviewer $interviewer)

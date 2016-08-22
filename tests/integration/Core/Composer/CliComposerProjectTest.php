@@ -106,7 +106,7 @@ class CliComposerProjectTest extends TestCase
     }
 
     /** @test */
-    public function can_verify_dev_dep_wouldnt_conflict()
+    public function can_verify_dev_dep_wont_conflict()
     {
         Composer::initialise();
         $this->setupLocalPackages();
@@ -115,7 +115,7 @@ class CliComposerProjectTest extends TestCase
 
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Your requirements could not be resolved to an installable set of packages.');
-        $this->project->verifyDevDependenciesWouldntConflict(new PackageSet([Package::of('phpmd/phpmd', '^2.0')]));
+        $this->project->verifyDevDependenciesWillNotConflict(new PackageSet([Package::of('phpmd/phpmd', '^2.0')]));
     }
 
     /** @test */
@@ -125,7 +125,7 @@ class CliComposerProjectTest extends TestCase
         $this->setupLocalPackages();
 
         $expectedConfiguration = $this->project->getConfiguration();
-        $this->project->verifyDevDependenciesWouldntConflict(new PackageSet([Package::of('phpmd/phpmd', '^2.0')]));
+        $this->project->verifyDevDependenciesWillNotConflict(new PackageSet([Package::of('phpmd/phpmd', '^2.0')]));
 
         $actualConfiguration = $this->project->getConfiguration();
         $this->assertTrue(
