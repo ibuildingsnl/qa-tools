@@ -2,8 +2,8 @@
 
 namespace Ibuildings\QaTools\UnitTest\Core\Configuration;
 
-use Ibuildings\QaTools\Core\Configuration\TaskHelperSet;
 use Ibuildings\QaTools\Core\Configuration\TaskDirectory;
+use Ibuildings\QaTools\Core\Configuration\TaskHelperSet;
 use Ibuildings\QaTools\Core\Configurator\Configurator;
 use Ibuildings\QaTools\Core\Interviewer\Interviewer;
 

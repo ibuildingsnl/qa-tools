@@ -32,9 +32,11 @@ Which project types apply for a certain project are determined through the inter
 
 The configuration process can be defined in the Configurator's `configure`
 method, in which it can use the `Interviewer`, `TaskDirectory` and
-`TaskHelperSet`. Templating and such are available through the `TaskHelperSet`.
-These can be used to help register tasks with the `TaskDirectory`. A tool's
-templates should reside under `src/Tool/<ToolName>/Resources/templates`.
+`TaskHelperSet`. Templating and such are available through the
+`TaskHelperSet`.
+These can be used to help register requirements with the
+`TaskDirectory`. A tool's templates should reside under
+`src/Tool/<ToolName>/Resources/templates`.
 
 The `Interviewer` is used for IO interaction.
 

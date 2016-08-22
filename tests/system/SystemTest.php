@@ -13,17 +13,28 @@ final class SystemTest extends TestCase
      */
     public function execute_specs($scriptPath, $specPath)
     {
-        $projectDirectory = sys_get_temp_dir() . '/' . uniqid('qa-tools_system', true);
+        $projectDirectory = sys_get_temp_dir() . '/qa-tools_' . microtime(true) . '_system-test';
         mkdir($projectDirectory);
-        link(__DIR__ . '/../../dist/qa-tools.phar', $projectDirectory . '/qa-tools');
-        link(__DIR__ . '/../../dist/qa-tools.phar.pubkey', $projectDirectory . '/qa-tools.pubkey');
 
-        $this->expect(file_get_contents($scriptPath), $projectDirectory);
+        switch (getenv('QA_TOOLS_BIN')) {
+            case 'phar':
+                symlink(__DIR__ . '/../../dist/qa-tools.phar', $projectDirectory . '/qa-tools');
+                break;
+            default:
+                symlink(__DIR__ . '/../../bin/qa-tools', $projectDirectory . '/qa-tools');
+        }
+
+        $expect = function () use ($scriptPath, $projectDirectory) {
+            $this->expect(file_get_contents($scriptPath), $projectDirectory);
+        };
+        $spec = function () use ($expect, $specPath) {
+            require $specPath;
+        };
 
         $cwd = getcwd();
         chdir($projectDirectory);
         try {
-            require $specPath;
+            $spec();
         } finally {
             chdir($cwd);
         }
@@ -57,8 +68,9 @@ final class SystemTest extends TestCase
         $expectStderr = preg_replace('~^~', '  ', $process->getErrorOutput());
         $this->fail(
             sprintf(
-                "QA Tools distributable terminated with non-zero exit code %d.\n\nSTDOUT:\n%s\nSTDERR:\n%s",
+                "QA Tools distributable terminated with non-zero exit code %d.\n\nCWD:\n  %s\nSTDOUT:\n%s\nSTDERR:\n%s",
                 $process->getExitCode(),
+                getcwd(),
                 $expectStdout,
                 $expectStderr
             )

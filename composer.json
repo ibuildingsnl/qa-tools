@@ -9,7 +9,6 @@
         "psr-4": {
             "Ibuildings\\QaTools\\UnitTest\\": ["tests/unit"],
             "Ibuildings\\QaTools\\IntegrationTest\\": ["tests/integration"],
-            "Ibuildings\\QaTools\\SecurityTest\\": ["tests/security"],
             "Ibuildings\\QaTools\\SystemTest\\": ["tests/system"]
         },
         "files": ["tests/system/assert.php"]
@@ -25,20 +24,27 @@
     "require": {
         "php": "^5.6|^7.0",
         "beberlei/assert": "^2.5",
+        "composer/composer": "^1.2",
+        "composer/semver": "^1.4",
         "symfony/config": "^3.0",
         "symfony/console": "^3.0",
         "symfony/dependency-injection": "^3.0",
+        "symfony/process": "^3.1",
         "symfony/yaml": "^3.0",
         "twig/twig": "^1.24",
         "zendframework/zend-json": "^3.0"
     },
     "require-dev": {
-        "behat/behat": "^3.1",
         "mockery/mockery": "^0.9.4",
+        "phpmd/phpmd": "^2.4",
         "phpunit/phpunit": "^5.4",
+        "sebastian/diff": "^1.4",
+        "sebastian/exporter": "^1.2",
         "sensiolabs/security-checker": "^3.0",
-        "symfony/process": "^3.1",
         "squizlabs/php_codesniffer": "^2.6"
+    },
+    "config": {
+        "sort-packages": true
     },
     "extra": {
         "qa-tools-box-source": "https://github.com/box-project/box2/releases/download/2.7.2/box-2.7.2.phar",

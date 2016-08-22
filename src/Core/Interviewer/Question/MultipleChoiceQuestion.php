@@ -9,6 +9,10 @@ use Ibuildings\QaTools\Core\Interviewer\Answer\NoDefaultAnswer;
 use Ibuildings\QaTools\Core\Interviewer\Answer\TextualAnswer;
 use LogicException;
 
+/**
+ * Describes a multiple-choice question, where one is to give a single answer. The
+ * list-choice question is similar, but allows one to give multiple answers.
+ */
 final class MultipleChoiceQuestion implements Question
 {
     /**

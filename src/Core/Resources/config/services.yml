@@ -1,12 +1,13 @@
 services:
     qa_tools.configuration_service:
-        class: Ibuildings\QaTools\Core\Service\ConfigurationService
+        class: Ibuildings\QaTools\Core\Configuration\ConfigurationService
         arguments:
             - "@qa_tools.configuration.configuration_repository"
             - "@qa_tools.project_configurator"
-            - "@qa_tools.run_list_configurator"
+            - "@qa_tools.tool_configurator"
             - "@qa_tools.configurator.configurator_repository"
             - "@qa_tools.configuration.task_directory.factory"
+            - "@qa_tools.task.executor_executor"
 
     qa_tools.file_handler:
         alias: qa_tools.io.file.filesystem_adapter
@@ -17,8 +18,8 @@ services:
     qa_tools.project_configurator:
         class: Ibuildings\QaTools\Core\Configuration\ProjectConfigurator
 
-    qa_tools.run_list_configurator:
-        class: Ibuildings\QaTools\Core\Configuration\RunListConfigurator
+    qa_tools.tool_configurator:
+        class: Ibuildings\QaTools\Core\Configuration\ToolConfigurator
         arguments:
             - "@qa_tools.configuration.task_helper_set"
             - "@service_container"
@@ -36,7 +37,7 @@ services:
             - "%qa_tools.configuration_location%"
 
     qa_tools.configuration.task_directory.factory:
-        class: Ibuildings\QaTools\Core\Configuration\TaskDirectoryFactory
+        class: Ibuildings\QaTools\Core\Configuration\InMemoryTaskDirectoryFactory
 
     qa_tools.configuration.task_helper_set:
         class: Ibuildings\QaTools\Core\Configuration\TaskHelperSet
@@ -70,6 +71,19 @@ services:
         class: Ibuildings\QaTools\Core\Templating\TemplateEngine
         arguments:
             - "@twig.environment"
+
+    qa_tools.task.executor_executor:
+        class: Ibuildings\QaTools\Core\Task\Executor\CautiousExecutorExecutor
+        arguments:
+            - ["@qa_tools.task.install_composer_dev_dependency_executor"]
+
+    qa_tools.task.install_composer_dev_dependency_executor:
+        class: Ibuildings\QaTools\Core\Task\Executor\InstallComposerDevDependencyExecutor
+        arguments:
+            - "@qa_tools.composer.project_factory"
+
+    qa_tools.composer.project_factory:
+        class: Ibuildings\QaTools\Core\Composer\CliComposerProjectFactory
 
     symfony.filesystem:
         class: Symfony\Component\Filesystem\Filesystem

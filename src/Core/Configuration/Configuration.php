@@ -10,7 +10,7 @@ use Ibuildings\QaTools\Core\Project\Project;
 class Configuration
 {
     /**
-     * @var Project $project
+     * @var Project|null $project
      */
     private $project;
 
@@ -56,7 +56,7 @@ class Configuration
     }
 
     /**
-     * @return Project
+     * @return Project|null
      */
     public function getProject()
     {

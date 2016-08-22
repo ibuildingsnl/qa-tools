@@ -21,8 +21,8 @@ final class TaskHelperSetTest extends TestCase
 
         $dummyTemplateEngine = Mockery::mock(TemplateEngine::class);
 
-        $taskDirectory = new TaskHelperSet($dummyTemplateEngine);
-        $taskDirectory->setTemplatePath($path);
+        $taskHelperSet = new TaskHelperSet($dummyTemplateEngine);
+        $taskHelperSet->setTemplatePath($path);
     }
 
     /**
@@ -38,8 +38,8 @@ final class TaskHelperSetTest extends TestCase
             ->shouldReceive('setPath')
             ->with($path);
 
-        $taskDirectory = new TaskHelperSet($dummyTemplateEngine);
-        $taskDirectory->setTemplatePath($path);
+        $taskHelperSet = new TaskHelperSet($dummyTemplateEngine);
+        $taskHelperSet->setTemplatePath($path);
     }
 
     /**
@@ -53,8 +53,8 @@ final class TaskHelperSetTest extends TestCase
 
         $dummyTemplateEngine = Mockery::mock(TemplateEngine::class);
 
-        $taskDirectory = new TaskHelperSet($dummyTemplateEngine);
-        $taskDirectory->renderTemplate($template);
+        $taskHelperSet = new TaskHelperSet($dummyTemplateEngine);
+        $taskHelperSet->renderTemplate($template);
     }
 
     /**
@@ -70,7 +70,7 @@ final class TaskHelperSetTest extends TestCase
             ->shouldReceive('render')
             ->with($template, []);
 
-        $taskDirectory = new TaskHelperSet($dummyTemplateEngine);
-        $taskDirectory->renderTemplate($template);
+        $taskHelperSet = new TaskHelperSet($dummyTemplateEngine);
+        $taskHelperSet->renderTemplate($template);
     }
 }

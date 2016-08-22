@@ -8,9 +8,11 @@ use Ibuildings\QaTools\Core\Configuration\QuestionId;
 use Ibuildings\QaTools\Core\Interviewer\Answer\Answer;
 use Ibuildings\QaTools\Core\Interviewer\Answer\TextualAnswer;
 use Ibuildings\QaTools\Core\IO\File\FileHandler;
+use Ibuildings\QaTools\Core\Project\Directory;
 use Ibuildings\QaTools\Core\Project\Project;
 use Ibuildings\QaTools\Core\Project\ProjectType;
 use Ibuildings\QaTools\Core\Project\ProjectTypeSet;
+use Ibuildings\QaTools\UnitTest\Diffing;
 use Mockery;
 use Mockery\Matcher\MatcherAbstract;
 use Mockery\MockInterface;
@@ -22,6 +24,8 @@ use PHPUnit_Framework_Assert as Assert;
  */
 class FileConfigurationRepositoryTest extends TestCase
 {
+    use Diffing;
+
     const FILE_PATH = '/path/to/qa-tools.json';
 
     /** @test */
@@ -80,14 +84,19 @@ JSON;
 
         $expectedProject = new Project(
             'Boolean Bust',
-            './',
+            new Directory(dirname(self::FILE_PATH)),
+            new Directory('./'),
             new ProjectTypeSet([new ProjectType(ProjectType::TYPE_PHP_SF_2)]),
             true
         );
 
         $this->assertTrue(
             $configuration->getProject()->equals($expectedProject),
-            'Project of loaded configuration doesn\'t match expectations'
+            $this->diff(
+                $expectedProject,
+                $configuration->getProject(),
+                'Project of loaded configuration doesn\'t match expectations'
+            )
         );
 
         $this->assertTrue($configuration->hasAnswer(new QuestionId('0772fd2dbcfb028612dab5899a7e5ed5')));
@@ -99,7 +108,13 @@ JSON;
     {
         $configuration = Configuration::create();
         $configuration->reconfigureProject(
-            new Project('Terran Tubers', './qa-tools', new ProjectTypeSet([new ProjectType('php.drupal8')]), false)
+            new Project(
+                'Terran Tubers',
+                new Directory(getcwd()),
+                new Directory('./qa-tools'),
+                new ProjectTypeSet([new ProjectType('php.drupal8')]),
+                false
+            )
         );
         $configuration->answer(new QuestionId('4ee0c41472083a7765b17033aab88207'), new TextualAnswer('Spacious Salons'));
 
@@ -112,7 +127,7 @@ JSON;
         $expectedJson = <<<'JSON'
 {
     "projectName": "Terran Tubers",
-    "configurationFilesLocation": ".\/qa-tools",
+    "configurationFilesLocation": "qa-tools\/",
     "projectTypes": [
         "php.drupal8"
     ],

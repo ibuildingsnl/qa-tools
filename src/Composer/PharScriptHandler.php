@@ -96,6 +96,10 @@ final class PharScriptHandler
         return $io->write(sprintf('<info>Installed Box at "%s".</info>', $installPath));
     }
 
+    /**
+     * @param Event $event
+     * @SuppressWarnings(PHPMD.ExitExpression)
+     */
     public static function buildPhar(Event $event)
     {
         $config = $event->getComposer()->getPackage()->getExtra();

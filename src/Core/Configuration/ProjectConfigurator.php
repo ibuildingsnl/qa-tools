@@ -6,7 +6,8 @@ use Ibuildings\QaTools\Core\Application\Application;
 use Ibuildings\QaTools\Core\Interviewer\Answer\TextualAnswer;
 use Ibuildings\QaTools\Core\Interviewer\Answer\YesOrNoAnswer;
 use Ibuildings\QaTools\Core\Interviewer\Interviewer;
-use Ibuildings\QaTools\Core\Interviewer\Question;
+use Ibuildings\QaTools\Core\Interviewer\Question\QuestionFactory;
+use Ibuildings\QaTools\Core\Project\Directory;
 use Ibuildings\QaTools\Core\Project\Project;
 use Ibuildings\QaTools\Core\Project\ProjectType;
 use Ibuildings\QaTools\Core\Project\ProjectTypeSet;
@@ -16,9 +17,10 @@ final class ProjectConfigurator
     /**
      * @param Interviewer   $interviewer
      * @param Configuration $configuration
+     * @param Directory     $projectDirectory
      * @return Project
      */
-    public function configure(Interviewer $interviewer, Configuration $configuration)
+    public function configure(Interviewer $interviewer, Configuration $configuration, Directory $projectDirectory)
     {
         $interviewer->say(
             sprintf(
@@ -28,14 +30,14 @@ final class ProjectConfigurator
             )
         );
 
-        $nameOfProjectAnswer = $interviewer->ask(Question::create('What is the project\'s name?'));
+        $nameOfProjectAnswer = $interviewer->ask(QuestionFactory::create('What is the project\'s name?'));
 
         $configFileLocationAnswer = $interviewer->ask(
-            Question::create('Where would you like to store the generated files?', './')
+            QuestionFactory::create('Where would you like to store the generated files?', './')
         );
 
         $projectCategoryAnswer = $interviewer->ask(
-            Question::createMultipleChoice(
+            QuestionFactory::createMultipleChoice(
                 'What type of project would you like to configure?',
                 [
                     'PHP',
@@ -51,7 +53,7 @@ final class ProjectConfigurator
             || $projectCategoryAnswer->equals(new TextualAnswer('PHP and JavaScript'))
         ) {
             $projectTypeAnswers[] = $interviewer->ask(
-                Question::createMultipleChoice(
+                QuestionFactory::createMultipleChoice(
                     'What type of PHP project would you like to configure?',
                     [
                         'Symfony 2',
@@ -68,7 +70,7 @@ final class ProjectConfigurator
             || $projectCategoryAnswer->equals(new TextualAnswer('PHP and JavaScript'))
         ) {
             $projectTypeAnswers[] = $interviewer->ask(
-                Question::createMultipleChoice(
+                QuestionFactory::createMultipleChoice(
                     'What type of JavaScript project would you like to configure?',
                     [
                         'AngularJS 1',
@@ -89,7 +91,7 @@ final class ProjectConfigurator
         );
 
         $travisEnabledAnswer = $interviewer->ask(
-            Question::createYesOrNo(
+            QuestionFactory::createYesOrNo(
                 'Would you like to integrate Travis in your project?',
                 YesOrNoAnswer::YES
             )
@@ -98,7 +100,8 @@ final class ProjectConfigurator
         $configuration->reconfigureProject(
             new Project(
                 $nameOfProjectAnswer->getRaw(),
-                $configFileLocationAnswer->getRaw(),
+                $projectDirectory,
+                new Directory($configFileLocationAnswer->getRaw()),
                 $projectTypes,
                 $travisEnabledAnswer->getRaw()
             )

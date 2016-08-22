@@ -6,8 +6,8 @@ testing against the phar file that is distributed to developers. Contributors
 can describe their expectations of the interactive dialogue with the tool and
 assert what the program results are. Together, these form a *specification*.
 
-System specifications consist of two parts, a *dialogue expectation* and an
-*assertion file*. These must be placed in the directory `./tests/system/specs`.
+System specifications consist of two parts, a *dialogue expectation* and a
+*test file*. These must be placed in the directory `./tests/system/specs`.
 
     .
     ├── tests
@@ -64,7 +64,7 @@ script exits with exit code 1. When the program exits with a non-zero exit code,
 the expect script exits with the same exit code.
 
 ```tcl
-assert_success
+exits_with 0
 ```
 
 [wiki-tcl]: https://en.wikipedia.org/wiki/Tcl
@@ -85,18 +85,26 @@ The solution is to escape the brackets:
 answer "\[0\] Symfony 3" with "0"
 ```
 
-## The assertions file
+## The test file
 
-The assertions file contains plain PHP. It is executed after the dialogue has
-been executed. The assertion must reside in the namespace
-`Ibuildings\QaTools\SystemTest`. PHPUnit's assertion functions are in scope.
+The test file contains plain PHP. The expect script is available as the callable
+`$expect`. This enables you to arrange things before executing QA Tools, like
+adding conflicts to the project's Composer configuration. Note that the test
+file ought to reside in the namespace `Ibuildings\QaTools\SystemTest`; this 
+makes sure PHPUnit's assertion functions are in scope.
 
 ```php
 <?php
 
 namespace Ibuildings\QaTools\SystemTest;
 
+Composer::initialise();
+
+/** @var callable $expect */
+$expect();
+
 assertFileExists('qa-tools.json');
+Composer::assertPackageIsInstalled('phpmd/phpmd');
 ```
 
 ## Example specification
@@ -118,7 +126,7 @@ answer "\[1\] Symfony 3" with "1"
 
 answer "Would you like to integrate Travis in your project?" with "Y"
 
-expect_eof
+exits_with 0
 ```
 
 ```php
@@ -126,7 +134,22 @@ expect_eof
 
 namespace Ibuildings\QaTools\SystemTest;
 
+Composer::initialise();
+
+/** @var callable $expect */
+$expect();
+
 assertFileExists('qa-tools.json');
+Composer::assertPackageIsInstalled('phpmd/phpmd');
 ```
 
+## Installing Composer packages
 
+Most tools will want to install Composer packages. However, installing these
+packages during testing, both locally as on Travis, makes tests slow and
+brittle. To countermand this, all tests involving Composer (pretty much all
+system tests) work with locally emulated packages. An example of this is
+`phpmd/phpmd`, emulated in
+[`tests/composer/packages/phpmd/composer.json`](../../tests/composer/packages/phpmd/composer.json).
+These emulated packages are registered with Composer in an initialisation stage
+in each test by calling [Composer::initialise](../../tests/system/Composer.php).

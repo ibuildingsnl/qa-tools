@@ -5,7 +5,6 @@ namespace Ibuildings\QaTools\UnitTest\Core\Configuration;
 use Ibuildings\QaTools\Core\Configurator\ConfiguratorRepository;
 use Ibuildings\QaTools\Core\Exception\LogicException;
 use Ibuildings\QaTools\Core\Project\ProjectType;
-use Mockery as m;
 use PHPUnit\Framework\TestCase as TestCase;
 
 /**

@@ -1,15 +1,17 @@
-set timeout 2
-
 # Wraps the program-under-test inside a dash shell. For some reason, PHP exit
 # codes are not read properly by expect, always returning 0. By wrapping the
 # PHP script in a shell, the exit code propagates properly. This phenomenon is
 # yet to be explained
+#
+# The expectation time-out is always reset to 2 seconds when calling test.
 #
 # Arguments:
 #   args (...string) The command string for the dash shell to execute
 proc test { args } {
     global spawn_id
     spawn sh -c "$args"
+
+    set timeout 2
 }
 
 # Writes a message to screen informing the contributor the expected string did
@@ -81,9 +83,10 @@ proc accept_default_for { question } {
 }
 
 # Asserts that the program will exit within the configured time-out. If it
-# doesn't, the script terminates with a failure. If the program exits with
-# a non-zero exit code, the expect script exits with the same exit code
-proc assert_success {} {
+# doesn't, the script terminates with a failure. If the program doesn't exit with
+# the given exit code, the expect script exits with the same exit code, or 1 if
+# the exit code is 0.
+proc exits_with expected_exit_code {
     puts "Waiting for command to terminate..."
 
     expect {
@@ -98,7 +101,10 @@ proc assert_success {} {
 
     if {$os_error_flag == 0} {
         puts "Exit code: $value"
-        if {$value != 0} {
+        if {$value != $expected_exit_code} {
+            if {$value == 0} {
+                exit 1
+            }
             exit $value
         }
     } else {

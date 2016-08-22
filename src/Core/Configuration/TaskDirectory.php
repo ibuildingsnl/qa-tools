@@ -3,49 +3,25 @@
 namespace Ibuildings\QaTools\Core\Configuration;
 
 use Ibuildings\QaTools\Core\Project\Project;
-use Ibuildings\QaTools\Core\Task\Runner\TaskList;
 use Ibuildings\QaTools\Core\Task\Task;
+use Ibuildings\QaTools\Core\Task\TaskList;
 
-final class TaskDirectory
+interface TaskDirectory
 {
     /**
-     * @var Project
-     */
-    private $project;
-
-    /**
-     * @var TaskList
-     */
-    private $taskList;
-
-    public function __construct(Project $project)
-    {
-        $this->project = $project;
-        $this->taskList = new TaskList([]);
-    }
-
-    /**
      * @param Task $task
+     * @return void
+     */
+    public function registerTask(Task $task);
+
+    /**
+     * @param callable $predicate
      * @return TaskList
      */
-    public function addTask(Task $task)
-    {
-        $this->taskList = $this->taskList->add($task);
-    }
+    public function filterTasks(callable $predicate);
 
     /**
      * @return Project
      */
-    public function getProject()
-    {
-        return $this->project;
-    }
-
-    /**
-     * @return TaskList
-     */
-    public function getTaskList()
-    {
-        return $this->taskList;
-    }
+    public function getProject();
 }

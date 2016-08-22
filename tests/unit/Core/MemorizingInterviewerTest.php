@@ -7,7 +7,6 @@ use Ibuildings\QaTools\Core\Configuration\MemorizingInterviewer;
 use Ibuildings\QaTools\Core\Configuration\QuestionId;
 use Ibuildings\QaTools\Core\Interviewer\Answer\TextualAnswer;
 use Ibuildings\QaTools\Core\Interviewer\Interviewer;
-use Ibuildings\QaTools\Core\Interviewer\Question\Question;
 use Ibuildings\QaTools\Core\Interviewer\Question\TextualQuestion;
 use Mockery;
 use Mockery\Matcher\MatcherAbstract;

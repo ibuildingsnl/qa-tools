@@ -4,8 +4,9 @@ namespace Ibuildings\QaTools\Core\Configuration;
 
 use Ibuildings\QaTools\Core\Assert\Assertion;
 use Ibuildings\QaTools\Core\Interviewer\Answer\Answer;
-use Ibuildings\QaTools\Core\Interviewer\Answer\Factory\AnswerFactory;
+use Ibuildings\QaTools\Core\Interviewer\Answer\AnswerFactory;
 use Ibuildings\QaTools\Core\IO\File\FileHandler;
+use Ibuildings\QaTools\Core\Project\Directory;
 use Ibuildings\QaTools\Core\Project\Project;
 use Ibuildings\QaTools\Core\Project\ProjectType;
 use Ibuildings\QaTools\Core\Project\ProjectTypeSet;
@@ -49,7 +50,8 @@ final class FileConfigurationRepository implements ConfigurationRepository
         return Configuration::loaded(
             new Project(
                 $jsonData['projectName'],
-                $jsonData['configurationFilesLocation'],
+                new Directory(dirname($this->filePath)),
+                new Directory($jsonData['configurationFilesLocation']),
                 new ProjectTypeSet(
                     array_map(
                         function ($projectType) {
@@ -83,7 +85,7 @@ final class FileConfigurationRepository implements ConfigurationRepository
         $json = Json::encode(
             [
                 'projectName'                => $project->getName(),
-                'configurationFilesLocation' => $project->getConfigurationFilesLocation(),
+                'configurationFilesLocation' => $project->getConfigurationFilesLocation()->getDirectory(),
                 'projectTypes'               => array_map(
                     function (ProjectType $projectType) {
                         return $projectType->getProjectType();

@@ -31,7 +31,7 @@ $ tools/git/pre-push-install
 
 If you feel comfortable with testing your contribution, it is good to know that
 we perform various types of testing: unit testing, integration testing,
-acceptance testing, security testing, and smoke testing.
+system testing, and security testing.
 
 You'll find these tests in the following locations:
 
@@ -39,9 +39,10 @@ You'll find these tests in the following locations:
 |-----------------------------|-----------------------|
 | Unit tests                  | `./tests/unit`        |
 | Integration tests           | `./tests/integration` |
-| Acceptance tests            | `./features`          |
 | System tests                | `./tests/system`      |
-| Security tests              | `./tests/security`    |
+
+The only security test is currently located in the `Makefile` target
+`verify-build-is-signed`.
 
 Feel free to read the [Testing strategy](#testing-strategy) to find out what
 testing strategy the QA Tools project employs.
@@ -67,11 +68,7 @@ The testing strategy helps to:
 Because the QA Tools application is distributed as a stand-alone console
 application, and because it likely operates on a user's own developer machine,
 it is important that the tool works properly. We use the following types of
-functional testing: unit, integration, acceptance, and system testing.
-
-It is important that the features of the [tools](docs/ubiquitous-language.md)
-are proven using acceptance tests. During the implementation of each feature,
-write as much unit and integration tests as is feasible.
+functional testing: unit, integration, and system testing.
 
 The final distributable is put through its paces using system tests. These tests
 configure the QA Tools in fictitious projects and asserts to various degrees

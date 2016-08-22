@@ -19,13 +19,13 @@ class TemplateEngine
     }
 
     /**
-     * @param string $relativePath
+     * @param string $path
      */
-    public function setPath($relativePath)
+    public function setPath($path)
     {
-        Assertion::string($relativePath);
+        Assertion::string($path);
 
-        $this->twig->setLoader(new Twig_loader_Filesystem(APPLICATION_ROOT_DIR . '/' . $relativePath));
+        $this->twig->setLoader(new Twig_loader_Filesystem($path));
     }
 
     /**
