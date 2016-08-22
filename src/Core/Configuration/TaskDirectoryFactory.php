@@ -4,11 +4,11 @@ namespace Ibuildings\QaTools\Core\Configuration;
 
 use Ibuildings\QaTools\Core\Project\Project;
 
-interface RequirementDirectoryFactory
+interface TaskDirectoryFactory
 {
     /**
      * @param Project $project
-     * @return RequirementDirectory
+     * @return TaskDirectory
      */
     public function createWithProject(Project $project);
 }

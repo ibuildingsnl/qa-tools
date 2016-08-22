@@ -2,11 +2,6 @@
 
 namespace Ibuildings\QaTools\Core\Composer;
 
-use Composer\Semver\VersionParser;
-use Ibuildings\QaTools\Core\Assert\Assertion;
-use Ibuildings\QaTools\Core\Exception\InvalidArgumentException;
-use UnexpectedValueException;
-
 final class Package
 {
     /**

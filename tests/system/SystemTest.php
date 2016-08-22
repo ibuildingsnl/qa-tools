@@ -2,7 +2,6 @@
 
 namespace Ibuildings\QaTools\SystemTest;
 
-use Ibuildings\QaTools\Core\Exception\RuntimeException;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Process\ProcessBuilder;
 

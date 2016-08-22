@@ -8,7 +8,7 @@ use Ibuildings\QaTools\UnitTest\Diffing;
 use PHPUnit\Framework\TestCase as TestCase;
 
 /**
- * @group Requirement
+ * @group Composer
  */
 class PackageTest extends TestCase
 {

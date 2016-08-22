@@ -2,13 +2,13 @@
 
 namespace Ibuildings\QaTools\UnitTest;
 
-use Ibuildings\QaTools\Core\Configuration\RequirementHelperSet;
+use Ibuildings\QaTools\Core\Configuration\TaskHelperSet;
 use Ibuildings\QaTools\Core\Exception\InvalidArgumentException;
 use Ibuildings\QaTools\Core\Templating\TemplateEngine;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 
-final class RequirementHelperSetTest extends TestCase
+final class TaskHelperSetTest extends TestCase
 {
     /**
      * @test
@@ -21,8 +21,8 @@ final class RequirementHelperSetTest extends TestCase
 
         $dummyTemplateEngine = Mockery::mock(TemplateEngine::class);
 
-        $requirementHelperSet = new RequirementHelperSet($dummyTemplateEngine);
-        $requirementHelperSet->setTemplatePath($path);
+        $taskHelperSet = new TaskHelperSet($dummyTemplateEngine);
+        $taskHelperSet->setTemplatePath($path);
     }
 
     /**
@@ -38,8 +38,8 @@ final class RequirementHelperSetTest extends TestCase
             ->shouldReceive('setPath')
             ->with($path);
 
-        $requirementHelperSet = new RequirementHelperSet($dummyTemplateEngine);
-        $requirementHelperSet->setTemplatePath($path);
+        $taskHelperSet = new TaskHelperSet($dummyTemplateEngine);
+        $taskHelperSet->setTemplatePath($path);
     }
 
     /**
@@ -53,8 +53,8 @@ final class RequirementHelperSetTest extends TestCase
 
         $dummyTemplateEngine = Mockery::mock(TemplateEngine::class);
 
-        $requirementHelperSet = new RequirementHelperSet($dummyTemplateEngine);
-        $requirementHelperSet->renderTemplate($template);
+        $taskHelperSet = new TaskHelperSet($dummyTemplateEngine);
+        $taskHelperSet->renderTemplate($template);
     }
 
     /**
@@ -70,7 +70,7 @@ final class RequirementHelperSetTest extends TestCase
             ->shouldReceive('render')
             ->with($template, []);
 
-        $requirementHelperSet = new RequirementHelperSet($dummyTemplateEngine);
-        $requirementHelperSet->renderTemplate($template);
+        $taskHelperSet = new TaskHelperSet($dummyTemplateEngine);
+        $taskHelperSet->renderTemplate($template);
     }
 }

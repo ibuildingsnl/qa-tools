@@ -2,17 +2,13 @@
 
 namespace Ibuildings\QaTools\UnitTest\Tool\PhpMd;
 
-use Ibuildings\QaTools\Core\Composer\PackageName;
-use Ibuildings\QaTools\Core\Configuration\RequirementDirectory;
-use Ibuildings\QaTools\Core\Configuration\RequirementHelperSet;
+use Ibuildings\QaTools\Core\Configuration\TaskDirectory;
+use Ibuildings\QaTools\Core\Configuration\TaskHelperSet;
 use Ibuildings\QaTools\Core\Interviewer\Answer\YesOrNoAnswer;
 use Ibuildings\QaTools\Core\Interviewer\AutomatedResponseInterviewer;
-use Ibuildings\QaTools\Core\Requirement\ComposerDevDependencyRequirement;
-use Ibuildings\QaTools\Core\Requirement\Requirement;
-use Ibuildings\QaTools\Core\Requirement\Specification\ComposerDevDependenciesRequirementSpecification;
+use Ibuildings\QaTools\Core\Task\ComposerDevDependencyTask;
+use Ibuildings\QaTools\Core\Task\Task;
 use Ibuildings\QaTools\Tool\PhpMd\Configurator\PhpMdSf2Configurator;
-use Ibuildings\QaTools\Tool\PhpMd\PhpMd;
-use Ibuildings\QaTools\UnitTest\Requirements;
 use Mockery;
 use Mockery\MockInterface;
 use PHPUnit\Framework\TestCase as TestCase;
@@ -25,16 +21,16 @@ class PhpMdSf2ConfiguratorTest extends TestCase
 {
     /** @var AutomatedResponseInterviewer */
     private $interviewer;
-    /** @var RequirementDirectory|MockInterface */
-    private $requirementDirectory;
-    /** @var RequirementHelperSet|MockInterface */
-    private $requirementHelperSet;
+    /** @var TaskDirectory|MockInterface */
+    private $taskDirectory;
+    /** @var TaskHelperSet|MockInterface */
+    private $taskHelperSet;
 
     protected function setUp()
     {
         $this->interviewer = new AutomatedResponseInterviewer();
-        $this->requirementDirectory = Mockery::spy(RequirementDirectory::class);
-        $this->requirementHelperSet = Mockery::mock(RequirementHelperSet::class);
+        $this->taskDirectory = Mockery::spy(TaskDirectory::class);
+        $this->taskHelperSet = Mockery::mock(TaskHelperSet::class);
     }
 
     /** @test */
@@ -43,15 +39,15 @@ class PhpMdSf2ConfiguratorTest extends TestCase
         $this->interviewer->recordAnswer('Would you like to use PHP Mess Detector?', YesOrNoAnswer::yes());
 
         $configurator = new PhpMdSf2Configurator();
-        $configurator->configure($this->interviewer, $this->requirementDirectory, $this->requirementHelperSet);
+        $configurator->configure($this->interviewer, $this->taskDirectory, $this->taskHelperSet);
 
-        $this->requirementDirectory
-            ->shouldHaveReceived('registerRequirement')
+        $this->taskDirectory
+            ->shouldHaveReceived('registerTask')
             ->with(
                 Mockery::on(
-                    function (Requirement $requirement) {
-                        return $requirement instanceof ComposerDevDependencyRequirement
-                            && $requirement->getPackage()->getName()->getName() === 'phpmd/phpmd';
+                    function (Task $task) {
+                        return $task instanceof ComposerDevDependencyTask
+                            && $task->getPackage()->getName()->getName() === 'phpmd/phpmd';
                     }
                 )
             );
@@ -63,8 +59,8 @@ class PhpMdSf2ConfiguratorTest extends TestCase
         $this->interviewer->recordAnswer('Would you like to use PHP Mess Detector?', YesOrNoAnswer::no());
 
         $configurator = new PhpMdSf2Configurator();
-        $configurator->configure($this->interviewer, $this->requirementDirectory, $this->requirementHelperSet);
+        $configurator->configure($this->interviewer, $this->taskDirectory, $this->taskHelperSet);
 
-        $this->requirementDirectory->shouldNotHaveReceived('registerRequirement');
+        $this->taskDirectory->shouldNotHaveReceived('registerTask');
     }
 }

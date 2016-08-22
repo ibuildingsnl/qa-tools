@@ -1,10 +1,10 @@
 <?php
 
-namespace Ibuildings\QaTools\Core\Requirement;
+namespace Ibuildings\QaTools\Core\Task;
 
 use Ibuildings\QaTools\Core\Composer\Package;
 
-final class ComposerDevDependencyRequirement implements Requirement
+final class ComposerDevDependencyTask implements Task
 {
     /**
      * @var Package
@@ -26,6 +26,6 @@ final class ComposerDevDependencyRequirement implements Requirement
 
     public function __toString()
     {
-        return sprintf('ComposerDevDependencyRequirement(%s)', $this->package);
+        return sprintf('ComposerDevDependencyTask(%s)', $this->package);
     }
 }

@@ -1,12 +1,11 @@
 <?php
 
-namespace Ibuildings\QaTools\Core\Requirement\Executor;
+namespace Ibuildings\QaTools\Core\Task\Executor;
 
 use Exception;
 use Ibuildings\QaTools\Core\Assert\Assertion;
-use Ibuildings\QaTools\Core\Configuration\RequirementDirectory;
+use Ibuildings\QaTools\Core\Configuration\TaskDirectory;
 use Ibuildings\QaTools\Core\Interviewer\ScopedInterviewer;
-use Throwable;
 
 final class CautiousExecutorExecutor implements ExecutorExecutor
 {
@@ -29,12 +28,12 @@ final class CautiousExecutorExecutor implements ExecutorExecutor
         $this->executors = $executors;
     }
 
-    public function execute(RequirementDirectory $requirementDirectory, ScopedInterviewer $interviewer)
+    public function execute(TaskDirectory $taskDirectory, ScopedInterviewer $interviewer)
     {
         foreach ($this->executors as $executor) {
             $interviewer->setScope(get_class($executor));
             $executor->checkPrerequisites(
-                $requirementDirectory->filterRequirements([$executor, 'supports']),
+                $taskDirectory->filterTasks([$executor, 'supports']),
                 $interviewer
             );
         }
@@ -44,18 +43,21 @@ final class CautiousExecutorExecutor implements ExecutorExecutor
             foreach ($this->executors as $executor) {
                 array_unshift($executorsToRollBack, $executor);
                 $interviewer->setScope(get_class($executor));
-                $executor->execute($requirementDirectory->filterRequirements([$executor, 'supports']), $interviewer);
+                $executor->execute($taskDirectory->filterTasks([$executor, 'supports']), $interviewer);
             }
             foreach ($this->executors as $executor) {
                 $interviewer->setScope(get_class($executor));
-                $executor->cleanUp($requirementDirectory->filterRequirements([$executor, 'supports']), $interviewer);
+                $executor->cleanUp($taskDirectory->filterTasks([$executor, 'supports']), $interviewer);
             }
         } catch (Exception $e) {
+            $interviewer->say(sprintf('Task execution failed: %s', $e->getMessage()));
+            $interviewer->say('Rolling back changes...');
+
             while (count($executorsToRollBack) > 0) {
                 /** @var Executor $executor */
                 $executor = array_shift($executorsToRollBack);
                 $interviewer->setScope(get_class($executor));
-                $executor->rollBack($requirementDirectory->filterRequirements([$executor, 'supports']), $interviewer);
+                $executor->rollBack($taskDirectory->filterTasks([$executor, 'supports']), $interviewer);
             }
 
             throw $e;

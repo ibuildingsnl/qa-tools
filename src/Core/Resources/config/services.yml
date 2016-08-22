@@ -6,8 +6,8 @@ services:
             - "@qa_tools.project_configurator"
             - "@qa_tools.tool_configurator"
             - "@qa_tools.configurator.configurator_repository"
-            - "@qa_tools.configuration.requirement_directory.factory"
-            - "@qa_tools.requirement.executor_executor"
+            - "@qa_tools.configuration.task_directory.factory"
+            - "@qa_tools.task.executor_executor"
 
     qa_tools.file_handler:
         alias: qa_tools.io.file.filesystem_adapter
@@ -21,7 +21,7 @@ services:
     qa_tools.tool_configurator:
         class: Ibuildings\QaTools\Core\Configuration\ToolConfigurator
         arguments:
-            - "@qa_tools.configuration.requirement_helper_set"
+            - "@qa_tools.configuration.task_helper_set"
             - "@service_container"
 
     qa_tools.configurator_repository:
@@ -36,11 +36,11 @@ services:
             - "@qa_tools.file_handler"
             - "%qa_tools.configuration_location%"
 
-    qa_tools.configuration.requirement_directory.factory:
-        class: Ibuildings\QaTools\Core\Configuration\InMemoryRequirementDirectoryFactory
+    qa_tools.configuration.task_directory.factory:
+        class: Ibuildings\QaTools\Core\Configuration\InMemoryTaskDirectoryFactory
 
-    qa_tools.configuration.requirement_helper_set:
-        class: Ibuildings\QaTools\Core\Configuration\RequirementHelperSet
+    qa_tools.configuration.task_helper_set:
+        class: Ibuildings\QaTools\Core\Configuration\TaskHelperSet
         arguments:
             - "@qa_tools.template_engine"
 
@@ -72,13 +72,13 @@ services:
         arguments:
             - "@twig.environment"
 
-    qa_tools.requirement.executor_executor:
-        class: Ibuildings\QaTools\Core\Requirement\Executor\CautiousExecutorExecutor
+    qa_tools.task.executor_executor:
+        class: Ibuildings\QaTools\Core\Task\Executor\CautiousExecutorExecutor
         arguments:
-            - ["@qa_tools.requirement.install_composer_dev_dependency_executor"]
+            - ["@qa_tools.task.install_composer_dev_dependency_executor"]
 
-    qa_tools.requirement.install_composer_dev_dependency_executor:
-        class: Ibuildings\QaTools\Core\Requirement\Executor\InstallComposerDevDependencyExecutor
+    qa_tools.task.install_composer_dev_dependency_executor:
+        class: Ibuildings\QaTools\Core\Task\Executor\InstallComposerDevDependencyExecutor
         arguments:
             - "@qa_tools.composer.project_factory"
 

@@ -31,11 +31,11 @@ A finite list of supported project types are hard-coded in `\Ibuildings\QaTools\
 Which project types apply for a certain project are determined through the interview process using the `ProjectConfigurator`.
 
 The configuration process can be defined in the Configurator's `configure`
-method, in which it can use the `Interviewer`, `RequirementDirectory` and
-`RequirementHelperSet`. Templating and such are available through the
-`RequirementHelperSet`.
+method, in which it can use the `Interviewer`, `TaskDirectory` and
+`TaskHelperSet`. Templating and such are available through the
+`TaskHelperSet`.
 These can be used to help register requirements with the
-`RequirementDirectory`. A tool's templates should reside under
+`TaskDirectory`. A tool's templates should reside under
 `src/Tool/<ToolName>/Resources/templates`.
 
 The `Interviewer` is used for IO interaction.
