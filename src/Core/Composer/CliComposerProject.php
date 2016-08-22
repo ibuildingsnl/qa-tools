@@ -15,13 +15,21 @@ final class CliComposerProject implements Project
     private $directory;
 
     /**
-     * @param string $directory
+     * @var
      */
-    public function __construct($directory)
+    private $composerBinary;
+
+    /**
+     * @param string $directory
+     * @param string $composerBinary
+     */
+    public function __construct($directory, $composerBinary)
     {
         Assertion::string($directory, 'Composer project directory ought to be a string, got "%s" of type "%s"');
+        Assertion::string($composerBinary, 'Path to Composer binary ought to be a string, got "%s" of type "%s"');
 
         $this->directory = $directory;
+        $this->composerBinary = $composerBinary;
     }
 
     public function initialise(PackageName $packageName)
@@ -30,7 +38,7 @@ final class CliComposerProject implements Project
         RuntimeAssertion::pathNotExists('composer.json');
 
         $options = ['--no-interaction'];
-        $arguments = array_merge(['composer', 'init'], $options, ['--name=' . $packageName->getName()]);
+        $arguments = array_merge([$this->composerBinary, 'init'], $options, ['--name=' . $packageName->getName()]);
         $process = ProcessBuilder::create($arguments)->setWorkingDirectory($this->directory)->getProcess();
 
         if ($process->run() !== 0) {
@@ -47,7 +55,7 @@ final class CliComposerProject implements Project
         $configurationBackup = $this->getConfiguration();
 
         $options = ['--dev', '--no-update', '--no-interaction'];
-        $arguments = array_merge(['composer', 'require'], $options, $packages->getDescriptors());
+        $arguments = array_merge([$this->composerBinary, 'require'], $options, $packages->getDescriptors());
         $process = ProcessBuilder::create($arguments)->setWorkingDirectory($this->directory)->getProcess();
 
         if ($process->run() !== 0) {
@@ -60,7 +68,7 @@ final class CliComposerProject implements Project
         }
 
         $options = ['--dry-run', '--no-interaction'];
-        $arguments = array_merge(['composer', 'install'], $options);
+        $arguments = array_merge([$this->composerBinary, 'install'], $options);
         $process = ProcessBuilder::create($arguments)->setWorkingDirectory($this->directory)->getProcess();
 
         if ($process->run() !== 0) {
@@ -82,7 +90,7 @@ final class CliComposerProject implements Project
         $composerFileBackup = $this->getConfiguration();
 
         $options = ['--dev', '--no-interaction'];
-        $arguments = array_merge(['composer', 'require'], $options, $packages->getDescriptors());
+        $arguments = array_merge([$this->composerBinary, 'require'], $options, $packages->getDescriptors());
         $process = ProcessBuilder::create($arguments)->setWorkingDirectory($this->directory)->getProcess();
 
         if ($process->run() !== 0) {
@@ -98,7 +106,7 @@ final class CliComposerProject implements Project
     public function install()
     {
         $options = ['--no-interaction'];
-        $arguments = array_merge(['composer', 'install'], $options);
+        $arguments = array_merge([$this->composerBinary, 'install'], $options);
         $process = ProcessBuilder::create($arguments)->setWorkingDirectory($this->directory)->getProcess();
 
         if ($process->run() !== 0) {

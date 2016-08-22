@@ -55,6 +55,6 @@ final class Composer
      */
     private static function composer()
     {
-        return new CliComposerProject(getcwd());
+        return new CliComposerProject(getcwd(), __DIR__ . '/../../vendor/bin/composer');
     }
 }
