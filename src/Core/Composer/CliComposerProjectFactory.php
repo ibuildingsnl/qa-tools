@@ -10,7 +10,16 @@ final class CliComposerProjectFactory implements ProjectFactory
     {
         Assertion::string($directory, 'Composer project directory ought to be a string, got "%s" of type "%s"');
 
-        $composerBinary = getenv('COMPOSER_BIN') ?: 'composer';
+        $envComposerPath = getenv('COMPOSER_BIN');
+        $pharPath = $directory . '/composer.phar';
+
+        if ($envComposerPath) {
+            $composerBinary = $envComposerPath;
+        } elseif (file_exists($pharPath)) {
+            $composerBinary = $pharPath;
+        } else {
+            $composerBinary = 'composer';
+        }
 
         return new CliComposerProject($directory, $composerBinary);
     }
