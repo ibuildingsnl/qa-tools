@@ -4,7 +4,7 @@ namespace Ibuildings\QaTools\SystemTest;
 
 use Ibuildings\QaTools\Core\Composer\PackageName;
 
-Composer::initialise(new PackageName('my/project'));
+Composer::initialise();
 
 /** @var callable $expect */
 $expect();
