@@ -119,8 +119,9 @@ class RequirementListTest extends TestCase
 
         $requirementList = new RequirementList([$fakeRequirementA, $fakeRequirementB]);
 
+        $expectedRequirements = [$fakeRequirementA, $fakeRequirementB];
         foreach ($requirementList as $requirement) {
-            $this->assertTrue($requirement->equals($fakeRequirementA) || $requirement->equals($fakeRequirementB));
+            $this->assertTrue($requirement === array_shift($expectedRequirements));
         }
     }
 }

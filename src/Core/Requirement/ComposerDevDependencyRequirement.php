@@ -16,13 +16,6 @@ final class ComposerDevDependencyRequirement implements Requirement
         $this->package = $package;
     }
 
-    public function equals(Requirement $other)
-    {
-        /** @var ComposerDevDependencyRequirement $other */
-        return get_class($other) === self::class
-            && $this->package->equals($other->package);
-    }
-
     /**
      * @return Package
      */

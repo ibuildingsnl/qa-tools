@@ -50,7 +50,7 @@ final class RequirementList implements IteratorAggregate, Countable
     {
         /** @var Requirement $requirement */
         foreach ($this->requirements as $requirement) {
-            if ($requirement->equals($requirementToBeFound)) {
+            if ($requirement === $requirementToBeFound) {
                 return true;
             }
         }
@@ -88,7 +88,7 @@ final class RequirementList implements IteratorAggregate, Countable
         }
 
         foreach ($this->requirements as $i => $requirement) {
-            if (!$other->requirements[$i]->equals($requirement)) {
+            if (!$other->requirements[$i] === $requirement) {
                 return false;
             }
         }

@@ -12,14 +12,4 @@ final class FooRequirement implements Requirement
     {
         $this->testValue = $testValue;
     }
-
-    /**
-     * @param Requirement $other
-     * @return bool
-     */
-    public function equals(Requirement $other)
-    {
-        return get_class($other) === self::class
-            && $this->testValue === $other->testValue;
-    }
 }
