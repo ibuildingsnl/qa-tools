@@ -13,6 +13,9 @@ use Ibuildings\QaTools\Core\IO\Cli\Validator\YesOrNoAnswerValidator;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\Question as ConsoleQuestion;
 
+/**
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects) -- Due to value objects and type mapping.
+ */
 final class ConsoleQuestionFactory
 {
     const MAX_ATTEMPTS = 3;

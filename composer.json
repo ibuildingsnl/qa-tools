@@ -36,6 +36,7 @@
     },
     "require-dev": {
         "mockery/mockery": "^0.9.4",
+        "phpmd/phpmd": "^2.4",
         "phpunit/phpunit": "^5.4",
         "sebastian/diff": "^1.4",
         "sebastian/exporter": "^1.2",
