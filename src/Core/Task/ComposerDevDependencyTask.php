@@ -2,30 +2,49 @@
 
 namespace Ibuildings\QaTools\Core\Task;
 
-use Ibuildings\QaTools\Core\Composer\Package;
+use Ibuildings\QaTools\Core\Assert\Assertion;
 
 final class ComposerDevDependencyTask implements Task
 {
-    /**
-     * @var Package
-     */
-    private $package;
+    /** @var string */
+    private $packageName;
+    /** @var string */
+    private $packageVersionConstraint;
 
-    public function __construct(Package $package)
+    /**
+     * @param string $packageName
+     * @param string $packageVersionConstraint
+     */
+    public function __construct($packageName, $packageVersionConstraint)
     {
-        $this->package = $package;
+        Assertion::string($packageName, 'Composer package name ought to be a string, got "%s" of type "%s"');
+        Assertion::string(
+            $packageVersionConstraint,
+            'Composer package version constraint ought to be a string, got "%s" of type "%s"'
+        );
+
+        $this->packageName = $packageName;
+        $this->packageVersionConstraint = $packageVersionConstraint;
     }
 
     /**
-     * @return Package
+     * @return string
      */
-    public function getPackage()
+    public function getPackageName()
     {
-        return $this->package;
+        return $this->packageName;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPackageVersionConstraint()
+    {
+        return $this->packageVersionConstraint;
     }
 
     public function __toString()
     {
-        return sprintf('ComposerDevDependencyTask(%s)', $this->package);
+        return sprintf('ComposerDevDependencyTask("%s:%s")', $this->packageName, $this->packageVersionConstraint);
     }
 }

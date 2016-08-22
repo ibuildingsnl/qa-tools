@@ -3,6 +3,7 @@
 namespace Ibuildings\QaTools\Core\Task\Executor;
 
 use Ibuildings\QaTools\Core\Composer\Configuration as ComposerConfiguration;
+use Ibuildings\QaTools\Core\Composer\Package;
 use Ibuildings\QaTools\Core\Composer\PackageSet;
 use Ibuildings\QaTools\Core\Composer\Project as ComposerProject;
 use Ibuildings\QaTools\Core\Composer\ProjectFactory as ComposerProjectFactory;
@@ -68,7 +69,7 @@ final class InstallComposerDevDependencyExecutor implements Executor
         $packages = new PackageSet();
         foreach ($tasks as $task) {
             /** @var ComposerDevDependencyTask $task */
-            $packages = $packages->add($task->getPackage());
+            $packages = $packages->add(Package::of($task->getPackageName(), $task->getPackageVersionConstraint()));
         }
 
         return $packages;

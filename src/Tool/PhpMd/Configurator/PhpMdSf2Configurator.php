@@ -2,7 +2,6 @@
 
 namespace Ibuildings\QaTools\Tool\PhpMd\Configurator;
 
-use Ibuildings\QaTools\Core\Composer\Package;
 use Ibuildings\QaTools\Core\Configuration\TaskDirectory;
 use Ibuildings\QaTools\Core\Configuration\TaskHelperSet;
 use Ibuildings\QaTools\Core\Configurator\Configurator;
@@ -24,8 +23,7 @@ final class PhpMdSf2Configurator implements Configurator
             QuestionFactory::createYesOrNo('Would you like to use PHP Mess Detector?', YesOrNoAnswer::YES)
         );
         if ($usePhpMd->is(true)) {
-            $packagePhpMd2 = Package::of('phpmd/phpmd', '^2.0');
-            $taskDirectory->registerTask(new ComposerDevDependencyTask($packagePhpMd2));
+            $taskDirectory->registerTask(new ComposerDevDependencyTask('phpmd/phpmd', '^2.0'));
         }
     }
 

@@ -47,7 +47,7 @@ class PhpMdSf2ConfiguratorTest extends TestCase
                 Mockery::on(
                     function (Task $task) {
                         return $task instanceof ComposerDevDependencyTask
-                            && $task->getPackage()->getName()->getName() === 'phpmd/phpmd';
+                            && $task->getPackageName() === 'phpmd/phpmd';
                     }
                 )
             );
