@@ -55,37 +55,18 @@ class CliComposerProjectTest extends TestCase
     }
 
     /** @test */
-    public function can_get_the_current_composer_configuration_of_a_project_without_locked_deps()
-    {
-        Composer::initialise();
-
-        $configuration = $this->project->getConfiguration();
-        $this->assertContains('{', $configuration->getComposerJson());
-        $this->assertFalse($configuration->hasLockedDependencies());
-    }
-
-    /** @test */
-    public function can_get_the_current_composer_configuration_of_a_project_with_locked_deps()
-    {
-        Composer::initialise();
-
-        $this->project->requireDevDependencies(new PackageSet([Package::of('phpmd/phpmd', '^2.0')]));
-
-        $configuration = $this->project->getConfiguration();
-        $this->assertTrue($configuration->hasLockedDependencies());
-    }
-
-    /** @test */
     public function can_restore_a_composer_configuration()
     {
         Composer::initialise();
 
-        $configurationBackup = $this->project->getConfiguration();
+        $this->project->backUpConfiguration();
 
         $this->project->requireDevDependencies(new PackageSet([Package::of('phpmd/phpmd', '^2.0')]));
-        $this->project->restoreConfiguration($configurationBackup);
+        $this->assertFileExists('vendor/phpmd/phpmd/composer.json');
 
-        $this->assertFileNotExists('vendor/psr/log/composer.json');
+        $this->project->restoreConfiguration();
+
+        $this->assertFileNotExists('vendor/phpmd/phpmd/composer.json');
     }
 
     /** @test */
@@ -115,17 +96,8 @@ class CliComposerProjectTest extends TestCase
     {
         Composer::initialise();
 
-        $expectedConfiguration = $this->project->getConfiguration();
         $this->project->verifyDevDependenciesWillNotConflict(new PackageSet([Package::of('phpmd/phpmd', '^2.0')]));
 
-        $actualConfiguration = $this->project->getConfiguration();
-        $this->assertTrue(
-            $expectedConfiguration->equals($actualConfiguration),
-            $this->diff(
-                $expectedConfiguration,
-                $actualConfiguration,
-                "Composer configuration was changed while verifying an added development dependency wouldn't conflict"
-            )
-        );
+        $this->assertNotContains('"phpmd/phpmd"', file_get_contents('composer.json'));
     }
 }

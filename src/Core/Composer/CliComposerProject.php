@@ -14,9 +14,14 @@ final class CliComposerProject implements Project
     private $directory;
 
     /**
-     * @var
+     * @var string
      */
     private $composerBinary;
+
+    /**
+     * @var Configuration|null
+     */
+    private $configurationBackup;
 
     /**
      * @param string $directory
@@ -33,7 +38,7 @@ final class CliComposerProject implements Project
 
     public function verifyDevDependenciesWillNotConflict(PackageSet $packages)
     {
-        $configurationBackup = $this->getConfiguration();
+        $this->backUpConfiguration();
 
         $options = ['--dev', '--no-update', '--no-interaction'];
         $arguments = array_merge([$this->composerBinary, 'require'], $options, $packages->getDescriptors());
@@ -41,7 +46,7 @@ final class CliComposerProject implements Project
 
         if ($process->run() !== 0) {
             // Restore the old JSON in case Composer wrote to the Composer file anyway.
-            $this->restoreConfiguration($configurationBackup);
+            $this->restoreConfiguration();
 
             throw new RuntimeException(
                 sprintf('Failed to add development packages to Composer file: "%s"', $process->getErrorOutput())
@@ -53,7 +58,7 @@ final class CliComposerProject implements Project
         $process = ProcessBuilder::create($arguments)->setWorkingDirectory($this->directory)->getProcess();
 
         if ($process->run() !== 0) {
-            $this->restoreConfiguration($configurationBackup);
+            $this->restoreConfiguration();
 
             throw new RuntimeException(
                 sprintf('Failed to dry-run Composer packages installation: "%s"', $process->getErrorOutput())
@@ -61,45 +66,40 @@ final class CliComposerProject implements Project
         }
 
         // Restore the old JSON to remove the added development dependencies.
-        $this->restoreConfiguration($configurationBackup);
+        $this->restoreConfiguration();
     }
 
     public function requireDevDependencies(PackageSet $packages)
     {
-        $composerFileBackup = $this->getConfiguration();
-
         $options = ['--dev', '--no-interaction'];
         $arguments = array_merge([$this->composerBinary, 'require'], $options, $packages->getDescriptors());
         $process = ProcessBuilder::create($arguments)->setWorkingDirectory($this->directory)->getProcess();
 
         if ($process->run() !== 0) {
-            // Restore the old JSON in case Composer wrote to the Composer file anyway.
-            $this->writeComposerJson($composerFileBackup);
-
             throw new RuntimeException(
                 sprintf('Failed to require development dependencies: "%s"', $process->getErrorOutput())
             );
         }
     }
 
-    public function getConfiguration()
+    public function backUpConfiguration()
     {
         if (file_exists('composer.lock')) {
-            return Configuration::withLockedDependencies(
+            $this->configurationBackup = Configuration::withLockedDependencies(
                 file_get_contents('composer.json'),
                 file_get_contents('composer.lock')
             );
         } else {
-            return Configuration::withoutLockedDependencies(file_get_contents('composer.json'));
+            $this->configurationBackup = Configuration::withoutLockedDependencies(file_get_contents('composer.json'));
         }
     }
 
-    public function restoreConfiguration(Configuration $configuration)
+    public function restoreConfiguration()
     {
-        $this->writeComposerJson($configuration->getComposerJson());
+        $this->writeComposerJson($this->configurationBackup->getComposerJson());
 
-        if ($configuration->hasLockedDependencies()) {
-            $this->writeComposerLockJson($configuration->getComposerLockJson());
+        if ($this->configurationBackup->hasLockedDependencies()) {
+            $this->writeComposerLockJson($this->configurationBackup->getComposerLockJson());
         } elseif (file_exists('composer.lock')) {
             $this->removeComposerLock();
         }

@@ -3,6 +3,7 @@
 namespace Ibuildings\QaTools\Core\Task\Executor;
 
 use Ibuildings\QaTools\Core\Interviewer\Interviewer;
+use Ibuildings\QaTools\Core\Project\Project;
 use Ibuildings\QaTools\Core\Task\Task;
 use Ibuildings\QaTools\Core\Task\TaskList;
 
@@ -28,29 +29,33 @@ interface Executor
 
     /**
      * @param TaskList    $tasks
+     * @param Project     $project
      * @param Interviewer $interviewer
      * @return void
      */
-    public function checkPrerequisites(TaskList $tasks, Interviewer $interviewer);
+    public function checkPrerequisites(TaskList $tasks, Project $project, Interviewer $interviewer);
 
     /**
      * @param TaskList    $tasks
+     * @param Project     $project
      * @param Interviewer $interviewer
      * @return void
      */
-    public function execute(TaskList $tasks, Interviewer $interviewer);
+    public function execute(TaskList $tasks, Project $project, Interviewer $interviewer);
 
     /**
      * @param TaskList    $tasks
+     * @param Project     $project
      * @param Interviewer $interviewer
      * @return void
      */
-    public function cleanUp(TaskList $tasks, Interviewer $interviewer);
+    public function cleanUp(TaskList $tasks, Project $project, Interviewer $interviewer);
 
     /**
      * @param TaskList    $tasks
+     * @param Project     $project
      * @param Interviewer $interviewer
      * @return void
      */
-    public function rollBack(TaskList $tasks, Interviewer $interviewer);
+    public function rollBack(TaskList $tasks, Project $project, Interviewer $interviewer);
 }
