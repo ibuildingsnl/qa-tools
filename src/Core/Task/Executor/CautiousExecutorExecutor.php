@@ -30,10 +30,13 @@ final class CautiousExecutorExecutor implements ExecutorExecutor
 
     public function execute(TaskDirectory $taskDirectory, ScopedInterviewer $interviewer)
     {
+        $project = $taskDirectory->getProject();
+
         foreach ($this->executors as $executor) {
             $interviewer->setScope(get_class($executor));
             $executor->checkPrerequisites(
                 $taskDirectory->filterTasks([$executor, 'supports']),
+                $project,
                 $interviewer
             );
         }
@@ -43,11 +46,11 @@ final class CautiousExecutorExecutor implements ExecutorExecutor
             foreach ($this->executors as $executor) {
                 array_unshift($executorsToRollBack, $executor);
                 $interviewer->setScope(get_class($executor));
-                $executor->execute($taskDirectory->filterTasks([$executor, 'supports']), $interviewer);
+                $executor->execute($taskDirectory->filterTasks([$executor, 'supports']), $project, $interviewer);
             }
             foreach ($this->executors as $executor) {
                 $interviewer->setScope(get_class($executor));
-                $executor->cleanUp($taskDirectory->filterTasks([$executor, 'supports']), $interviewer);
+                $executor->cleanUp($taskDirectory->filterTasks([$executor, 'supports']), $project, $interviewer);
             }
         } catch (Exception $e) {
             $interviewer->say(sprintf('Task execution failed: %s', $e->getMessage()));
@@ -57,7 +60,7 @@ final class CautiousExecutorExecutor implements ExecutorExecutor
                 /** @var Executor $executor */
                 $executor = array_shift($executorsToRollBack);
                 $interviewer->setScope(get_class($executor));
-                $executor->rollBack($taskDirectory->filterTasks([$executor, 'supports']), $interviewer);
+                $executor->rollBack($taskDirectory->filterTasks([$executor, 'supports']), $project, $interviewer);
             }
 
             throw $e;

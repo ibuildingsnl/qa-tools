@@ -8,6 +8,7 @@ use Ibuildings\QaTools\Core\Composer\PackageSet;
 use Ibuildings\QaTools\Core\Composer\Project as ComposerProject;
 use Ibuildings\QaTools\Core\Composer\ProjectFactory as ComposerProjectFactory;
 use Ibuildings\QaTools\Core\Interviewer\Interviewer;
+use Ibuildings\QaTools\Core\Project\Project;
 use Ibuildings\QaTools\Core\Task\ComposerDevDependencyTask;
 use Ibuildings\QaTools\Core\Task\Task;
 use Ibuildings\QaTools\Core\Task\TaskList;
@@ -31,17 +32,18 @@ final class InstallComposerDevDependencyExecutor implements Executor
         return $task instanceof ComposerDevDependencyTask;
     }
 
-    public function checkPrerequisites(TaskList $tasks, Interviewer $interviewer)
+    public function checkPrerequisites(TaskList $tasks, Project $project, Interviewer $interviewer)
     {
         $interviewer->say("Verifying installation of Composer development dependencies won't cause a conflict...");
 
         $packages = $this->getPackagesToAddAsDevDependency($tasks);
 
-        $this->composerProject = $this->composerProjectFactory->forDirectory('.');
+        $this->composerProject =
+            $this->composerProjectFactory->forDirectory($project->getRootDirectory()->getDirectory());
         $this->composerProject->verifyDevDependenciesWillNotConflict($packages);
     }
 
-    public function execute(TaskList $tasks, Interviewer $interviewer)
+    public function execute(TaskList $tasks, Project $project, Interviewer $interviewer)
     {
         $interviewer->say("Installing Composer development dependencies...");
 
@@ -51,11 +53,11 @@ final class InstallComposerDevDependencyExecutor implements Executor
         $this->composerProject->requireDevDependencies($packages);
     }
 
-    public function cleanUp(TaskList $tasks, Interviewer $interviewer)
+    public function cleanUp(TaskList $tasks, Project $project, Interviewer $interviewer)
     {
     }
 
-    public function rollBack(TaskList $tasks, Interviewer $interviewer)
+    public function rollBack(TaskList $tasks, Project $project, Interviewer $interviewer)
     {
         $interviewer->say("Restoring Composer configuration...");
         $this->composerProject->restoreConfiguration($this->configurationBackup);
