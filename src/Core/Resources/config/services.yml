@@ -96,3 +96,4 @@ services:
 
     twig.environment:
         class: Twig_Environment
+        factory: [Ibuildings\QaTools\Core\Templating\TwigFactory, create]
