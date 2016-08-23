@@ -8,7 +8,7 @@ use Ibuildings\QaTools\Core\Composer\Project as ComposerProject;
 use Ibuildings\QaTools\Core\Composer\ProjectFactory as ComposerProjectFactory;
 use Ibuildings\QaTools\Core\Interviewer\Interviewer;
 use Ibuildings\QaTools\Core\Project\Project;
-use Ibuildings\QaTools\Core\Task\ComposerDevDependencyTask;
+use Ibuildings\QaTools\Core\Task\InstallComposerDevDependencyTask;
 use Ibuildings\QaTools\Core\Task\Task;
 use Ibuildings\QaTools\Core\Task\TaskList;
 
@@ -26,7 +26,7 @@ final class InstallComposerDevDependencyExecutor implements Executor
 
     public function supports(Task $task)
     {
-        return $task instanceof ComposerDevDependencyTask;
+        return $task instanceof InstallComposerDevDependencyTask;
     }
 
     public function checkPrerequisites(TaskList $tasks, Project $project, Interviewer $interviewer)
@@ -67,7 +67,7 @@ final class InstallComposerDevDependencyExecutor implements Executor
     {
         $packages = new PackageSet();
         foreach ($tasks as $task) {
-            /** @var ComposerDevDependencyTask $task */
+            /** @var InstallComposerDevDependencyTask $task */
             $packages = $packages->add(Package::of($task->getPackageName(), $task->getPackageVersionConstraint()));
         }
 

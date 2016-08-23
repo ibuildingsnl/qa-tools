@@ -4,7 +4,7 @@ namespace Ibuildings\QaTools\Core\Task;
 
 use Ibuildings\QaTools\Core\Assert\Assertion;
 
-final class ComposerDevDependencyTask implements Task
+final class InstallComposerDevDependencyTask implements Task
 {
     /** @var string */
     private $packageName;
@@ -45,6 +45,10 @@ final class ComposerDevDependencyTask implements Task
 
     public function __toString()
     {
-        return sprintf('ComposerDevDependencyTask("%s:%s")', $this->packageName, $this->packageVersionConstraint);
+        return sprintf(
+            'InstallComposerDevDependencyTask("%s:%s")',
+            $this->packageName,
+            $this->packageVersionConstraint
+        );
     }
 }

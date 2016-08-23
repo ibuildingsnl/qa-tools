@@ -6,7 +6,7 @@ use Ibuildings\QaTools\Core\Configuration\TaskDirectory;
 use Ibuildings\QaTools\Core\Configuration\TaskHelperSet;
 use Ibuildings\QaTools\Core\Interviewer\Answer\YesOrNoAnswer;
 use Ibuildings\QaTools\Core\Interviewer\AutomatedResponseInterviewer;
-use Ibuildings\QaTools\Core\Task\ComposerDevDependencyTask;
+use Ibuildings\QaTools\Core\Task\InstallComposerDevDependencyTask;
 use Ibuildings\QaTools\Core\Task\Task;
 use Ibuildings\QaTools\Tool\PhpMd\Configurator\PhpMdSf2Configurator;
 use Mockery;
@@ -46,7 +46,7 @@ class PhpMdSf2ConfiguratorTest extends TestCase
             ->with(
                 Mockery::on(
                     function (Task $task) {
-                        return $task instanceof ComposerDevDependencyTask
+                        return $task instanceof InstallComposerDevDependencyTask
                             && $task->getPackageName() === 'phpmd/phpmd';
                     }
                 )

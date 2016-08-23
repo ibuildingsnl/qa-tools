@@ -8,7 +8,7 @@ use Ibuildings\QaTools\Core\Configurator\Configurator;
 use Ibuildings\QaTools\Core\Interviewer\Answer\YesOrNoAnswer;
 use Ibuildings\QaTools\Core\Interviewer\Interviewer;
 use Ibuildings\QaTools\Core\Interviewer\Question\QuestionFactory;
-use Ibuildings\QaTools\Core\Task\ComposerDevDependencyTask;
+use Ibuildings\QaTools\Core\Task\InstallComposerDevDependencyTask;
 use Ibuildings\QaTools\Tool\PhpMd\PhpMd;
 
 final class PhpMdSf2Configurator implements Configurator
@@ -23,7 +23,7 @@ final class PhpMdSf2Configurator implements Configurator
             QuestionFactory::createYesOrNo('Would you like to use PHP Mess Detector?', YesOrNoAnswer::YES)
         );
         if ($usePhpMd->is(true)) {
-            $taskDirectory->registerTask(new ComposerDevDependencyTask('phpmd/phpmd', '^2.0'));
+            $taskDirectory->registerTask(new InstallComposerDevDependencyTask('phpmd/phpmd', '^2.0'));
         }
     }
 
