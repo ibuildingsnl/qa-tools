@@ -141,4 +141,57 @@ class FilesystemAdapterTest extends TestCase
 
         $this->assertFileExists('file');
     }
+
+    /** @test */
+    public function keeps_backups_for_overwritten_file()
+    {
+        $this->adapter->writeTo('file', 'data');
+        $this->adapter->writeWithBackupTo('file', 'data');
+
+        $this->assertFileExists('file');
+        $this->assertFileExists('file.qatools-bak');
+    }
+
+    /** @test */
+    public function keeps_no_backups_for_newly_written_file()
+    {
+        $this->adapter->writeWithBackupTo('file', 'data');
+
+        $this->assertFileExists('file');
+        $this->assertFileNotExists('file.qatools-bak');
+    }
+
+    /** @test */
+    public function restores_backup_for_overwritten_file()
+    {
+        $this->adapter->writeTo('file', 'data');
+        $this->adapter->writeWithBackupTo('file', 'newdata');
+        $this->adapter->restoreBackupOf('file');
+
+        $this->assertFileExists('file');
+        $this->assertFileNotExists('file.qatools-bak');
+        $this->assertSame('data', file_get_contents('file'));
+    }
+
+    /** @test */
+    public function removes_newly_written_file_when_restoring_nonexistent_backup()
+    {
+        $this->adapter->writeWithBackupTo('file', 'newdata');
+        $this->adapter->restoreBackupOf('file');
+
+        $this->assertFileNotExists('file');
+        $this->assertFileNotExists('file.qatools-bak');
+    }
+
+    /** @test */
+    public function removes_backups()
+    {
+        $this->adapter->writeTo('file', 'data');
+        $this->adapter->writeWithBackupTo('file', 'newdata');
+        $this->adapter->discardBackupOf('file');
+
+        $this->assertFileExists('file');
+        $this->assertFileNotExists('file.qatools-bak');
+        $this->assertSame('newdata', file_get_contents('file'));
+    }
 }
