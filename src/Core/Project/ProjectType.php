@@ -88,4 +88,9 @@ final class ProjectType
     {
         return $this->projectType;
     }
+
+    public function __toString()
+    {
+        return sprintf('ProjectType("%s")', $this->projectType);
+    }
 }

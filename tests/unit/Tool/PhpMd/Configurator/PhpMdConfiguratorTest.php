@@ -6,9 +6,13 @@ use Ibuildings\QaTools\Core\Configuration\TaskDirectory;
 use Ibuildings\QaTools\Core\Configuration\TaskHelperSet;
 use Ibuildings\QaTools\Core\Interviewer\Answer\YesOrNoAnswer;
 use Ibuildings\QaTools\Core\Interviewer\AutomatedResponseInterviewer;
+use Ibuildings\QaTools\Core\Project\Directory;
+use Ibuildings\QaTools\Core\Project\Project;
+use Ibuildings\QaTools\Core\Project\ProjectTypeSet;
 use Ibuildings\QaTools\Core\Task\InstallComposerDevDependencyTask;
 use Ibuildings\QaTools\Core\Task\Task;
-use Ibuildings\QaTools\Tool\PhpMd\Configurator\PhpMdSf2Configurator;
+use Ibuildings\QaTools\Core\Task\WriteFileTask;
+use Ibuildings\QaTools\Tool\PhpMd\Configurator\PhpMdConfigurator;
 use Mockery;
 use Mockery\MockInterface;
 use PHPUnit\Framework\TestCase as TestCase;
@@ -17,7 +21,7 @@ use PHPUnit\Framework\TestCase as TestCase;
  * @group Tool
  * @group PhpMd
  */
-class PhpMdSf2ConfiguratorTest extends TestCase
+class PhpMdConfiguratorTest extends TestCase
 {
     /** @var AutomatedResponseInterviewer */
     private $interviewer;
@@ -29,7 +33,15 @@ class PhpMdSf2ConfiguratorTest extends TestCase
     protected function setUp()
     {
         $this->interviewer = new AutomatedResponseInterviewer();
+        $this->project = new Project(
+            'Xenophobic Xavier',
+            new Directory('.'),
+            new Directory('.'),
+            new ProjectTypeSet(),
+            false
+        );
         $this->taskDirectory = Mockery::spy(TaskDirectory::class);
+        $this->taskDirectory->shouldReceive('getProject')->andReturn($this->project);
         $this->taskHelperSet = Mockery::mock(TaskHelperSet::class);
     }
 
@@ -38,7 +50,12 @@ class PhpMdSf2ConfiguratorTest extends TestCase
     {
         $this->interviewer->recordAnswer('Would you like to use PHP Mess Detector?', YesOrNoAnswer::yes());
 
-        $configurator = new PhpMdSf2Configurator();
+        $this->taskHelperSet
+            ->shouldReceive('renderTemplate')
+            ->with('phpmd-default.xml.twig', Mockery::any())
+            ->andReturn('<?xml version="1.0"?>');
+
+        $configurator = new PhpMdConfigurator();
         $configurator->configure($this->interviewer, $this->taskDirectory, $this->taskHelperSet);
 
         $this->taskDirectory
@@ -51,6 +68,17 @@ class PhpMdSf2ConfiguratorTest extends TestCase
                     }
                 )
             );
+        $this->taskDirectory
+            ->shouldHaveReceived('registerTask')
+            ->with(
+                Mockery::on(
+                    function (Task $task) {
+                        return $task instanceof WriteFileTask
+                            && $task->getFilePath() === './phpmd.xml'
+                            && $task->getFileContents() === '<?xml version="1.0"?>';
+                    }
+                )
+            );
     }
 
     /** @test */
@@ -58,7 +86,7 @@ class PhpMdSf2ConfiguratorTest extends TestCase
     {
         $this->interviewer->recordAnswer('Would you like to use PHP Mess Detector?', YesOrNoAnswer::no());
 
-        $configurator = new PhpMdSf2Configurator();
+        $configurator = new PhpMdConfigurator();
         $configurator->configure($this->interviewer, $this->taskDirectory, $this->taskHelperSet);
 
         $this->taskDirectory->shouldNotHaveReceived('registerTask');

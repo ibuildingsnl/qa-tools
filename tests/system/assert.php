@@ -3,6 +3,20 @@
 namespace Ibuildings\QaTools\SystemTest;
 
 /**
+ * Asserts that a file contains the specified string.
+ *
+ * @param string $filename
+ * @param string $contents
+ * @param string $message
+ *
+ * @since Method available since Release 3.0.0
+ */
+function assertFileContains($filename, $contents, $message = '')
+{
+    assertContains($contents, file_get_contents($filename), $message);
+}
+
+/**
  * The matcher functions below are copied from PHPUnit, but placed in our
  * namespace to prevent collisions in the global namespace. The matcher
  * functions are used in the system specs (./tests/system/specs/*.php).

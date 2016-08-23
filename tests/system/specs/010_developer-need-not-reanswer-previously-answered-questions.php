@@ -9,3 +9,4 @@ $expect();
 
 assertFileExists('qa-tools.json');
 Composer::assertPackageIsInstalled('phpmd/phpmd');
+assertFileExists('phpmd.xml');

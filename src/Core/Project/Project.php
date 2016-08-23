@@ -100,4 +100,17 @@ class Project
     {
         return $this->travisEnabled;
     }
+
+    public function __toString()
+    {
+        return sprintf(
+            'Project(name="%s", rootDirectory="%s", configurationFilesDirectory="%s", projectTypes=%s, ' .
+            'travisEnabled=%d)',
+            $this->name,
+            $this->rootDirectory->getDirectory(),
+            $this->configurationFilesLocation->getDirectory(),
+            $this->projectTypes,
+            $this->travisEnabled
+        );
+    }
 }

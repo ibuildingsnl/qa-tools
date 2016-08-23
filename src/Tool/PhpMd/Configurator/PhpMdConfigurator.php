@@ -9,9 +9,10 @@ use Ibuildings\QaTools\Core\Interviewer\Answer\YesOrNoAnswer;
 use Ibuildings\QaTools\Core\Interviewer\Interviewer;
 use Ibuildings\QaTools\Core\Interviewer\Question\QuestionFactory;
 use Ibuildings\QaTools\Core\Task\InstallComposerDevDependencyTask;
+use Ibuildings\QaTools\Core\Task\WriteFileTask;
 use Ibuildings\QaTools\Tool\PhpMd\PhpMd;
 
-final class PhpMdSf2Configurator implements Configurator
+final class PhpMdConfigurator implements Configurator
 {
     public function configure(
         Interviewer $interviewer,
@@ -24,6 +25,13 @@ final class PhpMdSf2Configurator implements Configurator
         );
         if ($usePhpMd->is(true)) {
             $taskDirectory->registerTask(new InstallComposerDevDependencyTask('phpmd/phpmd', '^2.0'));
+
+            $project = $taskDirectory->getProject();
+            $configurationFilesLocation = $project->getConfigurationFilesLocation();
+            $phpMdConfiguration = $taskHelperSet->renderTemplate('phpmd-default.xml.twig', ['project' => $project]);
+            $taskDirectory->registerTask(
+                new WriteFileTask($configurationFilesLocation->getDirectory() . 'phpmd.xml', $phpMdConfiguration)
+            );
         }
     }
 
