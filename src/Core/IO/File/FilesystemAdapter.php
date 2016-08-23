@@ -19,7 +19,7 @@ final class FilesystemAdapter implements FileHandler
         $this->filesystem = $filesystem;
     }
 
-    public function writeTo($data, $filePath)
+    public function writeTo($filePath, $data)
     {
         Assertion::string($data, 'Can only write string data to file, "%s" given');
         Assertion::nonEmptyString($filePath, 'File path ought to be a non-empty string, got "%s" of type "%s"');

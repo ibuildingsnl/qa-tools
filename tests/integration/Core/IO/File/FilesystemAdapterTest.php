@@ -49,7 +49,7 @@ class FilesystemAdapterTest extends TestCase
     public function data_to_write_to_file_must_be_a_string($nonString)
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->adapter->writeTo($nonString, '/some/path');
+        $this->adapter->writeTo('/some/path', $nonString);
     }
 
     /**
@@ -60,7 +60,7 @@ class FilesystemAdapterTest extends TestCase
     public function in_order_to_write_given_filepath_must_be_a_string($nonStringOrEmptyString)
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->adapter->writeTo('data-to-write', $nonStringOrEmptyString);
+        $this->adapter->writeTo($nonStringOrEmptyString, 'data-to-write');
     }
 
     /** @test */
@@ -70,7 +70,7 @@ class FilesystemAdapterTest extends TestCase
 
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Unable to write to the "." directory');
-        $this->adapter->writeTo('data', 'test');
+        $this->adapter->writeTo('test', 'data');
     }
 
     /** @test */
@@ -137,7 +137,7 @@ class FilesystemAdapterTest extends TestCase
     /** @test */
     public function writes_files()
     {
-        $this->adapter->writeTo('data', 'file');
+        $this->adapter->writeTo('file', 'data');
 
         $this->assertFileExists('file');
     }

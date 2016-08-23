@@ -5,11 +5,11 @@ namespace Ibuildings\QaTools\Core\IO\File;
 interface FileHandler
 {
     /**
-     * @param string $data     the data to write
      * @param string $filePath the path to the file to write to
+     * @param string $data the data to write
      * @return void
      */
-    public function writeTo($data, $filePath);
+    public function writeTo($filePath, $data);
 
     /**
      * @param string $filePath the path to the file to read the contents of

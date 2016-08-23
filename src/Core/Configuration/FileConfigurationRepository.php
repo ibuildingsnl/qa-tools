@@ -97,6 +97,6 @@ final class FileConfigurationRepository implements ConfigurationRepository
             ]
         );
 
-        $this->fileHandler->writeTo(Json::prettyPrint($json), $this->filePath);
+        $this->fileHandler->writeTo($this->filePath, Json::prettyPrint($json));
     }
 }

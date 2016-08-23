@@ -42,7 +42,7 @@ final class ContainerLoader
             ]);
 
             $fileHandler = new FilesystemAdapter(new Filesystem());
-            $fileHandler->writeTo($compiledContainer, $file);
+            $fileHandler->writeTo($file, $compiledContainer);
         }
 
         require_once $file;
