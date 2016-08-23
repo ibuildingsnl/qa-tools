@@ -26,6 +26,7 @@ final class ContainerLoader
             $loader = new YamlFileLoader($containerBuilder, new FileLocator(__DIR__ . '/../Resources/config/'));
             $loader->load('config.yml');
             $loader->load('services.yml');
+            $loader->load('task_executors.yml');
 
             /** @var Tool $tool */
             foreach ($application->getRegisteredTools() as $tool) {

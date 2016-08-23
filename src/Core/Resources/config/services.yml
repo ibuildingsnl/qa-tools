@@ -72,23 +72,6 @@ services:
         arguments:
             - "@twig.environment"
 
-    qa_tools.task.executor_executor:
-        class: Ibuildings\QaTools\Core\Task\Executor\CautiousExecutorExecutor
-        arguments:
-            -
-                - "@qa_tools.task.install_composer_dev_dependency_task_executor"
-                - "@qa_tools.task.write_file_task_executor"
-
-    qa_tools.task.install_composer_dev_dependency_task_executor:
-        class: Ibuildings\QaTools\Core\Task\Executor\InstallComposerDevDependencyTaskExecutor
-        arguments:
-            - "@qa_tools.composer.project_factory"
-
-    qa_tools.task.write_file_task_executor:
-        class: Ibuildings\QaTools\Core\Task\Executor\WriteFileTaskExecutor
-        arguments:
-            - "@qa_tools.file_handler"
-
     qa_tools.composer.project_factory:
         class: Ibuildings\QaTools\Core\Composer\CliComposerProjectFactory
 
