@@ -19,7 +19,11 @@ final class QuestionId
      */
     public static function fromScopeAndQuestion($scope, Question $question)
     {
-        Assertion::nonEmptyString($scope, 'Scope ought to be a non-empty string, got "%s" of type "%s"');
+        Assertion::nonEmptyString(
+            $scope,
+            'Expected non-empty string for "%3$s", "%1$s" given',
+            'Scope ought to be a non-empty string, got "%s" of type "%s"'
+        );
 
         return new QuestionId(md5($scope . ':' . $question->getQuestion()));
     }
@@ -29,7 +33,11 @@ final class QuestionId
      */
     public function __construct($questionId)
     {
-        Assertion::nonEmptyString($questionId, 'Question ID ought to be a non-empty string, got "%s" of type "%s"');
+        Assertion::nonEmptyString(
+            $questionId,
+            'Expected non-empty string for "%3$s", "%1$s" given',
+            'Question ID ought to be a non-empty string, got "%s" of type "%s"'
+        );
 
         $this->questionId = $questionId;
     }

@@ -26,7 +26,7 @@ final class FileConfigurationRepository implements ConfigurationRepository
 
     public function __construct(FileHandler $fileHandler, $filePath)
     {
-        Assertion::nonEmptyString($filePath, 'filePath');
+        Assertion::nonEmptyString($filePath, 'Expected non-empty string for "%3$s", "%1$s" given', 'filePath');
 
         $this->fileHandler = $fileHandler;
         $this->filePath = $filePath;
