@@ -72,6 +72,11 @@ services:
         arguments:
             - "@twig.environment"
 
+    qa_tools.task.executor_executor:
+        class: Ibuildings\QaTools\Core\Task\Executor\CautiousExecutorExecutor
+        arguments:
+            - []
+
     qa_tools.composer.project_factory:
         class: Ibuildings\QaTools\Core\Composer\CliComposerProjectFactory
 

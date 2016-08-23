@@ -3,6 +3,7 @@
 namespace Ibuildings\QaTools\Core\Application;
 
 use Ibuildings\QaTools\Core\Application\Compiler\RegisterConfiguratorsCompilerPass;
+use Ibuildings\QaTools\Core\Application\Compiler\RegisterTaskExecutorsCompilerPass;
 use Ibuildings\QaTools\Core\IO\File\FilesystemAdapter;
 use Ibuildings\QaTools\Core\Tool\Tool;
 use Symfony\Component\Config\ConfigCache;
@@ -21,7 +22,8 @@ final class ContainerLoader
 
         if (!$precompiledContainer->isFresh() || $isDebug) {
             $containerBuilder = new ContainerBuilder();
-            $containerBuilder->addCompilerPass(new RegisterConfiguratorsCompilerPass);
+            $containerBuilder->addCompilerPass(new RegisterConfiguratorsCompilerPass());
+            $containerBuilder->addCompilerPass(new RegisterTaskExecutorsCompilerPass());
 
             $loader = new YamlFileLoader($containerBuilder, new FileLocator(__DIR__ . '/../Resources/config/'));
             $loader->load('config.yml');
