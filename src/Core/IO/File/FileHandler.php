@@ -5,7 +5,7 @@ namespace Ibuildings\QaTools\Core\IO\File;
 interface FileHandler
 {
     /**
-     * @param mixed  $data     the data to write
+     * @param string $data     the data to write
      * @param string $filePath the path to the file to write to
      * @return void
      */
@@ -13,7 +13,7 @@ interface FileHandler
 
     /**
      * @param string $filePath the path to the file to read the contents of
-     * @return mixed
+     * @return string
      */
     public function readFrom($filePath);
 

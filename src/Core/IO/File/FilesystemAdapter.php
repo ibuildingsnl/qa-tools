@@ -59,7 +59,7 @@ final class FilesystemAdapter implements FileHandler
         try {
             $this->filesystem->remove($filePath);
         } catch (IOException $exception) {
-            $newMessage = sprintf('Could not remove file "%s", "%s"', $filePath, $exception->getMessage());
+            $newMessage = sprintf('Could not remove file "%s": "%s"', $filePath, $exception->getMessage());
             throw new RuntimeException($newMessage, null, $exception);
         }
     }

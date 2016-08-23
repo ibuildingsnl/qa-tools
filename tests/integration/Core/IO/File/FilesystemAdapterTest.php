@@ -17,6 +17,30 @@ use Symfony\Component\Filesystem\Filesystem;
  */
 class FilesystemAdapterTest extends TestCase
 {
+    /** @var string */
+    private $workingDirectory;
+    /** @var FilesystemAdapter */
+    private $adapter;
+
+    protected function setUp()
+    {
+        $this->workingDirectory = sys_get_temp_dir() . '/qa-tools_' . microtime(true) . '_fs-adapter';
+        $this->adapter = new FilesystemAdapter(new Filesystem());
+    }
+
+    protected function runTest()
+    {
+        $oldWd = getcwd();
+
+        try {
+            mkdir($this->workingDirectory);
+            chdir($this->workingDirectory);
+            parent::runTest();
+        } finally {
+            chdir($oldWd);
+        }
+    }
+
     /**
      * @test
      *
@@ -24,10 +48,8 @@ class FilesystemAdapterTest extends TestCase
      */
     public function data_to_write_to_file_must_be_a_string($nonString)
     {
-        $filesystemAdapter = new FilesystemAdapter(Mockery::mock(Filesystem::class));
-
         $this->expectException(InvalidArgumentException::class);
-        $filesystemAdapter->writeTo($nonString, '/some/path');
+        $this->adapter->writeTo($nonString, '/some/path');
     }
 
     /**
@@ -37,56 +59,37 @@ class FilesystemAdapterTest extends TestCase
      */
     public function in_order_to_write_given_filepath_must_be_a_string($nonStringOrEmptyString)
     {
-        $filesystemAdapter = new FilesystemAdapter(Mockery::mock(Filesystem::class));
-
         $this->expectException(InvalidArgumentException::class);
-        $filesystemAdapter->writeTo('data-to-write', $nonStringOrEmptyString);
+        $this->adapter->writeTo('data-to-write', $nonStringOrEmptyString);
     }
 
-    /**
-     * @test
-     */
-    public function an_exception_thrown_by_filesystem_when_writing_is_converted_to_an_qa_tools_exception()
+    /** @test */
+    public function throws_an_exception_when_attempting_to_write_to_a_non_writable_directory()
     {
-        $filesystemMock = Mockery::mock(Filesystem::class);
-        $filesystemMock->shouldReceive('dumpFile')->andThrow(IOException::class);
+        chmod($this->workingDirectory, 0500);
 
-        $filesystemAdapter = new FilesystemAdapter($filesystemMock);
-
-        try {
-            $filesystemAdapter->writeTo('data-to-write', '/some/path');
-        } catch (Exception $exception) {
-            $this->assertInstanceOf(RuntimeException::class, $exception);
-            $this->assertInstanceOf(IOException::class, $exception->getPrevious());
-        }
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Unable to write to the "." directory');
+        $this->adapter->writeTo('data', 'test');
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function attempting_to_read_data_from_a_non_existent_file_fails()
     {
-        $filesystemMock = Mockery::mock(Filesystem::class);
-        $filesystemMock->shouldReceive('exists')->andReturn(false);
-
-        $filesystemAdapter = new FilesystemAdapter($filesystemMock);
-
         $this->expectException(RuntimeException::class);
-        $filesystemAdapter->readFrom('/does/not/exist');
+        $this->expectExceptionMessage('Cannot read from file "does/not/exist" as it does not exist');
+        $this->adapter->readFrom('does/not/exist');
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function attempting_to_read_data_from_a_file_that_is_not_readable_fails()
     {
-        $filesystemMock = Mockery::mock(Filesystem::class);
-        $filesystemMock->shouldReceive('exists')->andReturn(true);
-
-        $filesystemAdapter = new FilesystemAdapter($filesystemMock);
+        file_put_contents('file', 'data');
+        chmod('file', 200);
 
         $this->expectException(RuntimeException::class);
-        $filesystemAdapter->readFrom('/this/is/not/readable');
+        $this->expectExceptionMessage('Cannot read from file "file" as it is not readable');
+        $this->adapter->readFrom('file');
     }
 
     /**
@@ -96,30 +99,19 @@ class FilesystemAdapterTest extends TestCase
      */
     public function in_order_to_remove_given_filepath_must_be_a_non_empty_string($filePath)
     {
-        $filesystemMock = Mockery::mock(Filesystem::class);
-        $filesystemAdapter = new FilesystemAdapter($filesystemMock);
-
         $this->expectException(InvalidArgumentException::class);
-
-        $filesystemAdapter->remove($filePath);
+        $this->adapter->remove($filePath);
     }
 
-    /**
-     * @test
-     */
-    public function an_exception_thrown_by_filesystem_when_removing_is_converted_to_an_qa_tools_exception()
+    /** @test */
+    public function an_exception_thrown_when_removing_file_from_directory_that_is_not_readable()
     {
-        $filesystemMock = Mockery::mock(Filesystem::class);
-        $filesystemMock->shouldReceive('remove')->andThrow(IOException::class);
+        file_put_contents('file', 'data');
+        chmod($this->workingDirectory, 0500);
 
-        $filesystemAdapter = new FilesystemAdapter($filesystemMock);
-
-        try {
-            $filesystemAdapter->remove('/some/path');
-        } catch (Exception $exception) {
-            $this->assertInstanceOf(RuntimeException::class, $exception);
-            $this->assertInstanceOf(IOException::class, $exception->getPrevious());
-        }
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Could not remove file "file"');
+        $this->adapter->remove('file');
     }
 
     /**
@@ -129,27 +121,24 @@ class FilesystemAdapterTest extends TestCase
      */
     public function in_order_to_check_if_a_file_exists_given_filepath_must_be_a_non_empty_string($filePath)
     {
-        $filesystemMock = Mockery::mock(Filesystem::class);
-        $filesystemAdapter = new FilesystemAdapter($filesystemMock);
-
         $this->expectException(InvalidArgumentException::class);
-
-        $filesystemAdapter->exists($filePath);
+        $this->expectExceptionMessage('Expected non-empty string for "filePath"');
+        $this->adapter->exists($filePath);
     }
 
-    /**
-     * @test
-     */
-    public function filesystem_is_used_to_check_if_a_file_exists()
+    /** @test */
+    public function file_can_be_tested_to_exist()
     {
-        $filePath = 'some/file/path';
+        file_put_contents("$this->workingDirectory/existing", 'boo');
+        $this->assertTrue($this->adapter->exists('existing'));
+        $this->assertFalse($this->adapter->exists('non-existent'));
+    }
 
-        $filesystemMock = Mockery::mock(Filesystem::class);
-        $filesystemMock
-            ->shouldReceive('exists')
-            ->with($filePath);
+    /** @test */
+    public function writes_files()
+    {
+        $this->adapter->writeTo('data', 'file');
 
-        $filesystemAdapter = new FilesystemAdapter($filesystemMock);
-        $filesystemAdapter->exists($filePath);
+        $this->assertFileExists('file');
     }
 }
