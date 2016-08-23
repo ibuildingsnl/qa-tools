@@ -71,15 +71,11 @@ final class CliComposerProject implements Project
 
     public function requireDevDependencies(PackageSet $packages)
     {
-        $this->backUpConfiguration();
-
         $options = ['--dev', '--no-interaction'];
         $arguments = array_merge([$this->composerBinary, 'require'], $options, $packages->getDescriptors());
         $process = ProcessBuilder::create($arguments)->setWorkingDirectory($this->directory)->getProcess();
 
         if ($process->run() !== 0) {
-            $this->restoreConfiguration();
-
             throw new RuntimeException(
                 sprintf('Failed to require development dependencies: "%s"', $process->getErrorOutput())
             );
