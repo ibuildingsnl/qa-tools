@@ -11,10 +11,11 @@ use Ibuildings\QaTools\Core\Project\Directory;
 use Ibuildings\QaTools\Core\Project\Project;
 use Ibuildings\QaTools\Core\Task\Executor\InstallComposerDevDependencyTaskExecutor;
 use Ibuildings\QaTools\Core\Task\InstallComposerDevDependencyTask;
+use Ibuildings\QaTools\Core\Task\Task;
 use Ibuildings\QaTools\Core\Task\TaskList;
 use Ibuildings\QaTools\UnitTest\ValueObject;
-use Mockery as m;
 use Mockery;
+use Mockery as m;
 use Mockery\MockInterface;
 use PHPUnit\Framework\TestCase as TestCase;
 
@@ -55,6 +56,16 @@ class InstallComposerDevDependencyExecutorTaskTest extends TestCase
         $this->assertTrue(
             $this->executor->supports(new InstallComposerDevDependencyTask('menial/monkey', '39')),
             'InstallComposerDevDependencyTaskExecutor should support execution of InstallComposerDevDependencyTasks'
+        );
+    }
+
+    /** @test */
+    public function doesnt_support_other_type_of_tasks()
+    {
+        $this->assertFalse(
+            $this->executor->supports(Mockery::mock(Task::class)),
+            'InstallComposerDevDependencyTaskExecutor should not support execution of any tasks other than ' .
+            'InstallComposerDevDependencyTasks'
         );
     }
 
