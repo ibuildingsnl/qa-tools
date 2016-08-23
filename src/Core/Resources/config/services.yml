@@ -78,7 +78,7 @@ services:
             - ["@qa_tools.task.install_composer_dev_dependency_executor"]
 
     qa_tools.task.install_composer_dev_dependency_executor:
-        class: Ibuildings\QaTools\Core\Task\Executor\InstallComposerDevDependencyExecutor
+        class: Ibuildings\QaTools\Core\Task\Executor\InstallComposerDevDependencyTaskExecutor
         arguments:
             - "@qa_tools.composer.project_factory"
 

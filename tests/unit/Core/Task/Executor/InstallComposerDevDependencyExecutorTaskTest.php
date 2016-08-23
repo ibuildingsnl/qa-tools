@@ -9,7 +9,7 @@ use Ibuildings\QaTools\Core\Composer\ProjectFactory as ComposerProjectFactory;
 use Ibuildings\QaTools\Core\Interviewer\Interviewer;
 use Ibuildings\QaTools\Core\Project\Directory;
 use Ibuildings\QaTools\Core\Project\Project;
-use Ibuildings\QaTools\Core\Task\Executor\InstallComposerDevDependencyExecutor;
+use Ibuildings\QaTools\Core\Task\Executor\InstallComposerDevDependencyTaskExecutor;
 use Ibuildings\QaTools\Core\Task\InstallComposerDevDependencyTask;
 use Ibuildings\QaTools\Core\Task\TaskList;
 use Ibuildings\QaTools\UnitTest\ValueObject;
@@ -22,7 +22,7 @@ use PHPUnit\Framework\TestCase as TestCase;
  * @group Task
  * @group TaskExecutor
  */
-class InstallComposerDevDependencyExecutorTest extends TestCase
+class InstallComposerDevDependencyExecutorTaskTest extends TestCase
 {
     /** @var ComposerProjectFactory|MockInterface */
     private $composerProjectFactory;
@@ -32,7 +32,7 @@ class InstallComposerDevDependencyExecutorTest extends TestCase
     private $project;
     /** @var Interviewer|MockInterface */
     private $interviewer;
-    /** @var InstallComposerDevDependencyExecutor */
+    /** @var InstallComposerDevDependencyTaskExecutor */
     private $executor;
 
     protected function setUp()
@@ -46,13 +46,16 @@ class InstallComposerDevDependencyExecutorTest extends TestCase
         $this->interviewer = Mockery::mock(Interviewer::class);
         $this->interviewer->shouldReceive('say');
 
-        $this->executor = new InstallComposerDevDependencyExecutor($this->composerProjectFactory);
+        $this->executor = new InstallComposerDevDependencyTaskExecutor($this->composerProjectFactory);
     }
 
     /** @test */
     public function supports_composer_dev_dependency_tasks()
     {
-        $this->executor->supports(new InstallComposerDevDependencyTask('menial/monkey', '39'));
+        $this->assertTrue(
+            $this->executor->supports(new InstallComposerDevDependencyTask('menial/monkey', '39')),
+            'InstallComposerDevDependencyTaskExecutor should support execution of InstallComposerDevDependencyTasks'
+        );
     }
 
     /** @test */
