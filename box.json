@@ -12,7 +12,6 @@
   "finder": [
     {
       "name": "*.php",
-      "notName": "*Test.php",
       "exclude": [],
       "in": "vendor"
     }
