@@ -19,4 +19,5 @@ you can use the resulting configurations as a base and configure it manually.
 
 ## Wanna-haves
 
+ * Create more attractive task execution output styling; task execution currently result in yellow, unstyled and unstructured text.
  * Support verbose messages about which tools are being configured with which configurators, in which tasks they result, etc.
