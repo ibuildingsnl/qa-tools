@@ -1,25 +1,16 @@
 .RECIPEPREFIX +=
 
-ULIMIT := $(shell command -v ulimit 2>/dev/null)
-
 help:
     @echo
     @echo "\033[0;33mAvailable targets:\033[0m"
     @cat Makefile | sed 's/: /: → /' | GREP_COLORS="ms=00;32" grep --colour=always -P '^[a-z0-9].+:' | column -s ':' -t  | sed 's/^/  /'
 
 clean:
-    test ! -e dist/qa-tools.phar || rm dist/qa-tools.phar
+    @test ! -e dist/qa-tools.phar || rm dist/qa-tools.phar
 
 build: dist/qa-tools.phar
 dist/qa-tools.phar:
-    composer install --no-dev
-ifdef ULIMIT
-    # Increase open file limit
-    # See https://github.com/box-project/box2/issues/80#issuecomment-76630852
-    (ulimit -Sn 4096 && composer build && composer install --dev) || (ret=$$?; composer install --dev && exit $$ret)
-else
-    (composer build && composer install --dev) || (ret=$$?; composer install --dev && exit $$ret)
-endif
+    @tools/build-phar.php
 
 test: test-unit test-integration test-system-dev code-metrics clean build test-system-phar test-security
 test-fast: test-unit test-integration test-system-dev code-metrics
