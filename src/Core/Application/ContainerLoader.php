@@ -4,7 +4,7 @@ namespace Ibuildings\QaTools\Core\Application;
 
 use Ibuildings\QaTools\Core\Application\Compiler\RegisterConfiguratorsCompilerPass;
 use Ibuildings\QaTools\Core\Application\Compiler\RegisterTaskExecutorsCompilerPass;
-use Ibuildings\QaTools\Core\IO\File\FilesystemAdapter;
+use Ibuildings\QaTools\Core\IO\File\FilesystemFileHandler;
 use Ibuildings\QaTools\Core\Tool\Tool;
 use Symfony\Component\Config\ConfigCache;
 use Symfony\Component\Config\FileLocator;
@@ -44,7 +44,7 @@ final class ContainerLoader
                 'namespace' => 'Ibuildings\QaTools\Core\Application'
             ]);
 
-            $fileHandler = new FilesystemAdapter(new Filesystem());
+            $fileHandler = new FilesystemFileHandler(new Filesystem());
             $fileHandler->writeTo($file, $compiledContainer);
         }
 

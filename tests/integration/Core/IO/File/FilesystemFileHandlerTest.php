@@ -5,7 +5,7 @@ namespace Ibuildings\QaTools\IntegrationTest\Core\IO\File;
 use Exception;
 use Ibuildings\QaTools\Core\Exception\InvalidArgumentException;
 use Ibuildings\QaTools\Core\Exception\RuntimeException;
-use Ibuildings\QaTools\Core\IO\File\FilesystemAdapter;
+use Ibuildings\QaTools\Core\IO\File\FilesystemFileHandler;
 use Mockery;
 use PHPUnit_Framework_TestCase as TestCase;
 use Symfony\Component\Filesystem\Exception\IOException;
@@ -15,17 +15,17 @@ use Symfony\Component\Filesystem\Filesystem;
  * @group IO
  * @group Filesystem
  */
-class FilesystemAdapterTest extends TestCase
+class FilesystemFileHandlerTest extends TestCase
 {
     /** @var string */
     private $workingDirectory;
-    /** @var FilesystemAdapter */
+    /** @var FilesystemFileHandler */
     private $adapter;
 
     protected function setUp()
     {
         $this->workingDirectory = sys_get_temp_dir() . '/qa-tools_' . microtime(true) . '_fs-adapter';
-        $this->adapter = new FilesystemAdapter(new Filesystem());
+        $this->adapter = new FilesystemFileHandler(new Filesystem());
     }
 
     protected function runTest()

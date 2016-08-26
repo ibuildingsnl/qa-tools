@@ -7,7 +7,7 @@ use Ibuildings\QaTools\Core\Exception\RuntimeException;
 use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
 
-final class FilesystemAdapter implements FileHandler
+final class FilesystemFileHandler implements FileHandler
 {
     /**
      * @var Filesystem

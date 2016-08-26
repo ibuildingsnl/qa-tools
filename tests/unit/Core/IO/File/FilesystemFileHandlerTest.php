@@ -5,7 +5,7 @@ namespace Ibuildings\QaTools\UnitTest\Core\IO\File;
 use Exception;
 use Ibuildings\QaTools\Core\Exception\InvalidArgumentException;
 use Ibuildings\QaTools\Core\Exception\RuntimeException;
-use Ibuildings\QaTools\Core\IO\File\FilesystemAdapter;
+use Ibuildings\QaTools\Core\IO\File\FilesystemFileHandler;
 use Mockery;
 use PHPUnit_Framework_TestCase as TestCase;
 use Symfony\Component\Filesystem\Exception\IOException;
@@ -15,7 +15,7 @@ use Symfony\Component\Filesystem\Filesystem;
  * @group IO
  * @group Filesystem
  */
-class FilesystemAdapterTest extends TestCase
+class FilesystemFileHandlerTest extends TestCase
 {
     /**
      * @test
@@ -24,7 +24,7 @@ class FilesystemAdapterTest extends TestCase
      */
     public function data_to_write_to_file_must_be_a_string($nonString)
     {
-        $filesystemAdapter = new FilesystemAdapter(Mockery::mock(Filesystem::class));
+        $filesystemAdapter = new FilesystemFileHandler(Mockery::mock(Filesystem::class));
 
         $this->expectException(InvalidArgumentException::class);
         $filesystemAdapter->writeTo('/some/path', $nonString);
@@ -37,7 +37,7 @@ class FilesystemAdapterTest extends TestCase
      */
     public function in_order_to_write_given_filepath_must_be_a_string($nonStringOrEmptyString)
     {
-        $filesystemAdapter = new FilesystemAdapter(Mockery::mock(Filesystem::class));
+        $filesystemAdapter = new FilesystemFileHandler(Mockery::mock(Filesystem::class));
 
         $this->expectException(InvalidArgumentException::class);
         $filesystemAdapter->writeTo($nonStringOrEmptyString, 'data-to-write');
@@ -51,7 +51,7 @@ class FilesystemAdapterTest extends TestCase
         $filesystemMock = Mockery::mock(Filesystem::class);
         $filesystemMock->shouldReceive('dumpFile')->andThrow(IOException::class);
 
-        $filesystemAdapter = new FilesystemAdapter($filesystemMock);
+        $filesystemAdapter = new FilesystemFileHandler($filesystemMock);
 
         try {
             $filesystemAdapter->writeTo('/some/path', 'data-to-write');
@@ -69,7 +69,7 @@ class FilesystemAdapterTest extends TestCase
         $filesystemMock = Mockery::mock(Filesystem::class);
         $filesystemMock->shouldReceive('exists')->andReturn(false);
 
-        $filesystemAdapter = new FilesystemAdapter($filesystemMock);
+        $filesystemAdapter = new FilesystemFileHandler($filesystemMock);
 
         $this->expectException(RuntimeException::class);
         $filesystemAdapter->readFrom('/does/not/exist');
@@ -83,7 +83,7 @@ class FilesystemAdapterTest extends TestCase
         $filesystemMock = Mockery::mock(Filesystem::class);
         $filesystemMock->shouldReceive('exists')->andReturn(true);
 
-        $filesystemAdapter = new FilesystemAdapter($filesystemMock);
+        $filesystemAdapter = new FilesystemFileHandler($filesystemMock);
 
         $this->expectException(RuntimeException::class);
         $filesystemAdapter->readFrom('/this/is/not/readable');
@@ -97,7 +97,7 @@ class FilesystemAdapterTest extends TestCase
     public function in_order_to_remove_given_filepath_must_be_a_non_empty_string($filePath)
     {
         $filesystemMock = Mockery::mock(Filesystem::class);
-        $filesystemAdapter = new FilesystemAdapter($filesystemMock);
+        $filesystemAdapter = new FilesystemFileHandler($filesystemMock);
 
         $this->expectException(InvalidArgumentException::class);
 
@@ -112,7 +112,7 @@ class FilesystemAdapterTest extends TestCase
         $filesystemMock = Mockery::mock(Filesystem::class);
         $filesystemMock->shouldReceive('remove')->andThrow(IOException::class);
 
-        $filesystemAdapter = new FilesystemAdapter($filesystemMock);
+        $filesystemAdapter = new FilesystemFileHandler($filesystemMock);
 
         try {
             $filesystemAdapter->remove('/some/path');
@@ -130,7 +130,7 @@ class FilesystemAdapterTest extends TestCase
     public function in_order_to_check_if_a_file_exists_given_filepath_must_be_a_non_empty_string($filePath)
     {
         $filesystemMock = Mockery::mock(Filesystem::class);
-        $filesystemAdapter = new FilesystemAdapter($filesystemMock);
+        $filesystemAdapter = new FilesystemFileHandler($filesystemMock);
 
         $this->expectException(InvalidArgumentException::class);
 
@@ -149,7 +149,7 @@ class FilesystemAdapterTest extends TestCase
             ->shouldReceive('exists')
             ->with($filePath);
 
-        $filesystemAdapter = new FilesystemAdapter($filesystemMock);
+        $filesystemAdapter = new FilesystemFileHandler($filesystemMock);
         $filesystemAdapter->exists($filePath);
     }
 
@@ -168,7 +168,7 @@ class FilesystemAdapterTest extends TestCase
             ->with($filePath, "$filePath.qatools-bak")
             ->andThrow(new IOException('msg'));
 
-        $filesystemAdapter = new FilesystemAdapter($filesystemMock);
+        $filesystemAdapter = new FilesystemFileHandler($filesystemMock);
 
         try {
             $filesystemAdapter->writeWithBackupTo($filePath, 'data');
@@ -193,7 +193,7 @@ class FilesystemAdapterTest extends TestCase
             ->with($filePath)
             ->andThrow(new IOException('msg'));
 
-        $filesystemAdapter = new FilesystemAdapter($filesystemMock);
+        $filesystemAdapter = new FilesystemFileHandler($filesystemMock);
 
         try {
             $filesystemAdapter->restoreBackupOf($filePath);
@@ -218,7 +218,7 @@ class FilesystemAdapterTest extends TestCase
             ->with("$filePath.qatools-bak", $filePath, true)
             ->andThrow(new IOException('msg'));
 
-        $filesystemAdapter = new FilesystemAdapter($filesystemMock);
+        $filesystemAdapter = new FilesystemFileHandler($filesystemMock);
 
         try {
             $filesystemAdapter->restoreBackupOf($filePath);
@@ -239,7 +239,7 @@ class FilesystemAdapterTest extends TestCase
             ->with("$filePath.qatools-bak")
             ->andThrow(new IOException('msg'));
 
-        $filesystemAdapter = new FilesystemAdapter($filesystemMock);
+        $filesystemAdapter = new FilesystemFileHandler($filesystemMock);
 
         try {
             $filesystemAdapter->discardBackupOf($filePath);

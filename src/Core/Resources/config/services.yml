@@ -10,7 +10,7 @@ services:
             - "@qa_tools.task.executor_executor"
 
     qa_tools.file_handler:
-        alias: qa_tools.io.file.filesystem_adapter
+        alias: qa_tools.io.file.filesystem_file_handler
 
     qa_tools.interviewer_factory:
         alias: qa_tools.io.cli.interviewer_factory
@@ -47,8 +47,8 @@ services:
     qa_tools.configurator.configurator_repository:
         class: Ibuildings\QaTools\Core\Configurator\ConfiguratorRepository
 
-    qa_tools.io.file.filesystem_adapter:
-        class: Ibuildings\QaTools\Core\IO\File\FilesystemAdapter
+    qa_tools.io.file.filesystem_file_handler:
+        class: Ibuildings\QaTools\Core\IO\File\FilesystemFileHandler
         arguments:
             - "@symfony.filesystem"
 
