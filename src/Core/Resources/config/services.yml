@@ -7,7 +7,7 @@ services:
             - "@qa_tools.tool_configurator"
             - "@qa_tools.configurator.configurator_repository"
             - "@qa_tools.configuration.task_directory.factory"
-            - "@qa_tools.task.executor_executor"
+            - "@qa_tools.task.task_directory_executor"
 
     qa_tools.file_handler:
         alias: qa_tools.io.file.filesystem_file_handler
@@ -72,8 +72,8 @@ services:
         arguments:
             - "@twig.environment"
 
-    qa_tools.task.executor_executor:
-        class: Ibuildings\QaTools\Core\Task\Executor\CautiousExecutorExecutor
+    qa_tools.task.task_directory_executor:
+        class: Ibuildings\QaTools\Core\Task\Executor\TransactionalTaskDirectoryExecutor
         arguments:
             - []
 

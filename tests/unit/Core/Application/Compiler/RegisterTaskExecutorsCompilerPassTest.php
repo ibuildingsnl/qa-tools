@@ -23,7 +23,7 @@ class RegisterTaskExecutorsCompilerPassTest extends TestCase
         $container = Mockery::mock(ContainerBuilder::class);
         $container
             ->shouldReceive('findDefinition')
-            ->with('qa_tools.task.executor_executor')
+            ->with('qa_tools.task.task_directory_executor')
             ->andReturn($executorExecutorDefinition);
         $container
             ->shouldReceive('findTaggedServiceIds')

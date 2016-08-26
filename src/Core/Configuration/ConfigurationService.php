@@ -5,7 +5,7 @@ namespace Ibuildings\QaTools\Core\Configuration;
 use Ibuildings\QaTools\Core\Configurator\ConfiguratorRepository;
 use Ibuildings\QaTools\Core\Interviewer\Interviewer;
 use Ibuildings\QaTools\Core\Project\Directory;
-use Ibuildings\QaTools\Core\Task\Executor\ExecutorExecutor as TasksExecutorExecutor;
+use Ibuildings\QaTools\Core\Task\Executor\TaskDirectoryExecutor;
 
 final class ConfigurationService
 {
@@ -35,9 +35,9 @@ final class ConfigurationService
     private $taskDirectoryFactory;
 
     /**
-     * @var TasksExecutorExecutor
+     * @var TaskDirectoryExecutor
      */
-    private $tasksExecutorExecutor;
+    private $taskDirectoryExecutor;
 
     public function __construct(
         ConfigurationRepository $configurationRepository,
@@ -45,14 +45,14 @@ final class ConfigurationService
         ToolConfigurator $toolConfigurator,
         ConfiguratorRepository $configuratorRepository,
         TaskDirectoryFactory $taskDirectoryFactory,
-        TasksExecutorExecutor $tasksExecutorExecutor
+        TaskDirectoryExecutor $taskDirectoryExecutor
     ) {
         $this->configurationRepository = $configurationRepository;
         $this->projectConfigurator = $projectConfigurator;
         $this->configuratorRepository = $configuratorRepository;
         $this->taskDirectoryFactory = $taskDirectoryFactory;
         $this->toolConfigurator = $toolConfigurator;
-        $this->tasksExecutorExecutor = $tasksExecutorExecutor;
+        $this->taskDirectoryExecutor = $taskDirectoryExecutor;
     }
 
     /**
@@ -76,7 +76,7 @@ final class ConfigurationService
         $configurators = $this->configuratorRepository->getConfiguratorsForProject($configuration->getProject());
         $this->toolConfigurator->configure($configurators, $memorizingInterviewer, $taskDirectory);
 
-        $this->tasksExecutorExecutor->execute($taskDirectory, $memorizingInterviewer);
+        $this->taskDirectoryExecutor->execute($taskDirectory, $memorizingInterviewer);
 
         $this->configurationRepository->save($configuration);
     }
