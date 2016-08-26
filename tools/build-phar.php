@@ -2,7 +2,7 @@
 <?php
 
 info("Installing production dependencies for inclusion in the distributable...");
-if (!execute('composer install --ansi --no-dev 2>&1', $installOutput)) {
+if (!execute('composer install --ansi --no-dev --optimize-autoloader 2>&1', $installOutput)) {
     error("Something went wrong while installing the production dependencies:");
     debug($installOutput);
     exit(1);
