@@ -38,5 +38,5 @@ The execution process takes place as follows:
  0. Create a new executor implementation. For an example, look at `Ibuildings\QaTools\Core\Task\Executor\WriteFileTaskExecutor`.
  0. If you're up to the job, create a unit test for your executor implementation. Again, for an example, look at `Ibuildings\QaTools\UnitTest\Core\Task\Executor\WriteFileTaskExecutorTest`.
  0. Define your executor as a Symfony service in `src/Core/Resources/config/task_executors.yml`. Look to the other executors for examples, or read the Symfony Framework's documentation on [defining services] using YAML(http://symfony.com/doc/current/service_container.html#creating-configuring-services-in-the-container). Note that this documentation contains information about the Symfony Framework, while we only use its dependency injection component.
- 0. Register your task executor with the tag `qa_tools.task_executor`.
+ 0. Register your task executor with the tag `qa_tools.task_executor`. The tag's `priority` property influences the order in which task execution will take place; a higher priority means the executor is called sooner.
  0. If you're up to the job, please [expand the system tests](writing-system-tests.md) to assert that your executor does it work properly. 
