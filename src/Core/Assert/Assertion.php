@@ -25,8 +25,6 @@ final class Assertion extends BaseAssertion
     public static function nonEmptyString($value, $message, $propertyPath = null)
     {
         if (!is_string($value) || trim($value) === '') {
-            $message = 'Expected non-empty string for "%3$s", "%1$s" given';
-
             throw static::createException(
                 $value,
                 sprintf($message, static::stringify($value), gettype($value), $propertyPath),
