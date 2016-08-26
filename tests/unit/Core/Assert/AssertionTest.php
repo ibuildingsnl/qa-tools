@@ -16,9 +16,9 @@ class AssertionTest extends TestCase
      */
     public function non_empty_strings_are_valid()
     {
-        Assertion::nonEmptyString('0', 'Expected non-empty string for "%3$s", "%1$s" given', 'test');
-        Assertion::nonEmptyString('text', 'Expected non-empty string for "%3$s", "%1$s" given', 'test');
-        Assertion::nonEmptyString("new\nlines\nincluded", 'Expected non-empty string for "%3$s", "%1$s" given', 'test');
+        Assertion::nonEmptyString('0', 'Expected non-empty string for "%3$s", got "%s" of type "%s"', 'test');
+        Assertion::nonEmptyString('text', 'Expected non-empty string for "%3$s", got "%s" of type "%s"', 'test');
+        Assertion::nonEmptyString("new\nlines\nincluded", 'Expected non-empty string for "%3$s", got "%s" of type "%s"', 'test');
     }
 
     /**
@@ -30,6 +30,6 @@ class AssertionTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
-        Assertion::nonEmptyString($value, 'Expected non-empty string for "%3$s", "%1$s" given', 'value');
+        Assertion::nonEmptyString($value, 'Expected non-empty string for "%3$s", got "%s" of type "%s"', 'value');
     }
 }

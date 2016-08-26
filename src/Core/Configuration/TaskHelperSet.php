@@ -24,7 +24,7 @@ class TaskHelperSet
      */
     public function renderTemplate($template, array $params = [])
     {
-        Assertion::nonEmptyString($template, 'Expected non-empty string for "%3$s", "%1$s" given', 'template');
+        Assertion::nonEmptyString($template, 'Expected non-empty string for "%3$s", got "%s" of type "%s"', 'template');
 
         return $this->templateEngine->render($template, $params);
     }
@@ -34,7 +34,7 @@ class TaskHelperSet
      */
     public function setTemplatePath($path)
     {
-        Assertion::nonEmptyString($path, 'Expected non-empty string for "%3$s", "%1$s" given', 'path');
+        Assertion::nonEmptyString($path, 'Expected non-empty string for "%3$s", got "%s" of type "%s"', 'path');
 
         $this->templateEngine->setPath($path);
     }

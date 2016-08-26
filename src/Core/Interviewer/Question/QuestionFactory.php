@@ -16,7 +16,7 @@ final class QuestionFactory
      */
     public static function create($question, $defaultAnswer = null)
     {
-        Assertion::nonEmptyString($question, 'Expected non-empty string for "%3$s", "%1$s" given', 'question');
+        Assertion::nonEmptyString($question, 'Expected non-empty string for "%3$s", got "%s" of type "%s"', 'question');
         Assertion::nullOrNonEmptyString($defaultAnswer, 'default answer');
 
         if ($defaultAnswer === null) {
@@ -33,7 +33,7 @@ final class QuestionFactory
      */
     public static function createYesOrNo($question, $defaultAnswer = null)
     {
-        Assertion::nonEmptyString($question, 'Expected non-empty string for "%3$s", "%1$s" given', 'question');
+        Assertion::nonEmptyString($question, 'Expected non-empty string for "%3$s", got "%s" of type "%s"', 'question');
         Assertion::nullOrBoolean($defaultAnswer);
 
         if ($defaultAnswer === null) {
@@ -55,7 +55,7 @@ final class QuestionFactory
      */
     public static function createMultipleChoice($question, array $choices, $defaultAnswer = null)
     {
-        Assertion::nonEmptyString($question, 'Expected non-empty string for "%3$s", "%1$s" given', 'question');
+        Assertion::nonEmptyString($question, 'Expected non-empty string for "%3$s", got "%s" of type "%s"', 'question');
         Assertion::allNonEmptyString($choices, 'choices');
         Assertion::nullOrNonEmptyString($defaultAnswer, 'default answer');
 
@@ -78,7 +78,7 @@ final class QuestionFactory
      */
     public static function createListChoice($question, array $choices, array $defaultAnswer = null)
     {
-        Assertion::nonEmptyString($question, 'Expected non-empty string for "%3$s", "%1$s" given', 'question');
+        Assertion::nonEmptyString($question, 'Expected non-empty string for "%3$s", got "%s" of type "%s"', 'question');
         Assertion::allNonEmptyString($choices, 'choices');
         Assertion::nullOrallNonEmptyString($defaultAnswer, 'default answer');
 

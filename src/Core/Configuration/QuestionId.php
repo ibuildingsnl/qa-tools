@@ -21,7 +21,7 @@ final class QuestionId
     {
         Assertion::nonEmptyString(
             $scope,
-            'Expected non-empty string for "%3$s", "%1$s" given',
+            'Expected non-empty string for "%3$s", got "%s" of type "%s"',
             'Scope ought to be a non-empty string, got "%s" of type "%s"'
         );
 
@@ -35,7 +35,7 @@ final class QuestionId
     {
         Assertion::nonEmptyString(
             $questionId,
-            'Expected non-empty string for "%3$s", "%1$s" given',
+            'Expected non-empty string for "%3$s", got "%s" of type "%s"',
             'Question ID ought to be a non-empty string, got "%s" of type "%s"'
         );
 

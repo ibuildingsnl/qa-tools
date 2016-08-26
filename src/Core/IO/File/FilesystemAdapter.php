@@ -92,7 +92,7 @@ final class FilesystemAdapter implements FileHandler
 
     public function readFrom($filePath)
     {
-        Assertion::nonEmptyString($filePath, 'Expected non-empty string for "%3$s", "%1$s" given', 'filePath');
+        Assertion::nonEmptyString($filePath, 'Expected non-empty string for "%3$s", got "%s" of type "%s"', 'filePath');
 
         if (!$this->filesystem->exists($filePath)) {
             throw new RuntimeException(sprintf('Cannot read from file "%s" as it does not exist', $filePath));
@@ -112,7 +112,7 @@ final class FilesystemAdapter implements FileHandler
 
     public function remove($filePath)
     {
-        Assertion::nonEmptyString($filePath, 'Expected non-empty string for "%3$s", "%1$s" given', 'filePath');
+        Assertion::nonEmptyString($filePath, 'Expected non-empty string for "%3$s", got "%s" of type "%s"', 'filePath');
 
         try {
             $this->filesystem->remove($filePath);
@@ -124,7 +124,7 @@ final class FilesystemAdapter implements FileHandler
 
     public function exists($filePath)
     {
-        Assertion::nonEmptyString($filePath, 'Expected non-empty string for "%3$s", "%1$s" given', 'filePath');
+        Assertion::nonEmptyString($filePath, 'Expected non-empty string for "%3$s", got "%s" of type "%s"', 'filePath');
 
         return $this->filesystem->exists($filePath);
     }
