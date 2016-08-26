@@ -59,13 +59,14 @@ final class BuildPharScriptHandler
         if ($exitCode !== 0) {
             $io->writeError([
                 '<error>' .
-                '                                                                                                    ',
-                ' Phar build failed. If the error is "", you can try to increase the open file limit of your system: ',
-                '                                                                                                    ',
-                '     ulimit -Sn 4096                                                                                ',
-                '                                                                                                    ',
-                '     See https://github.com/box-project/box2/issues/80#issuecomment-76630852                        ',
-                '                                                                                                    ',
+                '                                                                                  ',
+                '  Phar build failed. If the error contains "Too many open files", you can try to  ',
+                '  increase the open file limit of your system:                                    ',
+                '                                                                                  ',
+                '      ulimit -Sn 4096                                                             ',
+                '                                                                                  ',
+                '      See https://github.com/box-project/box2/issues/80#issuecomment-76630852     ',
+                '                                                                                  ',
                 '</error>',
             ]);
             exit(1);
