@@ -19,11 +19,11 @@ final class PharScriptHandler
         $shaSum      = $config['qa-tools-box-sha-sum'];
 
         if (!$event->isDevMode()) {
-            return $io->write('<warning>Not downloading Box in --no-dev mode</warning>');
+            return $io->writeError('<warning>Not downloading Box in --no-dev mode</warning>');
         }
 
         if (file_exists($installPath) && sha1_file($installPath) === $shaSum) {
-            return $io->write(
+            return $io->writeError(
                 sprintf(
                     '<warning>Expected version of Box is already installed in "%s"</warning>',
                     $installPath
@@ -40,7 +40,7 @@ final class PharScriptHandler
             );
         }
 
-        $io->write(sprintf('<info>Downloading Box from "%s"</info>', $source));
+        $io->writeError(sprintf('<info>Downloading Box from "%s"</info>', $source));
         $boxContents = file_get_contents($source);
 
         if ($boxContents === false) {
@@ -93,7 +93,7 @@ final class PharScriptHandler
             );
         }
 
-        return $io->write(sprintf('<info>Installed Box at "%s".</info>', $installPath));
+        return $io->writeError(sprintf('<info>Installed Box at "%s".</info>', $installPath));
     }
 
     /**
