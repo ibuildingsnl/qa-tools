@@ -15,10 +15,10 @@
     },
     "scripts": {
         "post-install-cmd": [
-            "Ibuildings\\QaTools\\Composer\\PharScriptHandler::requireBoxPhar"
+            "Ibuildings\\QaTools\\Composer\\BoxDownloaderScriptHandler::downloadBoxPhar"
         ],
         "build": [
-            "Ibuildings\\QaTools\\Composer\\PharScriptHandler::buildPhar"
+            "Ibuildings\\QaTools\\Composer\\BuildPharScriptHandler::buildPhar"
         ]
     },
     "require": {
