@@ -19,5 +19,8 @@ you can use the resulting configurations as a base and configure it manually.
 
 ## Wanna-haves
 
+ * [Write a nice file contents matcher](https://github.com/ibuildingsnl/qa-tools-v3/blob/061e357c07d24e4ad217fffa545015f8e79cfbac/tests/unit/Tool/PhpMd/Configurator/PhpMdConfiguratorTest.php#L74-L80)
+ * Verify whether [this PHPMD rule exclusion](https://github.com/ibuildingsnl/qa-tools-v3/blob/061e357c07d24e4ad217fffa545015f8e79cfbac/src/Tool/PhpMd/Resources/templates/phpmd-default.xml.twig#L20-L23) is still needed
+ * Rename `TaskDirectory` to `ToDoList`
  * Create more attractive task execution output styling; task execution currently result in yellow, unstyled and unstructured text.
  * Support verbose messages about which tools are being configured with which configurators, in which tasks they result, etc.
