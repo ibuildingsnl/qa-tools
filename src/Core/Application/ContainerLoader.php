@@ -3,7 +3,8 @@
 namespace Ibuildings\QaTools\Core\Application;
 
 use Ibuildings\QaTools\Core\Application\Compiler\RegisterConfiguratorsCompilerPass;
-use Ibuildings\QaTools\Core\IO\File\FilesystemAdapter;
+use Ibuildings\QaTools\Core\Application\Compiler\RegisterTaskExecutorsCompilerPass;
+use Ibuildings\QaTools\Core\IO\File\FilesystemFileHandler;
 use Ibuildings\QaTools\Core\Tool\Tool;
 use Symfony\Component\Config\ConfigCache;
 use Symfony\Component\Config\FileLocator;
@@ -21,11 +22,13 @@ final class ContainerLoader
 
         if (!$precompiledContainer->isFresh() || $isDebug) {
             $containerBuilder = new ContainerBuilder();
-            $containerBuilder->addCompilerPass(new RegisterConfiguratorsCompilerPass);
+            $containerBuilder->addCompilerPass(new RegisterConfiguratorsCompilerPass());
+            $containerBuilder->addCompilerPass(new RegisterTaskExecutorsCompilerPass());
 
             $loader = new YamlFileLoader($containerBuilder, new FileLocator(__DIR__ . '/../Resources/config/'));
             $loader->load('config.yml');
             $loader->load('services.yml');
+            $loader->load('task_executors.yml');
 
             /** @var Tool $tool */
             foreach ($application->getRegisteredTools() as $tool) {
@@ -41,8 +44,8 @@ final class ContainerLoader
                 'namespace' => 'Ibuildings\QaTools\Core\Application'
             ]);
 
-            $fileHandler = new FilesystemAdapter(new Filesystem());
-            $fileHandler->writeTo($compiledContainer, $file);
+            $fileHandler = new FilesystemFileHandler(new Filesystem());
+            $fileHandler->writeTo($file, $compiledContainer);
         }
 
         require_once $file;

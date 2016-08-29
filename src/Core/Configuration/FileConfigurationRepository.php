@@ -26,7 +26,7 @@ final class FileConfigurationRepository implements ConfigurationRepository
 
     public function __construct(FileHandler $fileHandler, $filePath)
     {
-        Assertion::nonEmptyString($filePath, 'filePath');
+        Assertion::nonEmptyString($filePath, 'Expected non-empty string for "%3$s", got "%s" of type "%s"', 'filePath');
 
         $this->fileHandler = $fileHandler;
         $this->filePath = $filePath;
@@ -97,6 +97,6 @@ final class FileConfigurationRepository implements ConfigurationRepository
             ]
         );
 
-        $this->fileHandler->writeTo(Json::prettyPrint($json), $this->filePath);
+        $this->fileHandler->writeTo($this->filePath, Json::prettyPrint($json));
     }
 }

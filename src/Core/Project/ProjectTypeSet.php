@@ -86,4 +86,13 @@ final class ProjectTypeSet implements Countable, IteratorAggregate
 
         $this->projectTypes[] = $projectType;
     }
+
+    public function __toString()
+    {
+        return sprintf(
+            'ProjectTypeSet[%d](%s)',
+            count($this->projectTypes),
+            join(', ', array_map('strval', $this->projectTypes))
+        );
+    }
 }

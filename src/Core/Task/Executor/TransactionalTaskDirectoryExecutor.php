@@ -7,7 +7,11 @@ use Ibuildings\QaTools\Core\Assert\Assertion;
 use Ibuildings\QaTools\Core\Configuration\TaskDirectory;
 use Ibuildings\QaTools\Core\Interviewer\ScopedInterviewer;
 
-final class CautiousExecutorExecutor implements ExecutorExecutor
+/**
+ * Executes the tasks stored in the task directory, attempting to roll back all
+ * changes in case of a mid-transactional error.
+ */
+final class TransactionalTaskDirectoryExecutor implements TaskDirectoryExecutor
 {
     /**
      * @var Executor[]

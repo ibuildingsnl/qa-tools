@@ -7,10 +7,10 @@ services:
             - "@qa_tools.tool_configurator"
             - "@qa_tools.configurator.configurator_repository"
             - "@qa_tools.configuration.task_directory.factory"
-            - "@qa_tools.task.executor_executor"
+            - "@qa_tools.task.task_directory_executor"
 
     qa_tools.file_handler:
-        alias: qa_tools.io.file.filesystem_adapter
+        alias: qa_tools.io.file.filesystem_file_handler
 
     qa_tools.interviewer_factory:
         alias: qa_tools.io.cli.interviewer_factory
@@ -47,8 +47,8 @@ services:
     qa_tools.configurator.configurator_repository:
         class: Ibuildings\QaTools\Core\Configurator\ConfiguratorRepository
 
-    qa_tools.io.file.filesystem_adapter:
-        class: Ibuildings\QaTools\Core\IO\File\FilesystemAdapter
+    qa_tools.io.file.filesystem_file_handler:
+        class: Ibuildings\QaTools\Core\IO\File\FilesystemFileHandler
         arguments:
             - "@symfony.filesystem"
 
@@ -72,15 +72,10 @@ services:
         arguments:
             - "@twig.environment"
 
-    qa_tools.task.executor_executor:
-        class: Ibuildings\QaTools\Core\Task\Executor\CautiousExecutorExecutor
+    qa_tools.task.task_directory_executor:
+        class: Ibuildings\QaTools\Core\Task\Executor\TransactionalTaskDirectoryExecutor
         arguments:
-            - ["@qa_tools.task.install_composer_dev_dependency_executor"]
-
-    qa_tools.task.install_composer_dev_dependency_executor:
-        class: Ibuildings\QaTools\Core\Task\Executor\InstallComposerDevDependencyExecutor
-        arguments:
-            - "@qa_tools.composer.project_factory"
+            - []
 
     qa_tools.composer.project_factory:
         class: Ibuildings\QaTools\Core\Composer\CliComposerProjectFactory
@@ -96,3 +91,4 @@ services:
 
     twig.environment:
         class: Twig_Environment
+        factory: [Ibuildings\QaTools\Core\Templating\TwigFactory, create]

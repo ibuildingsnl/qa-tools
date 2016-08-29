@@ -9,3 +9,6 @@ $expect();
 
 assertFileExists('qa-tools.json');
 Composer::assertPackageIsInstalled('phpmd/phpmd');
+assertFileExists('phpmd.xml');
+assertFileContains('phpmd.xml', 'Ibuildings QA Tools Default Ruleset for Boolean Bust');
+

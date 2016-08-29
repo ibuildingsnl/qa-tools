@@ -5,7 +5,10 @@ namespace Ibuildings\QaTools\Core\Task\Executor;
 use Ibuildings\QaTools\Core\Configuration\TaskDirectory;
 use Ibuildings\QaTools\Core\Interviewer\ScopedInterviewer;
 
-interface ExecutorExecutor
+/**
+ * Executes the tasks stored in the task directory.
+ */
+interface TaskDirectoryExecutor
 {
     /**
      * @param TaskDirectory     $taskDirectory
