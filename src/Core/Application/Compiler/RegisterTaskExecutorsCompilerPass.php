@@ -3,6 +3,7 @@
 namespace Ibuildings\QaTools\Core\Application\Compiler;
 
 use Ibuildings\QaTools\Core\Exception\RuntimeException;
+use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
@@ -12,59 +13,59 @@ final class RegisterTaskExecutorsCompilerPass implements CompilerPassInterface
     public function process(ContainerBuilder $container)
     {
         $executorExecutorDefinition = $container->findDefinition('qa_tools.task.task_directory_executor');
-
         $taggedExecutors = $container->findTaggedServiceIds('qa_tools.task_executor');
-        $executorPriorityTuples = array_map(
-            function ($serviceId, $tags) {
-                if (count($tags) > 1) {
-                    throw new RuntimeException(
-                        sprintf(
-                            'Task executor "%s" may not be registered more than once (%d times), ' .
-                            'please check its service definition\'s tags',
-                            $serviceId,
-                            count($tags)
-                        )
-                    );
-                }
-                if (!isset($tags[0]['priority'])) {
-                    throw new RuntimeException(
-                        sprintf(
-                            'Tag "qa_tools.task_executor" for service "%s" ought to have a property "priority"',
-                            $serviceId
-                        )
-                    );
-                }
-                $priorityIsInteger = is_int($tags[0]['priority']);
-                $priorityConsistsOfDigits = is_string($tags[0]['priority']) && ctype_digit($tags[0]['priority']);
-                if (!$priorityIsInteger || $priorityConsistsOfDigits) {
-                    throw new RuntimeException(
-                        sprintf(
-                            'Tag "qa_tools.task_executor" property "priority" of service "%s" ought to be an integer',
-                            $serviceId
-                        )
-                    );
-                }
 
-                return [$serviceId, (int) $tags[0]['priority']];
-            },
-            array_keys($taggedExecutors),
-            $taggedExecutors
-        );
-
-        $sortedExecutorTuples = $executorPriorityTuples;
-        usort(
-            $sortedExecutorTuples,
-            function (array $tupleA, array $tupleB) {
-                return $tupleB[1] - $tupleA[1];
+        $prioritisedReferences = [];
+        foreach ($taggedExecutors as $serviceId => $tag) {
+            if (count($tag) !== 1) {
+                throw new InvalidConfigurationException(
+                    sprintf(
+                        'The tag "qa_tools.task_executor" is specified twice on service "%s"; ' .
+                        'a service may only be registered once as being a task executor',
+                        $serviceId
+                    )
+                );
             }
-        );
-        $taggedExecutorReferences = array_map(
-            function (array $tuple) {
-                return new Reference($tuple[0]);
-            },
-            $sortedExecutorTuples
-        );
 
-        $executorExecutorDefinition->replaceArgument(0, $taggedExecutorReferences);
+            if (!isset($tag[0]['priority'])) {
+                throw new InvalidConfigurationException(
+                    sprintf(
+                        'Tag "qa_tools.task_executor" for service "%s" ought to have a property "priority"',
+                        $serviceId
+                    )
+                );
+            }
+
+            $priority = $tag[0]['priority'];
+            if (!is_int($priority)) {
+                throw new InvalidConfigurationException(
+                    sprintf(
+                        'Task executor "%s" priority is not an integer, but is of type "%s"',
+                        $serviceId,
+                        gettype($priority)
+                    )
+                );
+            }
+            if (isset($prioritisedReferences[$priority])) {
+                throw new InvalidConfigurationException(
+                    sprintf(
+                        'Cannot register task executor "%s" with priority "%d"; ' .
+                        'task executor "%s" is already registered at that priority',
+                        $serviceId,
+                        $priority,
+                        $prioritisedReferences[$priority]
+                    )
+                );
+            }
+
+            $prioritisedReferences[$priority] = new Reference($serviceId);
+        }
+
+        if (!ksort($prioritisedReferences)) {
+            throw new RuntimeException('Could not sort task executors based on prioritisation (ksort failed)');
+        }
+        $prioritisedReferences = array_reverse($prioritisedReferences);
+
+        $executorExecutorDefinition->replaceArgument(0, $prioritisedReferences);
     }
 }

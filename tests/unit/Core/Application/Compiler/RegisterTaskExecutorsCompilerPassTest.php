@@ -3,9 +3,9 @@
 namespace Ibuildings\QaTools\UnitTest\Core\Application\Compiler;
 
 use Ibuildings\QaTools\Core\Application\Compiler\RegisterTaskExecutorsCompilerPass;
-use Ibuildings\QaTools\Core\Exception\RuntimeException;
 use Mockery;
 use PHPUnit\Framework\TestCase as TestCase;
+use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
@@ -76,8 +76,21 @@ class RegisterTaskExecutorsCompilerPassTest extends TestCase
             ->with('qa_tools.task_executor')
             ->andReturn(['service_a' => array(['priority' => 0], ['priority' => 10])]);
 
-        $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('Task executor "service_a" may not be registered more than once');
+        $this->expectException(InvalidConfigurationException::class);
+        $this->expectExceptionMessage('The tag "qa_tools.task_executor" is specified twice on service "service_a"');
+        $this->compilerPass->process($this->container);
+    }
+
+    /** @test */
+    public function doesnt_allow_two_task_executors_to_be_registered_with_the_same_priority()
+    {
+        $this->container
+            ->shouldReceive('findTaggedServiceIds')
+            ->with('qa_tools.task_executor')
+            ->andReturn(['service_a' => array(['priority' => 10]), 'service_b' => array(['priority' => 10])]);
+
+        $this->expectException(InvalidConfigurationException::class);
+        $this->expectExceptionMessage('task executor "service_a" is already registered at that priority');
         $this->compilerPass->process($this->container);
     }
 }
