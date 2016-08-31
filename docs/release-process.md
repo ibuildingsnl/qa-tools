@@ -14,7 +14,8 @@ If any of the verification steps fail, the release process is aborted. These
 verification steps are there for a very good reason and *may never* be skipped.
 
 The release build is signed using a separate private key and is managed by
-Ibuildings. Place this key in `./signing-key-release.pem`.
+Ibuildings. This key can be found in Ibuildings' LastPass and is named "QA Tools
+private key for releases". Place this key in `./signing-key-release.pem`.
 
 Then, to run the release process, execute the following in a terminal:
 

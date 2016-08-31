@@ -4,10 +4,10 @@ help:
 	@cat Makefile | sed 's/: /: → /' | GREP_COLORS="ms=00;32" grep --colour=always -E '^[a-z0-9].+:' | column -s ':' -t  | sed 's/^/  /'
 
 release: clean
-	@test -e signing-key-release.pem || (echo "\033[31mPlease install the release build signing key to \033[33m./signing-key-release.pem\033[31m.\033[0m" && exit 1)
+	@test -e signing-key-release.pem || (echo "\033[31mPlease install the release build signing key from LastPass ("QA Tools private key for releases") to \033[33m./signing-key-release.pem\033[31m.\033[0m" && exit 1)
 	@echo "\033[32mVerifying correct release key is installed...\033[0m"
 	@cat signing-key-release.pem | tr -d " \t\n\r" | php -r 'exit((int) (sha1_file("php://stdin") !== "addecb2dba1fe389d19046eb21a933e5c0b527cb"));' \
-		|| (echo "\033[31mThe file \033[33m./signing-key-release.pem\033[31m contains an unexpected private key. Please verify you installed the correct release build signing key.\033[0m" && exit 1)
+		|| (echo "\033[31mThe file \033[33m./signing-key-release.pem\033[31m contains an unexpected private key. Please verify you installed the correct release build signing key from LastPass ("QA Tools private key for releases").\033[0m" && exit 1)
 	@echo "\033[32mReleasing new version...\033[0m"
 	@vendor/bin/RMT release
 	@echo "\n\033[32mBuilding release build...\033[0m\n"
