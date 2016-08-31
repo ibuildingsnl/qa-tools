@@ -28,11 +28,6 @@ It is installed as a phar-file itself to prevent version conflicts between Box' 
 Run `make build-test` in the project root directory to build the test build.
 This creates `./build/test/qa-tools.phar` and `./build/test/qa-tools.phar.pubkey`.
 
-## Generating the key for signing
-
-For development, an insecure, ephemeral private key can be generated using `make generate-test-signing-key`.
-For distribution, a private key is managed by Ibuildings.
-
 ## Updating Box
 Box is installed during Composer's `post-install-cmd` phase.
 To update Box, manually update the source and sha-sum inside `composer.json` under the `extra` parameters.

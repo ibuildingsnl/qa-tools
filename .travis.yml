@@ -19,9 +19,6 @@ before_install:
 install:
   - composer install --prefer-dist
 
-before_script:
-  - make generate-test-signing-key
-
 script:
   - make test
 

@@ -27,7 +27,7 @@ build/release/qa-tools.phar:
 	@rm box.json
 
 build-test: build/test/qa-tools.phar
-build/test/qa-tools.phar:
+build/test/qa-tools.phar: signing-key-test.pem
 	@cp box.test.json box.json
 	@tools/build-phar.php
 	@rm box.json
@@ -70,7 +70,7 @@ check-security-advisories:
 	vendor/bin/security-checker security:check
 
 
-generate-test-signing-key:
+signing-key-test.pem:
 	@test ! -e signing-key-test.pem || (echo "\n  \033[0;31mA signing key already exists. Remove it if you want to generate a new one.\033[0m\n" && false)
 	openssl genrsa -passout pass:insecure -des3 -out signing-key-test-with-password.pem 4096 && \
 		openssl rsa -passin pass:insecure -in signing-key-test-with-password.pem -out signing-key-test.pem && \
