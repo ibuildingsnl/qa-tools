@@ -1,4 +1,5 @@
-/build/*/qa-tools.*
+/build/release/qa-tools.phar
+/build/test/qa-tools.*
 /vendor/
 /var/cache/*
 /bin/box

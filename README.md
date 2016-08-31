@@ -9,13 +9,14 @@ you can use the resulting configurations as a base and configure it manually.
 
 The recommended way to install the QA Tools is by downloading the latest Phar
 from the [Releases][github-qa-releases] page. Place the Phar in your project, or
-somewhere in your [PATH][path], and make it executable. If you wish, you can
-remove the `.phar` extension on Unix-y systems.
+somewhere in your [PATH][path], and make it executable. Then download the
+[public key][public-key] and place it next to the executable.
 
 Read why we release the QA Tools as a Phar [here](phar.md).
 
 [github-qa-releases]: https://github.com/ibuildingsnl/qa-tools-v3/releases
 [path]: https://en.wikipedia.org/wiki/PATH_(variable)
+[public-key]: build/release/qa-tools.phar.pubkey
 
 ## Documentation
 
