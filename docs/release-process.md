@@ -10,26 +10,30 @@ configured release process, in this order:
  0. creates a new tag according to [semver][semver] rules;
  0. and published the tag to the Git tracked repository `origin`.
 
-If any of the verification steps fail, the release process is aborted. These 
-verification steps are there for a very good reason and *may never* be skipped. 
-To run the release process, execute the following in a terminal:
+If any of the verification steps fail, the release process is aborted. These
+verification steps are there for a very good reason and *may never* be skipped.
+
+The release build is signed using a separate private key and is managed by
+Ibuildings. Place this key in `./signing-key-release.pem`.
+
+Then, to run the release process, execute the following in a terminal:
 
 ```sh-session
 $ make release
 ```
 
-> Tip: add `vendor/bin` to your [PATH][path].
+## Distributing the release build
 
-After the new tag has been published, the [Phar](phar.md) built during the 
-publishing process must be uploaded to the [Releases][github-qa-releases] page 
+After the new tag has been published, the [Phar](phar.md) built during the
+publishing process must be uploaded to the [Releases][github-qa-releases] page
 on GitHub.
 
  0. Click *Draft a new release*.
  0. Select the tag you just published.
  0. Use the tag as release title.
- 0. Copy this release's documented changes (see the change log) into the 
+ 0. Copy this release's documented changes (see the change log) into the
     description field.
- 0. Attach the Phar and the public key to the release.
+ 0. Attach the Phar and the public key in `./build/release` to the release.
  0. Publish the release.
 
 [github-rmt]: https://github.com/liip/RMT

@@ -18,7 +18,7 @@ final class SystemTest extends TestCase
 
         switch (getenv('QA_TOOLS_BIN')) {
             case 'phar':
-                symlink(__DIR__ . '/../../dist/qa-tools.phar', $projectDirectory . '/qa-tools');
+                symlink(__DIR__ . '/../../build/test/qa-tools.phar', $projectDirectory . '/qa-tools');
                 break;
             default:
                 symlink(__DIR__ . '/../../bin/qa-tools', $projectDirectory . '/qa-tools');

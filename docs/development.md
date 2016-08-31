@@ -13,7 +13,7 @@ $ git clone git@github.com:ibuildingsnl/qa-tools-v3.git
 $ # Install the Composer dependencies
 $ composer install
 $ # Generate an insecure signing key for signing the phars you will build
-$ make generate-insecure-signing-key
+$ make generate-test-signing-key
 $ # Install the Git hooks
 $ tools/git/pre-commit-install
 $ tools/git/pre-push-install

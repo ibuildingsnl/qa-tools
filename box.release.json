@@ -1,0 +1,25 @@
+{
+  "algorithm": "OPENSSL",
+  "chmod": "0755",
+  "compression": "GZ",
+  "directories": [
+    "var/cache",
+    "src"
+  ],
+  "files": [
+    "LICENSE"
+  ],
+  "finder": [
+    {
+      "name": "*.php",
+      "exclude": [],
+      "in": "vendor"
+    }
+  ],
+  "git-version": "package_version",
+  "intercept": false,
+  "key": "signing-key-release.pem",
+  "main": "bin/qa-tools",
+  "output": "build/release/qa-tools.phar",
+  "stub": true
+}
