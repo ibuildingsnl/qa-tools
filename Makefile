@@ -1,7 +1,7 @@
 help:
 	@echo
 	@echo "\033[0;33mAvailable targets:\033[0m"
-	@cat Makefile | sed 's/: /: → /' | GREP_COLORS="ms=00;32" grep --colour=always -P '^[a-z0-9].+:' | column -s ':' -t  | sed 's/^/  /'
+	@cat Makefile | sed 's/: /: → /' | GREP_COLORS="ms=00;32" grep --colour=always -E '^[a-z0-9].+:' | column -s ':' -t  | sed 's/^/  /'
 
 release: clean
 	@test -e signing-key-release.pem || (echo "\033[31mPlease install the release build signing key to \033[33m./signing-key-release.pem\033[31m.\033[0m" && exit 1)
