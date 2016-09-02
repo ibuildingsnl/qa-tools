@@ -94,4 +94,4 @@ services:
         factory: [Ibuildings\QaTools\Core\Templating\TwigFactory, create]
 
     logger:
-        class: Psr\Log\NullLogger
+        class: Psr\Log\LoggerInterface
