@@ -17,10 +17,10 @@ $ tools/git/pre-commit-install
 $ tools/git/pre-push-install
 ```
 
-## Building a QA Tools distributable phar
+## Building a QA Tools distributable Phar
 
 The command below will build the QA Tools. For more specifics about building the
-phar, see [Phar](phar.md).
+Phar, see [Phar](phar.md).
 
 ```sh-session
 $ make build

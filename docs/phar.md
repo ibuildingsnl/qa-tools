@@ -1,7 +1,7 @@
 Phar
 ====
 
-The QA Tools are distributed as a PHP Archive (phar) file in order to separate the QA Tools' dependencies from
+The QA Tools are distributed as a PHP Archive (Phar) file in order to separate the QA Tools' dependencies from
 the host projects' dependencies. The compiled Phar is also able to verify its
 own integrity with the provided public key.
 
@@ -20,10 +20,10 @@ This serves the following purposes:
  0. There is no confusion as to with which private key the build is signed. This
     prevents a release of a Phar signed with the test key.
 
-## Building the phar
+## Building the Phar
 
-[Box][^box] is used for building the QA Tools phar-file, which is configured in the `box.json` file.
-It is installed as a phar-file itself to prevent version conflicts between Box' and QA Tools' dependencies.
+[Box][^box] is used for building the QA Tools Phar-file, which is configured in the `box.json` file.
+It is installed as a Phar-file itself to prevent version conflicts between Box' and QA Tools' dependencies.
 
 Run `make build-test` in the project root directory to build the test build.
 This creates `./build/test/qa-tools.phar` and `./build/test/qa-tools.phar.pubkey`.

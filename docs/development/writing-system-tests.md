@@ -2,7 +2,7 @@ Writing system tests
 ====================
 
 The QA Tools project employs the [expect][man-expect] tool to perform system
-testing against the phar file that is distributed to developers. Contributors
+testing against the Phar file that is distributed to developers. Contributors
 can describe their expectations of the interactive dialogue with the tool and
 assert what the program results are. Together, these form a *specification*.
 
