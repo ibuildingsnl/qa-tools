@@ -17,8 +17,7 @@ release: clean
 
 clean:
 	@rm -f box.json \
-		build/test/qa-tools.phar build/test/qa-tools.phar.pubkey \
-		build/release/qa-tools.phar build/release/qa-tools.phar.pubkey
+		build/test/qa-tools.phar build/test/qa-tools.phar.pubkey build/release/qa-tools.phar
 
 build-release: build/release/qa-tools.phar
 build/release/qa-tools.phar:
