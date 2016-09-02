@@ -1,6 +1,7 @@
-/build/
+/build/release/qa-tools.phar
+/build/test/qa-tools.*
 /vendor/
-/.travis/phar-private.pem
-/dist/qa-tools*
 /var/cache/*
 /bin/box
+/box.json
+/signing-key-*.pem

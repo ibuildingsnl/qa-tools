@@ -5,6 +5,19 @@ The QA Tools are meant to provide you with a decent base build setup, conforming
 They are not meant to provide a solution for every use case. If you want a more complex setup,
 you can use the resulting configurations as a base and configure it manually.
 
+## Installation
+
+The recommended way to install the QA Tools is by downloading the latest Phar
+from the [Releases][github-qa-releases] page. Place the Phar in your project, or
+somewhere in your [PATH][path], and make it executable. Then download the
+[public key][public-key] and place it next to the executable.
+
+Read why we release the QA Tools as a Phar [here](phar.md).
+
+[github-qa-releases]: https://github.com/ibuildingsnl/qa-tools-v3/releases
+[path]: https://en.wikipedia.org/wiki/PATH_(variable)
+[public-key]: build/release/qa-tools.phar.pubkey
+
 ## Documentation
 
  * [Contributing guidelines](CONTRIBUTING.md)
@@ -14,6 +27,7 @@ you can use the resulting configurations as a base and configure it manually.
     * [Tool development](docs/development/tool-development.md)
     * [Writing system tests](docs/development/writing-system-tests.md)
  * [Phar](docs/phar.md)
+ * [Release process](docs/release-process.md)
  * [Reporting a bug](docs/reporting-a-bug.md)
  * [Ubiquitous language](docs/ubiquitous-language.md)
 
@@ -24,3 +38,4 @@ you can use the resulting configurations as a base and configure it manually.
  * Rename `TaskDirectory` to `ToDoList`
  * Create more attractive task execution output styling; task execution currently result in yellow, unstyled and unstructured text.
  * Support verbose messages about which tools are being configured with which configurators, in which tasks they result, etc.
+ * Create a nice installer script to automatically download the latest release from GitHub and verify its integrity.
