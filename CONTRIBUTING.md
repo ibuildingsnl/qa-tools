@@ -16,6 +16,17 @@ release.
 Before submitting your contribution, please add tests you think are relevant and
 run the test suite so you're sure you haven't broken any existing functionality.
 
+To run the test suite, you need the following:
+
+ * `php`* (^5.6|^7.0)
+ * `composer`*
+ * `make`* (3.81, 4.1)
+ * Unix core utils (`rm`, `echo`, BSD/GNU `grep`, `test`, `cp`, `cat`, `sed`, `column`)*
+ * `openssl`*
+ * `expect`* (5.45) (`apt install expect` on Ubuntu, already installed on Mac)
+
+> *) Available in your PATH and executable
+
 ```shell-session
 $ make test      # All tests, including system tests
 $ make test-fast # Only unit, integration, and functional test
