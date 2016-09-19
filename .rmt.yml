@@ -11,7 +11,7 @@ _default:
         working-copy-check: ~
         display-last-changes: ~
         composer-stability-check: ~
-        tests-check: {command: make test}
+        tests-check: {command: make test, timeout: 120}
 
     # GENERAL CONFIG
     #  Apply to all branches except the one from the 'branch-specific' section
