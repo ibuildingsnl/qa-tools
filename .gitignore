@@ -1,5 +1,6 @@
-/build/release/qa-tools.phar
-/build/test/qa-tools.*
+/build/test/qa-tools*
+/build/release/qa-tools*
+!/build/release/qa-tools.pubkey
 /vendor/
 /var/cache/*
 /bin/box

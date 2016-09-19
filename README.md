@@ -18,6 +18,35 @@ Read why we release the QA Tools as a Phar [here](phar.md).
 [path]: https://en.wikipedia.org/wiki/PATH_(variable)
 [public-key]: build/release/qa-tools.phar.pubkey
 
+## Upgrading
+
+The QA Tools Phar distributable is self-updateable in a way that is very similar
+to Composer. The following command will check the QA Tools'
+[Releases][qa-tools-releases] page for the latest stable version, and replace
+your executable Phar:
+
+```sh-session
+$ ./qa-tools.phar self-update
+```
+
+**NB:** While Ibuildings QA Tools resides in a private repository, it needs
+access to a [personal access token][personal-access-tokens] with `repo`
+permissions, to be able to view the releases and download the latest Phar
+distributable. Pass the GitHub token to QA Tools using the environment variable
+`GITHUB_TOKEN`, like so:
+
+```sh-session
+$ GITHUB_TOKEN=xxx ./qa-tools.phar self-update
+```
+
+... or by storing it in a file for reuse:
+
+```sh-session
+$ GITHUB_TOKEN=`cat github-token` ./qa-tools.phar self-update
+```
+
+[personal-access-tokens]: https://github.com/settings/tokens
+
 ## Documentation
 
  * [Contributing guidelines](CONTRIBUTING.md)

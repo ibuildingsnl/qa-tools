@@ -8,7 +8,7 @@ use Ibuildings\QaTools\Tool\PhpMd\PhpMd;
 use Symfony\Component\Console\Application as ConsoleApplication;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\ConsoleOutput;
+use Symfony\Component\Console\Logger\ConsoleLogger;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -56,16 +56,12 @@ final class Application extends ConsoleApplication
     }
 
     /**
-     * @param InputInterface|null $input
+     * @param InputInterface|null  $input
      * @param OutputInterface|null $output
      * @return integer
      */
     public function run(InputInterface $input = null, OutputInterface $output = null)
     {
-        if ($this->isDebug) {
-            $output = $this->setDebugMode($output);
-        }
-
         $commands = $this->all();
 
         /** @var Command $command */
@@ -78,18 +74,10 @@ final class Application extends ConsoleApplication
         return parent::run($input, $output);
     }
 
-    /**
-     * @param OutputInterface $output
-     * @return ConsoleOutput|OutputInterface
-     */
-    protected function setDebugMode(OutputInterface $output = null)
+    public function doRun(InputInterface $input, OutputInterface $output)
     {
-        if ($output === null) {
-            $output = new ConsoleOutput();
-        }
+        $this->container->set('logger', new ConsoleLogger($output));
 
-        $output->setVerbosity(OutputInterface::VERBOSITY_DEBUG);
-
-        return $output;
+        parent::doRun($input, $output);
     }
 }
