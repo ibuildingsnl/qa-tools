@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "65922b548ee50f020080f56d416d0f75",
-    "content-hash": "a619e6cb827bd8ac9b6384569bc9c5d1",
+    "hash": "3720894c5453e0aeb17fc9f0e9e30495",
+    "content-hash": "f47031df9dba342dc93673a86734db1e",
     "packages": [
         {
             "name": "beberlei/assert",
@@ -1344,16 +1344,16 @@
         },
         {
             "name": "liip/rmt",
-            "version": "1.2.4",
+            "version": "1.2.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/liip/RMT.git",
-                "reference": "5a6450862f34ef0a25d19131dd89d8fb80ba3f69"
+                "reference": "db89cfab05e89257f08bfc91f3ca2989ab88fcb7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liip/RMT/zipball/5a6450862f34ef0a25d19131dd89d8fb80ba3f69",
-                "reference": "5a6450862f34ef0a25d19131dd89d8fb80ba3f69",
+                "url": "https://api.github.com/repos/liip/RMT/zipball/db89cfab05e89257f08bfc91f3ca2989ab88fcb7",
+                "reference": "db89cfab05e89257f08bfc91f3ca2989ab88fcb7",
                 "shasum": ""
             },
             "require": {
@@ -1399,7 +1399,7 @@
                 "vcs tag",
                 "version"
             ],
-            "time": "2016-06-08 15:35:55"
+            "time": "2016-09-09 13:48:33"
         },
         {
             "name": "mockery/mockery",
