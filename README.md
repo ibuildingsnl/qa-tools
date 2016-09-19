@@ -68,4 +68,3 @@ $ GITHUB_TOKEN=`cat github-token` ./qa-tools.phar self-update
  * Create more attractive task execution output styling; task execution currently result in yellow, unstyled and unstructured text.
  * Support verbose messages about which tools are being configured with which configurators, in which tasks they result, etc.
  * Create a nice installer script to automatically download the latest release from GitHub and verify its integrity.
- * When open sourcing, remove the GitHub token usage from SelfUpdateCommand, which is currently required for accessing the private QA Tools repository.
