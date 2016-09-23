@@ -3,6 +3,8 @@
 namespace Ibuildings\QaTools\SystemTest;
 
 use Composer\Json\JsonManipulator;
+use Ibuildings\QaTools\Core\Exception\RuntimeException;
+use Symfony\Component\Process\ProcessBuilder;
 
 final class Composer
 {
@@ -35,6 +37,20 @@ final class Composer
         $manipulator->addSubNode('conflict', $packageName, $packageVersionConstraint);
 
         file_put_contents('composer.json', $manipulator->getContents());
+    }
+
+    /**
+     * Performs a `composer install` in the current working directory.
+     *
+     * @return void
+     */
+    public static function install()
+    {
+        $process = ProcessBuilder::create(['composer', 'install'])->getProcess();
+
+        if ($process->run() !== 0) {
+            throw new RuntimeException(sprintf('Composer install failed: %s', $process->getErrorOutput()));
+        }
     }
 
     /**

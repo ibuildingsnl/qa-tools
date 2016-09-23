@@ -19,7 +19,7 @@ answer "Would you like to use PHP Mess Detector?" with "Y"
 # Allow Composer to do its thing
 set timeout 5
 
-should_see "Something went wrong while performing a dry-run install. Most likely, one of the required packages caused a conflict."
-should_see "Your requirements could not be resolved to an installable set of packages."
+should_see "Cannot write file \"./phpmd.xml\"; is the directory writable?"
+should_see "Not all prerequisites have been met, aborting..."
 
 exits_with 1

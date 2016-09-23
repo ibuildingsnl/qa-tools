@@ -8,8 +8,6 @@ namespace Ibuildings\QaTools\SystemTest;
  * @param string $filename
  * @param string $contents
  * @param string $message
- *
- * @since Method available since Release 3.0.0
  */
 function assertFileContains($filename, $contents, $message = '')
 {

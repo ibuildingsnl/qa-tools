@@ -2,7 +2,6 @@
 
 namespace Ibuildings\QaTools\UnitTest\Core\Task\Executor;
 
-use Ibuildings\QaTools\Core\Exception\RuntimeException;
 use Ibuildings\QaTools\Core\Interviewer\Interviewer;
 use Ibuildings\QaTools\Core\IO\File\FileHandler;
 use Ibuildings\QaTools\Core\Project\Project;
@@ -10,8 +9,8 @@ use Ibuildings\QaTools\Core\Task\Executor\WriteFileTaskExecutor;
 use Ibuildings\QaTools\Core\Task\Task;
 use Ibuildings\QaTools\Core\Task\TaskList;
 use Ibuildings\QaTools\Core\Task\WriteFileTask;
-use Mockery as m;
 use Mockery;
+use Mockery as m;
 use Mockery\MockInterface;
 use PHPUnit\Framework\TestCase as TestCase;
 
@@ -36,8 +35,7 @@ class WriteFileTaskExecutorTest extends TestCase
         $this->executor = new WriteFileTaskExecutor($this->fileHandler);
 
         $this->project = Mockery::mock(Project::class);
-        $this->interviewer = Mockery::mock(Interviewer::class);
-        $this->interviewer->shouldReceive('say');
+        $this->interviewer = Mockery::spy(Interviewer::class);
     }
 
     /** @test */
@@ -69,7 +67,12 @@ class WriteFileTaskExecutorTest extends TestCase
             ->once()
             ->andReturn(true);
 
-        $this->executor->checkPrerequisites($tasks, $this->project, $this->interviewer);
+        $this->assertTrue(
+            $this->executor->arePrerequisitesMet($tasks, $this->project, $this->interviewer),
+            'Writing to file should be possible, but, unexpectedly, it is not'
+        );
+
+        $this->interviewer->shouldNotHaveReceived('warn');
     }
 
     /** @test */
@@ -83,9 +86,12 @@ class WriteFileTaskExecutorTest extends TestCase
             ->once()
             ->andReturn(false);
 
-        $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('Cannot write file "/path/to/file"');
-        $this->executor->checkPrerequisites($tasks, $this->project, $this->interviewer);
+        $this->assertFalse(
+            $this->executor->arePrerequisitesMet($tasks, $this->project, $this->interviewer),
+            'Writing to file should not be possible, but, unexpectedly, it is'
+        );
+
+        $this->interviewer->shouldHaveReceived('warn')->atLeast()->once();
     }
 
     /** @test */

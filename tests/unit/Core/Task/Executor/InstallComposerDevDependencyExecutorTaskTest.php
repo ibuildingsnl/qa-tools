@@ -6,6 +6,7 @@ use Ibuildings\QaTools\Core\Composer\Package;
 use Ibuildings\QaTools\Core\Composer\PackageSet;
 use Ibuildings\QaTools\Core\Composer\Project as ComposerProject;
 use Ibuildings\QaTools\Core\Composer\ProjectFactory as ComposerProjectFactory;
+use Ibuildings\QaTools\Core\Exception\RuntimeException;
 use Ibuildings\QaTools\Core\Interviewer\Interviewer;
 use Ibuildings\QaTools\Core\Project\Directory;
 use Ibuildings\QaTools\Core\Project\Project;
@@ -44,8 +45,7 @@ class InstallComposerDevDependencyExecutorTaskTest extends TestCase
 
         $this->project = Mockery::mock(Project::class);
         $this->project->shouldReceive('getRootDirectory')->andReturn(new Directory('.'));
-        $this->interviewer = Mockery::mock(Interviewer::class);
-        $this->interviewer->shouldReceive('say');
+        $this->interviewer = Mockery::spy(Interviewer::class);
 
         $this->executor = new InstallComposerDevDependencyTaskExecutor($this->composerProjectFactory);
     }
@@ -74,7 +74,10 @@ class InstallComposerDevDependencyExecutorTaskTest extends TestCase
     {
         $tasks = new TaskList([new InstallComposerDevDependencyTask('lefty/loosy', '2')]);
 
-        $this->executor->checkPrerequisites($tasks, $this->project, $this->interviewer);
+        $this->assertTrue(
+            $this->executor->arePrerequisitesMet($tasks, $this->project, $this->interviewer),
+            'Nothing should prevent installation of lefty/loosy 2'
+        );
 
         $expectedPackages = new PackageSet([Package::of('lefty/loosy', '2')]);
         $this->composerProject
@@ -84,11 +87,31 @@ class InstallComposerDevDependencyExecutorTaskTest extends TestCase
     }
 
     /** @test */
+    public function lets_exceptions_from_composer_bubble_up_after_informing_the_user()
+    {
+        $tasks = new TaskList([new InstallComposerDevDependencyTask('lefty/loosy', '2')]);
+
+        $expectedPackages = new PackageSet([Package::of('lefty/loosy', '2')]);
+        $thrownException = new RuntimeException('A conflict appears');
+        $this->composerProject
+            ->shouldReceive('verifyDevDependenciesWillNotConflict')
+            ->with(ValueObject::equals($expectedPackages))
+            ->once()
+            ->andThrow($thrownException);
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('A conflict appears');
+        $this->executor->arePrerequisitesMet($tasks, $this->project, $this->interviewer);
+
+        $this->interviewer->shouldHaveReceived('warn')->atLeast()->once();
+    }
+
+    /** @test */
     public function requires_the_dependencies()
     {
         $tasks = new TaskList([new InstallComposerDevDependencyTask('rambunctious/rake', '3')]);
 
-        $this->executor->checkPrerequisites($tasks, $this->project, $this->interviewer);
+        $this->executor->arePrerequisitesMet($tasks, $this->project, $this->interviewer);
         $this->executor->execute($tasks, $this->project, $this->interviewer);
 
         $expectedPackages = new PackageSet([Package::of('rambunctious/rake', '3')]);
@@ -107,7 +130,7 @@ class InstallComposerDevDependencyExecutorTaskTest extends TestCase
     {
         $tasks = new TaskList([new InstallComposerDevDependencyTask('rambunctious/rake', '3')]);
 
-        $this->executor->checkPrerequisites($tasks, $this->project, $this->interviewer);
+        $this->executor->arePrerequisitesMet($tasks, $this->project, $this->interviewer);
         $this->executor->execute($tasks, $this->project, $this->interviewer);
         $this->executor->cleanUp($tasks, $this->project, $this->interviewer);
     }
@@ -117,7 +140,7 @@ class InstallComposerDevDependencyExecutorTaskTest extends TestCase
     {
         $tasks = new TaskList([new InstallComposerDevDependencyTask('ergonomic/effigy', '4')]);
 
-        $this->executor->checkPrerequisites($tasks, $this->project, $this->interviewer);
+        $this->executor->arePrerequisitesMet($tasks, $this->project, $this->interviewer);
         $this->executor->execute($tasks, $this->project, $this->interviewer);
         $this->executor->rollBack($tasks, $this->project, $this->interviewer);
 

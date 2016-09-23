@@ -19,7 +19,7 @@ final class PhpMdConfigurator implements Configurator
 Each task implements the marker interface `Ibuildings\QaTools\Core\Task\Task`; it does not have any methods. This allows the task to be registered with the `TaskDirectory` for later execution. During the execution stage, an executor picks up the task for execution. Each executor implements `Ibuildings\QaTools\Core\Task\Executor\Executor`. This interface has the following methods, which are, for simplicity's sake, always executed one after the other:
 
  * `supports(Task $task): bool`
- * `checkPrerequisites(TaskList $tasks, ...): void`
+ * `arePrerequisitesMet(TaskList $tasks, ...): void`
  * `execute(TaskList $tasks, ...): void`
  * `cleanUp(TaskList $tasks, ...): void`
  * `rollBack(TaskList $tasks, ...): void`
@@ -27,7 +27,7 @@ Each task implements the marker interface `Ibuildings\QaTools\Core\Task\Task`; i
 The execution process takes place as follows:
 
  0. Each executor's support for the tasks registered during the configuration stage is tested using the `support` method.
- 0. The tasks that pass support test are then passed to the `checkPrerequisites` method. This method allows the executor check whether actually executing the task won't fail. For example, installing Composer package A, while one of the developer's dependencies conflicts with that package, would cause actually requiring the package to fail. By checking these prerequisites beforehand, the chance for the need for a rollback, or worse, the developer having to clean up their project, is reduced.
+ 0. The tasks that pass support test are then passed to the `arePrerequisitesMet` method. This method allows the executor check whether actually executing the task won't fail. For example, installing Composer package A, while one of the developer's dependencies conflicts with that package, would cause actually requiring the package to fail. By checking these prerequisites beforehand, the chance for the need for a rollback, or worse, the developer having to clean up their project, is reduced.
  0. When all prerequisites have been checked, each executor is asked to execute the tasks it supports.
  0. When all executors have executed their tasks, they are allowed to perform a clean-up. For example, while writing files, a backup may be kept on disk to allow for an automatic or user rollback.
  0. If an error occurs at any point during execution, an automatic rollback is attempted. This rollback instructs each executor to revert the work it has performed.

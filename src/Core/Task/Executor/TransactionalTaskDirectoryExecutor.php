@@ -36,13 +36,21 @@ final class TransactionalTaskDirectoryExecutor implements TaskDirectoryExecutor
     {
         $project = $taskDirectory->getProject();
 
+        $allPrerequisitesAreMet = true;
         foreach ($this->executors as $executor) {
             $interviewer->setScope(get_class($executor));
-            $executor->checkPrerequisites(
+            $prerequisitesAreMet = $executor->arePrerequisitesMet(
                 $taskDirectory->filterTasks([$executor, 'supports']),
                 $project,
                 $interviewer
             );
+            $allPrerequisitesAreMet = $allPrerequisitesAreMet && $prerequisitesAreMet;
+        }
+
+        if (!$allPrerequisitesAreMet) {
+            $interviewer->say('Not all prerequisites have been met, aborting...');
+
+            return;
         }
 
         $executorsToRollBack = [];
