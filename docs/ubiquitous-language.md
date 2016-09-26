@@ -9,3 +9,4 @@ Ubiquitous language
 | **Target project** | The project the QA tools application configures tools for. |
 | **Task**           | Describes a concrete action to be performed on the target project, like installing a set of Composer packages, or writing an Ant build file. |
 | **Tool**      | A component that configures an actual QA tool, like PHPUnit, by, for example, writing configuration files to disk. |
+| **Requirements** |  |
