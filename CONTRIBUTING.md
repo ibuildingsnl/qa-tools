@@ -55,9 +55,6 @@ You'll find these tests in the following locations:
 The only security test is currently located in the `Makefile` target
 `verify-build-is-signed`.
 
-Feel free to read the [Testing strategy](#testing-strategy) to find out what
-testing strategy the QA Tools project employs.
-
 [wiki:dogfooding]: https://en.wikipedia.org/wiki/Eating_your_own_dog_food
  
 ### Testing strategy 
