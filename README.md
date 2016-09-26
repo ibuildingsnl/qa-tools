@@ -12,7 +12,7 @@ from the [Releases][github-qa-releases] page. Place the Phar in your project, or
 somewhere in your [PATH][path], and make it executable. Then download the
 [public key][public-key] and place it next to the executable.
 
-Read why we release the QA Tools as a Phar [here](phar.md).
+Read why we release the QA Tools as a Phar [here](docs/phar.md).
 
 [github-qa-releases]: https://github.com/ibuildingsnl/qa-tools-v3/releases
 [path]: https://en.wikipedia.org/wiki/PATH_(variable)
