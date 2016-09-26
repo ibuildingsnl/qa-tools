@@ -33,7 +33,10 @@ class FilesystemFileHandlerTest extends TestCase
         $oldWd = getcwd();
 
         try {
-            mkdir($this->workingDirectory);
+
+            if (!file_exists($this->workingDirectory)) {
+                mkdir($this->workingDirectory);
+            }
             chdir($this->workingDirectory);
             parent::runTest();
         } finally {
