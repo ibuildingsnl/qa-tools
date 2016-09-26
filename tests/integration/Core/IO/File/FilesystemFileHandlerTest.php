@@ -33,7 +33,6 @@ class FilesystemFileHandlerTest extends TestCase
         $oldWd = getcwd();
 
         try {
-
             if (!file_exists($this->workingDirectory)) {
                 mkdir($this->workingDirectory);
             }
