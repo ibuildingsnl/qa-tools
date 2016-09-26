@@ -66,7 +66,7 @@ $ GITHUB_TOKEN=`cat github-token` ./qa-tools.phar self-update
 
 [personal-access-tokens]: https://github.com/settings/tokens
 
-## Documentation
+## Contributing
 
  * [Contributing guidelines](CONTRIBUTING.md)
  * [Development](docs/development.md)
