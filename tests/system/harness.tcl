@@ -9,7 +9,7 @@
 #   args (...string) The command string for the dash shell to execute
 proc test { args } {
     global spawn_id
-    spawn sh -c "$args"
+    spawn sh -c "$args; echo -n \"██████████ EXIT CODE $? ██████████\""
 
     set timeout 2
 }
@@ -87,30 +87,30 @@ proc accept_default_for { question } {
 # the given exit code, the expect script exits with the same exit code, or 1 if
 # the exit code is 0.
 proc exits_with expected_exit_code {
-    puts "Waiting for command to terminate..."
+    puts "Waiting for command to terminate with exit code $expected_exit_code..."
 
     expect {
-        eof     { puts "Test completed." }
+        -re {██████████ EXIT CODE (\d+) ██████████$} {
+            puts ""
+            set exit_code $expect_out(1,string)
+            if {$exit_code != $expected_exit_code} {
+                puts "Command exited with unexpected exit code $exit_code."
+                exit 1
+            } else {
+                puts "Command exited with expected exit code $expected_exit_code."
+            }
+        }
         timeout {
+            puts "Command failed to terminate in time. Perhaps there's still a question pending?"
+            exit 1
+        }
+        eof {
             puts "Command failed to terminate in time. Perhaps there's still a question pending?"
             exit 1
         }
     }
 
-    lassign [wait] pid spawnid os_error_flag value
-
-    if {$os_error_flag == 0} {
-        puts "Exit code: $value"
-        if {$value != $expected_exit_code} {
-            if {$value == 0} {
-                exit 1
-            }
-            exit $value
-        }
-    } else {
-        puts "Operating system error: $value"
-        exit 1
-    }
+    catch wait
 }
 
 # SCRIPT #
