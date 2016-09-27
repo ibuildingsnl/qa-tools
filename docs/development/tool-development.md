@@ -3,11 +3,14 @@ Developing a QA tool
 
 ## Adding Tool and Configurators
 One of the QA Tools' objectives is to make it easy to configure tools.
-These tools reside in the `src/Tool` directory.
-To add a Tool, create a new directory in `src/Tool` and give it a descriptive name, preferably the actual name of the tool.
-In this new directory, create a class with the same name that extends `\Ibuildings\QaTools\Core\Tool\Tool`. 
-This class should be added to the `\Ibuildings\QaTools\Core\Application\Application::getRegisteredTools()` 
-method in order for it to be configurable.
+
+To create a new tool:
+
+ 0. Create a new directory in the `src/Tool` directory and give it a descriptive name, preferably the actual name of the tool.
+ 0. Create a class with the same name that extends `\Ibuildings\QaTools\Core\Tool\AbstractTool` in this new directory. 
+ 0. Add instance of you new class should be added to the `\Ibuildings\QaTools\Core\Application\Application::getRegisteredTools()` method in order for it to be configurable.
+ 0. Create a configuration file
+ 0. Create a configurator in `\Ibuildings\QaTools\Tool\<ToolName>\Configurator\<ConfiguratorName>`
 
 Configurators are responsible for configuring a tool for a specific project type.
 By default, the tool's configurators are configured in its `src/Tool/<ToolName>/Resources/config/configurators.yml` file. 
