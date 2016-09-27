@@ -1,0 +1,14 @@
+services:
+    qa_tools.tool.configurator.phpcs.php:
+        class: Ibuildings\QaTools\Tool\PhpCs\Configurator\PhpCsConfigurator
+        tags:
+            - name: qa_tools.tool
+              project_type: 'php.sf2'
+            - name: qa_tools.tool
+              project_type: 'php.sf3'
+            - name: qa_tools.tool
+              project_type: 'php.drupal7'
+            - name: qa_tools.tool
+              project_type: 'php.drupal8'
+            - name: qa_tools.tool
+              project_type: 'php.other'

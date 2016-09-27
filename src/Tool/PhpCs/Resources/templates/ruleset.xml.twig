@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+<ruleset name="Ibuildings QA Tools Default Ruleset">
+    <description>
+        This is used by the Ibuildings QA tools to wrap the coding standard of your choice.
+        By default it is less stringent about long lines than other coding standards
+    </description>
+
+    <!-- This is the rule we inherit from. If you want to exlude some specific rules, see the docs on how to do that -->
+    <rule ref="PSR2"/>
+
+    <!-- Lines can be a little bit longer before they break the build -->
+    <rule ref="Generic.Files.LineLength">
+        <properties>
+            <property name="lineLimit" value="120"/>
+            <property name="absoluteLineLimit" value="150"/>
+        </properties>
+    </rule>
+
+    <rule ref="Squiz.Commenting.FunctionComment">
+        <exclude-pattern>src/*/Tests</exclude-pattern>
+        <exclude-pattern>src/*/*/Test</exclude-pattern>
+        <exclude-pattern>src/*/*/Tests</exclude-pattern>
+        <exclude-pattern>src/*/*/*/Tests</exclude-pattern>
+
+        <exclude name="Squiz.Commenting.FunctionComment.MissingShort"/>
+        <exclude name="Squiz.Commenting.FunctionComment.MissingParamComment"/>
+        <exclude name="Squiz.Commenting.FunctionComment.ParameterCommentsNotAligned"/>
+        <exclude name="Squiz.Commenting.FunctionComment.ParameterNamesNotAligned"/>
+        <exclude name="Squiz.Commenting.FunctionComment.SpacingAfterParams"/>
+        <exclude name="Squiz.Commenting.FunctionComment.ShortFullStop"/>
+        <exclude name="Squiz.Commenting.FunctionComment.ShortNotCapital"/>
+        <exclude name="Squiz.Commenting.FunctionComment.ShortSingleLine"/>
+        <exclude name="Squiz.Commenting.FunctionComment.EmptyThrows"/>
+        <exclude name="Squiz.Commenting.FunctionComment.SeeIndent"/>
+        <exclude name="Squiz.Commenting.FunctionComment.ParamCommentFullStop"/>
+        <exclude name="Squiz.Commenting.FunctionComment.ParamCommentNotCapital"/>
+        <exclude name="Squiz.Commenting.FunctionComment.LongNotCapital"/>
+        <exclude name="Squiz.Commenting.FunctionComment.ThrowsNotCapital"/>
+        <exclude name="Squiz.Commenting.FunctionComment.ThrowsNoFullStop"/>
+        <exclude name="Squiz.Commenting.FunctionComment.SpacingBeforeParamType"/>
+    </rule>
+    <rule ref="Squiz.Commenting.FunctionCommentThrowTag">
+        <exclude-pattern>src/*/Tests</exclude-pattern>
+        <exclude-pattern>src/*/*/Test</exclude-pattern>
+        <exclude-pattern>src/*/*/Tests</exclude-pattern>
+        <exclude-pattern>src/*/*/*/Tests</exclude-pattern>
+    </rule>
+    <rule ref="Squiz.Commenting.ClassComment">
+        <exclude-pattern>src/*/Tests</exclude-pattern>
+        <exclude-pattern>src/*/*/Test</exclude-pattern>
+        <exclude-pattern>src/*/*/Tests</exclude-pattern>
+        <exclude-pattern>src/*/*/*/Tests</exclude-pattern>
+        <exclude name="Squiz.Commenting.ClassComment.Missing"/>
+        <exclude name="Squiz.Commenting.ClassComment.ShortFullStop"/>
+        <exclude name="Squiz.Commenting.ClassComment.ShortSingleLine"/>
+        <exclude name="Squiz.Commenting.ClassComment.SpacingBeforeTags"/>
+        <exclude name="Squiz.Commenting.ClassComment.ShortNotCapital"/>
+    </rule>
+    <rule ref="Squiz.Commenting.VariableComment">
+        <exclude-pattern>src/*/Tests</exclude-pattern>
+        <exclude-pattern>src/*/*/Test</exclude-pattern>
+        <exclude-pattern>src/*/*/Tests</exclude-pattern>
+        <exclude-pattern>src/*/*/*/Tests</exclude-pattern>
+        <exclude name="Squiz.Commenting.VariableComment.MissingShort"/>
+        <exclude name="Squiz.Commenting.VariableComment.SpacingBeforeTags"/>
+        <exclude name="Squiz.Commenting.VariableComment.ShortFullStop"/>
+        <exclude name="Squiz.Commenting.VariableComment.ShortNotCapital"/>
+    </rule>
+</ruleset>

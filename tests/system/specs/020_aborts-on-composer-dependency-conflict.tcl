@@ -16,6 +16,8 @@ answer "Would you like to integrate Travis in your project?" with "Y"
 
 answer "Would you like to use PHP Mess Detector?" with "Y"
 
+answer "Would you like to use PHP Code Sniffer?" with "Y"
+
 # Allow Composer to do its thing
 set timeout 5
 

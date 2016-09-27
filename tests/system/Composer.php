@@ -19,6 +19,7 @@ final class Composer
             'repositories' => [
                 ['packagist' => false],
                 ['type' => 'path', 'url' => __DIR__ . '/../composer/packages/phpmd'],
+                ['type' => 'path', 'url' => __DIR__ . '/../composer/packages/phpcs'],
             ],
         ];
         file_put_contents('composer.json', json_encode($configuration, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));

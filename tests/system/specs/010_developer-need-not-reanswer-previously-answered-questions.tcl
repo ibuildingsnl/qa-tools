@@ -14,6 +14,8 @@ answer "Would you like to integrate Travis in your project?" with "Y"
 
 answer "Would you like to use PHP Mess Detector?" with "Y"
 
+answer "Would you like to use PHP Code Sniffer?" with "Y"
+
 # Allow Composer to do its thing
 set timeout 5
 
@@ -29,6 +31,7 @@ accept_default_for "What type of project would you like to configure?"
 accept_default_for "What type of PHP project would you like to configure?"
 accept_default_for "Would you like to integrate Travis in your project?"
 accept_default_for "Would you like to use PHP Mess Detector?"
+accept_default_for "Would you like to use PHP Code Sniffer?"
 
 # Allow Composer to do its thing
 set timeout 5
