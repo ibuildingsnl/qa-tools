@@ -24,7 +24,8 @@ class FilesystemFileHandlerTest extends TestCase
 
     protected function setUp()
     {
-        $this->workingDirectory = sys_get_temp_dir() . '/qa-tools_' . microtime(true) . '_fs-adapter';
+        $uniqueId = preg_replace("/[^a-zA-Z0-9]+/", "", base64_encode(openssl_random_pseudo_bytes(8)));
+        $this->workingDirectory = sys_get_temp_dir() . '/qa-tools_' . microtime(true)  . '-' . $uniqueId . '_fs-adapter';
         $this->adapter = new FilesystemFileHandler(new Filesystem());
     }
 
@@ -33,9 +34,7 @@ class FilesystemFileHandlerTest extends TestCase
         $oldWd = getcwd();
 
         try {
-            if (!file_exists($this->workingDirectory)) {
-                mkdir($this->workingDirectory);
-            }
+            mkdir($this->workingDirectory);
             chdir($this->workingDirectory);
             parent::runTest();
         } finally {
