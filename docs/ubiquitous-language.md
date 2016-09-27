@@ -3,7 +3,7 @@ Ubiquitous language
 
 | **Term**      | **Explanation** |
 | -------------:|:--------------- |
-| **Configure** | The process where a *Developer* answers questions pertinent to a specific *Tool*. These answers will result in *Requirements*. |
+| **Configure** | The process where a *Developer* answers questions pertinent to a specific *Tool*. These answers will result in *Tasks*. |
 | **Contributor** | A developer that works on the QA Tools application itself by writing source code, documentation, etc. |
 | **Developer** | A developer that uses the QA Tools application to configure QA tools for their project. |
 | **Target project** | The project the QA Tools application configures tools for. |
