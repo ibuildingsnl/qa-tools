@@ -20,9 +20,9 @@ class InterviewerTest extends TestCase
     /**
      * @test
      *
-     * @dataProvider Ibuildings\QaTools\UnitTest\TestDataProvider::notStringOrEmptyString
+     * @dataProvider \Ibuildings\QaTools\UnitTest\TestDataProvider::notString
      */
-    public function interviewer_can_only_say_sentences_that_are_strings($notNonEmptyString)
+    public function interviewer_can_only_say_sentences_that_are_strings($nonString)
     {
         $this->expectException(InvalidArgumentException::class);
 
@@ -33,15 +33,15 @@ class InterviewerTest extends TestCase
             new ConsoleQuestionFactory(new ConsoleQuestionFormatter)
         );
 
-        $interviewer->say($notNonEmptyString);
+        $interviewer->say($nonString);
     }
 
     /**
      * @test
      *
-     * @dataProvider Ibuildings\QaTools\UnitTest\TestDataProvider::notStringOrEmptyString
+     * @dataProvider \Ibuildings\QaTools\UnitTest\TestDataProvider::notString
      */
-    public function interviewer_can_only_warn_with_sentences_that_are_strings($notNonEmptyString)
+    public function interviewer_can_only_warn_with_sentences_that_are_strings($nonString)
     {
         $this->expectException(InvalidArgumentException::class);
 
@@ -52,6 +52,6 @@ class InterviewerTest extends TestCase
             new ConsoleQuestionFactory(new ConsoleQuestionFormatter)
         );
 
-        $interviewer->warn($notNonEmptyString);
+        $interviewer->warn($nonString);
     }
 }
