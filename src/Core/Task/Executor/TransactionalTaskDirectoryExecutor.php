@@ -5,6 +5,7 @@ namespace Ibuildings\QaTools\Core\Task\Executor;
 use Exception;
 use Ibuildings\QaTools\Core\Assert\Assertion;
 use Ibuildings\QaTools\Core\Configuration\TaskDirectory;
+use Ibuildings\QaTools\Core\Exception\RuntimeException;
 use Ibuildings\QaTools\Core\Interviewer\ScopedInterviewer;
 
 /**
@@ -50,7 +51,7 @@ final class TransactionalTaskDirectoryExecutor implements TaskDirectoryExecutor
         if (!$allPrerequisitesAreMet) {
             $interviewer->say('Not all prerequisites have been met, aborting...');
 
-            return;
+            throw new RuntimeException('Not all prerequisites have been met');
         }
 
         $executorsToRollBack = [];

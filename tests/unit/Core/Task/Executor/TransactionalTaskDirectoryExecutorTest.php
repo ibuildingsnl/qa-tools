@@ -3,6 +3,7 @@
 namespace Ibuildings\QaTools\UnitTest\Core\Task\Executor;
 
 use Ibuildings\QaTools\Core\Configuration\InMemoryTaskDirectory;
+use Ibuildings\QaTools\Core\Exception\RuntimeException;
 use Ibuildings\QaTools\Core\Interviewer\ScopedInterviewer;
 use Ibuildings\QaTools\Core\Project\Directory;
 use Ibuildings\QaTools\Core\Project\Project;
@@ -87,6 +88,8 @@ class TransactionalTaskDirectoryExecutorTest extends TestCase
         /** @var MockInterface|ScopedInterviewer $interviewer */
         $interviewer = m::spy(ScopedInterviewer::class);
 
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Not all prerequisites have been met');
         $transactionalExecutor->execute($taskDirectory, $interviewer);
     }
 }

@@ -2,11 +2,11 @@
 
 namespace Ibuildings\QaTools\Core\Task\Executor;
 
-use Exception as CoreException;
 use Ibuildings\QaTools\Core\Composer\Package;
 use Ibuildings\QaTools\Core\Composer\PackageSet;
 use Ibuildings\QaTools\Core\Composer\Project as ComposerProject;
 use Ibuildings\QaTools\Core\Composer\ProjectFactory as ComposerProjectFactory;
+use Ibuildings\QaTools\Core\Composer\RuntimeException as ComposerRuntimeException;
 use Ibuildings\QaTools\Core\Interviewer\Interviewer;
 use Ibuildings\QaTools\Core\Project\Project;
 use Ibuildings\QaTools\Core\Task\InstallComposerDevDependencyTask;
@@ -41,16 +41,19 @@ final class InstallComposerDevDependencyTaskExecutor implements Executor
 
         try {
             $this->composerProject->verifyDevDependenciesWillNotConflict($packages);
-        } catch (CoreException $e) {
+        } catch (ComposerRuntimeException $e) {
             // The Composer project does not communicate precisely what went wrong,
             // so inform the user of the most probable cause (a package conflict) and
             // let the exception bubble up.
-            $interviewer->warn(
-                'Something went wrong while performing a dry-run install. ' .
-                'Most likely, one of the required packages caused a conflict.'
-            );
+            $interviewer->warn('Something went wrong while performing a dry-run install:');
+            $interviewer->say('');
 
-            throw $e;
+            $indentedCause = preg_replace('/^/m', '  ', $e->getCause());
+            $interviewer->say($indentedCause);
+
+            $interviewer->say('');
+
+            return false;
         }
 
         return true;

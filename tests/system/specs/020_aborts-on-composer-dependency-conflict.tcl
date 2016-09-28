@@ -19,7 +19,9 @@ answer "Would you like to use PHP Mess Detector?" with "Y"
 # Allow Composer to do its thing
 set timeout 5
 
-should_see "Something went wrong while performing a dry-run install. Most likely, one of the required packages caused a conflict."
-should_see "Your requirements could not be resolved to an installable set of packages."
+should_see "Something went wrong while performing a dry-run install:"
+should_see "  Your requirements could not be resolved to an installable set of packages."
+should_see "    - phpmd/phpmd "
+should_see " conflicts with "
 
 exits_with 1
