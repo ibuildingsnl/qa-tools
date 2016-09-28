@@ -78,6 +78,6 @@ final class Application extends ConsoleApplication
     {
         $this->container->set('logger', new ConsoleLogger($output));
 
-        parent::doRun($input, $output);
+        return parent::doRun($input, $output);
     }
 }

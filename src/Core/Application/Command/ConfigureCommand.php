@@ -32,6 +32,8 @@ final class ConfigureCommand extends Command implements ContainerAwareInterface
 
         /** @var ConfigurationService $service */
         $service = $this->container->get('qa_tools.configuration_service');
-        $service->configureProject($interviewer, new Directory(getcwd()));
+        if (!$service->configureProject($interviewer, new Directory(getcwd()))) {
+            return 1;
+        }
     }
 }

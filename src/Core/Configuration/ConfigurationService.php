@@ -59,7 +59,7 @@ final class ConfigurationService
     /**
      * @param Interviewer $interviewer
      * @param Directory   $projectDirectory
-     * @return void
+     * @return bool
      */
     public function configureProject(Interviewer $interviewer, Directory $projectDirectory)
     {
@@ -78,9 +78,11 @@ final class ConfigurationService
         $this->toolConfigurator->configure($configurators, $memorizingInterviewer, $taskDirectory);
 
         if (!$this->taskDirectoryExecutor->execute($taskDirectory, $memorizingInterviewer)) {
-            throw new RuntimeException('Execution failed');
+            return false;
         }
 
         $this->configurationRepository->save($configuration);
+
+        return true;
     }
 }
