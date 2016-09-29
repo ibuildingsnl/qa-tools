@@ -78,7 +78,7 @@ class PhpCsConfiguratorTest extends TestCase
 
         $this->taskDirectory
             ->shouldHaveReceived('registerTask')
-            ->with(WriteFileTaskMatcher::equals('./ruleset.xml', '<?xml version="1.0"?>'))
+            ->with(WriteFileTaskMatcher::contains('./ruleset.xml', '<?xml version="1.0"?>'))
             ->once();
 
     }

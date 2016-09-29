@@ -14,7 +14,7 @@ final class WriteFileTaskMatcher
      * @param string $expectedContent
      * @return Mockery\Matcher\Closure
      */
-    public static function equals($expectedPath, $expectedContent)
+    public static function contains($expectedPath, $expectedContent)
     {
         return Mockery::on(
             function (Task $task) use ($expectedPath, $expectedContent) {

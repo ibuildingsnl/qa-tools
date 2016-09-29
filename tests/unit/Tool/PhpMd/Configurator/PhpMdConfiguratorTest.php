@@ -64,7 +64,7 @@ class PhpMdConfiguratorTest extends TestCase
 
         $this->taskDirectory
             ->shouldHaveReceived('registerTask')
-            ->with(WriteFileTaskMatcher::equals('./phpmd.xml', '<?xml version="1.0"?>'))
+            ->with(WriteFileTaskMatcher::contains('./phpmd.xml', '<?xml version="1.0"?>'))
             ->once();
     }
 
