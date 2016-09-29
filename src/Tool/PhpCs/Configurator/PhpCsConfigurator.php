@@ -14,7 +14,6 @@ use Ibuildings\QaTools\Core\Task\InstallComposerDevDependencyTask;
 use Ibuildings\QaTools\Core\Task\WriteFileTask;
 use Ibuildings\QaTools\Tool\PhpCs\PhpCs;
 
-
 final class PhpCsConfigurator implements Configurator
 {
     public function configure(

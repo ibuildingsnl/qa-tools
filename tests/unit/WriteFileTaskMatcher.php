@@ -6,7 +6,6 @@ use Ibuildings\QaTools\Core\Task\Task;
 use Ibuildings\QaTools\Core\Task\WriteFileTask;
 use Mockery;
 
-
 final class WriteFileTaskMatcher
 {
     /**
