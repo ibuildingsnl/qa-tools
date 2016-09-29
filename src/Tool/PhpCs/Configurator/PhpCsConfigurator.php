@@ -84,7 +84,10 @@ final class PhpCsConfigurator implements Configurator
         }
 
         $taskDirectory->registerTask(new InstallComposerDevDependencyTask('squizlabs/php_codesniffer', '^2.7'));
-        $taskDirectory->registerTask(new InstallComposerDevDependencyTask('drupal/coder', '8.*'));
+
+        if ($isDrupal) {
+            $taskDirectory->registerTask(new InstallComposerDevDependencyTask('drupal/coder', '8.*'));
+        }
 
         $phpMdConfiguration = $taskHelperSet->renderTemplate(
             $isDrupal ? 'ruleset-drupal8.xml.twig' : 'ruleset.xml.twig',
