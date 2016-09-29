@@ -53,9 +53,9 @@ class PhpCsConfiguratorTest extends TestCase
         $this->interviewer->recordAnswer('Would you like to use PHP Code Sniffer?', YesOrNoAnswer::yes());
         $this->interviewer->recordAnswer('What ruleset would you like to use as a base?', new Choices([new TextualAnswer('PSR2')]));
         $this->interviewer->recordAnswer('Would you like to allow longer lines than the default? Warn at 120 and fail at 150.', YesOrNoAnswer::yes());
-        $this->interviewer->recordAnswer('Would you like be less strict about doc blocks in tests?', YesOrNoAnswer::yes());
-        $this->interviewer->recordAnswer('Where are your tests located?', new TextualAnswer('tests/*'));
-        $this->interviewer->recordAnswer('Would you like PHPCS to ignore some locations completely?', YesOrNoAnswer::yes());
+        $this->interviewer->recordAnswer('Would you like to skip any sniffs regarding the doc blocks in tests?', YesOrNoAnswer::yes());
+        $this->interviewer->recordAnswer('Where are the tests located for which doc block sniffs will be disabled?', new TextualAnswer('tests/*'));
+        $this->interviewer->recordAnswer('Would you like PHPCS to ignore some locations completely? (you may use a regex to match multiple directories)', YesOrNoAnswer::yes());
         $this->interviewer->recordAnswer('Which locations should be ignored?', new TextualAnswer('behat/*'));
 
         $this->taskHelperSet
@@ -88,8 +88,8 @@ class PhpCsConfiguratorTest extends TestCase
         $this->interviewer->recordAnswer('Would you like to use PHP Code Sniffer?', YesOrNoAnswer::yes());
         $this->interviewer->recordAnswer('What ruleset would you like to use as a base?', new Choices([new TextualAnswer('PSR2')]));
         $this->interviewer->recordAnswer('Would you like to allow longer lines than the default? Warn at 120 and fail at 150.', YesOrNoAnswer::no());
-        $this->interviewer->recordAnswer('Would you like be less strict about doc blocks in tests?', YesOrNoAnswer::no());
-        $this->interviewer->recordAnswer('Would you like PHPCS to ignore some locations completely?', YesOrNoAnswer::no());
+        $this->interviewer->recordAnswer('Would you like to skip any sniffs regarding the doc blocks in tests?', YesOrNoAnswer::no());
+        $this->interviewer->recordAnswer('Would you like PHPCS to ignore some locations completely? (you may use a regex to match multiple directories)', YesOrNoAnswer::no());
 
         $this->taskHelperSet
             ->shouldReceive('renderTemplate')

@@ -23,11 +23,11 @@ answer "\[1\] PSR2" with "1"
 
 answer "Would you like to allow longer lines than the default? Warn at 120 and fail at 150." with "Y"
 
-answer "Would you like be less strict about doc blocks in tests?" with "Y"
+answer "Would you like to skip any sniffs regarding the doc blocks in tests?" with "Y"
 
-answer "Where are your tests located?" with "tests/*";
+answer "Where are the tests located for which doc block sniffs will be disabled?" with "tests/*";
 
-answer "Would you like PHPCS to ignore some locations completely?" with "Y"
+answer "Would you like PHPCS to ignore some locations completely? (you may use a regex to match multiple directories)" with "Y"
 
 answer "Which locations should be ignored?" with "behat/*"
 

@@ -54,7 +54,7 @@ final class PhpCsConfigurator implements Configurator
         /** @var YesOrNoAnswer $beLessStrictAboutDocblocksInTests */
         $beLessStrictAboutDocblocksInTests = $interviewer->ask(
             QuestionFactory::createYesOrNo(
-                'Would you like be less strict about doc blocks in tests?',
+                'Would you like to skip any sniffs regarding the doc blocks in tests?',
                 YesOrNoAnswer::YES
             )
         );
@@ -62,14 +62,14 @@ final class PhpCsConfigurator implements Configurator
         $testLocation = 'tests/*';
         if ($beLessStrictAboutDocblocksInTests->is(true)) {
             $testLocation = $interviewer
-                ->ask(QuestionFactory::create('Where are your tests located?', $testLocation))
+                ->ask(QuestionFactory::create('Where are the tests located for which doc block sniffs will be disabled?', $testLocation))
                 ->getRaw();
         }
 
         /** @var YesOrNoAnswer $beLessStrictAboutDocblocksInTests */
         $shouldIgnoreSomeLocationsCompletely = $interviewer->ask(
             QuestionFactory::createYesOrNo(
-                'Would you like PHPCS to ignore some locations completely?',
+                'Would you like PHPCS to ignore some locations completely? (you may use a regex to match multiple directories)',
                 YesOrNoAnswer::YES
             )
         );
