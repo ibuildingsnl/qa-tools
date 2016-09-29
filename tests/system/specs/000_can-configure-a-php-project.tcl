@@ -10,13 +10,27 @@ should_see "What type of project would you like to configure?"
 answer "\[0\] PHP" with "0"
 
 should_see "What type of PHP project would you like to configure?"
-answer "\[0\] Symfony 2" with "0"
+answer "\[3\] Drupal 8" with "3"
 
 answer "Would you like to integrate Travis in your project?" with "Y"
 
 answer "Would you like to use PHP Mess Detector?" with "Y"
 
-answer "Would you like to use PHP Code Sniffer?" with "N"
+answer "Would you like to use PHP Code Sniffer?" with "Y"
+
+should_see "What ruleset would you like to use as a base?"
+answer "\[1\] PSR2" with "1"
+
+answer "Would you like to allow longer lines than the default? Warn at 120 and fail at 150." with "Y"
+
+answer "Would you like be less strict about doc blocks in tests?" with "Y"
+
+answer "Where are your tests located?" with "tests/*";
+
+answer "Would you like PHPCS to ignore some locations completely?" with "Y"
+
+answer "Which locations should be ignored?" with "behat/*"
+
 
 # Allow Composer to do its thing
 set timeout 5

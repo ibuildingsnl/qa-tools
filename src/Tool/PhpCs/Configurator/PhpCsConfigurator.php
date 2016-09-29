@@ -37,7 +37,7 @@ final class PhpCsConfigurator implements Configurator
         /** @var TextualAnswer $baseRuleset */
         $baseRuleset = $interviewer->ask(
             QuestionFactory::createMultipleChoice(
-                'What ruleset would you like to use a base?',
+                'What ruleset would you like to use as a base?',
                 ['PSR1', 'PSR2', 'Squiz', 'Zend'],
                 'PSR2'
             )

@@ -51,7 +51,7 @@ class PhpCsConfiguratorTest extends TestCase
     public function installs_phpcs_when_desired()
     {
         $this->interviewer->recordAnswer('Would you like to use PHP Code Sniffer?', YesOrNoAnswer::yes());
-        $this->interviewer->recordAnswer('What ruleset would you like to use a base?', new Choices([new TextualAnswer('PSR2')]));
+        $this->interviewer->recordAnswer('What ruleset would you like to use as a base?', new Choices([new TextualAnswer('PSR2')]));
         $this->interviewer->recordAnswer('Would you like to allow longer lines than the default? Warn at 120 and fail at 150.', YesOrNoAnswer::yes());
         $this->interviewer->recordAnswer('Would you like be less strict about doc blocks in tests?', YesOrNoAnswer::yes());
         $this->interviewer->recordAnswer('Where are your tests located?', new TextualAnswer('tests/*'));
@@ -80,7 +80,39 @@ class PhpCsConfiguratorTest extends TestCase
             ->shouldHaveReceived('registerTask')
             ->with(WriteFileTaskMatcher::contains('./ruleset.xml', '<?xml version="1.0"?>'))
             ->once();
+    }
 
+    /** @test */
+    public function installs_phpcs_without_options()
+    {
+        $this->interviewer->recordAnswer('Would you like to use PHP Code Sniffer?', YesOrNoAnswer::yes());
+        $this->interviewer->recordAnswer('What ruleset would you like to use as a base?', new Choices([new TextualAnswer('PSR2')]));
+        $this->interviewer->recordAnswer('Would you like to allow longer lines than the default? Warn at 120 and fail at 150.', YesOrNoAnswer::no());
+        $this->interviewer->recordAnswer('Would you like be less strict about doc blocks in tests?', YesOrNoAnswer::no());
+        $this->interviewer->recordAnswer('Would you like PHPCS to ignore some locations completely?', YesOrNoAnswer::no());
+
+        $this->taskHelperSet
+            ->shouldReceive('renderTemplate')
+            ->with('ruleset-drupal8.xml.twig', Mockery::any())
+            ->andReturn('<?xml version="1.0"?>');
+
+        $configurator = new PhpCsConfigurator();
+        $configurator->configure($this->interviewer, $this->taskDirectory, $this->taskHelperSet);
+
+        $this->taskDirectory
+            ->shouldHaveReceived('registerTask')
+            ->with(InstallComposerDevDependencyTaskMatcher::forAnyVersionOf('squizlabs/php_codesniffer'))
+            ->once();
+
+        $this->taskDirectory
+            ->shouldHaveReceived('registerTask')
+            ->with(InstallComposerDevDependencyTaskMatcher::forAnyVersionOf('drupal/coder'))
+            ->once();
+
+        $this->taskDirectory
+            ->shouldHaveReceived('registerTask')
+            ->with(WriteFileTaskMatcher::contains('./ruleset.xml', '<?xml version="1.0"?>'))
+            ->once();
     }
 
     /** @test */
