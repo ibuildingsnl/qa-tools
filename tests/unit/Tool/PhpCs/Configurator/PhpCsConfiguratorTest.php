@@ -68,12 +68,12 @@ class PhpCsConfiguratorTest extends TestCase
 
         $this->taskDirectory
             ->shouldHaveReceived('registerTask')
-            ->with(InstallComposerDevDependencyTask::equals('squizlabs/php_codesniffer'))
+            ->with(InstallComposerDevDependencyTask::forAnyVersionOf('squizlabs/php_codesniffer'))
             ->once();
 
         $this->taskDirectory
             ->shouldHaveReceived('registerTask')
-            ->with(InstallComposerDevDependencyTask::equals('drupal/coder'))
+            ->with(InstallComposerDevDependencyTask::forAnyVersionOf('drupal/coder'))
             ->once();
 
         $this->taskDirectory

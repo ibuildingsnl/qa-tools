@@ -59,7 +59,7 @@ class PhpMdConfiguratorTest extends TestCase
 
         $this->taskDirectory
             ->shouldHaveReceived('registerTask')
-            ->with(InstallComposerDevDependencyTask::equals('phpmd/phpmd'))
+            ->with(InstallComposerDevDependencyTask::forAnyVersionOf('phpmd/phpmd'))
             ->once();
 
         $this->taskDirectory

@@ -12,7 +12,7 @@ final class InstallComposerDevDependencyTask
      * @param string $expected
      * @return Mockery\Matcher\Closure
      */
-    public static function equals($expected)
+    public static function forAnyVersionOf($expected)
     {
         return Mockery::on(
             function (Task $task) use ($expected) {
