@@ -6,6 +6,7 @@ use Ibuildings\QaTools\Core\Configuration\TaskDirectory;
 use Ibuildings\QaTools\Core\Configuration\TaskHelperSet;
 use Ibuildings\QaTools\Core\Configurator\Configurator;
 use Ibuildings\QaTools\Core\Interviewer\Answer\Choices;
+use Ibuildings\QaTools\Core\Interviewer\Answer\TextualAnswer;
 use Ibuildings\QaTools\Core\Interviewer\Answer\YesOrNoAnswer;
 use Ibuildings\QaTools\Core\Interviewer\Interviewer;
 use Ibuildings\QaTools\Core\Interviewer\Question\QuestionFactory;
@@ -14,9 +15,7 @@ use Ibuildings\QaTools\Core\Task\InstallComposerDevDependencyTask;
 use Ibuildings\QaTools\Core\Task\WriteFileTask;
 use Ibuildings\QaTools\Tool\PhpCs\PhpCs;
 
-/**
- * @see https://www.drupal.org/node/1419988
- */
+
 final class PhpCsConfigurator implements Configurator
 {
     public function configure(
@@ -37,12 +36,12 @@ final class PhpCsConfigurator implements Configurator
             return; // do nothing
         }
 
-        /** @var Choices $baseRuleset */
+        /** @var TextualAnswer $baseRuleset */
         $baseRuleset = $interviewer->ask(
-            QuestionFactory::createListChoice(
+            QuestionFactory::createMultipleChoice(
                 'What ruleset would you like to use a base?',
                 ['PSR1', 'PSR2', 'Squiz', 'Zend'],
-                ['PSR2']
+                'PSR2'
             )
         );
 
@@ -90,7 +89,7 @@ final class PhpCsConfigurator implements Configurator
         $phpMdConfiguration = $taskHelperSet->renderTemplate(
             $isDrupal ? 'ruleset-drupal8.xml.twig' : 'ruleset.xml.twig',
             [
-                'baseRuleset' => $baseRuleset->getRawFirstAnswer(),
+                'baseRuleset' => $baseRuleset->getRaw(),
                 'beLessStrictAboutLineLength' => $beLessStrictAboutLineLength->is(true),
                 'beLessStrictAboutDocblocksInTests' => $beLessStrictAboutDocblocksInTests->is(true),
                 'shouldIgnoreSomeLocationsCompletely' => $shouldIgnoreSomeLocationsCompletely,
