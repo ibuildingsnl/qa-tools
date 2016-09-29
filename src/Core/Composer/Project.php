@@ -10,6 +10,7 @@ interface Project
      *
      * @param PackageSet $packages
      * @return void
+     * @throws RuntimeException
      */
     public function verifyDevDependenciesWillNotConflict(PackageSet $packages);
 
@@ -18,6 +19,7 @@ interface Project
      *
      * @param PackageSet $packages
      * @return void
+     * @throws RuntimeException
      */
     public function requireDevDependencies(PackageSet $packages);
 
@@ -25,6 +27,7 @@ interface Project
      * Backs up the current Composer configuration for later restoration.
      *
      * @return void
+     * @throws RuntimeException
      */
     public function backUpConfiguration();
 
@@ -33,6 +36,7 @@ interface Project
      * dependencies. The backup is not cleared after restoration.
      *
      * @return void
+     * @throws RuntimeException
      */
     public function restoreConfiguration();
 }

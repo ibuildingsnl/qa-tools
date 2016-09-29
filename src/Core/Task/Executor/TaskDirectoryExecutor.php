@@ -13,7 +13,7 @@ interface TaskDirectoryExecutor
     /**
      * @param TaskDirectory     $taskDirectory
      * @param ScopedInterviewer $interviewer
-     * @return void
+     * @return bool
      */
     public function execute(TaskDirectory $taskDirectory, ScopedInterviewer $interviewer);
 }

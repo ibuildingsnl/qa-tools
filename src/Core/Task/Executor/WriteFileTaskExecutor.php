@@ -2,7 +2,6 @@
 
 namespace Ibuildings\QaTools\Core\Task\Executor;
 
-use Ibuildings\QaTools\Core\Exception\RuntimeException;
 use Ibuildings\QaTools\Core\Interviewer\Interviewer;
 use Ibuildings\QaTools\Core\IO\File\FileHandler;
 use Ibuildings\QaTools\Core\Project\Project;
@@ -33,16 +32,18 @@ final class WriteFileTaskExecutor implements Executor
         return $task instanceof WriteFileTask;
     }
 
-    public function checkPrerequisites(TaskList $tasks, Project $project, Interviewer $interviewer)
+    public function arePrerequisitesMet(TaskList $tasks, Project $project, Interviewer $interviewer)
     {
+        $canWriteAllFiles = true;
         foreach ($tasks as $task) {
             /** @var WriteFileTask $task */
             if (!$this->fileHandler->canWriteWithBackupTo($task->getFilePath())) {
-                throw new RuntimeException(
-                    sprintf('Cannot write file "%s"; is the directory writable?', $task->getFilePath())
-                );
+                $interviewer->warn(sprintf('Cannot write file "%s"; is the directory writable?', $task->getFilePath()));
+                $canWriteAllFiles = false;
             }
         }
+
+        return $canWriteAllFiles;
     }
 
     public function execute(TaskList $tasks, Project $project, Interviewer $interviewer)

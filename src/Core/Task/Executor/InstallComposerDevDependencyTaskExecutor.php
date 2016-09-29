@@ -6,6 +6,7 @@ use Ibuildings\QaTools\Core\Composer\Package;
 use Ibuildings\QaTools\Core\Composer\PackageSet;
 use Ibuildings\QaTools\Core\Composer\Project as ComposerProject;
 use Ibuildings\QaTools\Core\Composer\ProjectFactory as ComposerProjectFactory;
+use Ibuildings\QaTools\Core\Composer\RuntimeException as ComposerRuntimeException;
 use Ibuildings\QaTools\Core\Interviewer\Interviewer;
 use Ibuildings\QaTools\Core\Project\Project;
 use Ibuildings\QaTools\Core\Task\InstallComposerDevDependencyTask;
@@ -29,7 +30,7 @@ final class InstallComposerDevDependencyTaskExecutor implements Executor
         return $task instanceof InstallComposerDevDependencyTask;
     }
 
-    public function checkPrerequisites(TaskList $tasks, Project $project, Interviewer $interviewer)
+    public function arePrerequisitesMet(TaskList $tasks, Project $project, Interviewer $interviewer)
     {
         $interviewer->say("Verifying installation of Composer development dependencies won't cause a conflict...");
 
@@ -37,7 +38,25 @@ final class InstallComposerDevDependencyTaskExecutor implements Executor
 
         $this->composerProject =
             $this->composerProjectFactory->forDirectory($project->getRootDirectory()->getDirectory());
-        $this->composerProject->verifyDevDependenciesWillNotConflict($packages);
+
+        try {
+            $this->composerProject->verifyDevDependenciesWillNotConflict($packages);
+        } catch (ComposerRuntimeException $e) {
+            // The Composer project does not communicate precisely what went wrong,
+            // so inform the user of the most probable cause (a package conflict) and
+            // let the exception bubble up.
+            $interviewer->warn('Something went wrong while performing a dry-run install:');
+            $interviewer->say('');
+
+            $indentedCause = preg_replace('/^/m', '  ', $e->getCause());
+            $interviewer->say($indentedCause);
+
+            $interviewer->say('');
+
+            return false;
+        }
+
+        return true;
     }
 
     public function execute(TaskList $tasks, Project $project, Interviewer $interviewer)

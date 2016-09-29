@@ -5,7 +5,7 @@ namespace Ibuildings\QaTools\IntegrationTest\Core\Composer;
 use Ibuildings\QaTools\Core\Composer\CliComposerProject;
 use Ibuildings\QaTools\Core\Composer\Package;
 use Ibuildings\QaTools\Core\Composer\PackageSet;
-use Ibuildings\QaTools\Core\Exception\RuntimeException;
+use Ibuildings\QaTools\Core\Composer\RuntimeException;
 use Ibuildings\QaTools\SystemTest\Composer;
 use Ibuildings\QaTools\UnitTest\Diffing;
 use PHPUnit\Framework\TestCase as TestCase;
@@ -75,9 +75,14 @@ class CliComposerProjectTest extends TestCase
         Composer::initialise();
         Composer::addConflict('phpmd/phpmd', '^2.0');
 
-        $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('Your requirements could not be resolved to an installable set of packages.');
-        $this->project->requireDevDependencies(new PackageSet([Package::of('phpmd/phpmd', '^2.0')]));
+        try {
+            $this->project->requireDevDependencies(new PackageSet([Package::of('phpmd/phpmd', '^2.0')]));
+
+            $this->fail(sprintf('No exception of type "%s" was thrown', RuntimeException::class));
+        } catch (RuntimeException $e) {
+            $this->assertContains('Failed to require development dependencies', $e->getMessage());
+            $this->assertContains('Your requirements could not be resolved to an installable set of packages.', $e->getCause());
+        }
     }
 
     /** @test */
@@ -86,9 +91,14 @@ class CliComposerProjectTest extends TestCase
         Composer::initialise();
         Composer::addConflict('phpmd/phpmd', '^2.0');
 
-        $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('Your requirements could not be resolved to an installable set of packages.');
-        $this->project->verifyDevDependenciesWillNotConflict(new PackageSet([Package::of('phpmd/phpmd', '^2.0')]));
+        try {
+            $this->project->verifyDevDependenciesWillNotConflict(new PackageSet([Package::of('phpmd/phpmd', '^2.0')]));
+
+            $this->fail(sprintf('No exception of type "%s" was thrown', RuntimeException::class));
+        } catch (RuntimeException $e) {
+            $this->assertContains('Failed to dry-run Composer packages installation', $e->getMessage());
+            $this->assertContains('Your requirements could not be resolved to an installable set of packages.', $e->getCause());
+        }
     }
 
     /** @test */

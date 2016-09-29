@@ -55,14 +55,14 @@ final class Interviewer implements InterviewerInterface
 
     public function say($sentence)
     {
-        Assertion::nonEmptyString($sentence, 'Expected non-empty string for "%3$s", got "%s" of type "%s"', 'sentence');
+        Assertion::string($sentence, 'Expected sentence to be a string, got "%s" of type "%s"', 'sentence');
 
         $this->output->writeln(sprintf('<comment>%s</comment>', $sentence));
     }
 
     public function warn($sentence)
     {
-        Assertion::nonEmptyString($sentence, 'Expected non-empty string for "%3$s", got "%s" of type "%s"', 'sentence');
+        Assertion::string($sentence, 'Expected sentence to be a string, got "%s" of type "%s"', 'sentence');
 
         $this->output->writeln(sprintf('<error>%s</error>', $sentence));
     }

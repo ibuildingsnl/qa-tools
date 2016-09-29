@@ -3,6 +3,7 @@
 namespace Ibuildings\QaTools\Core\Configuration;
 
 use Ibuildings\QaTools\Core\Configurator\ConfiguratorRepository;
+use Ibuildings\QaTools\Core\Exception\RuntimeException;
 use Ibuildings\QaTools\Core\Interviewer\Interviewer;
 use Ibuildings\QaTools\Core\Project\Directory;
 use Ibuildings\QaTools\Core\Task\Executor\TaskDirectoryExecutor;
@@ -58,7 +59,7 @@ final class ConfigurationService
     /**
      * @param Interviewer $interviewer
      * @param Directory   $projectDirectory
-     * @return void
+     * @return bool
      */
     public function configureProject(Interviewer $interviewer, Directory $projectDirectory)
     {
@@ -76,8 +77,12 @@ final class ConfigurationService
         $configurators = $this->configuratorRepository->getConfiguratorsForProject($configuration->getProject());
         $this->toolConfigurator->configure($configurators, $memorizingInterviewer, $taskDirectory);
 
-        $this->taskDirectoryExecutor->execute($taskDirectory, $memorizingInterviewer);
+        if (!$this->taskDirectoryExecutor->execute($taskDirectory, $memorizingInterviewer)) {
+            return false;
+        }
 
         $this->configurationRepository->save($configuration);
+
+        return true;
     }
 }

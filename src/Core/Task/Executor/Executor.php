@@ -11,12 +11,12 @@ use Ibuildings\QaTools\Core\Task\TaskList;
  * Executes its supported tasks.
  *
  * Users of Executors must guarantee they call their methods in the following order:
- *  - checkPrerequisites()
+ *  - arePrerequisitesMet()
  *  - execute()
  *  - cleanUp()
  *
  * After the Executor has been execute()d, its rollBack() method may be called. Its
- * rollBack() method is never called directly after checkPrerequisites(). It may be
+ * rollBack() method is never called directly after arePrerequisitesMet(). It may be
  * called after cleanUp().
  */
 interface Executor
@@ -31,9 +31,9 @@ interface Executor
      * @param TaskList    $tasks
      * @param Project     $project
      * @param Interviewer $interviewer
-     * @return void
+     * @return bool
      */
-    public function checkPrerequisites(TaskList $tasks, Project $project, Interviewer $interviewer);
+    public function arePrerequisitesMet(TaskList $tasks, Project $project, Interviewer $interviewer);
 
     /**
      * @param TaskList    $tasks

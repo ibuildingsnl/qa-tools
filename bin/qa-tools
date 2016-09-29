@@ -19,4 +19,4 @@ $application->addCommands([
 ]);
 $application->boot();
 
-$application->run();
+exit($application->run());

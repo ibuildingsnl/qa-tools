@@ -3,7 +3,6 @@
 namespace Ibuildings\QaTools\Core\Composer;
 
 use Ibuildings\QaTools\Core\Assert\Assertion;
-use Ibuildings\QaTools\Core\Exception\RuntimeException;
 use Symfony\Component\Process\ProcessBuilder;
 
 final class CliComposerProject implements Project
@@ -49,7 +48,8 @@ final class CliComposerProject implements Project
             $this->restoreConfiguration();
 
             throw new RuntimeException(
-                sprintf('Failed to add development packages to Composer file: "%s"', $process->getErrorOutput())
+                'Failed to add development packages to Composer file',
+                $process->getErrorOutput()
             );
         }
 
@@ -61,7 +61,8 @@ final class CliComposerProject implements Project
             $this->restoreConfiguration();
 
             throw new RuntimeException(
-                sprintf('Failed to dry-run Composer packages installation: "%s"', $process->getErrorOutput())
+                'Failed to dry-run Composer packages installation',
+                $process->getErrorOutput()
             );
         }
 
@@ -77,7 +78,8 @@ final class CliComposerProject implements Project
 
         if ($process->run() !== 0) {
             throw new RuntimeException(
-                sprintf('Failed to require development dependencies: "%s"', $process->getErrorOutput())
+                'Failed to require development dependencies',
+                $process->getErrorOutput()
             );
         }
     }
@@ -110,7 +112,8 @@ final class CliComposerProject implements Project
 
         if ($process->run() !== 0) {
             throw new RuntimeException(
-                sprintf('Failed to install Composer dependencies: "%s"', $process->getErrorOutput())
+                'Failed to install Composer dependencies',
+                $process->getErrorOutput()
             );
         }
     }
