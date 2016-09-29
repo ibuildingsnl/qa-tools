@@ -9,14 +9,13 @@ To create a new tool:
  0. Create a new directory in the `src/Tool` directory and give it a descriptive name, preferably the actual name of the tool.
  0. Create a class with the same name that extends `\Ibuildings\QaTools\Core\Tool\AbstractTool` in this new directory. 
  0. Add instance of you new class should be added to the `\Ibuildings\QaTools\Core\Application\Application::getRegisteredTools()` method in order for it to be configurable.
- 0. Create a configuration file.
+ 0. Specify for what projects the tool may be added in a new file `src/Tool/<ToolName>/Resources/config/configurators.yml`.
  0. Create a configurator in `\Ibuildings\QaTools\Tool\<ToolName>\Configurator\<ConfiguratorName>`.
- 0. Specify for what projects the tool may be added in `src/Tool/<ToolName>/Resources/config/configurators.yml`.
  0. Create templates for configuration files in `src/Tool/<ToolName>/Resources/templates`.
  
 Fix the tests you broke as a result of creating the new tool:
 
- 0. Add composer package stub in `tests/composer/packages/<package>/composer.json` and active it in `tests/system/Composer.php` if your package uses composer.
+ 0. Add Composer package stub in `tests/composer/packages/<package>/composer.json` and add it to the list of repositories in `Ibuildings\QaTools\SystemTest\Composer::initialise()`.
  0. Make sure the question is answered for adding your tool in:
    0. `tests/system/specs/000_can-configure-a-php-project.tcl`
    0. `tests/system/specs/010_developer-need-not-reanswer-previously-answered-questions.tcl`
