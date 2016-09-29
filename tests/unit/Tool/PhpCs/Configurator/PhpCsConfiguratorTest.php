@@ -10,14 +10,14 @@ use Ibuildings\QaTools\Core\Interviewer\Answer\YesOrNoAnswer;
 use Ibuildings\QaTools\Core\Interviewer\AutomatedResponseInterviewer;
 use Ibuildings\QaTools\Core\Project\Directory;
 use Ibuildings\QaTools\Core\Project\Project;
+use Ibuildings\QaTools\Core\Project\ProjectType;
 use Ibuildings\QaTools\Core\Project\ProjectTypeSet;
 use Ibuildings\QaTools\Tool\PhpCs\Configurator\PhpCsConfigurator;
-use Ibuildings\QaTools\UnitTest\InstallComposerDevDependencyTask;
-use Ibuildings\QaTools\UnitTest\WriteFileTask;
+use Ibuildings\QaTools\UnitTest\InstallComposerDevDependencyTaskMatcher;
+use Ibuildings\QaTools\UnitTest\WriteFileTaskMatcher;
 use Mockery;
 use Mockery\MockInterface;
 use PHPUnit\Framework\TestCase as TestCase;
-use Ibuildings\QaTools\UnitTest\ComposerPackage;
 
 /**
  * @group Tool
@@ -39,7 +39,7 @@ class PhpCsConfiguratorTest extends TestCase
             'Xenophobic Xavier',
             new Directory('.'),
             new Directory('.'),
-            new ProjectTypeSet(),
+            new ProjectTypeSet([new ProjectType(ProjectType::TYPE_PHP_DRUPAL_8)]),
             false
         );
         $this->taskDirectory = Mockery::spy(TaskDirectory::class);
@@ -60,7 +60,7 @@ class PhpCsConfiguratorTest extends TestCase
 
         $this->taskHelperSet
             ->shouldReceive('renderTemplate')
-            ->with('ruleset.xml.twig', Mockery::any())
+            ->with('ruleset-drupal8.xml.twig', Mockery::any())
             ->andReturn('<?xml version="1.0"?>');
 
         $configurator = new PhpCsConfigurator();
@@ -68,17 +68,17 @@ class PhpCsConfiguratorTest extends TestCase
 
         $this->taskDirectory
             ->shouldHaveReceived('registerTask')
-            ->with(InstallComposerDevDependencyTask::forAnyVersionOf('squizlabs/php_codesniffer'))
+            ->with(InstallComposerDevDependencyTaskMatcher::forAnyVersionOf('squizlabs/php_codesniffer'))
             ->once();
 
         $this->taskDirectory
             ->shouldHaveReceived('registerTask')
-            ->with(InstallComposerDevDependencyTask::forAnyVersionOf('drupal/coder'))
+            ->with(InstallComposerDevDependencyTaskMatcher::forAnyVersionOf('drupal/coder'))
             ->once();
 
         $this->taskDirectory
             ->shouldHaveReceived('registerTask')
-            ->with(WriteFileTask::equals('./ruleset.xml', '<?xml version="1.0"?>'))
+            ->with(WriteFileTaskMatcher::equals('./ruleset.xml', '<?xml version="1.0"?>'))
             ->once();
 
     }

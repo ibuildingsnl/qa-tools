@@ -10,8 +10,8 @@ use Ibuildings\QaTools\Core\Project\Directory;
 use Ibuildings\QaTools\Core\Project\Project;
 use Ibuildings\QaTools\Core\Project\ProjectTypeSet;
 use Ibuildings\QaTools\Tool\PhpMd\Configurator\PhpMdConfigurator;
-use Ibuildings\QaTools\UnitTest\InstallComposerDevDependencyTask;
-use Ibuildings\QaTools\UnitTest\WriteFileTask;
+use Ibuildings\QaTools\UnitTest\InstallComposerDevDependencyTaskMatcher;
+use Ibuildings\QaTools\UnitTest\WriteFileTaskMatcher;
 use Mockery;
 use Mockery\MockInterface;
 use PHPUnit\Framework\TestCase as TestCase;
@@ -59,12 +59,12 @@ class PhpMdConfiguratorTest extends TestCase
 
         $this->taskDirectory
             ->shouldHaveReceived('registerTask')
-            ->with(InstallComposerDevDependencyTask::forAnyVersionOf('phpmd/phpmd'))
+            ->with(InstallComposerDevDependencyTaskMatcher::forAnyVersionOf('phpmd/phpmd'))
             ->once();
 
         $this->taskDirectory
             ->shouldHaveReceived('registerTask')
-            ->with(WriteFileTask::equals('./phpmd.xml', '<?xml version="1.0"?>'))
+            ->with(WriteFileTaskMatcher::equals('./phpmd.xml', '<?xml version="1.0"?>'))
             ->once();
     }
 

@@ -3,11 +3,11 @@
 namespace Ibuildings\QaTools\UnitTest;
 
 use Ibuildings\QaTools\Core\Task\Task;
-use Ibuildings\QaTools\Core\Task\WriteFileTask as OriginalWriteFileTask;
+use Ibuildings\QaTools\Core\Task\WriteFileTask;
 use Mockery;
 
 
-final class WriteFileTask
+final class WriteFileTaskMatcher
 {
     /**
      * @param string $expectedPath
@@ -18,7 +18,7 @@ final class WriteFileTask
     {
         return Mockery::on(
             function (Task $task) use ($expectedPath, $expectedContent) {
-                return $task instanceof OriginalWriteFileTask
+                return $task instanceof WriteFileTask
                     && $task->getFilePath() === $expectedPath
                     && $task->getFileContents() === $expectedContent;
             }

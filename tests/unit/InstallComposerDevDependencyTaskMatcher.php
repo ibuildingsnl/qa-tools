@@ -2,11 +2,11 @@
 
 namespace Ibuildings\QaTools\UnitTest;
 
-use Ibuildings\QaTools\Core\Task\InstallComposerDevDependencyTask as OriginalInstallComposerDevDependencyTask;
+use Ibuildings\QaTools\Core\Task\InstallComposerDevDependencyTask;
 use Ibuildings\QaTools\Core\Task\Task;
 use Mockery;
 
-final class InstallComposerDevDependencyTask
+final class InstallComposerDevDependencyTaskMatcher
 {
     /**
      * @param string $expected
@@ -16,7 +16,7 @@ final class InstallComposerDevDependencyTask
     {
         return Mockery::on(
             function (Task $task) use ($expected) {
-                return $task instanceof OriginalInstallComposerDevDependencyTask
+                return $task instanceof InstallComposerDevDependencyTask
                     && $task->getPackageName() === $expected;
             }
         );
