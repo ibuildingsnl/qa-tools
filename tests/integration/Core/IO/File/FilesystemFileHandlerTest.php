@@ -24,7 +24,7 @@ class FilesystemFileHandlerTest extends TestCase
 
     protected function setUp()
     {
-        $uniqueId = preg_replace("/[^a-zA-Z0-9]+/", "", base64_encode(openssl_random_pseudo_bytes(8)));
+        $uniqueId = bin2hex(openssl_random_pseudo_bytes(8));
         $this->workingDirectory = sys_get_temp_dir() . '/qa-tools_' . microtime(true)  . '-' . $uniqueId . '_fs-adapter';
         $this->adapter = new FilesystemFileHandler(new Filesystem());
     }
