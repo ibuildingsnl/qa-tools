@@ -4,18 +4,20 @@ namespace Ibuildings\QaTools\UnitTest\Tool\PhpCs;
 
 use Ibuildings\QaTools\Core\Configuration\TaskDirectory;
 use Ibuildings\QaTools\Core\Configuration\TaskHelperSet;
+use Ibuildings\QaTools\Core\Interviewer\Answer\Choices;
+use Ibuildings\QaTools\Core\Interviewer\Answer\TextualAnswer;
 use Ibuildings\QaTools\Core\Interviewer\Answer\YesOrNoAnswer;
 use Ibuildings\QaTools\Core\Interviewer\AutomatedResponseInterviewer;
 use Ibuildings\QaTools\Core\Project\Directory;
 use Ibuildings\QaTools\Core\Project\Project;
 use Ibuildings\QaTools\Core\Project\ProjectTypeSet;
-use Ibuildings\QaTools\Core\Task\InstallComposerDevDependencyTask;
-use Ibuildings\QaTools\Core\Task\Task;
-use Ibuildings\QaTools\Core\Task\WriteFileTask;
 use Ibuildings\QaTools\Tool\PhpCs\Configurator\PhpCsConfigurator;
+use Ibuildings\QaTools\UnitTest\InstallComposerDevDependencyTask;
+use Ibuildings\QaTools\UnitTest\WriteFileTask;
 use Mockery;
 use Mockery\MockInterface;
 use PHPUnit\Framework\TestCase as TestCase;
+use Ibuildings\QaTools\UnitTest\ComposerPackage;
 
 /**
  * @group Tool
@@ -49,6 +51,12 @@ class PhpCsConfiguratorTest extends TestCase
     public function installs_phpcs_when_desired()
     {
         $this->interviewer->recordAnswer('Would you like to use PHP Code Sniffer?', YesOrNoAnswer::yes());
+        $this->interviewer->recordAnswer('What ruleset would you like to use a base?', new Choices([new TextualAnswer('PSR2')]));
+        $this->interviewer->recordAnswer('Would you like to allow longer lines than the default? Warn at 120 and fail at 150.', YesOrNoAnswer::yes());
+        $this->interviewer->recordAnswer('Would you like be less strict about doc blocks in tests?', YesOrNoAnswer::yes());
+        $this->interviewer->recordAnswer('Where are your tests located?', new TextualAnswer('tests/*'));
+        $this->interviewer->recordAnswer('Would you like PHPCS to ignore some locations completely?', YesOrNoAnswer::yes());
+        $this->interviewer->recordAnswer('Which locations should be ignored?', new TextualAnswer('behat/*'));
 
         $this->taskHelperSet
             ->shouldReceive('renderTemplate')
@@ -60,25 +68,19 @@ class PhpCsConfiguratorTest extends TestCase
 
         $this->taskDirectory
             ->shouldHaveReceived('registerTask')
-            ->with(
-                Mockery::on(
-                    function (Task $task) {
-                        return $task instanceof InstallComposerDevDependencyTask
-                            && $task->getPackageName() === 'squizlabs/php_codesniffer';
-                    }
-                )
-            );
+            ->with(InstallComposerDevDependencyTask::equals('squizlabs/php_codesniffer'))
+            ->once();
+
         $this->taskDirectory
             ->shouldHaveReceived('registerTask')
-            ->with(
-                Mockery::on(
-                    function (Task $task) {
-                        return $task instanceof WriteFileTask
-                            && $task->getFilePath() === './ruleset.xml'
-                            && $task->getFileContents() === '<?xml version="1.0"?>';
-                    }
-                )
-            );
+            ->with(InstallComposerDevDependencyTask::equals('drupal/coder'))
+            ->once();
+
+        $this->taskDirectory
+            ->shouldHaveReceived('registerTask')
+            ->with(WriteFileTask::equals('./ruleset.xml', '<?xml version="1.0"?>'))
+            ->once();
+
     }
 
     /** @test */

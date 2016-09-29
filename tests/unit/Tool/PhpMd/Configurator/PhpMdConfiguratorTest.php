@@ -9,10 +9,9 @@ use Ibuildings\QaTools\Core\Interviewer\AutomatedResponseInterviewer;
 use Ibuildings\QaTools\Core\Project\Directory;
 use Ibuildings\QaTools\Core\Project\Project;
 use Ibuildings\QaTools\Core\Project\ProjectTypeSet;
-use Ibuildings\QaTools\Core\Task\InstallComposerDevDependencyTask;
-use Ibuildings\QaTools\Core\Task\Task;
-use Ibuildings\QaTools\Core\Task\WriteFileTask;
 use Ibuildings\QaTools\Tool\PhpMd\Configurator\PhpMdConfigurator;
+use Ibuildings\QaTools\UnitTest\InstallComposerDevDependencyTask;
+use Ibuildings\QaTools\UnitTest\WriteFileTask;
 use Mockery;
 use Mockery\MockInterface;
 use PHPUnit\Framework\TestCase as TestCase;
@@ -60,25 +59,13 @@ class PhpMdConfiguratorTest extends TestCase
 
         $this->taskDirectory
             ->shouldHaveReceived('registerTask')
-            ->with(
-                Mockery::on(
-                    function (Task $task) {
-                        return $task instanceof InstallComposerDevDependencyTask
-                            && $task->getPackageName() === 'phpmd/phpmd';
-                    }
-                )
-            );
+            ->with(InstallComposerDevDependencyTask::equals('phpmd/phpmd'))
+            ->once();
+
         $this->taskDirectory
             ->shouldHaveReceived('registerTask')
-            ->with(
-                Mockery::on(
-                    function (Task $task) {
-                        return $task instanceof WriteFileTask
-                            && $task->getFilePath() === './phpmd.xml'
-                            && $task->getFileContents() === '<?xml version="1.0"?>';
-                    }
-                )
-            );
+            ->with(WriteFileTask::equals('./phpmd.xml', '<?xml version="1.0"?>'))
+            ->once();
     }
 
     /** @test */

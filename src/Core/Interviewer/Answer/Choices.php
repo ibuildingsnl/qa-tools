@@ -84,6 +84,17 @@ final class Choices implements Answer, IteratorAggregate, Countable
     }
 
     /**
+     * Return false if no answer is given or a string with the first answer
+     *
+     * @return boolean|string
+     */
+    public function getRawFirstAnswer()
+    {
+        $rawEntries = $this->getRaw();
+        return reset($rawEntries);
+    }
+
+    /**
      * @return string[]
      */
     public function convertToArrayOfStrings()

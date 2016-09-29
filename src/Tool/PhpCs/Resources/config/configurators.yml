@@ -9,6 +9,6 @@ services:
             - name: qa_tools.tool
               project_type: 'php.drupal7'
             - name: qa_tools.tool
-              project_type: 'php.drupal8'
-            - name: qa_tools.tool
               project_type: 'php.other'
+            - name: qa_tools.tool
+              project_type: 'php.drupal8'
