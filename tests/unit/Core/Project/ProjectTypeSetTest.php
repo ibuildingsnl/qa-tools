@@ -6,11 +6,13 @@ use Ibuildings\QaTools\Core\Project\ProjectType;
 use Ibuildings\QaTools\Core\Project\ProjectTypeSet;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @group Value
+ */
 class ProjectTypeSetTest extends TestCase
 {
     /**
      * @test
-     * @group value
      * @dataProvider unequalSets
      *
      * @param array $set0
@@ -52,7 +54,6 @@ class ProjectTypeSetTest extends TestCase
 
     /**
      * @test
-     * @group value
      * @dataProvider equalSets
      *
      * @param array $set0
@@ -98,7 +99,6 @@ class ProjectTypeSetTest extends TestCase
 
     /**
      * @test
-     * @group value
      * @dataProvider setsThatContainAnProjectType
      * @param ProjectTypeSet $set
      * @param ProjectType    $projectType
@@ -135,7 +135,6 @@ class ProjectTypeSetTest extends TestCase
 
     /**
      * @test
-     * @group value
      * @dataProvider setsThatDontContainAnProjectType
      *
      * @param ProjectTypeSet $set
