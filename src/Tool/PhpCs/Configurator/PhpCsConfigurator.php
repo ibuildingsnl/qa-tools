@@ -101,7 +101,7 @@ final class PhpCsConfigurator implements Configurator
             $taskDirectory->registerTask(new InstallComposerDevDependencyTask('drupal/coder', '8.*'));
         }
 
-        $phpMdConfiguration = $taskHelperSet->renderTemplate(
+        $phpCsConfiguration = $taskHelperSet->renderTemplate(
             $isDrupal ? 'ruleset-drupal8.xml.twig' : 'ruleset.xml.twig',
             [
                 'baseRuleset' => $baseRuleset->getRaw(),
@@ -117,7 +117,7 @@ final class PhpCsConfigurator implements Configurator
         $taskDirectory->registerTask(
             new WriteFileTask(
                 $taskDirectory->getProject()->getConfigurationFilesLocation()->getDirectory() . 'ruleset.xml',
-                $phpMdConfiguration
+                $phpCsConfiguration
             )
         );
     }
