@@ -16,6 +16,11 @@ use Ibuildings\QaTools\Tool\PhpCs\PhpCs;
 
 final class PhpCsConfigurator implements Configurator
 {
+    /**
+     * This is a long script and readability will not improve by splitting this method up.
+     * Therefore a suppressed warning.
+     * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
+     */
     public function configure(
         Interviewer $interviewer,
         TaskDirectory $taskDirectory,
@@ -43,11 +48,16 @@ final class PhpCsConfigurator implements Configurator
             )
         );
 
-        /** @var YesOrNoAnswer $beLessStrictAboutLineLength */
-        $beLessStrictAboutLineLength = $interviewer->ask(
-            QuestionFactory::createYesOrNo(
-                'Would you like to allow longer lines than the default? Warn at 120 and fail at 150.',
-                YesOrNoAnswer::YES
+        /** @var TextualAnswer $useCustomizedLineLengthSettings */
+        $useCustomizedLineLengthSettings = $interviewer->ask(
+            QuestionFactory::createMultipleChoice(
+                'How would you like to handle line lengths?',
+                [
+                    'Warn when >120. Fail when >150',
+                    'Use base ruleset setting: Zend will warn at 80 and fail at 120. PSR1 ignores line length. ' .
+                        'PSR2 only warns at 80. Squiz only warns at 120',
+                ],
+                'Warn when >120. Fail when >150'
             )
         );
 
@@ -95,7 +105,8 @@ final class PhpCsConfigurator implements Configurator
             $isDrupal ? 'ruleset-drupal8.xml.twig' : 'ruleset.xml.twig',
             [
                 'baseRuleset' => $baseRuleset->getRaw(),
-                'beLessStrictAboutLineLength' => $beLessStrictAboutLineLength->is(true),
+                'useCustomizedLineLengthSettings' =>
+                    $useCustomizedLineLengthSettings->getRaw() === 'Warn when >120. Fail when >150',
                 'beLessStrictAboutDocblocksInTests' => $beLessStrictAboutDocblocksInTests->is(true),
                 'shouldIgnoreSomeLocationsCompletely' => $shouldIgnoreSomeLocationsCompletely,
                 'testLocation' => $testLocation,

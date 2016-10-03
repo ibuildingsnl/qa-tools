@@ -21,7 +21,7 @@ answer "Would you like to use PHP Code Sniffer?" with "Y"
 should_see "What ruleset would you like to use as a base?"
 answer "\[1\] PSR2" with "1"
 
-answer "Would you like to allow longer lines than the default? Warn at 120 and fail at 150." with "Y"
+answer "How would you like to handle line lengths?" with "Warn when >120. Fail when >150"
 
 answer "Would you like to skip any sniffs regarding the doc blocks in tests?" with "Y"
 
