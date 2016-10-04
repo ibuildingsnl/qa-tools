@@ -2,6 +2,19 @@
 <ruleset name="Ibuildings QA Tools Default Ruleset">
     <description>Enforce coding standards</description>
 
-{{ include('snippet-defaults.xml.twig') }}
+    <rule ref="{{ baseRuleset }}"/>
+
+{% if shouldIgnoreSomeLocationsCompletely %}
+    <!-- Ignore these location completely -->
+    <exclude-pattern>{{ ignoredLocation }}</exclude-pattern>
+{% endif %}
+
+{% if beLessStrictAboutLineLength %}
+{{ include('snippet-line-length.xml.twig') }}
+{% endif %}
+
+{% if beLessStrictAboutDocblocksInTests %}
+{{ include('snippet-ignore-function-comments-in-tests.xml.twig') }}
+{% endif %}
 
 </ruleset>

@@ -10,7 +10,7 @@ should_see "What type of project would you like to configure?"
 answer "\[0\] PHP" with "0"
 
 should_see "What type of PHP project would you like to configure?"
-answer "\[3\] Drupal 8" with "3"
+answer "\[4\] Other PHP Project" with "4"
 
 answer "Would you like to integrate Travis in your project?" with "Y"
 

@@ -12,7 +12,7 @@ use Ibuildings\QaTools\Core\Project\Directory;
 use Ibuildings\QaTools\Core\Project\Project;
 use Ibuildings\QaTools\Core\Project\ProjectType;
 use Ibuildings\QaTools\Core\Project\ProjectTypeSet;
-use Ibuildings\QaTools\Tool\PhpCs\Configurator\PhpCsConfigurator;
+use Ibuildings\QaTools\Tool\PhpCs\Configurator\PhpCsOtherConfigurator;
 use Ibuildings\QaTools\UnitTest\InstallComposerDevDependencyTaskMatcher;
 use Ibuildings\QaTools\UnitTest\WriteFileTaskMatcher;
 use Mockery;
@@ -23,7 +23,7 @@ use PHPUnit\Framework\TestCase as TestCase;
  * @group Tool
  * @group PhpCs
  */
-class PhpCsConfiguratorTest extends TestCase
+class PhpCsOtherConfiguratorTest extends TestCase
 {
     /** @var AutomatedResponseInterviewer */
     private $interviewer;
@@ -36,7 +36,7 @@ class PhpCsConfiguratorTest extends TestCase
     {
         $this->interviewer = new AutomatedResponseInterviewer();
         $this->project = new Project(
-            'Xenophobic Xavier',
+            'Triggered Tomato',
             new Directory('.'),
             new Directory('.'),
             new ProjectTypeSet([new ProjectType(ProjectType::TYPE_PHP_DRUPAL_8)]),
@@ -60,20 +60,15 @@ class PhpCsConfiguratorTest extends TestCase
 
         $this->taskHelperSet
             ->shouldReceive('renderTemplate')
-            ->with('ruleset-drupal8.xml.twig', Mockery::any())
+            ->with('ruleset.xml.twig', Mockery::any())
             ->andReturn('<?xml version="1.0"?>');
 
-        $configurator = new PhpCsConfigurator();
+        $configurator = new PhpCsOtherConfigurator();
         $configurator->configure($this->interviewer, $this->taskDirectory, $this->taskHelperSet);
 
         $this->taskDirectory
             ->shouldHaveReceived('registerTask')
             ->with(InstallComposerDevDependencyTaskMatcher::forAnyVersionOf('squizlabs/php_codesniffer'))
-            ->once();
-
-        $this->taskDirectory
-            ->shouldHaveReceived('registerTask')
-            ->with(InstallComposerDevDependencyTaskMatcher::forAnyVersionOf('drupal/coder'))
             ->once();
 
         $this->taskDirectory
@@ -93,20 +88,15 @@ class PhpCsConfiguratorTest extends TestCase
 
         $this->taskHelperSet
             ->shouldReceive('renderTemplate')
-            ->with('ruleset-drupal8.xml.twig', Mockery::any())
+            ->with('ruleset.xml.twig', Mockery::any())
             ->andReturn('<?xml version="1.0"?>');
 
-        $configurator = new PhpCsConfigurator();
+        $configurator = new PhpCsOtherConfigurator();
         $configurator->configure($this->interviewer, $this->taskDirectory, $this->taskHelperSet);
 
         $this->taskDirectory
             ->shouldHaveReceived('registerTask')
             ->with(InstallComposerDevDependencyTaskMatcher::forAnyVersionOf('squizlabs/php_codesniffer'))
-            ->once();
-
-        $this->taskDirectory
-            ->shouldHaveReceived('registerTask')
-            ->with(InstallComposerDevDependencyTaskMatcher::forAnyVersionOf('drupal/coder'))
             ->once();
 
         $this->taskDirectory
@@ -120,7 +110,7 @@ class PhpCsConfiguratorTest extends TestCase
     {
         $this->interviewer->recordAnswer('Would you like to use PHP Code Sniffer?', YesOrNoAnswer::no());
 
-        $configurator = new PhpCsConfigurator();
+        $configurator = new PhpCsOtherConfigurator();
         $configurator->configure($this->interviewer, $this->taskDirectory, $this->taskHelperSet);
 
         $this->taskDirectory->shouldNotHaveReceived('registerTask');

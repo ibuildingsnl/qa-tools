@@ -1,14 +1,26 @@
 services:
-    qa_tools.tool.configurator.phpcs.php:
-        class: Ibuildings\QaTools\Tool\PhpCs\Configurator\PhpCsConfigurator
+    qa_tools.tool.configurator.phpcs.symfony2.php:
+        class: Ibuildings\QaTools\Tool\PhpCs\Configurator\PhpCsSymfony2Configurator
         tags:
             - name: qa_tools.tool
               project_type: 'php.sf2'
+    qa_tools.tool.configurator.phpcs.symfony3.php:
+        class: Ibuildings\QaTools\Tool\PhpCs\Configurator\PhpCsSymfony3Configurator
+        tags:
             - name: qa_tools.tool
               project_type: 'php.sf3'
+    qa_tools.tool.configurator.phpcs.drupal7.php:
+        class: Ibuildings\QaTools\Tool\PhpCs\Configurator\PhpCsDrupal7Configurator
+        tags:
             - name: qa_tools.tool
               project_type: 'php.drupal7'
-            - name: qa_tools.tool
-              project_type: 'php.other'
+    qa_tools.tool.configurator.phpcs.drupal8.php:
+        class: Ibuildings\QaTools\Tool\PhpCs\Configurator\PhpCsDrupal8Configurator
+        tags:
             - name: qa_tools.tool
               project_type: 'php.drupal8'
+    qa_tools.tool.configurator.phpcs.other.php:
+        class: Ibuildings\QaTools\Tool\PhpCs\Configurator\PhpCsOtherConfigurator
+        tags:
+            - name: qa_tools.tool
+              project_type: 'php.other'

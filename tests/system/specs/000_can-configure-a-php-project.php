@@ -14,4 +14,3 @@ assertFileContains('phpmd.xml', 'Ibuildings QA Tools Default Ruleset for Boolean
 
 assertFileExists('ruleset.xml');
 Composer::assertPackageIsInstalled('squizlabs/php_codesniffer');
-Composer::assertPackageIsInstalled('drupal/coder');

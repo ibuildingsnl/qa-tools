@@ -9,12 +9,11 @@ use Ibuildings\QaTools\Core\Interviewer\Answer\TextualAnswer;
 use Ibuildings\QaTools\Core\Interviewer\Answer\YesOrNoAnswer;
 use Ibuildings\QaTools\Core\Interviewer\Interviewer;
 use Ibuildings\QaTools\Core\Interviewer\Question\QuestionFactory;
-use Ibuildings\QaTools\Core\Project\ProjectType;
 use Ibuildings\QaTools\Core\Task\InstallComposerDevDependencyTask;
 use Ibuildings\QaTools\Core\Task\WriteFileTask;
 use Ibuildings\QaTools\Tool\PhpCs\PhpCs;
 
-final class PhpCsConfigurator implements Configurator
+final class PhpCsOtherConfigurator implements Configurator
 {
     /**
      * This is a long script and readability will not improve by splitting this method up.
@@ -26,10 +25,6 @@ final class PhpCsConfigurator implements Configurator
         TaskDirectory $taskDirectory,
         TaskHelperSet $taskHelperSet
     ) {
-        $projectTypeSet = $taskDirectory->getProject()->getProjectTypes();
-        $isDrupal = $projectTypeSet->contains(new ProjectType(ProjectType::TYPE_PHP_DRUPAL_7)) ||
-                    $projectTypeSet->contains(new ProjectType(ProjectType::TYPE_PHP_DRUPAL_8));
-
         /** @var YesOrNoAnswer $usePhpCs */
         $usePhpCs = $interviewer->ask(
             QuestionFactory::createYesOrNo('Would you like to use PHP Code Sniffer?', YesOrNoAnswer::YES)
@@ -97,12 +92,8 @@ final class PhpCsConfigurator implements Configurator
 
         $taskDirectory->registerTask(new InstallComposerDevDependencyTask('squizlabs/php_codesniffer', '^2.7'));
 
-        if ($isDrupal) {
-            $taskDirectory->registerTask(new InstallComposerDevDependencyTask('drupal/coder', '8.*'));
-        }
-
         $phpCsConfiguration = $taskHelperSet->renderTemplate(
-            $isDrupal ? 'ruleset-drupal8.xml.twig' : 'ruleset.xml.twig',
+            'ruleset.xml.twig',
             [
                 'baseRuleset' => $baseRuleset->getRaw(),
                 'useCustomizedLineLengthSettings' =>
