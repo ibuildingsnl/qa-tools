@@ -4,9 +4,6 @@ services:
         tags:
             - name: qa_tools.tool
               project_type: 'php.sf2'
-    qa_tools.tool.configurator.phpcs.symfony3.php:
-        class: Ibuildings\QaTools\Tool\PhpCs\Configurator\PhpCsSymfony3Configurator
-        tags:
             - name: qa_tools.tool
               project_type: 'php.sf3'
     qa_tools.tool.configurator.phpcs.drupal7.php:
