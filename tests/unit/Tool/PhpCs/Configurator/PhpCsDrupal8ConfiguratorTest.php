@@ -10,7 +10,7 @@ use Ibuildings\QaTools\Core\Project\Directory;
 use Ibuildings\QaTools\Core\Project\Project;
 use Ibuildings\QaTools\Core\Project\ProjectType;
 use Ibuildings\QaTools\Core\Project\ProjectTypeSet;
-use Ibuildings\QaTools\Tool\PhpCs\Configurator\PhpCsSymfony2Configurator;
+use Ibuildings\QaTools\Tool\PhpCs\Configurator\PhpCsDrupal8Configurator;
 use Ibuildings\QaTools\UnitTest\InstallComposerDevDependencyTaskMatcher;
 use Ibuildings\QaTools\UnitTest\WriteFileTaskMatcher;
 use Mockery;
@@ -55,7 +55,7 @@ class PhpCsDrupal8ConfiguratorTest extends TestCase
             ->with('ruleset-reference.xml.twig', Mockery::any())
             ->andReturn('<?xml version="1.0"?>');
 
-        $configurator = new PhpCsSymfony2Configurator();
+        $configurator = new PhpCsDrupal8Configurator();
         $configurator->configure($this->interviewer, $this->taskDirectory, $this->taskHelperSet);
 
         $this->taskDirectory
@@ -65,7 +65,7 @@ class PhpCsDrupal8ConfiguratorTest extends TestCase
 
         $this->taskDirectory
             ->shouldHaveReceived('registerTask')
-            ->with(InstallComposerDevDependencyTaskMatcher::forAnyVersionOf('escapestudios/symfony2-coding-standard'))
+            ->with(InstallComposerDevDependencyTaskMatcher::forVersionOf('drupal/coder', '8.*'))
             ->once();
 
         $this->taskDirectory
@@ -84,7 +84,7 @@ class PhpCsDrupal8ConfiguratorTest extends TestCase
             ->with('ruleset-reference.xml.twig', Mockery::any())
             ->andReturn('<?xml version="1.0"?>');
 
-        $configurator = new PhpCsSymfony2Configurator();
+        $configurator = new PhpCsDrupal8Configurator();
         $configurator->configure($this->interviewer, $this->taskDirectory, $this->taskHelperSet);
 
         $this->taskDirectory
@@ -103,7 +103,7 @@ class PhpCsDrupal8ConfiguratorTest extends TestCase
     {
         $this->interviewer->recordAnswer('Would you like to use PHP Code Sniffer?', YesOrNoAnswer::no());
 
-        $configurator = new PhpCsSymfony2Configurator();
+        $configurator = new PhpCsDrupal8Configurator();
         $configurator->configure($this->interviewer, $this->taskDirectory, $this->taskHelperSet);
 
         $this->taskDirectory->shouldNotHaveReceived('registerTask');
