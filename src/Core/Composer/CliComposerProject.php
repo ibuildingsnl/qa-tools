@@ -76,9 +76,15 @@ final class CliComposerProject implements Project
         $arguments = array_merge([$this->composerBinary, 'require'], $options, $packages->getDescriptors());
         $process = ProcessBuilder::create($arguments)->setWorkingDirectory($this->directory)->getProcess();
 
+        $packageNames = join("\n - ", $packages->getDescriptors());
         if ($process->run() !== 0) {
             throw new RuntimeException(
-                'Failed to require development dependencies',
+                "Failed to require development dependencies\n" .
+                "One of these packages could not be installed (from inside $this->directory):\n" .
+                " - $packageNames\n" .
+                "Maybe you forgot to:\n" .
+                " - add a composer.json fixture for the package to 'tests/composer/packages'\n" .
+                " - add the package to '\\Ibuildings\\QaTools\\SystemTest\\Composer::initialise'",
                 $process->getErrorOutput()
             );
         }
