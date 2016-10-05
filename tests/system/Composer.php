@@ -20,7 +20,8 @@ final class Composer
                 ['packagist' => false],
                 ['type' => 'path', 'url' => __DIR__ . '/../composer/packages/phpmd'],
                 ['type' => 'path', 'url' => __DIR__ . '/../composer/packages/phpcs'],
-                ['type' => 'path', 'url' => __DIR__ . '/../composer/packages/drupal'],
+                ['type' => 'artifact', 'url' => __DIR__ . '/../composer/packages/drupal'],
+                ['type' => 'path', 'url' => __DIR__ . '/../composer/packages/escapestudios'],
             ],
         ];
         file_put_contents('composer.json', json_encode($configuration, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
