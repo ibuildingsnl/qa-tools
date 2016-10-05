@@ -43,7 +43,7 @@ test ./qa-tools configure --no-ansi -v
 
 should_see "Configuring the Ibuildings QA Tools"
 
-answer "What is the project's name?" with "Boolean Bust"
+answer "What is the project's name?" with "Float Flush"
 
 answer "Where would you like to store the generated files?" with "./"
 
@@ -108,7 +108,7 @@ exits_with 0
 
 test ./qa-tools configure --no-ansi -v
 
-answer "What is the project's name?" with "Cryptic Crunch"
+answer "What is the project's name?" with "Crypto Crunch"
 
 answer "Where would you like to store the generated files?" with "./"
 
@@ -133,7 +133,7 @@ exits_with 0
 
 test ./qa-tools configure --no-ansi -v
 
-answer "What is the project's name?" with "Tuple Thrust"
+answer "What is the project's name?" with "Lunch Lost"
 
 answer "Where would you like to store the generated files?" with "./"
 
@@ -158,7 +158,7 @@ exits_with 0
 
 test ./qa-tools configure --no-ansi -v
 
-answer "What is the project's name?" with "Tuple Thrust"
+answer "What is the project's name?" with "Monads Mocked"
 
 answer "Where would you like to store the generated files?" with "./"
 

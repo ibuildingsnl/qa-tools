@@ -34,7 +34,7 @@ class PhpCsDrupal8ConfiguratorTest extends TestCase
     {
         $this->interviewer = new AutomatedResponseInterviewer();
         $this->project = new Project(
-            'Trolling Tiramisu',
+            'Pandering Puma',
             new Directory('.'),
             new Directory('.'),
             new ProjectTypeSet([new ProjectType(ProjectType::TYPE_PHP_SF_2)]),

@@ -34,7 +34,7 @@ class PhpCsSymfony2ConfiguratorTest extends TestCase
     {
         $this->interviewer = new AutomatedResponseInterviewer();
         $this->project = new Project(
-            'Trolling Tiramisu',
+            'Fluent Fisherman',
             new Directory('.'),
             new Directory('.'),
             new ProjectTypeSet([new ProjectType(ProjectType::TYPE_PHP_SF_2)]),
