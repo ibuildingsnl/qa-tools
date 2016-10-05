@@ -3,6 +3,7 @@
 namespace Ibuildings\QaTools\Core\Composer;
 
 use Ibuildings\QaTools\Core\Assert\Assertion;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Process\ProcessBuilder;
 
 final class CliComposerProject implements Project
@@ -23,16 +24,23 @@ final class CliComposerProject implements Project
     private $configurationBackup;
 
     /**
-     * @param string $directory
-     * @param string $composerBinary
+     * @var LoggerInterface
      */
-    public function __construct($directory, $composerBinary)
+    private $logger;
+
+    /**
+     * @param string          $directory
+     * @param string          $composerBinary
+     * @param LoggerInterface $logger
+     */
+    public function __construct($directory, $composerBinary, LoggerInterface $logger)
     {
         Assertion::string($directory, 'Composer project directory ought to be a string, got "%s" of type "%s"');
         Assertion::string($composerBinary, 'Path to Composer binary ought to be a string, got "%s" of type "%s"');
 
         $this->directory = $directory;
         $this->composerBinary = $composerBinary;
+        $this->logger = $logger;
     }
 
     public function verifyDevDependenciesWillNotConflict(PackageSet $packages)
@@ -77,14 +85,19 @@ final class CliComposerProject implements Project
         $process = ProcessBuilder::create($arguments)->setWorkingDirectory($this->directory)->getProcess();
 
         $packageNames = join("\n - ", $packages->getDescriptors());
+
+        $this->logger->error(
+            "Failed to require development dependencies\n" .
+            "One of these packages could not be installed (from inside $this->directory):\n" .
+            " - $packageNames\n" .
+            "Maybe you forgot to:\n" .
+            " - add a composer.json fixture for the package to 'tests/composer/packages'\n" .
+            " - add the package to '\\Ibuildings\\QaTools\\SystemTest\\Composer::initialise'"
+        );
+
         if ($process->run() !== 0) {
             throw new RuntimeException(
-                "Failed to require development dependencies\n" .
-                "One of these packages could not be installed (from inside $this->directory):\n" .
-                " - $packageNames\n" .
-                "Maybe you forgot to:\n" .
-                " - add a composer.json fixture for the package to 'tests/composer/packages'\n" .
-                " - add the package to '\\Ibuildings\\QaTools\\SystemTest\\Composer::initialise'",
+                'Failed to require development dependencies',
                 $process->getErrorOutput()
             );
         }

@@ -9,6 +9,7 @@ use Ibuildings\QaTools\Core\Composer\RuntimeException;
 use Ibuildings\QaTools\SystemTest\Composer;
 use Ibuildings\QaTools\UnitTest\Diffing;
 use PHPUnit\Framework\TestCase as TestCase;
+use Psr\Log\NullLogger;
 
 /**
  * @group Composer
@@ -25,7 +26,10 @@ class CliComposerProjectTest extends TestCase
     protected function setUp()
     {
         $this->workingDirectory = sys_get_temp_dir() . '/qa-tools_' . microtime(true) . '_install-composer-task';
-        $this->project = new CliComposerProject($this->workingDirectory, __DIR__ . '/../../../../vendor/bin/composer');
+        $this->project = new CliComposerProject(
+            $this->workingDirectory,
+            __DIR__ . '/../../../../vendor/bin/composer',
+            new NullLogger());
     }
 
     protected function runTest()
