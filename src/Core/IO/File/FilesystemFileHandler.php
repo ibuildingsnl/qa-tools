@@ -145,6 +145,11 @@ final class FilesystemFileHandler implements FileHandler
      */
     public function changeMode($filePath, $mode)
     {
-        $this->filesystem->chmod($filePath, $mode);
+        try {
+            $this->filesystem->chmod($filePath, $mode);
+        } catch (IOException $exception) {
+            $newMessage = sprintf("Could not change mode of %s to %o", $filePath, $mode);
+            throw new RuntimeException($newMessage, null, $exception);
+        }
     }
 }
