@@ -3,9 +3,20 @@
 namespace Ibuildings\QaTools\Core\Composer;
 
 use Ibuildings\QaTools\Core\Assert\Assertion;
+use Psr\Log\LoggerInterface;
 
 final class CliComposerProjectFactory implements ProjectFactory
 {
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
+    
+    public function __construct(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
+
     public function forDirectory($directory)
     {
         Assertion::string($directory, 'Composer project directory ought to be a string, got "%s" of type "%s"');
@@ -21,6 +32,6 @@ final class CliComposerProjectFactory implements ProjectFactory
             $composerBinary = 'composer';
         }
 
-        return new CliComposerProject($directory, $composerBinary);
+        return new CliComposerProject($directory, $composerBinary, $this->logger);
     }
 }
