@@ -107,6 +107,18 @@ class WriteFileTaskExecutorTest extends TestCase
     }
 
     /** @test */
+    public function writes_files_with_default_mode()
+    {
+        $tasks = new TaskList([new WriteFileTask('/path/to/file', 'data')]);
+        $this->executor->execute($tasks, $this->project, $this->interviewer);
+
+        $this->fileHandler
+            ->shouldHaveReceived('changeMode')
+            ->with('/path/to/file', 0644)
+            ->once();
+    }
+
+    /** @test */
     public function cleans_up_backups()
     {
         $tasks = new TaskList([new WriteFileTask('./file1', 'data'), new WriteFileTask('./file2', 'data')]);
