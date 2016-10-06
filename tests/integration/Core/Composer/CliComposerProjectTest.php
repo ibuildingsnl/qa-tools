@@ -29,7 +29,8 @@ class CliComposerProjectTest extends TestCase
         $this->project = new CliComposerProject(
             $this->workingDirectory,
             __DIR__ . '/../../../../vendor/bin/composer',
-            new NullLogger());
+            new NullLogger()
+        );
     }
 
     protected function runTest()
