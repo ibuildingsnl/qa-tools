@@ -17,16 +17,24 @@ final class WriteFileTask implements Task
     private $fileContents;
 
     /**
+     * @var int
+     */
+    private $mode;
+
+
+    /**
      * @param string $filePath
      * @param string $fileContents
+     * @param int    $mode
      */
-    public function __construct($filePath, $fileContents)
+    public function __construct($filePath, $fileContents, $mode = 0644)
     {
         Assertion::string('File path ought to be a string, got "%s" of type "%s"');
         Assertion::string('File contents ought to be a string, got "%s" of type "%s"');
 
         $this->filePath = $filePath;
         $this->fileContents = $fileContents;
+        $this->mode = $mode;
     }
 
     /**
@@ -43,6 +51,14 @@ final class WriteFileTask implements Task
     public function getFileContents()
     {
         return $this->fileContents;
+    }
+
+    /**
+     * @return int
+     */
+    public function getMode()
+    {
+        return $this->mode;
     }
 
     public function __toString()

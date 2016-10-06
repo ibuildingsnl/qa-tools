@@ -137,4 +137,14 @@ final class FilesystemFileHandler implements FileHandler
     {
         return sprintf('%s.qatools-bak', $filePath);
     }
+
+    /**
+     * @param string $filePath
+     * @param int    $mode
+     * @return void
+     */
+    public function changeMode($filePath, $mode)
+    {
+        $this->filesystem->chmod($filePath, $mode);
+    }
 }

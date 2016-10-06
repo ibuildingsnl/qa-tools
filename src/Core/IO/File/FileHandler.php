@@ -64,4 +64,11 @@ interface FileHandler
      * @return boolean
      */
     public function exists($filePath);
+
+    /**
+     * @param string $filePath
+     * @param int $mode
+     * @return mixed
+     */
+    public function changeMode($filePath, $mode);
 }

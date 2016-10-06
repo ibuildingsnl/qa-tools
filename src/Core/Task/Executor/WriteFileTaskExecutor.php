@@ -53,6 +53,7 @@ final class WriteFileTaskExecutor implements Executor
         foreach ($tasks as $task) {
             /** @var WriteFileTask $task */
             $this->fileHandler->writeWithBackupTo($task->getFilePath(), $task->getFileContents());
+            $this->fileHandler->changeMode($task->getFilePath(), $task->getMode());
             array_unshift($this->filesWritten, $task->getFilePath());
         }
     }
