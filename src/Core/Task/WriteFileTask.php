@@ -21,7 +21,6 @@ final class WriteFileTask implements Task
      */
     private $mode;
 
-
     /**
      * @param string $filePath
      * @param string $fileContents
