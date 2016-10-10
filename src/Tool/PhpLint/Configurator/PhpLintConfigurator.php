@@ -35,7 +35,7 @@ final class PhpLintConfigurator implements Configurator
         );
 
         $phpLintPrecommitAntSnippet = $taskHelperSet->renderTemplate(
-            'snippet-phplint-precommit.xml.twig',
+            'snippet-phplint-diff.xml.twig',
             ['targetName' => 'php-lint-diff']
         );
 
