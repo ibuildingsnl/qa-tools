@@ -70,4 +70,3 @@ final class WriteFileTask implements Task
         );
     }
 }
-

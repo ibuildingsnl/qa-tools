@@ -1,0 +1,7 @@
+<target name="{{ targetName }}" description="Perform syntax check of changed sourcecode files in parallel">
+    <exec executable="sh" failonerror="true">
+        <arg value="-c"/>
+        <arg value="git diff --cached --name-only -- '*.php' | tr '\n' ' ' | xargs -n 1 -P 4 php -l 1>/dev/null"/>
+    </exec>
+    <echo message="OK"/>
+</target>

@@ -16,8 +16,6 @@ answer "Would you like to integrate Travis in your project?" with "Y"
 
 answer "Would you like to use PHP Lint?" with "Y"
 
-answer "What directories would you like to lint? Use comma's to separate" with "src,test"
-
 answer "Would you like to use PHP Mess Detector?" with "Y"
 
 answer "Would you like to use PHP Code Sniffer?" with "N"

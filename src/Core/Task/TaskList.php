@@ -43,6 +43,25 @@ final class TaskList implements IteratorAggregate, Countable
     }
 
     /**
+     * @param callable $transformer
+     * @param mixed   $initial
+     * @return mixed
+     */
+    public function reduce(callable $transformer, $initial = "")
+    {
+        return array_reduce($this->tasks, $transformer, $initial);
+    }
+
+    /**
+     * @param callable $transformer
+     * @return mixed
+     */
+    public function map(callable $transformer)
+    {
+        return array_map($transformer, $this->tasks);
+    }
+
+    /**
      * @param Task $taskToBeFound
      * @return boolean
      */

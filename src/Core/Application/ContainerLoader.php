@@ -24,6 +24,7 @@ final class ContainerLoader
             $containerBuilder = new ContainerBuilder();
             $containerBuilder->addCompilerPass(new RegisterConfiguratorsCompilerPass());
             $containerBuilder->addCompilerPass(new RegisterTaskExecutorsCompilerPass());
+            $containerBuilder->setParameter('application_root_dir', realpath(__DIR__ . '/../../..'));
 
             $loader = new YamlFileLoader($containerBuilder, new FileLocator(__DIR__ . '/../Resources/config/'));
             $loader->load('config.yml');

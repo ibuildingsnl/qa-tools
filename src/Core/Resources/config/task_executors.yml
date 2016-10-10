@@ -10,3 +10,11 @@ services:
         arguments:
             - "@qa_tools.file_handler"
         tags: [{ name: qa_tools.task_executor, priority: 0 }]
+
+    qa_tools.task.add_build_task_executor:
+        class: Ibuildings\QaTools\Core\Task\Executor\AddBuildTaskExecutor
+        arguments:
+            - "@qa_tools.file_handler"
+            - "@qa_tools.template_engine"
+            - "%qa_tools.ant_template_location%"
+        tags: [{ name: qa_tools.task_executor, priority: 5 }]

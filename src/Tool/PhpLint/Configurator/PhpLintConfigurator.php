@@ -8,7 +8,9 @@ use Ibuildings\QaTools\Core\Configurator\Configurator;
 use Ibuildings\QaTools\Core\Interviewer\Answer\YesOrNoAnswer;
 use Ibuildings\QaTools\Core\Interviewer\Interviewer;
 use Ibuildings\QaTools\Core\Interviewer\Question\QuestionFactory;
-use Ibuildings\QaTools\Core\Task\WriteFileTask;
+use Ibuildings\QaTools\Core\Stages\Build;
+use Ibuildings\QaTools\Core\Stages\Precommit;
+use Ibuildings\QaTools\Core\Task\AddBuildTask;
 use Ibuildings\QaTools\Tool\PhpLint\PhpLint;
 
 final class PhpLintConfigurator implements Configurator
@@ -27,30 +29,21 @@ final class PhpLintConfigurator implements Configurator
             return; //do nothing
         }
 
-        /** @var string $directoriesToLint */
-        $directoriesToLint = $interviewer->ask(
-            QuestionFactory::create('What directories would you like to lint? Use comma\'s to separate', 'src,test')
-        )->getRaw();
+        $phpLintAntSnippet = $taskHelperSet->renderTemplate(
+            'snippet-phplint-build.xml.twig',
+            ['targetName' => 'php-lint-full']
+        );
 
-        $directories = array_filter(explode(',', $directoriesToLint));
-        $atLeastOneDirectoryGiven = count($directories) > 0;
-
-        if (!$atLeastOneDirectoryGiven) {
-            $interviewer->say('You entered no directories, thefore PHP Lint will not be added to your project');
-            return;
-        }
-
-        $project = $taskDirectory->getProject();
-        $configurationFilesLocation = $project->getConfigurationFilesLocation();
-
-        $phpLintExecutable = $taskHelperSet->renderTemplate('phplint.sh.twig', ['directories' => $directories]);
+        $phpLintPrecommitAntSnippet = $taskHelperSet->renderTemplate(
+            'snippet-phplint-precommit.xml.twig',
+            ['targetName' => 'php-lint-diff']
+        );
 
         $taskDirectory->registerTask(
-            new WriteFileTask(
-                $configurationFilesLocation->getDirectory() . 'phplint.sh',
-                $phpLintExecutable,
-                0755
-            )
+            new AddBuildTask(new Build(), $phpLintAntSnippet, 'php-lint-full')
+        );
+        $taskDirectory->registerTask(
+            new AddBuildTask(new Precommit(), $phpLintPrecommitAntSnippet, 'php-lint-diff')
         );
     }
 

@@ -9,6 +9,10 @@ $expect();
 
 assertFileExists('qa-tools.json');
 Composer::assertPackageIsInstalled('phpmd/phpmd');
+
+assertFileExists('build.xml');
+assertFileContains('build.xml', 'Perform syntax check of sourcecode files in parallel');
+
 assertFileExists('phpmd.xml');
 assertFileContains('phpmd.xml', 'Ibuildings QA Tools Default Ruleset');
 
