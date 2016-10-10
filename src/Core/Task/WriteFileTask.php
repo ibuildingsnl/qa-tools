@@ -28,8 +28,8 @@ final class WriteFileTask implements Task
      */
     public function __construct($filePath, $fileContents, $mode = 0644)
     {
-        Assertion::string($filePath, 'File path ought to be a string, got "%s" of type "%s"');
-        Assertion::string($fileContents, 'File contents ought to be a string, got "%s" of type "%s"');
+        Assertion::string($filePath, 'File path ought to be a string');
+        Assertion::string($fileContents, 'File contents ought to be a string');
 
         $this->filePath = $filePath;
         $this->fileContents = $fileContents;
