@@ -12,7 +12,10 @@ use Ibuildings\QaTools\Core\Project\Directory;
 use Ibuildings\QaTools\Core\Project\Project;
 use Ibuildings\QaTools\Core\Project\ProjectType;
 use Ibuildings\QaTools\Core\Project\ProjectTypeSet;
+use Ibuildings\QaTools\Core\Stages\Build;
 use Ibuildings\QaTools\Tool\PhpCs\Configurator\PhpCsOtherConfigurator;
+use Ibuildings\QaTools\Tool\PhpCs\PhpCs;
+use Ibuildings\QaTools\UnitTest\AddBuildTaskMatcher;
 use Ibuildings\QaTools\UnitTest\InstallComposerDevDependencyTaskMatcher;
 use Ibuildings\QaTools\UnitTest\WriteFileTaskMatcher;
 use Mockery;
@@ -61,7 +64,14 @@ class PhpCsOtherConfiguratorTest extends TestCase
         $this->taskHelperSet
             ->shouldReceive('renderTemplate')
             ->with('ruleset.xml.twig', Mockery::any())
-            ->andReturn('<?xml version="1.0"?>');
+            ->andReturn('<?xml version="1.0"?>')
+            ->once();
+
+        $this->taskHelperSet
+            ->shouldReceive('renderTemplate')
+            ->with('ant-build.xml.twig', ['targetName' => PhpCs::TARGET_NAME])
+            ->andReturn('snippet')
+            ->once();
 
         $configurator = new PhpCsOtherConfigurator();
         $configurator->configure($this->interviewer, $this->taskDirectory, $this->taskHelperSet);
@@ -75,6 +85,10 @@ class PhpCsOtherConfiguratorTest extends TestCase
             ->shouldHaveReceived('registerTask')
             ->with(WriteFileTaskMatcher::contains('./ruleset.xml', '<?xml version="1.0"?>'))
             ->once();
+
+        $this->taskDirectory
+            ->shouldHaveReceived('registerTask')
+            ->with(AddBuildTaskMatcher::forStage(new Build(), 'snippet', PhpCs::TARGET_NAME));
     }
 
     /** @test */
@@ -89,7 +103,14 @@ class PhpCsOtherConfiguratorTest extends TestCase
         $this->taskHelperSet
             ->shouldReceive('renderTemplate')
             ->with('ruleset.xml.twig', Mockery::any())
-            ->andReturn('<?xml version="1.0"?>');
+            ->andReturn('<?xml version="1.0"?>')
+            ->once();
+
+        $this->taskHelperSet
+            ->shouldReceive('renderTemplate')
+            ->with('ant-build.xml.twig', ['targetName' => PhpCs::TARGET_NAME])
+            ->andReturn('snippet')
+            ->once();
 
         $configurator = new PhpCsOtherConfigurator();
         $configurator->configure($this->interviewer, $this->taskDirectory, $this->taskHelperSet);
@@ -103,6 +124,10 @@ class PhpCsOtherConfiguratorTest extends TestCase
             ->shouldHaveReceived('registerTask')
             ->with(WriteFileTaskMatcher::contains('./ruleset.xml', '<?xml version="1.0"?>'))
             ->once();
+
+        $this->taskDirectory
+            ->shouldHaveReceived('registerTask')
+            ->with(AddBuildTaskMatcher::forStage(new Build(), 'snippet', PhpCs::TARGET_NAME));
     }
 
     /** @test */

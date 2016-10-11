@@ -10,6 +10,8 @@ use Ibuildings\QaTools\Core\Interviewer\Answer\YesOrNoAnswer;
 use Ibuildings\QaTools\Core\Interviewer\Interviewer;
 use Ibuildings\QaTools\Core\Interviewer\Question\QuestionFactory;
 use Ibuildings\QaTools\Core\Project\ProjectType;
+use Ibuildings\QaTools\Core\Stages\Build;
+use Ibuildings\QaTools\Core\Task\AddBuildTask;
 use Ibuildings\QaTools\Core\Task\InstallComposerDevDependencyTask;
 use Ibuildings\QaTools\Core\Task\WriteFileTask;
 use Ibuildings\QaTools\Tool\PhpCs\PhpCs;
@@ -46,6 +48,15 @@ final class PhpCsDrupal8Configurator implements Configurator
                 $taskDirectory->getProject()->getConfigurationFilesLocation()->getDirectory() . 'ruleset.xml',
                 $phpCsConfiguration
             )
+        );
+
+        $antSnippet = $taskHelperSet->renderTemplate(
+            'ant-build.xml.twig',
+            ['targetName' => PhpCs::TARGET_NAME]
+        );
+
+        $taskDirectory->registerTask(
+            new AddBuildTask(new Build(), $antSnippet, PhpCs::TARGET_NAME)
         );
     }
 

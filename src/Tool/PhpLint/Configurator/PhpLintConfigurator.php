@@ -29,21 +29,22 @@ final class PhpLintConfigurator implements Configurator
             return; //do nothing
         }
 
-        $phpLintAntSnippet = $taskHelperSet->renderTemplate(
+        $antFullSnippet = $taskHelperSet->renderTemplate(
             'ant-full.xml.twig',
-            ['targetName' => 'php-lint-full']
+            ['targetName' => PhpLint::TARGET_NAME_FULL]
         );
 
-        $phpLintPrecommitAntSnippet = $taskHelperSet->renderTemplate(
+        $taskDirectory->registerTask(
+            new AddBuildTask(new Build(), $antFullSnippet, PhpLint::TARGET_NAME_FULL)
+        );
+
+        $antPrecommitSnippet = $taskHelperSet->renderTemplate(
             'ant-diff.xml.twig',
-            ['targetName' => 'php-lint-diff']
+            ['targetName' => PhpLint::TARGET_NAME_DIFF]
         );
 
         $taskDirectory->registerTask(
-            new AddBuildTask(new Build(), $phpLintAntSnippet, 'php-lint-full')
-        );
-        $taskDirectory->registerTask(
-            new AddBuildTask(new Precommit(), $phpLintPrecommitAntSnippet, 'php-lint-diff')
+            new AddBuildTask(new Precommit(), $antPrecommitSnippet, PhpLint::TARGET_NAME_DIFF)
         );
     }
 

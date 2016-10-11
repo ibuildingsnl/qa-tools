@@ -12,6 +12,7 @@ use Ibuildings\QaTools\Core\Project\ProjectTypeSet;
 use Ibuildings\QaTools\Core\Stages\Build;
 use Ibuildings\QaTools\Core\Stages\Precommit;
 use Ibuildings\QaTools\Tool\PhpLint\Configurator\PhpLintConfigurator;
+use Ibuildings\QaTools\Tool\PhpLint\PhpLint;
 use Ibuildings\QaTools\UnitTest\AddBuildTaskMatcher;
 use Mockery;
 use Mockery\MockInterface;
@@ -52,13 +53,13 @@ class PhpLintConfiguratorTest extends TestCase
 
         $this->taskHelperSet
             ->shouldReceive('renderTemplate')
-            ->with('ant-full.xml.twig', ['targetName' => 'php-lint-full'])
+            ->with('ant-full.xml.twig', ['targetName' => PhpLint::TARGET_NAME_FULL])
             ->andReturn('php-lint-full-template')
             ->once();
 
         $this->taskHelperSet
             ->shouldReceive('renderTemplate')
-            ->with('ant-diff.xml.twig', ['targetName' => 'php-lint-diff'])
+            ->with('ant-diff.xml.twig', ['targetName' => PhpLint::TARGET_NAME_DIFF])
             ->andReturn('php-lint-diff-template')
             ->once();
 
@@ -67,11 +68,11 @@ class PhpLintConfiguratorTest extends TestCase
 
         $this->taskDirectory
             ->shouldHaveReceived('registerTask')
-            ->with(AddBuildTaskMatcher::forStage(new Build(), 'php-lint-full-template', 'php-lint-full'));
+            ->with(AddBuildTaskMatcher::forStage(new Build(), 'php-lint-full-template', PhpLint::TARGET_NAME_FULL));
 
         $this->taskDirectory
             ->shouldHaveReceived('registerTask')
-            ->with(AddBuildTaskMatcher::forStage(new Precommit(), 'php-lint-diff-template', 'php-lint-diff'));
+            ->with(AddBuildTaskMatcher::forStage(new Precommit(), 'php-lint-diff-template', PhpLint::TARGET_NAME_DIFF));
     }
 
     /** @test */

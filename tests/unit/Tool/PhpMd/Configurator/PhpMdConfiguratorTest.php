@@ -11,6 +11,7 @@ use Ibuildings\QaTools\Core\Project\Project;
 use Ibuildings\QaTools\Core\Project\ProjectTypeSet;
 use Ibuildings\QaTools\Core\Stages\Build;
 use Ibuildings\QaTools\Tool\PhpMd\Configurator\PhpMdConfigurator;
+use Ibuildings\QaTools\Tool\PhpMd\PhpMd;
 use Ibuildings\QaTools\UnitTest\AddBuildTaskMatcher;
 use Ibuildings\QaTools\UnitTest\InstallComposerDevDependencyTaskMatcher;
 use Ibuildings\QaTools\UnitTest\WriteFileTaskMatcher;
@@ -78,7 +79,7 @@ class PhpMdConfiguratorTest extends TestCase
 
         $this->taskDirectory
             ->shouldHaveReceived('registerTask')
-            ->with(AddBuildTaskMatcher::forStage(new Build(), 'phpmd-snippet', 'phpmd'));
+            ->with(AddBuildTaskMatcher::forStage(new Build(), 'phpmd-snippet', PhpMd::TARGET_NAME));
     }
 
     /** @test */
