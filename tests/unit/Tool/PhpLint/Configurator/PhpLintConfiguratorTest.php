@@ -16,6 +16,7 @@ use Ibuildings\QaTools\Core\Task\InstallComposerDevDependencyTask;
 use Ibuildings\QaTools\Core\Task\Task;
 use Ibuildings\QaTools\Core\Task\WriteFileTask;
 use Ibuildings\QaTools\Tool\PhpLint\Configurator\PhpLintConfigurator;
+use Ibuildings\QaTools\UnitTest\AddBuildTaskMatcher;
 use Mockery;
 use Mockery\MockInterface;
 use PHPUnit\Framework\TestCase as TestCase;
@@ -70,29 +71,11 @@ class PhpLintConfiguratorTest extends TestCase
 
         $this->taskDirectory
             ->shouldHaveReceived('registerTask')
-            ->with(
-                Mockery::on(
-                    function (Task $task) {
-                        return $task instanceof AddBuildTask
-                            && $task->getStage() == new Build()
-                            && $task->getTemplate() === 'php-lint-full-template'
-                            && $task->getTargetName() === 'php-lint-full';
-                    }
-                )
-            );
+            ->with(AddBuildTaskMatcher::forStage(new Build(), 'php-lint-full-template', 'php-lint-full'));
 
         $this->taskDirectory
             ->shouldHaveReceived('registerTask')
-            ->with(
-                Mockery::on(
-                    function (Task $task) {
-                        return $task instanceof AddBuildTask
-                            && $task->getStage() == new Precommit()
-                            && $task->getTemplate() === 'php-lint-diff-template'
-                            && $task->getTargetName() === 'php-lint-diff';
-                    }
-                )
-            );
+            ->with(AddBuildTaskMatcher::forStage(new Precommit(), 'php-lint-diff-template', 'php-lint-diff'));
     }
 
     /** @test */
