@@ -52,13 +52,13 @@ class PhpLintConfiguratorTest extends TestCase
 
         $this->taskHelperSet
             ->shouldReceive('renderTemplate')
-            ->with('snippet-phplint-build.xml.twig', ['targetName' => 'php-lint-full'])
+            ->with('ant-full.xml.twig', ['targetName' => 'php-lint-full'])
             ->andReturn('php-lint-full-template')
             ->once();
 
         $this->taskHelperSet
             ->shouldReceive('renderTemplate')
-            ->with('snippet-phplint-diff.xml.twig', ['targetName' => 'php-lint-diff'])
+            ->with('ant-diff.xml.twig', ['targetName' => 'php-lint-diff'])
             ->andReturn('php-lint-diff-template')
             ->once();
 

@@ -9,7 +9,9 @@ use Ibuildings\QaTools\Core\Interviewer\AutomatedResponseInterviewer;
 use Ibuildings\QaTools\Core\Project\Directory;
 use Ibuildings\QaTools\Core\Project\Project;
 use Ibuildings\QaTools\Core\Project\ProjectTypeSet;
+use Ibuildings\QaTools\Core\Stages\Build;
 use Ibuildings\QaTools\Tool\PhpMd\Configurator\PhpMdConfigurator;
+use Ibuildings\QaTools\UnitTest\AddBuildTaskMatcher;
 use Ibuildings\QaTools\UnitTest\InstallComposerDevDependencyTaskMatcher;
 use Ibuildings\QaTools\UnitTest\WriteFileTaskMatcher;
 use Mockery;
@@ -52,7 +54,14 @@ class PhpMdConfiguratorTest extends TestCase
         $this->taskHelperSet
             ->shouldReceive('renderTemplate')
             ->with('phpmd-default.xml.twig', Mockery::any())
-            ->andReturn('<?xml version="1.0"?>');
+            ->andReturn('<?xml version="1.0"?>')
+            ->once();
+
+        $this->taskHelperSet
+            ->shouldReceive('renderTemplate')
+            ->with('ant-build.xml.twig', ['targetName' => 'phpmd'])
+            ->andReturn('phpmd-snippet')
+            ->once();
 
         $configurator = new PhpMdConfigurator();
         $configurator->configure($this->interviewer, $this->taskDirectory, $this->taskHelperSet);
@@ -66,6 +75,10 @@ class PhpMdConfiguratorTest extends TestCase
             ->shouldHaveReceived('registerTask')
             ->with(WriteFileTaskMatcher::contains('./phpmd.xml', '<?xml version="1.0"?>'))
             ->once();
+
+        $this->taskDirectory
+            ->shouldHaveReceived('registerTask')
+            ->with(AddBuildTaskMatcher::forStage(new Build(), 'phpmd-snippet', 'phpmd'));
     }
 
     /** @test */
