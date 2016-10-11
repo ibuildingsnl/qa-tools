@@ -23,6 +23,22 @@ Read why we release the QA Tools as a Phar [here](docs/phar.md).
 [path]: https://en.wikipedia.org/wiki/PATH_(variable)
 [public-key]: build/release/qa-tools.phar.pubkey
 
+## Usage
+ 
+```sh-session
+Usage:
+  command [options] [arguments]
+
+Available commands:
+  configure             Configure the Ibuildings QA Tools
+  help                  Displays help for a command
+  list                  Lists commands
+  self-update           Updates Ibuildings QA Tools to the latest version
+  selfupdate            Updates Ibuildings QA Tools to the latest version
+  configure:pre-commit  Configure the pre-commit hook for the Ibuildings QA Tools
+  configure:pre-push    Configure up the pre-push hook for the Ibuildings QA Tools
+```
+
 ## Upgrading
 
 The QA Tools Phar distributable is self-updateable in a way that is very similar
