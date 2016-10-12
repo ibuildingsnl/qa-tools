@@ -17,4 +17,5 @@ services:
             - "@qa_tools.file_handler"
             - "@qa_tools.template_engine"
             - "%qa_tools.ant_template_location%"
+            - "%qa_tools.ant.tool_priorities%"
         tags: [{ name: qa_tools.task_executor, priority: 5 }]

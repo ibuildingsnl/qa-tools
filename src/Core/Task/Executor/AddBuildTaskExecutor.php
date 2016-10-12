@@ -23,7 +23,7 @@ final class AddBuildTaskExecutor implements Executor
     private $templateEngine;
 
     /**
-     * @var
+     * @var string
      */
     private $templatesLocation;
 
@@ -47,7 +47,7 @@ final class AddBuildTaskExecutor implements Executor
         $this->fileHandler = $fileHandler;
         $this->templateEngine = $templateEngine;
         $this->templatesLocation = $templatesLocation;
-        $this->toolPriorities = ['phplint', 'phpmd', 'phpcs']; //$toolPriorities;
+        $this->toolPriorities = $toolPriorities;
     }
 
     public function supports(Task $task)
