@@ -2,7 +2,9 @@
 
 namespace Ibuildings\QaTools\UnitTest;
 
-use Ibuildings\QaTools\Core\Stages\Stage;
+use Ibuildings\QaTools\Core\Build\Snippet;
+use Ibuildings\QaTools\Core\Build\Target;
+use Ibuildings\QaTools\Core\Build\Tool;
 use Ibuildings\QaTools\Core\Task\AddBuildTask;
 use Ibuildings\QaTools\Core\Task\Task;
 use Mockery;
@@ -10,19 +12,19 @@ use Mockery;
 final class AddBuildTaskMatcher
 {
     /**
-     * @param Stage $expectedStage
-     * @param string $expectedTemplate
-     * @param string $expectedTargetName
+     * @param Target  $target
+     * @param Tool    $tool
+     * @param Snippet $snippet
      * @return Mockery\Matcher\Closure
      */
-    public static function forStage(Stage $expectedStage, $expectedTemplate, $expectedTargetName)
+    public static function with(Target $target, Tool $tool, Snippet $snippet)
     {
         return Mockery::on(
-            function (Task $task) use ($expectedStage, $expectedTemplate, $expectedTargetName) {
+            function (Task $task) use ($target, $tool, $snippet) {
                 return $task instanceof AddBuildTask
-                && $task->getStage() == $expectedStage
-                && $task->getTemplate() === $expectedTemplate
-                && $task->getTargetName() === $expectedTargetName;
+                && $task->getTool()->equals($tool)
+                && $task->getSnippet()->equals($snippet)
+                && $task->getTarget()->equals($target);
             }
         );
     }

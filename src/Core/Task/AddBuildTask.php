@@ -1,75 +1,61 @@
 <?php
-
 namespace Ibuildings\QaTools\Core\Task;
 
 use Ibuildings\QaTools\Core\Assert\Assertion;
-use Ibuildings\QaTools\Core\Stages\Stage;
+use Ibuildings\QaTools\Core\Build\Snippet;
+use Ibuildings\QaTools\Core\Build\Tool;
+use Ibuildings\QaTools\Core\Build\Target;
 
 final class AddBuildTask implements Task
 {
     /**
-     * @var string
+     * @var Snippet
      */
-    private $template;
+    private $snippet;
 
     /**
-     * @var Stage
+     * @var Tool
      */
-    private $stage;
+    private $tool;
 
     /**
-     * @var string
+     * @var Target
      */
-    private $targetName;
+    private $target;
 
     /**
-     * @param Stage  $stage
-     * @param string $template
-     * @param string $targetName
+     * @param Target  $target
+     * @param Tool    $tool
+     * @param Snippet $snippet
      */
-    public function __construct(Stage $stage, $template, $targetName)
+    public function __construct(Target $target, Tool $tool, Snippet $snippet)
     {
-        Assertion::string(
-            $template,
-            sprintf('Template name ought to be a string')
-        );
-
-        $this->stage = $stage;
-        $this->template = $template;
-        $this->targetName = $targetName;
+        $this->tool = $tool;
+        $this->snippet = $snippet;
+        $this->target = $target;
     }
 
     /**
-     * @return string
+     * @return Snippet
      */
-    public function getTemplate()
+    public function getSnippet()
     {
-        return $this->template;
+        return $this->snippet;
     }
 
     /**
-     * @return Stage
+     * @return Tool
      */
-    public function getStage()
+    public function getTool()
     {
-        return $this->stage;
+        return $this->tool;
     }
 
     /**
-     * @return string
+     * @return Target
      */
-    public function getTargetName()
+    public function getTarget()
     {
-        return $this->targetName;
-    }
-
-    public function __toString()
-    {
-        return sprintf(
-            'AddBuildTask(stage="%s", template="%s", targetName="%s")',
-            get_class($this->stage),
-            substr($this->template, 0, 20),
-            $this->targetName
-        );
+        return $this->target;
     }
 }

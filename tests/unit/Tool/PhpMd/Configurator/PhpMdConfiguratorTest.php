@@ -9,7 +9,9 @@ use Ibuildings\QaTools\Core\Interviewer\AutomatedResponseInterviewer;
 use Ibuildings\QaTools\Core\Project\Directory;
 use Ibuildings\QaTools\Core\Project\Project;
 use Ibuildings\QaTools\Core\Project\ProjectTypeSet;
-use Ibuildings\QaTools\Core\Stages\Build;
+use Ibuildings\QaTools\Core\Build\Snippet;
+use Ibuildings\QaTools\Core\Build\Target;
+use Ibuildings\QaTools\Core\Build\Tool;
 use Ibuildings\QaTools\Tool\PhpMd\Configurator\PhpMdConfigurator;
 use Ibuildings\QaTools\Tool\PhpMd\PhpMd;
 use Ibuildings\QaTools\UnitTest\AddBuildTaskMatcher;
@@ -79,7 +81,11 @@ class PhpMdConfiguratorTest extends TestCase
 
         $this->taskDirectory
             ->shouldHaveReceived('registerTask')
-            ->with(AddBuildTaskMatcher::forStage(new Build(), 'phpmd-snippet', PhpMd::TARGET_NAME));
+            ->with(AddBuildTaskMatcher::with(
+                Target::build(),
+                Tool::withIdentifier('phpmd'),
+                Snippet::withContentsAndTargetName('phpmd-snippet', PhpMd::TARGET_NAME)
+            ));
     }
 
     /** @test */

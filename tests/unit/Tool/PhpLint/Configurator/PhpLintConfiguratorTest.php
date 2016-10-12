@@ -9,8 +9,9 @@ use Ibuildings\QaTools\Core\Interviewer\AutomatedResponseInterviewer;
 use Ibuildings\QaTools\Core\Project\Directory;
 use Ibuildings\QaTools\Core\Project\Project;
 use Ibuildings\QaTools\Core\Project\ProjectTypeSet;
-use Ibuildings\QaTools\Core\Stages\Build;
-use Ibuildings\QaTools\Core\Stages\Precommit;
+use Ibuildings\QaTools\Core\Build\Snippet;
+use Ibuildings\QaTools\Core\Build\Target;
+use Ibuildings\QaTools\Core\Build\Tool;
 use Ibuildings\QaTools\Tool\PhpLint\Configurator\PhpLintConfigurator;
 use Ibuildings\QaTools\Tool\PhpLint\PhpLint;
 use Ibuildings\QaTools\UnitTest\AddBuildTaskMatcher;
@@ -68,11 +69,20 @@ class PhpLintConfiguratorTest extends TestCase
 
         $this->taskDirectory
             ->shouldHaveReceived('registerTask')
-            ->with(AddBuildTaskMatcher::forStage(new Build(), 'php-lint-full-template', PhpLint::TARGET_NAME_FULL));
+            ->with(AddBuildTaskMatcher::with(
+                Target::build(),
+                Tool::withIdentifier('phplint'),
+                Snippet::withContentsAndTargetName('php-lint-full-template', PhpLint::TARGET_NAME_FULL)
+            ));
 
         $this->taskDirectory
             ->shouldHaveReceived('registerTask')
-            ->with(AddBuildTaskMatcher::forStage(new Precommit(), 'php-lint-diff-template', PhpLint::TARGET_NAME_DIFF));
+            ->with(AddBuildTaskMatcher::with(
+                Target::preCommit(),
+                Tool::withIdentifier('phplint'),
+                Snippet::withContentsAndTargetName('php-lint-diff-template', PhpLint::TARGET_NAME_DIFF)
+            ));
+
     }
 
     /** @test */

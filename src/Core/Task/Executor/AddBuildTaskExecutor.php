@@ -1,14 +1,10 @@
 <?php
-
 namespace Ibuildings\QaTools\Core\Task\Executor;
 
-use Ibuildings\QaTools\Core\Configuration\TaskHelperSet;
 use Ibuildings\QaTools\Core\Interviewer\Interviewer;
 use Ibuildings\QaTools\Core\IO\File\FileHandler;
 use Ibuildings\QaTools\Core\Project\Project;
-use Ibuildings\QaTools\Core\Stages\Build;
-use Ibuildings\QaTools\Core\Stages\Precommit;
-use Ibuildings\QaTools\Core\Stages\Stage;
+use Ibuildings\QaTools\Core\Build\Target;
 use Ibuildings\QaTools\Core\Task\AddBuildTask;
 use Ibuildings\QaTools\Core\Task\Task;
 use Ibuildings\QaTools\Core\Task\TaskList;
@@ -31,17 +27,27 @@ final class AddBuildTaskExecutor implements Executor
      */
     private $templatesLocation;
 
+    /**
+     * @var array
+     */
+    private $toolPriorities;
 
     /**
      * @param FileHandler    $fileHandler
      * @param TemplateEngine $templateEngine
      * @param string         $templatesLocation
+     * @param array          $toolPriorities
      */
-    public function __construct(FileHandler $fileHandler, TemplateEngine $templateEngine, $templatesLocation)
-    {
+    public function __construct(
+        FileHandler $fileHandler,
+        TemplateEngine $templateEngine,
+        $templatesLocation,
+        array $toolPriorities = []
+    ) {
         $this->fileHandler = $fileHandler;
         $this->templateEngine = $templateEngine;
         $this->templatesLocation = $templatesLocation;
+        $this->toolPriorities = ['phplint', 'phpmd', 'phpcs']; //$toolPriorities;
     }
 
     public function supports(Task $task)
@@ -52,27 +58,23 @@ final class AddBuildTaskExecutor implements Executor
     public function arePrerequisitesMet(TaskList $tasks, Project $project, Interviewer $interviewer)
     {
         $antFile = $project->getConfigurationFilesLocation()->getDirectory() . '/build.xml';
-
         if (!$this->fileHandler->canWriteWithBackupTo($antFile)) {
             $interviewer->warn(sprintf('Cannot write file "%s"; is the directory writable?', $antFile));
             return false;
         }
-
         return true;
     }
 
     public function execute(TaskList $tasks, Project $project, Interviewer $interviewer)
     {
         $this->templateEngine->setPath($this->templatesLocation);
-
         $contents = $this->templateEngine->render(
             "build.xml.twig",
             array_merge(
-                self::getStageSnippetsAndTargets($tasks, new Build()),
-                self::getStageSnippetsAndTargets($tasks, new Precommit())
+                self::getStageSnippetsAndTargets($tasks, Target::build(), $this->toolPriorities),
+                self::getStageSnippetsAndTargets($tasks, Target::preCommit(), $this->toolPriorities)
             )
         );
-
         $buildFile = $project->getConfigurationFilesLocation()->getDirectory() . 'build.xml';
         $this->fileHandler->writeWithBackupTo($buildFile, $contents);
     }
@@ -88,26 +90,37 @@ final class AddBuildTaskExecutor implements Executor
 
     /**
      * @param TaskList $tasks
-     * @param Stage $stage
+     * @param Target   $target
+     * @param array    $toolPriorities
      * @return array
      */
-    private static function getStageSnippetsAndTargets(TaskList $tasks, Stage $stage)
+    private static function getStageSnippetsAndTargets(TaskList $tasks, Target $target, array $toolPriorities)
     {
-        $buildStage = $tasks->filter(function (AddBuildTask $task) use ($stage) {
-            return $task->getStage() == $stage;
+        $buildStage = $tasks->filter(function (AddBuildTask $task) use ($target) {
+            return $task->getTarget()->equals($target);
         });
 
-        $buildSnippets = $buildStage->reduce(function ($carry, AddBuildTask $task) {
-            return $carry . $task->getTemplate() . "\n";
-        });
+        $prioritizedTasksForStage = $buildStage->sort(
+            function (AddBuildTask $first, AddBuildTask $second) use ($toolPriorities) {
+                return $first->getTool()->compare($second->getTool(), $toolPriorities);
+            }
+        );
 
-        $buildTargets = $buildStage->map(function (AddBuildTask $task) {
-            return $task->getTargetName();
-        });
+        $snippetsForStage = $prioritizedTasksForStage->reduce(
+            function ($carry, AddBuildTask $task) {
+                return $carry . $task->getSnippet()->getContents() . "\n";
+            }
+        );
+
+        $targetsForStage = $prioritizedTasksForStage->map(
+            function (AddBuildTask $task) {
+                return $task->getSnippet()->getTarget();
+            }
+        );
 
         return array(
-            "{$stage->identifier()}_snippets" => $buildSnippets,
-            "{$stage->identifier()}_targets" => $buildTargets
+            "{$target->getTargetIdentifier()}_snippets" => $snippetsForStage,
+            "{$target->getTargetIdentifier()}_targets" => $targetsForStage
         );
     }
 }

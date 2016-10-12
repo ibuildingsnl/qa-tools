@@ -8,7 +8,9 @@ use Ibuildings\QaTools\Core\Configurator\Configurator;
 use Ibuildings\QaTools\Core\Interviewer\Answer\YesOrNoAnswer;
 use Ibuildings\QaTools\Core\Interviewer\Interviewer;
 use Ibuildings\QaTools\Core\Interviewer\Question\QuestionFactory;
-use Ibuildings\QaTools\Core\Stages\Build;
+use Ibuildings\QaTools\Core\Build\Snippet;
+use Ibuildings\QaTools\Core\Build\Target;
+use Ibuildings\QaTools\Core\Build\Tool;
 use Ibuildings\QaTools\Core\Task\AddBuildTask;
 use Ibuildings\QaTools\Core\Task\InstallComposerDevDependencyTask;
 use Ibuildings\QaTools\Core\Task\WriteFileTask;
@@ -29,7 +31,6 @@ final class PhpMdConfigurator implements Configurator
             return; //do nothing
         }
 
-
         $taskDirectory->registerTask(new InstallComposerDevDependencyTask('phpmd/phpmd', '^2.0'));
 
         $project = $taskDirectory->getProject();
@@ -42,7 +43,11 @@ final class PhpMdConfigurator implements Configurator
 
         $antBuildSnippet = $taskHelperSet->renderTemplate('ant-build.xml.twig', ['targetName' => PhpMd::TARGET_NAME]);
         $taskDirectory->registerTask(
-            new AddBuildTask(new Build(), $antBuildSnippet, PhpMd::TARGET_NAME)
+            new AddBuildTask(
+                Target::build(),
+                Tool::withIdentifier('phpmd'),
+                Snippet::withContentsAndTargetName($antBuildSnippet, PhpMd::TARGET_NAME)
+            )
         );
     }
 

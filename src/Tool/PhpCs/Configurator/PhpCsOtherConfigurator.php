@@ -9,7 +9,9 @@ use Ibuildings\QaTools\Core\Interviewer\Answer\TextualAnswer;
 use Ibuildings\QaTools\Core\Interviewer\Answer\YesOrNoAnswer;
 use Ibuildings\QaTools\Core\Interviewer\Interviewer;
 use Ibuildings\QaTools\Core\Interviewer\Question\QuestionFactory;
-use Ibuildings\QaTools\Core\Stages\Build;
+use Ibuildings\QaTools\Core\Build\Snippet;
+use Ibuildings\QaTools\Core\Build\Target;
+use Ibuildings\QaTools\Core\Build\Tool;
 use Ibuildings\QaTools\Core\Task\AddBuildTask;
 use Ibuildings\QaTools\Core\Task\InstallComposerDevDependencyTask;
 use Ibuildings\QaTools\Core\Task\WriteFileTask;
@@ -120,7 +122,11 @@ final class PhpCsOtherConfigurator implements Configurator
         );
 
         $taskDirectory->registerTask(
-            new AddBuildTask(new Build(), $antSnippet, PhpCs::TARGET_NAME)
+            new AddBuildTask(
+                Target::build(),
+                Tool::withIdentifier('phpcs'),
+                Snippet::withContentsAndTargetName($antSnippet, PhpCs::TARGET_NAME)
+            )
         );
     }
 

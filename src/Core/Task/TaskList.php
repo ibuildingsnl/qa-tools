@@ -62,6 +62,17 @@ final class TaskList implements IteratorAggregate, Countable
     }
 
     /**
+     * @param callable $compareFunction
+     * @return TaskList
+     */
+    public function sort(callable $compareFunction)
+    {
+        $newTasks = $this->tasks;
+        usort($newTasks, $compareFunction);
+        return new self($newTasks);
+    }
+
+    /**
      * @param Task $taskToBeFound
      * @return boolean
      */

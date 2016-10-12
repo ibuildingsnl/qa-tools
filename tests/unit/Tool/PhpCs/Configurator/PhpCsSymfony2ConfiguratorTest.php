@@ -10,7 +10,9 @@ use Ibuildings\QaTools\Core\Project\Directory;
 use Ibuildings\QaTools\Core\Project\Project;
 use Ibuildings\QaTools\Core\Project\ProjectType;
 use Ibuildings\QaTools\Core\Project\ProjectTypeSet;
-use Ibuildings\QaTools\Core\Stages\Build;
+use Ibuildings\QaTools\Core\Build\Snippet;
+use Ibuildings\QaTools\Core\Build\Target;
+use Ibuildings\QaTools\Core\Build\Tool;
 use Ibuildings\QaTools\Tool\PhpCs\Configurator\PhpCsSymfony2Configurator;
 use Ibuildings\QaTools\Tool\PhpCs\PhpCs;
 use Ibuildings\QaTools\UnitTest\AddBuildTaskMatcher;
@@ -85,7 +87,11 @@ class PhpCsSymfony2ConfiguratorTest extends TestCase
 
         $this->taskDirectory
             ->shouldHaveReceived('registerTask')
-            ->with(AddBuildTaskMatcher::forStage(new Build(), 'snippet', PhpCs::TARGET_NAME));
+            ->with(AddBuildTaskMatcher::with(
+                Target::build(),
+                Tool::withIdentifier('phpcs'),
+                Snippet::withContentsAndTargetName('snippet', PhpCs::TARGET_NAME))
+            );
     }
 
     /** @test */
@@ -119,8 +125,11 @@ class PhpCsSymfony2ConfiguratorTest extends TestCase
 
         $this->taskDirectory
             ->shouldHaveReceived('registerTask')
-            ->with(AddBuildTaskMatcher::forStage(new Build(), 'snippet', PhpCs::TARGET_NAME));
-
+            ->with(AddBuildTaskMatcher::with(
+                Target::build(),
+                Tool::withIdentifier('phpcs'),
+                Snippet::withContentsAndTargetName('snippet', PhpCs::TARGET_NAME))
+            );
     }
 
     /** @test */
