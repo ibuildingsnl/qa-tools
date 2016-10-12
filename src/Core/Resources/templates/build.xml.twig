@@ -7,10 +7,10 @@
 
 <!-- PRECOMMIT -->
 
-{{ precommit_snippets | raw }}
+{{ precommit_snippets | join('\n') | raw }}
 
 <!-- BUILD -->
 
-{{ build_snippets | raw }}
+{{ build_snippets | join('\n')| raw }}
 
 </project>

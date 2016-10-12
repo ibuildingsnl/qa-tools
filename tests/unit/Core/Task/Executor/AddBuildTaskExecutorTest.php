@@ -135,9 +135,9 @@ class AddBuildTaskExecutorTest extends TestCase
             ->shouldHaveReceived('render')
             ->with('build.xml.twig', Match::arrayContaining(
                 [
-                    'build_snippets' => "",
+                    'build_snippets' => [],
                     'build_targets' => [],
-                    'precommit_snippets' => "data\ndata\ndata\n",
+                    'precommit_snippets' => ['data', 'data', 'data'],
                     'precommit_targets' => ['phplintSnippet', 'phpmdSnippet', 'phpcsSnippet']
                 ]
             ))

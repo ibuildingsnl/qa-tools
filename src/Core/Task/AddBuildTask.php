@@ -36,26 +36,48 @@ final class AddBuildTask implements Task
     }
 
     /**
-     * @return Snippet
+     * @param AddBuildTask $other
+     * @param array        $prioritizedTools
+     * @return int
      */
-    public function getSnippet()
+    public function prioritize(AddBuildTask $other, array $prioritizedTools)
     {
-        return $this->snippet;
+        return $this->tool->compare($other->tool, $prioritizedTools);
     }
 
     /**
-     * @return Tool
+     * @return string
      */
-    public function getTool()
+    public function getSnippetContents()
     {
-        return $this->tool;
+        return $this->snippet->getContents();
     }
 
     /**
-     * @return Target
+     * @return string
      */
-    public function getTarget()
+    public function getSnippetTargetIdentifier()
     {
-        return $this->target;
+        return $this->snippet->getTarget();
+    }
+
+    /**
+     * @param Target $target
+     * @return bool
+     */
+    public function hasTarget(Target $target)
+    {
+        return $this->target->equals($target);
+    }
+
+    /**
+     * @param AddBuildTask $other
+     * @return bool
+     */
+    public function equals(AddBuildTask $other)
+    {
+        return $this->target->equals($other->target)
+            && $this->tool->equals($other->tool)
+            && $this->snippet->equals($other->snippet);
     }
 }

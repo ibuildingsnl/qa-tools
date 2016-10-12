@@ -97,24 +97,24 @@ final class AddBuildTaskExecutor implements Executor
     private static function getStageSnippetsAndTargets(TaskList $tasks, Target $target, array $toolPriorities)
     {
         $buildStage = $tasks->filter(function (AddBuildTask $task) use ($target) {
-            return $task->getTarget()->equals($target);
+            return $task->hasTarget($target);
         });
 
         $prioritizedTasksForStage = $buildStage->sort(
             function (AddBuildTask $first, AddBuildTask $second) use ($toolPriorities) {
-                return $first->getTool()->compare($second->getTool(), $toolPriorities);
+                return $first->prioritize($second, $toolPriorities);
             }
         );
 
-        $snippetsForStage = $prioritizedTasksForStage->reduce(
-            function ($carry, AddBuildTask $task) {
-                return $carry . $task->getSnippet()->getContents() . "\n";
+        $snippetsForStage = $prioritizedTasksForStage->map(
+            function (AddBuildTask $task) {
+                return $task->getSnippetContents();
             }
         );
 
         $targetsForStage = $prioritizedTasksForStage->map(
             function (AddBuildTask $task) {
-                return $task->getSnippet()->getTarget();
+                return $task->getSnippetTargetIdentifier();
             }
         );
 
