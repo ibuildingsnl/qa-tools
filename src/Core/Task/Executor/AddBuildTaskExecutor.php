@@ -1,6 +1,7 @@
 <?php
 namespace Ibuildings\QaTools\Core\Task\Executor;
 
+use Ibuildings\QaTools\Core\Assert\Assertion;
 use Ibuildings\QaTools\Core\Interviewer\Interviewer;
 use Ibuildings\QaTools\Core\IO\File\FileHandler;
 use Ibuildings\QaTools\Core\Project\Project;
@@ -46,8 +47,18 @@ final class AddBuildTaskExecutor implements Executor
     ) {
         $this->fileHandler = $fileHandler;
         $this->templateEngine = $templateEngine;
-        $this->templatesLocation = $templatesLocation;
+
+        Assertion::isArray(
+            $toolPriorities,
+            sprintf('toolPriorities should be array but is %s', gettype($toolPriorities))
+        );
         $this->toolPriorities = $toolPriorities;
+
+        Assertion::string(
+            $templatesLocation,
+            sprintf('templatesLocation should be string but is %s', gettype($templatesLocation))
+        );
+        $this->templatesLocation = $templatesLocation;
     }
 
     public function supports(Task $task)
