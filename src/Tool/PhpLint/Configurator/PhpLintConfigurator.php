@@ -32,27 +32,27 @@ final class PhpLintConfigurator implements Configurator
 
         $antFullSnippet = $taskHelperSet->renderTemplate(
             'ant-full.xml.twig',
-            ['targetName' => PhpLint::TARGET_NAME_FULL]
+            ['targetName' => PhpLint::ANT_TARGET_FULL]
         );
 
         $taskDirectory->registerTask(
             new AddBuildTask(
                 Target::build(),
                 Tool::withIdentifier('phplint'),
-                Snippet::withContentsAndTargetName($antFullSnippet, PhpLint::TARGET_NAME_FULL)
+                Snippet::withContentsAndTargetName($antFullSnippet, PhpLint::ANT_TARGET_FULL)
             )
         );
 
         $antPrecommitSnippet = $taskHelperSet->renderTemplate(
             'ant-diff.xml.twig',
-            ['targetName' => PhpLint::TARGET_NAME_DIFF]
+            ['targetName' => PhpLint::ANT_TARGET_DIFF]
         );
 
         $taskDirectory->registerTask(
             new AddBuildTask(
                 Target::preCommit(),
                 Tool::withIdentifier('phplint'),
-                Snippet::withContentsAndTargetName($antPrecommitSnippet, PhpLint::TARGET_NAME_DIFF)
+                Snippet::withContentsAndTargetName($antPrecommitSnippet, PhpLint::ANT_TARGET_DIFF)
             )
         );
     }

@@ -63,7 +63,7 @@ class PhpCsDrupal7ConfiguratorTest extends TestCase
 
         $this->taskHelperSet
             ->shouldReceive('renderTemplate')
-            ->with('ant-build.xml.twig', ['targetName' => PhpCs::TARGET_NAME])
+            ->with('ant-build.xml.twig', ['targetName' => PhpCs::ANT_TARGET])
             ->andReturn('snippet')
             ->once();
 
@@ -90,7 +90,7 @@ class PhpCsDrupal7ConfiguratorTest extends TestCase
             ->with(AddBuildTaskMatcher::with(
                 Target::build(), 
                 Tool::withIdentifier('phpcs'),
-                Snippet::withContentsAndTargetName('snippet', PhpCs::TARGET_NAME))
+                Snippet::withContentsAndTargetName('snippet', PhpCs::ANT_TARGET))
             );
     }
 
@@ -107,7 +107,7 @@ class PhpCsDrupal7ConfiguratorTest extends TestCase
 
         $this->taskHelperSet
             ->shouldReceive('renderTemplate')
-            ->with('ant-build.xml.twig', ['targetName' => PhpCs::TARGET_NAME])
+            ->with('ant-build.xml.twig', ['targetName' => PhpCs::ANT_TARGET])
             ->andReturn('snippet')
             ->once();
 
@@ -129,7 +129,7 @@ class PhpCsDrupal7ConfiguratorTest extends TestCase
             ->with(AddBuildTaskMatcher::with(
                 Target::build(),
                 Tool::withIdentifier('phpcs'),
-                Snippet::withContentsAndTargetName('snippet', PhpCs::TARGET_NAME))
+                Snippet::withContentsAndTargetName('snippet', PhpCs::ANT_TARGET))
             );
     }
 

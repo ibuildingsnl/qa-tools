@@ -15,10 +15,10 @@ assertFileExists('qa-tools.json');
 Composer::assertPackageIsInstalled('phpmd/phpmd');
 
 assertFileExists('build.xml');
-assertFileContains('build.xml', PhpCs::TARGET_NAME);
-assertFileContains('build.xml', PhpMd::TARGET_NAME);
-assertFileContains('build.xml', PhpLint::TARGET_NAME_FULL);
-assertFileContains('build.xml', PhpLint::TARGET_NAME_DIFF);
+assertFileContains('build.xml', PhpCs::ANT_TARGET);
+assertFileContains('build.xml', PhpMd::ANT_TARGET);
+assertFileContains('build.xml', PhpLint::ANT_TARGET_FULL);
+assertFileContains('build.xml', PhpLint::ANT_TARGET_DIFF);
 
 assertFileExists('phpmd.xml');
 assertFileContains('phpmd.xml', 'Ibuildings QA Tools Default Ruleset');

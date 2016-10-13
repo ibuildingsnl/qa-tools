@@ -52,14 +52,14 @@ final class PhpCsDrupal8Configurator implements Configurator
 
         $antSnippet = $taskHelperSet->renderTemplate(
             'ant-build.xml.twig',
-            ['targetName' => PhpCs::TARGET_NAME]
+            ['targetName' => PhpCs::ANT_TARGET]
         );
 
         $taskDirectory->registerTask(
             new AddBuildTask(
                 Target::build(),
                 Tool::withIdentifier('phpcs'),
-                Snippet::withContentsAndTargetName($antSnippet, PhpCs::TARGET_NAME)
+                Snippet::withContentsAndTargetName($antSnippet, PhpCs::ANT_TARGET)
             )
         );
     }

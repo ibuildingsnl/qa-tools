@@ -6,5 +6,5 @@ use Ibuildings\QaTools\Core\Tool\AbstractTool;
 
 final class PhpCs extends AbstractTool
 {
-    const TARGET_NAME = 'phpcs';
+    const ANT_TARGET = 'phpcs';
 }

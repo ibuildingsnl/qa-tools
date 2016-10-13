@@ -54,13 +54,13 @@ class PhpLintConfiguratorTest extends TestCase
 
         $this->taskHelperSet
             ->shouldReceive('renderTemplate')
-            ->with('ant-full.xml.twig', ['targetName' => PhpLint::TARGET_NAME_FULL])
+            ->with('ant-full.xml.twig', ['targetName' => PhpLint::ANT_TARGET_FULL])
             ->andReturn('php-lint-full-template')
             ->once();
 
         $this->taskHelperSet
             ->shouldReceive('renderTemplate')
-            ->with('ant-diff.xml.twig', ['targetName' => PhpLint::TARGET_NAME_DIFF])
+            ->with('ant-diff.xml.twig', ['targetName' => PhpLint::ANT_TARGET_DIFF])
             ->andReturn('php-lint-diff-template')
             ->once();
 
@@ -72,7 +72,7 @@ class PhpLintConfiguratorTest extends TestCase
             ->with(AddBuildTaskMatcher::with(
                 Target::build(),
                 Tool::withIdentifier('phplint'),
-                Snippet::withContentsAndTargetName('php-lint-full-template', PhpLint::TARGET_NAME_FULL)
+                Snippet::withContentsAndTargetName('php-lint-full-template', PhpLint::ANT_TARGET_FULL)
             ));
 
         $this->taskDirectory
@@ -80,7 +80,7 @@ class PhpLintConfiguratorTest extends TestCase
             ->with(AddBuildTaskMatcher::with(
                 Target::preCommit(),
                 Tool::withIdentifier('phplint'),
-                Snippet::withContentsAndTargetName('php-lint-diff-template', PhpLint::TARGET_NAME_DIFF)
+                Snippet::withContentsAndTargetName('php-lint-diff-template', PhpLint::ANT_TARGET_DIFF)
             ));
 
     }

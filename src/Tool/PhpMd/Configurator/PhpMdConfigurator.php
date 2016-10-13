@@ -41,12 +41,12 @@ final class PhpMdConfigurator implements Configurator
             new WriteFileTask($configurationFilesLocation->getDirectory() . 'phpmd.xml', $phpMdConfiguration)
         );
 
-        $antBuildSnippet = $taskHelperSet->renderTemplate('ant-build.xml.twig', ['targetName' => PhpMd::TARGET_NAME]);
+        $antBuildSnippet = $taskHelperSet->renderTemplate('ant-build.xml.twig', ['targetName' => PhpMd::ANT_TARGET]);
         $taskDirectory->registerTask(
             new AddBuildTask(
                 Target::build(),
                 Tool::withIdentifier('phpmd'),
-                Snippet::withContentsAndTargetName($antBuildSnippet, PhpMd::TARGET_NAME)
+                Snippet::withContentsAndTargetName($antBuildSnippet, PhpMd::ANT_TARGET)
             )
         );
     }

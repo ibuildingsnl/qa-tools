@@ -84,7 +84,7 @@ class PhpMdConfiguratorTest extends TestCase
             ->with(AddBuildTaskMatcher::with(
                 Target::build(),
                 Tool::withIdentifier('phpmd'),
-                Snippet::withContentsAndTargetName('phpmd-snippet', PhpMd::TARGET_NAME)
+                Snippet::withContentsAndTargetName('phpmd-snippet', PhpMd::ANT_TARGET)
             ));
     }
 
