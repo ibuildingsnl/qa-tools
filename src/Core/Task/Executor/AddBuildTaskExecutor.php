@@ -68,12 +68,21 @@ final class AddBuildTaskExecutor implements Executor
     public function execute(TaskList $tasks, Project $project, Interviewer $interviewer)
     {
         $this->templateEngine->setPath($this->templatesLocation);
+
+        $antBuildTargetTasks = self::getPrioritizedTasks($tasks, Target::build(), $this->toolPriorities);
+        $antPrecommitTargetTasks = self::getPrioritizedTasks($tasks, Target::preCommit(), $this->toolPriorities);
+
+        $buildTargetIdentifier = Target::build()->getTargetIdentifier();
+        $precommitTargetIdentifier = Target::preCommit()->getTargetIdentifier();
+
         $contents = $this->templateEngine->render(
             "build.xml.twig",
-            array_merge(
-                self::getStageSnippetsAndTargets($tasks, Target::build(), $this->toolPriorities),
-                self::getStageSnippetsAndTargets($tasks, Target::preCommit(), $this->toolPriorities)
-            )
+            [
+                "{$buildTargetIdentifier}_snippets" => self::getSnippets($antBuildTargetTasks),
+                "{$buildTargetIdentifier}_targets" => self::getTargets($antBuildTargetTasks),
+                "{$precommitTargetIdentifier}_snippets" => self::getSnippets($antPrecommitTargetTasks),
+                "{$precommitTargetIdentifier}_targets" => self::getTargets($antPrecommitTargetTasks),
+            ]
         );
         $buildFile = $project->getConfigurationFilesLocation()->getDirectory() . 'build.xml';
         $this->fileHandler->writeWithBackupTo($buildFile, $contents);
@@ -88,39 +97,34 @@ final class AddBuildTaskExecutor implements Executor
         $this->fileHandler->restoreBackupOf($project->getConfigurationFilesLocation()->getDirectory() . 'build.xml');
     }
 
-    /**
-     * @param TaskList $tasks
-     * @param Target   $target
-     * @param array    $toolPriorities
-     * @return array
-     */
-    private static function getStageSnippetsAndTargets(TaskList $tasks, Target $target, array $toolPriorities)
+    private static function getSnippets(TaskList $taskList)
+    {
+        return $taskList->map(
+            function (AddBuildTask $task) {
+                return $task->getSnippetContents();
+            }
+        );
+    }
+
+    private static function getTargets(TaskList $taskList)
+    {
+        return $taskList->map(
+            function (AddBuildTask $task) {
+                return $task->getSnippetTargetIdentifier();
+            }
+        );
+    }
+
+    private static function getPrioritizedTasks(TaskList $tasks, Target $target, array $toolPriorities)
     {
         $buildStage = $tasks->filter(function (AddBuildTask $task) use ($target) {
             return $task->hasTarget($target);
         });
 
-        $prioritizedTasksForStage = $buildStage->sort(
+        return $buildStage->sort(
             function (AddBuildTask $first, AddBuildTask $second) use ($toolPriorities) {
                 return $first->prioritize($second, $toolPriorities);
             }
-        );
-
-        $snippetsForStage = $prioritizedTasksForStage->map(
-            function (AddBuildTask $task) {
-                return $task->getSnippetContents();
-            }
-        );
-
-        $targetsForStage = $prioritizedTasksForStage->map(
-            function (AddBuildTask $task) {
-                return $task->getSnippetTargetIdentifier();
-            }
-        );
-
-        return array(
-            "{$target->getTargetIdentifier()}_snippets" => $snippetsForStage,
-            "{$target->getTargetIdentifier()}_targets" => $targetsForStage
         );
     }
 }
