@@ -18,6 +18,16 @@ final class Snippet
     /**
      * @param string $contents
      * @param string $target
+     * @return Snippet
+     */
+    public static function withContentsAndTargetName($contents, $target)
+    {
+        return new self($contents, $target);
+    }
+
+    /**
+     * @param string $contents
+     * @param string $target
      */
     private function __construct($contents, $target)
     {
@@ -32,16 +42,6 @@ final class Snippet
 
         $this->contents = $contents;
         $this->target = $target;
-    }
-
-    /**
-     * @param string $contents
-     * @param string $target
-     * @return Snippet
-     */
-    public static function withContentsAndTargetName($contents, $target)
-    {
-        return new self($contents, $target);
     }
 
     /**

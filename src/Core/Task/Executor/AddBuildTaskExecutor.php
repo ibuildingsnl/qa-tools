@@ -5,7 +5,7 @@ use Ibuildings\QaTools\Core\Assert\Assertion;
 use Ibuildings\QaTools\Core\Interviewer\Interviewer;
 use Ibuildings\QaTools\Core\IO\File\FileHandler;
 use Ibuildings\QaTools\Core\Project\Project;
-use Ibuildings\QaTools\Core\Build\Target;
+use Ibuildings\QaTools\Core\Build\Build;
 use Ibuildings\QaTools\Core\Task\AddAntBuildTask;
 use Ibuildings\QaTools\Core\Task\Task;
 use Ibuildings\QaTools\Core\Task\TaskList;
@@ -80,11 +80,11 @@ final class AddBuildTaskExecutor implements Executor
     {
         $this->templateEngine->setPath($this->templatesLocation);
 
-        $antBuildTargetTasks = self::getTasksOrderedByTool($tasks, Target::build(), $this->toolPriorities);
-        $antPrecommitTargetTasks = self::getTasksOrderedByTool($tasks, Target::preCommit(), $this->toolPriorities);
+        $antBuildTargetTasks = self::getTasksOrderedByTool($tasks, Build::main(), $this->toolPriorities);
+        $antPrecommitTargetTasks = self::getTasksOrderedByTool($tasks, Build::preCommit(), $this->toolPriorities);
 
-        $buildTargetIdentifier = Target::build()->getTargetIdentifier();
-        $precommitTargetIdentifier = Target::preCommit()->getTargetIdentifier();
+        $buildTargetIdentifier = Build::main()->getBuildIdentifier();
+        $precommitTargetIdentifier = Build::preCommit()->getBuildIdentifier();
 
         $contents = $this->templateEngine->render(
             "build.xml.twig",
@@ -127,7 +127,7 @@ final class AddBuildTaskExecutor implements Executor
         );
     }
 
-    private static function getTasksOrderedByTool(TaskList $tasks, Target $target, array $toolPriorities)
+    private static function getTasksOrderedByTool(TaskList $tasks, Build $target, array $toolPriorities)
     {
         $filteredTasks = $tasks->filter(function (AddAntBuildTask $task) use ($target) {
             return $task->hasTarget($target);

@@ -3,7 +3,7 @@ namespace Ibuildings\QaTools\Core\Task;
 
 use Ibuildings\QaTools\Core\Build\Snippet;
 use Ibuildings\QaTools\Core\Build\Tool;
-use Ibuildings\QaTools\Core\Build\Target;
+use Ibuildings\QaTools\Core\Build\Build;
 
 final class AddAntBuildTask implements Task
 {
@@ -18,20 +18,20 @@ final class AddAntBuildTask implements Task
     private $tool;
 
     /**
-     * @var Target
+     * @var Build
      */
-    private $target;
+    private $build;
 
     /**
-     * @param Target  $target
+     * @param Build   $build
      * @param Tool    $tool
      * @param Snippet $snippet
      */
-    public function __construct(Target $target, Tool $tool, Snippet $snippet)
+    public function __construct(Build $build, Tool $tool, Snippet $snippet)
     {
         $this->tool = $tool;
         $this->snippet = $snippet;
-        $this->target = $target;
+        $this->build = $build;
     }
 
     /**
@@ -61,12 +61,12 @@ final class AddAntBuildTask implements Task
     }
 
     /**
-     * @param Target $target
+     * @param Build $build
      * @return bool
      */
-    public function hasTarget(Target $target)
+    public function hasTarget(Build $build)
     {
-        return $this->target->equals($target);
+        return $this->build->equals($build);
     }
 
     /**
@@ -75,7 +75,7 @@ final class AddAntBuildTask implements Task
      */
     public function equals(AddAntBuildTask $other)
     {
-        return $this->target->equals($other->target)
+        return $this->build->equals($other->build)
             && $this->tool->equals($other->tool)
             && $this->snippet->equals($other->snippet);
     }

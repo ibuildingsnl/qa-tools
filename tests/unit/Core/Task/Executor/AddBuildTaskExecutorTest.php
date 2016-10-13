@@ -5,7 +5,7 @@ use Ibuildings\QaTools\Core\Interviewer\Interviewer;
 use Ibuildings\QaTools\Core\IO\File\FileHandler;
 use Ibuildings\QaTools\Core\Project\Project;
 use Ibuildings\QaTools\Core\Build\Snippet;
-use Ibuildings\QaTools\Core\Build\Target;
+use Ibuildings\QaTools\Core\Build\Build;
 use Ibuildings\QaTools\Core\Build\Tool;
 use Ibuildings\QaTools\Core\Task\Executor\AddBuildTaskExecutor;
 use Ibuildings\QaTools\Core\Task\Task;
@@ -57,7 +57,7 @@ class AddBuildTaskExecutorTest extends TestCase
     public function supports_execution_of_add_build_tasks()
     {
         $this->assertTrue(
-            $this->executor->supports(new AddAntBuildTask(Target::preCommit(), Tool::withIdentifier('phpmd'), Snippet::withContentsAndTargetName('data', 'target'))),
+            $this->executor->supports(new AddAntBuildTask(Build::preCommit(), Tool::withIdentifier('phpmd'), Snippet::withContentsAndTargetName('data', 'target'))),
             'AddBuildTaskExecutor should support execution of AddBuildTasks'
         );
     }
@@ -74,7 +74,7 @@ class AddBuildTaskExecutorTest extends TestCase
     /** @test */
     public function checks_that_the_files_can_be_written()
     {
-        $tasks = new TaskList([new AddAntBuildTask(Target::preCommit(), Tool::withIdentifier('phpmd'), Snippet::withContentsAndTargetName('data', 'target'))]);
+        $tasks = new TaskList([new AddAntBuildTask(Build::preCommit(), Tool::withIdentifier('phpmd'), Snippet::withContentsAndTargetName('data', 'target'))]);
         $this->project->shouldReceive('getConfigurationFilesLocation->getDirectory')->andReturn('');
         $this->fileHandler
             ->shouldReceive('canWriteWithBackupTo')
@@ -91,7 +91,7 @@ class AddBuildTaskExecutorTest extends TestCase
     /** @test */
     public function throws_an_exception_when_the_files_cannot_be_written()
     {
-        $tasks = new TaskList([new AddAntBuildTask(Target::preCommit(), Tool::withIdentifier('phpmd'), Snippet::withContentsAndTargetName('data', 'target'))]);
+        $tasks = new TaskList([new AddAntBuildTask(Build::preCommit(), Tool::withIdentifier('phpmd'), Snippet::withContentsAndTargetName('data', 'target'))]);
         $this->project->shouldReceive('getConfigurationFilesLocation->getDirectory')->andReturn('');
         $this->fileHandler
             ->shouldReceive('canWriteWithBackupTo')
@@ -108,7 +108,7 @@ class AddBuildTaskExecutorTest extends TestCase
     /** @test */
     public function writes_files_with_backups()
     {
-        $tasks = new TaskList([new AddAntBuildTask(Target::preCommit(), Tool::withIdentifier('phpmd'), Snippet::withContentsAndTargetName('data', 'target'))]);
+        $tasks = new TaskList([new AddAntBuildTask(Build::preCommit(), Tool::withIdentifier('phpmd'), Snippet::withContentsAndTargetName('data', 'target'))]);
         $this->project->shouldReceive('getConfigurationFilesLocation->getDirectory')->andReturn('');
         $this->templateEngine->shouldReceive('render')->andReturn('data')->once();
         $this->executor->execute($tasks, $this->project, $this->interviewer);
@@ -122,9 +122,9 @@ class AddBuildTaskExecutorTest extends TestCase
     public function adds_snippets_in_prioritized_order()
     {
         $tasks = new TaskList([
-            new AddAntBuildTask(Target::preCommit(), Tool::withIdentifier('phpmd'), Snippet::withContentsAndTargetName('data', 'phpmdSnippet')),
-            new AddAntBuildTask(Target::preCommit(), Tool::withIdentifier('phplint'), Snippet::withContentsAndTargetName('data', 'phplintSnippet')),
-            new AddAntBuildTask(Target::preCommit(), Tool::withIdentifier('phpcs'), Snippet::withContentsAndTargetName('data', 'phpcsSnippet')),
+            new AddAntBuildTask(Build::preCommit(), Tool::withIdentifier('phpmd'), Snippet::withContentsAndTargetName('data', 'phpmdSnippet')),
+            new AddAntBuildTask(Build::preCommit(), Tool::withIdentifier('phplint'), Snippet::withContentsAndTargetName('data', 'phplintSnippet')),
+            new AddAntBuildTask(Build::preCommit(), Tool::withIdentifier('phpcs'), Snippet::withContentsAndTargetName('data', 'phpcsSnippet')),
         ]);
 
         $this->project->shouldReceive('getConfigurationFilesLocation->getDirectory')->andReturn('');
@@ -149,8 +149,8 @@ class AddBuildTaskExecutorTest extends TestCase
     {
         $tasks = new TaskList(
             [
-                new AddAntBuildTask(Target::preCommit(), Tool::withIdentifier('phpcs'), Snippet::withContentsAndTargetName('data', 'target')),
-                new AddAntBuildTask(Target::preCommit(), Tool::withIdentifier('phpmd'), Snippet::withContentsAndTargetName('data', 'target'))
+                new AddAntBuildTask(Build::preCommit(), Tool::withIdentifier('phpcs'), Snippet::withContentsAndTargetName('data', 'target')),
+                new AddAntBuildTask(Build::preCommit(), Tool::withIdentifier('phpmd'), Snippet::withContentsAndTargetName('data', 'target'))
             ]
         );
         $this->project->shouldReceive('getConfigurationFilesLocation->getDirectory')->andReturn('');

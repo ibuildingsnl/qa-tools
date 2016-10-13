@@ -10,7 +10,7 @@ use Ibuildings\QaTools\Core\Project\Directory;
 use Ibuildings\QaTools\Core\Project\Project;
 use Ibuildings\QaTools\Core\Project\ProjectTypeSet;
 use Ibuildings\QaTools\Core\Build\Snippet;
-use Ibuildings\QaTools\Core\Build\Target;
+use Ibuildings\QaTools\Core\Build\Build;
 use Ibuildings\QaTools\Core\Build\Tool;
 use Ibuildings\QaTools\Tool\PhpMd\Configurator\PhpMdConfigurator;
 use Ibuildings\QaTools\Tool\PhpMd\PhpMd;
@@ -82,7 +82,7 @@ class PhpMdConfiguratorTest extends TestCase
         $this->taskDirectory
             ->shouldHaveReceived('registerTask')
             ->with(AddBuildTaskMatcher::with(
-                Target::build(),
+                Build::main(),
                 Tool::withIdentifier('phpmd'),
                 Snippet::withContentsAndTargetName('phpmd-snippet', PhpMd::ANT_TARGET)
             ));

@@ -10,7 +10,7 @@ use Ibuildings\QaTools\Core\Project\Directory;
 use Ibuildings\QaTools\Core\Project\Project;
 use Ibuildings\QaTools\Core\Project\ProjectTypeSet;
 use Ibuildings\QaTools\Core\Build\Snippet;
-use Ibuildings\QaTools\Core\Build\Target;
+use Ibuildings\QaTools\Core\Build\Build;
 use Ibuildings\QaTools\Core\Build\Tool;
 use Ibuildings\QaTools\Tool\PhpLint\Configurator\PhpLintConfigurator;
 use Ibuildings\QaTools\Tool\PhpLint\PhpLint;
@@ -70,7 +70,7 @@ class PhpLintConfiguratorTest extends TestCase
         $this->taskDirectory
             ->shouldHaveReceived('registerTask')
             ->with(AddBuildTaskMatcher::with(
-                Target::build(),
+                Build::main(),
                 Tool::withIdentifier('phplint'),
                 Snippet::withContentsAndTargetName('php-lint-full-template', PhpLint::ANT_TARGET_FULL)
             ));
@@ -78,7 +78,7 @@ class PhpLintConfiguratorTest extends TestCase
         $this->taskDirectory
             ->shouldHaveReceived('registerTask')
             ->with(AddBuildTaskMatcher::with(
-                Target::preCommit(),
+                Build::preCommit(),
                 Tool::withIdentifier('phplint'),
                 Snippet::withContentsAndTargetName('php-lint-diff-template', PhpLint::ANT_TARGET_DIFF)
             ));

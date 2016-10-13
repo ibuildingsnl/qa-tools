@@ -12,6 +12,15 @@ class Tool
 
     /**
      * @param string $toolIdentifier
+     * @return Tool
+     */
+    public static function withIdentifier($toolIdentifier)
+    {
+        return new self($toolIdentifier);
+    }
+
+    /**
+     * @param string $toolIdentifier
      */
     private function __construct($toolIdentifier)
     {
@@ -20,15 +29,6 @@ class Tool
             sprintf('toolIdentifier should be string but is %s', gettype($toolIdentifier))
         );
         $this->toolIdentifier = $toolIdentifier;
-    }
-
-    /**
-     * @param string $toolIdentifier
-     * @return Tool
-     */
-    public static function withIdentifier($toolIdentifier)
-    {
-        return new self($toolIdentifier);
     }
 
     /**
