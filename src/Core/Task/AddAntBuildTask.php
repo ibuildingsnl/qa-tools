@@ -5,7 +5,7 @@ use Ibuildings\QaTools\Core\Build\Snippet;
 use Ibuildings\QaTools\Core\Build\Tool;
 use Ibuildings\QaTools\Core\Build\Target;
 
-final class AddBuildTask implements Task
+final class AddAntBuildTask implements Task
 {
     /**
      * @var Snippet
@@ -35,11 +35,11 @@ final class AddBuildTask implements Task
     }
 
     /**
-     * @param AddBuildTask $other
-     * @param array        $prioritizedTools
+     * @param AddAntBuildTask $other
+     * @param array           $prioritizedTools
      * @return int
      */
-    public function prioritize(AddBuildTask $other, array $prioritizedTools)
+    public function prioritize(AddAntBuildTask $other, array $prioritizedTools)
     {
         return $this->tool->compare($other->tool, $prioritizedTools);
     }
@@ -70,10 +70,10 @@ final class AddBuildTask implements Task
     }
 
     /**
-     * @param AddBuildTask $other
+     * @param AddAntBuildTask $other
      * @return bool
      */
-    public function equals(AddBuildTask $other)
+    public function equals(AddAntBuildTask $other)
     {
         return $this->target->equals($other->target)
             && $this->tool->equals($other->tool)

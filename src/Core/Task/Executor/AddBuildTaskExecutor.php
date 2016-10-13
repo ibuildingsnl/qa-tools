@@ -5,7 +5,7 @@ use Ibuildings\QaTools\Core\Interviewer\Interviewer;
 use Ibuildings\QaTools\Core\IO\File\FileHandler;
 use Ibuildings\QaTools\Core\Project\Project;
 use Ibuildings\QaTools\Core\Build\Target;
-use Ibuildings\QaTools\Core\Task\AddBuildTask;
+use Ibuildings\QaTools\Core\Task\AddAntBuildTask;
 use Ibuildings\QaTools\Core\Task\Task;
 use Ibuildings\QaTools\Core\Task\TaskList;
 use Ibuildings\QaTools\Core\Templating\TemplateEngine;
@@ -52,7 +52,7 @@ final class AddBuildTaskExecutor implements Executor
 
     public function supports(Task $task)
     {
-        return $task instanceof AddBuildTask;
+        return $task instanceof AddAntBuildTask;
     }
 
     public function arePrerequisitesMet(TaskList $tasks, Project $project, Interviewer $interviewer)
@@ -100,7 +100,7 @@ final class AddBuildTaskExecutor implements Executor
     private static function getSnippets(TaskList $taskList)
     {
         return $taskList->map(
-            function (AddBuildTask $task) {
+            function (AddAntBuildTask $task) {
                 return $task->getSnippetContents();
             }
         );
@@ -109,7 +109,7 @@ final class AddBuildTaskExecutor implements Executor
     private static function getTargets(TaskList $taskList)
     {
         return $taskList->map(
-            function (AddBuildTask $task) {
+            function (AddAntBuildTask $task) {
                 return $task->getSnippetTargetIdentifier();
             }
         );
@@ -117,12 +117,12 @@ final class AddBuildTaskExecutor implements Executor
 
     private static function getPrioritizedTasks(TaskList $tasks, Target $target, array $toolPriorities)
     {
-        $buildStage = $tasks->filter(function (AddBuildTask $task) use ($target) {
+        $buildStage = $tasks->filter(function (AddAntBuildTask $task) use ($target) {
             return $task->hasTarget($target);
         });
 
         return $buildStage->sort(
-            function (AddBuildTask $first, AddBuildTask $second) use ($toolPriorities) {
+            function (AddAntBuildTask $first, AddAntBuildTask $second) use ($toolPriorities) {
                 return $first->prioritize($second, $toolPriorities);
             }
         );

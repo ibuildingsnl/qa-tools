@@ -11,7 +11,7 @@ use Ibuildings\QaTools\Core\Interviewer\Question\QuestionFactory;
 use Ibuildings\QaTools\Core\Build\Snippet;
 use Ibuildings\QaTools\Core\Build\Target;
 use Ibuildings\QaTools\Core\Build\Tool;
-use Ibuildings\QaTools\Core\Task\AddBuildTask;
+use Ibuildings\QaTools\Core\Task\AddAntBuildTask;
 use Ibuildings\QaTools\Core\Task\InstallComposerDevDependencyTask;
 use Ibuildings\QaTools\Core\Task\WriteFileTask;
 use Ibuildings\QaTools\Tool\PhpCs\PhpCs;
@@ -56,7 +56,7 @@ final class PhpCsDrupal7Configurator implements Configurator
         );
 
         $taskDirectory->registerTask(
-            new AddBuildTask(
+            new AddAntBuildTask(
                 Target::build(),
                 Tool::withIdentifier('phpcs'),
                 Snippet::withContentsAndTargetName($antSnippet, PhpCs::ANT_TARGET)

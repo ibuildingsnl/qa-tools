@@ -11,7 +11,7 @@ use Ibuildings\QaTools\Core\Interviewer\Question\QuestionFactory;
 use Ibuildings\QaTools\Core\Build\Snippet;
 use Ibuildings\QaTools\Core\Build\Target;
 use Ibuildings\QaTools\Core\Build\Tool;
-use Ibuildings\QaTools\Core\Task\AddBuildTask;
+use Ibuildings\QaTools\Core\Task\AddAntBuildTask;
 use Ibuildings\QaTools\Tool\PhpLint\PhpLint;
 
 final class PhpLintConfigurator implements Configurator
@@ -36,7 +36,7 @@ final class PhpLintConfigurator implements Configurator
         );
 
         $taskDirectory->registerTask(
-            new AddBuildTask(
+            new AddAntBuildTask(
                 Target::build(),
                 Tool::withIdentifier('phplint'),
                 Snippet::withContentsAndTargetName($antFullSnippet, PhpLint::ANT_TARGET_FULL)
@@ -49,7 +49,7 @@ final class PhpLintConfigurator implements Configurator
         );
 
         $taskDirectory->registerTask(
-            new AddBuildTask(
+            new AddAntBuildTask(
                 Target::preCommit(),
                 Tool::withIdentifier('phplint'),
                 Snippet::withContentsAndTargetName($antPrecommitSnippet, PhpLint::ANT_TARGET_DIFF)
