@@ -166,9 +166,9 @@ class AddBuildTaskExecutorTest extends TestCase
     /** @test */
     public function sorting_tasks()
     {
-        $stage = Tool::withIdentifier('phpmd');
-        $this->assertEquals(1, $stage->compare(Tool::withIdentifier('phpcs'), ['phpcs', 'phpmd', 'phplint']));
-        $this->assertEquals(0, $stage->compare(Tool::withIdentifier('phpmd'), ['phpcs', 'phpmd', 'phplint']));
-        $this->assertEquals(-1, $stage->compare(Tool::withIdentifier('phplint'), ['phpcs', 'phpmd', 'phplint']));
+        $tool = Tool::withIdentifier('phpmd');
+        $this->assertEquals(1, $tool->compare(Tool::withIdentifier('phpcs'), ['phpcs', 'phpmd', 'phplint']));
+        $this->assertEquals(0, $tool->compare(Tool::withIdentifier('phpmd'), ['phpcs', 'phpmd', 'phplint']));
+        $this->assertEquals(-1, $tool->compare(Tool::withIdentifier('phplint'), ['phpcs', 'phpmd', 'phplint']));
     }
 }

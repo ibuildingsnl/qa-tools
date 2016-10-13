@@ -36,12 +36,12 @@ final class AddAntBuildTask implements Task
 
     /**
      * @param AddAntBuildTask $other
-     * @param array           $prioritizedTools
+     * @param string[]        $toolOrder
      * @return int
      */
-    public function prioritize(AddAntBuildTask $other, array $prioritizedTools)
+    public function compare(AddAntBuildTask $other, array $toolOrder)
     {
-        return $this->tool->compare($other->tool, $prioritizedTools);
+        return $this->tool->compare($other->tool, $toolOrder);
     }
 
     /**

@@ -37,7 +37,7 @@ final class AddBuildTaskExecutor implements Executor
      * @param FileHandler    $fileHandler
      * @param TemplateEngine $templateEngine
      * @param string         $templatesLocation
-     * @param array          $toolPriorities
+     * @param string[]       $toolPriorities
      */
     public function __construct(
         FileHandler $fileHandler,
@@ -80,8 +80,8 @@ final class AddBuildTaskExecutor implements Executor
     {
         $this->templateEngine->setPath($this->templatesLocation);
 
-        $antBuildTargetTasks = self::getPrioritizedTasks($tasks, Target::build(), $this->toolPriorities);
-        $antPrecommitTargetTasks = self::getPrioritizedTasks($tasks, Target::preCommit(), $this->toolPriorities);
+        $antBuildTargetTasks = self::getTasksOrderedByTool($tasks, Target::build(), $this->toolPriorities);
+        $antPrecommitTargetTasks = self::getTasksOrderedByTool($tasks, Target::preCommit(), $this->toolPriorities);
 
         $buildTargetIdentifier = Target::build()->getTargetIdentifier();
         $precommitTargetIdentifier = Target::preCommit()->getTargetIdentifier();
@@ -101,6 +101,7 @@ final class AddBuildTaskExecutor implements Executor
 
     public function cleanUp(TaskList $tasks, Project $project, Interviewer $interviewer)
     {
+        $this->fileHandler->discardBackupOf($project->getConfigurationFilesLocation()->getDirectory() . 'build.xml');
     }
 
     public function rollBack(TaskList $tasks, Project $project, Interviewer $interviewer)
@@ -126,15 +127,15 @@ final class AddBuildTaskExecutor implements Executor
         );
     }
 
-    private static function getPrioritizedTasks(TaskList $tasks, Target $target, array $toolPriorities)
+    private static function getTasksOrderedByTool(TaskList $tasks, Target $target, array $toolPriorities)
     {
-        $buildStage = $tasks->filter(function (AddAntBuildTask $task) use ($target) {
+        $filteredTasks = $tasks->filter(function (AddAntBuildTask $task) use ($target) {
             return $task->hasTarget($target);
         });
 
-        return $buildStage->sort(
+        return $filteredTasks->sort(
             function (AddAntBuildTask $first, AddAntBuildTask $second) use ($toolPriorities) {
-                return $first->prioritize($second, $toolPriorities);
+                return $first->compare($second, $toolPriorities);
             }
         );
     }

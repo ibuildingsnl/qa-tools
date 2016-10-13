@@ -21,8 +21,14 @@ final class Snippet
      */
     private function __construct($contents, $target)
     {
-        Assertion::string($contents);
-        Assertion::string($target);
+        Assertion::string(
+            $contents,
+            sprintf('contents should be string but is %s', gettype($contents))
+        );
+        Assertion::string(
+            $target,
+            sprintf('target should be string but is %s', gettype($target))
+        );
 
         $this->contents = $contents;
         $this->target = $target;

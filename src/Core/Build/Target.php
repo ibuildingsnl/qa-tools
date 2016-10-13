@@ -1,6 +1,8 @@
 <?php
 namespace Ibuildings\QaTools\Core\Build;
 
+use Ibuildings\QaTools\Core\Assert\Assertion;
+
 final class Target
 {
     /**
@@ -13,6 +15,10 @@ final class Target
      */
     private function __construct($targetIdentifier)
     {
+        Assertion::string(
+            $targetIdentifier,
+            sprintf('targetIdentifier should be string but is %s', gettype($targetIdentifier))
+        );
         $this->targetIdentifier = $targetIdentifier;
     }
 
