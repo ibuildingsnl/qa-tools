@@ -30,6 +30,8 @@ final class WriteFileTask implements Task
     {
         Assertion::string($filePath, 'File path ought to be a string');
         Assertion::string($fileContents, 'File contents ought to be a string');
+        Assertion::greaterThan(1, 'File mode should be greater than one');
+        Assertion::true((0777 & $mode) == $mode, 'File mode should be a valid change mode');
 
         $this->filePath = $filePath;
         $this->fileContents = $fileContents;
