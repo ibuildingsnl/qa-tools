@@ -1,0 +1,7 @@
+<target name="{{ targetName }}" description="Perform project mess detection using PHPMD">
+    <exec executable="vendor/bin/phpmd" failonerror="true">
+        <arg path="src" />
+        <arg value="text" />
+        <arg value="phpmd.xml" />
+    </exec>
+</target>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="Ant Build" default="main">
+<target name="precommit" depends="{{ precommit_targets | join(',') }}"/>
+<target name="main" depends="{{ main_targets | join(',') }}"/>
+
+
+<!-- PRECOMMIT -->
+
+{{ precommit_snippets | join('\n') | raw }}
+
+<!-- MAIN -->
+
+{{ main_snippets | join('\n')| raw }}
+
+</project>

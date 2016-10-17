@@ -17,16 +17,25 @@ final class WriteFileTask implements Task
     private $fileContents;
 
     /**
+     * @var int
+     */
+    private $mode;
+
+    /**
      * @param string $filePath
      * @param string $fileContents
+     * @param int    $mode
      */
-    public function __construct($filePath, $fileContents)
+    public function __construct($filePath, $fileContents, $mode = 0644)
     {
-        Assertion::string('File path ought to be a string, got "%s" of type "%s"');
-        Assertion::string('File contents ought to be a string, got "%s" of type "%s"');
+        Assertion::string($filePath, 'File path ought to be a string');
+        Assertion::string($fileContents, 'File contents ought to be a string');
+        Assertion::greaterThan(1, 'File mode should be greater than one');
+        Assertion::true((0777 & $mode) === $mode, 'File mode should be a valid change mode');
 
         $this->filePath = $filePath;
         $this->fileContents = $fileContents;
+        $this->mode = $mode;
     }
 
     /**
@@ -45,12 +54,21 @@ final class WriteFileTask implements Task
         return $this->fileContents;
     }
 
+    /**
+     * @return int
+     */
+    public function getMode()
+    {
+        return $this->mode;
+    }
+
     public function __toString()
     {
         return sprintf(
-            'WriteFileTask(filePath="%s", fileContents="%s")',
+            'WriteFileTask(filePath="%s", fileContents="%s, mode="%o")',
             $this->filePath,
-            substr($this->fileContents, 0, 20)
+            substr($this->fileContents, 0, 20),
+            $this->mode
         );
     }
 }

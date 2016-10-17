@@ -8,8 +8,11 @@ use Ibuildings\QaTools\Core\Composer\PackageSet;
 use Ibuildings\QaTools\Core\Composer\RuntimeException;
 use Ibuildings\QaTools\SystemTest\Composer;
 use Ibuildings\QaTools\UnitTest\Diffing;
+use Mockery;
+use Mockery\Mock;
+use Mockery\MockInterface;
 use PHPUnit\Framework\TestCase as TestCase;
-use Psr\Log\NullLogger;
+use Psr\Log\LoggerInterface;
 
 /**
  * @group Composer
@@ -20,16 +23,21 @@ class CliComposerProjectTest extends TestCase
 
     /** @var string */
     private $workingDirectory;
+
     /** @var CliComposerProject */
     private $project;
+ 
+    /** @var LoggerInterface|MockInterface */
+    private $logger;
 
     protected function setUp()
     {
+        $this->logger = Mockery::spy(LoggerInterface::class);
         $this->workingDirectory = sys_get_temp_dir() . '/qa-tools_' . microtime(true) . '_install-composer-task';
         $this->project = new CliComposerProject(
             $this->workingDirectory,
             __DIR__ . '/../../../../vendor/bin/composer',
-            new NullLogger()
+            $this->logger
         );
     }
 
@@ -57,6 +65,7 @@ class CliComposerProjectTest extends TestCase
         $this->assertContains('"require-dev"', $composerJson);
         $this->assertContains('"phpmd/phpmd": "^2.0"', $composerJson);
         $this->assertFileExists('vendor/phpmd/phpmd/composer.json');
+        $this->logger->shouldNotHaveReceived('error');
     }
 
     /** @test */
@@ -85,6 +94,7 @@ class CliComposerProjectTest extends TestCase
 
             $this->fail(sprintf('No exception of type "%s" was thrown', RuntimeException::class));
         } catch (RuntimeException $e) {
+            $this->logger->shouldHaveReceived('error');
             $this->assertContains('Failed to require development dependencies', $e->getMessage());
             $this->assertContains('Your requirements could not be resolved to an installable set of packages.', $e->getCause());
         }

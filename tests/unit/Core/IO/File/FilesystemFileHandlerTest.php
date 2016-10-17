@@ -178,6 +178,45 @@ class FilesystemFileHandlerTest extends TestCase
         }
     }
 
+    /**
+     * @test
+     */
+    public function filesystem_is_used_to_change_mode_of_file()
+    {
+        $filePath = 'some/file/path';
+        $mode = 0755;
+
+        $filesystemMock = Mockery::mock(Filesystem::class);
+        $filesystemMock
+            ->shouldReceive('chmod')
+            ->with($filePath, $mode);
+
+        $filesystemAdapter = new FilesystemFileHandler($filesystemMock);
+        $filesystemAdapter->changeMode($filePath, $mode);
+    }
+
+    /** @test */
+    public function wraps_ioexception_in_runtimeexception_when_changing_mode()
+    {
+        $filePath = 'some/file/path';
+        $mode = 0755;
+
+        $filesystemMock = Mockery::mock(Filesystem::class);
+        $filesystemMock
+            ->shouldReceive('chmod')
+            ->with($filePath, $mode)
+            ->andThrow(new IOException('msg'));
+
+        $filesystemAdapter = new FilesystemFileHandler($filesystemMock);
+
+        try {
+            $filesystemAdapter->changeMode($filePath, $mode);
+        } catch (Exception $e) {
+            $this->assertInstanceOf(RuntimeException::class, $e);
+            $this->assertInstanceOf(IOException::class, $e->getPrevious());
+        }
+    }
+
     /** @test */
     public function wraps_ioexception_in_runtimeexception_when_restoring_backup_of_newly_written_file()
     {

@@ -8,6 +8,10 @@ use Ibuildings\QaTools\Core\Configurator\Configurator;
 use Ibuildings\QaTools\Core\Interviewer\Answer\YesOrNoAnswer;
 use Ibuildings\QaTools\Core\Interviewer\Interviewer;
 use Ibuildings\QaTools\Core\Interviewer\Question\QuestionFactory;
+use Ibuildings\QaTools\Core\Build\Snippet;
+use Ibuildings\QaTools\Core\Build\Build;
+use Ibuildings\QaTools\Core\Build\Tool;
+use Ibuildings\QaTools\Core\Task\AddAntBuildTask;
 use Ibuildings\QaTools\Core\Task\InstallComposerDevDependencyTask;
 use Ibuildings\QaTools\Core\Task\WriteFileTask;
 use Ibuildings\QaTools\Tool\PhpCs\PhpCs;
@@ -45,6 +49,19 @@ final class PhpCsSymfony2Configurator implements Configurator
             new WriteFileTask(
                 $taskDirectory->getProject()->getConfigurationFilesLocation()->getDirectory() . 'ruleset.xml',
                 $phpCsConfiguration
+            )
+        );
+
+        $antSnippet = $taskHelperSet->renderTemplate(
+            'ant-build.xml.twig',
+            ['targetName' => PhpCs::ANT_TARGET]
+        );
+
+        $taskDirectory->registerTask(
+            new AddAntBuildTask(
+                Build::main(),
+                Tool::withIdentifier('phpcs'),
+                Snippet::withContentsAndTargetName($antSnippet, PhpCs::ANT_TARGET)
             )
         );
     }

@@ -1,0 +1,11 @@
+<target name="{{ targetName }}"
+        description="Find coding standard violations using PHP_CodeSniffer">
+    <exec executable="vendor/bin/phpcs" failonerror="true">
+        <arg line="--runtime-set ignore_warnings_on_exit 1" />
+        <arg value="--report=full"/>
+        <arg value="--standard=ruleset.xml"/>
+        <arg value="--extensions=php"/>
+        <arg value="--colors" />
+        <arg path="src"/>
+    </exec>
+</target>
