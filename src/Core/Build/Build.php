@@ -15,7 +15,7 @@ final class Build
      */
     public static function main()
     {
-        return new self('build');
+        return new self('main');
     }
 
     /**
