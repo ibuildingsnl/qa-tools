@@ -7,7 +7,9 @@ use Ibuildings\QaTools\Core\Composer\PackageSet;
 use Ibuildings\QaTools\Core\Composer\Project as ComposerProject;
 use Ibuildings\QaTools\Core\Composer\ProjectFactory as ComposerProjectFactory;
 use Ibuildings\QaTools\Core\Composer\RuntimeException as ComposerRuntimeException;
+use Ibuildings\QaTools\Core\Interviewer\Answer\YesOrNoAnswer;
 use Ibuildings\QaTools\Core\Interviewer\Interviewer;
+use Ibuildings\QaTools\Core\Interviewer\Question\QuestionFactory;
 use Ibuildings\QaTools\Core\Project\Project;
 use Ibuildings\QaTools\Core\Task\InstallComposerDevDependencyTask;
 use Ibuildings\QaTools\Core\Task\Task;
@@ -38,6 +40,28 @@ final class InstallComposerDevDependencyTaskExecutor implements Executor
 
         $this->composerProject =
             $this->composerProjectFactory->forDirectory($project->getRootDirectory()->getDirectory());
+
+        if (!$this->composerProject->isInitialised()) {
+            $questionText = 'There is no Composer project initialised in this directory. Initialise one?';
+            /** @var YesOrNoAnswer $answer */
+            $answer = $interviewer->ask(QuestionFactory::createYesOrNo($questionText, YesOrNoAnswer::YES));
+
+            if ($answer->is(YesOrNoAnswer::NO)) {
+                $interviewer->warn('Cannot continue without an initialised Composer project. Aborting...');
+
+                return false;
+            }
+
+            try {
+                $this->composerProject->initialise();
+            } catch (ComposerRuntimeException $e) {
+                $interviewer->warn('Something went wrong while initialising the Composer project');
+
+                return false;
+            }
+
+            $interviewer->say("Verifying installation of Composer development dependencies won't cause a conflict...");
+        }
 
         try {
             $this->composerProject->verifyDevDependenciesWillNotConflict($packages);

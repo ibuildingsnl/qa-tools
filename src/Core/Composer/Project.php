@@ -5,6 +5,16 @@ namespace Ibuildings\QaTools\Core\Composer;
 interface Project
 {
     /**
+     * @return bool
+     */
+    public function isInitialised();
+
+    /**
+     * @return void
+     */
+    public function initialise();
+
+    /**
      * Verifies that installing the given set of packages as development dependencies
      * won't cause any conflicts.
      *

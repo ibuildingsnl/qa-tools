@@ -125,4 +125,24 @@ class CliComposerProjectTest extends TestCase
 
         $this->assertNotContains('"phpmd/phpmd"', file_get_contents('composer.json'));
     }
+
+    /** @test */
+    public function can_tell_whether_a_project_is_not_initialised()
+    {
+        $this->assertFalse(
+            $this->project->isInitialised(),
+            'An empty directory should not be an initialised Composer project'
+        );
+    }
+
+    /** @test */
+    public function can_tell_a_project_is_initialize()
+    {
+        Composer::initialise();
+
+        $this->assertTrue(
+            $this->project->isInitialised(),
+            'A project that was just initialised should be an initialised Composer project'
+        );
+    }
 }
