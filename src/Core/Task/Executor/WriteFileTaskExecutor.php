@@ -34,8 +34,12 @@ final class WriteFileTaskExecutor implements Executor
 
     public function arePrerequisitesMet(TaskList $tasks, Project $project, Interviewer $interviewer)
     {
+        $interviewer->notice(' * Verifying that files can be written...');
+
         $canWriteAllFiles = true;
         foreach ($tasks as $task) {
+            $interviewer->giveDetails(sprintf('     - %s', $task->getFilePath()));
+
             /** @var WriteFileTask $task */
             if (!$this->fileHandler->canWriteWithBackupTo($task->getFilePath())) {
                 $interviewer->warn(sprintf('Cannot write file "%s"; is the directory writable?', $task->getFilePath()));
@@ -48,6 +52,8 @@ final class WriteFileTaskExecutor implements Executor
 
     public function execute(TaskList $tasks, Project $project, Interviewer $interviewer)
     {
+        $interviewer->notice(' * Writing files...');
+
         $this->filesWritten = [];
 
         foreach ($tasks as $task) {
@@ -60,6 +66,8 @@ final class WriteFileTaskExecutor implements Executor
 
     public function cleanUp(TaskList $tasks, Project $project, Interviewer $interviewer)
     {
+        $interviewer->notice(' * Discarding backups of written files...');
+
         while (count($this->filesWritten) > 0) {
             $this->fileHandler->discardBackupOf(array_shift($this->filesWritten));
         }
@@ -67,6 +75,8 @@ final class WriteFileTaskExecutor implements Executor
 
     public function rollBack(TaskList $tasks, Project $project, Interviewer $interviewer)
     {
+        $interviewer->notice(' * Restoring backups of written files...');
+
         while (count($this->filesWritten) > 0) {
             $this->fileHandler->restoreBackupOf(array_shift($this->filesWritten));
         }

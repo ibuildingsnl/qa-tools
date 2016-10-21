@@ -32,9 +32,15 @@ final class InstallComposerDevDependencyTaskExecutor implements Executor
 
     public function arePrerequisitesMet(TaskList $tasks, Project $project, Interviewer $interviewer)
     {
-        $interviewer->notice("Verifying installation of Composer development dependencies won't cause a conflict...");
+        $interviewer->notice(
+            " * Verifying installation of Composer development dependencies won't cause a conflict..."
+        );
 
         $packages = $this->getPackagesToAddAsDevDependency($tasks);
+        foreach ($packages as $package) {
+            /** @var Package $package */
+            $interviewer->giveDetails(sprintf('     - %s', $package->getDescriptor()));
+        }
 
         $this->composerProject =
             $this->composerProjectFactory->forDirectory($project->getRootDirectory()->getDirectory());
@@ -75,7 +81,7 @@ final class InstallComposerDevDependencyTaskExecutor implements Executor
 
     public function rollBack(TaskList $tasks, Project $project, Interviewer $interviewer)
     {
-        $interviewer->notice("Restoring Composer configuration...");
+        $interviewer->notice(" * Restoring Composer configuration...");
         $this->composerProject->restoreConfiguration();
     }
 

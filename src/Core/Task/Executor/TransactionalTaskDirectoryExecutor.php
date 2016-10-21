@@ -34,6 +34,8 @@ final class TransactionalTaskDirectoryExecutor implements TaskDirectoryExecutor
 
     public function execute(TaskDirectory $taskDirectory, ScopedInterviewer $interviewer)
     {
+        $interviewer->notice('');
+
         $project = $taskDirectory->getProject();
 
         $allPrerequisitesAreMet = true;
@@ -77,6 +79,10 @@ final class TransactionalTaskDirectoryExecutor implements TaskDirectoryExecutor
 
             throw $e;
         }
+
+        $interviewer->success('');
+        $interviewer->success('Done!');
+        $interviewer->success('');
 
         return true;
     }

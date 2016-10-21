@@ -68,16 +68,23 @@ final class AddBuildTaskExecutor implements Executor
 
     public function arePrerequisitesMet(TaskList $tasks, Project $project, Interviewer $interviewer)
     {
+        $interviewer->notice(' * Verifying Ant build file can written...');
+
         $antFile = $project->getConfigurationFilesLocation()->getDirectory() . 'build.xml';
+        $interviewer->giveDetails(sprintf('     - %s', $antFile));
+
         if (!$this->fileHandler->canWriteWithBackupTo($antFile)) {
             $interviewer->warn(sprintf('Cannot write file "%s"; is the directory writable?', $antFile));
             return false;
         }
+
         return true;
     }
 
     public function execute(TaskList $tasks, Project $project, Interviewer $interviewer)
     {
+        $interviewer->notice(' * Compiling Ant targets and writing Ant build file...');
+
         $this->templateEngine->setPath($this->templatesLocation);
 
         $antBuildTargetTasks = self::getTasksOrderedByTool($tasks, Build::main(), $this->toolPriorities);
@@ -85,6 +92,10 @@ final class AddBuildTaskExecutor implements Executor
 
         $buildTargetIdentifier = Build::main()->getBuildIdentifier();
         $precommitTargetIdentifier = Build::preCommit()->getBuildIdentifier();
+
+        $interviewer->giveDetails('   Creating two main targets:');
+        $interviewer->giveDetails('     - main (default)');
+        $interviewer->giveDetails('     - precommit');
 
         $contents = $this->templateEngine->render(
             "build.xml.twig",
@@ -106,6 +117,8 @@ final class AddBuildTaskExecutor implements Executor
 
     public function rollBack(TaskList $tasks, Project $project, Interviewer $interviewer)
     {
+        $interviewer->notice(' * Restoring original Ant build file...');
+
         $this->fileHandler->restoreBackupOf($project->getConfigurationFilesLocation()->getDirectory() . 'build.xml');
     }
 
