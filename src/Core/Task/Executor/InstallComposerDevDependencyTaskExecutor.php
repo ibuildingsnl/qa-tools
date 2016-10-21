@@ -86,6 +86,7 @@ final class InstallComposerDevDependencyTaskExecutor implements Executor
     }
 
     /**
+     * @param TaskList $tasks
      * @return PackageSet
      */
     private function getPackagesToAddAsDevDependency(TaskList $tasks)
