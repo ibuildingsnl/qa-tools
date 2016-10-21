@@ -15,6 +15,9 @@ use Ibuildings\QaTools\Core\Task\InstallComposerDevDependencyTask;
 use Ibuildings\QaTools\Core\Task\Task;
 use Ibuildings\QaTools\Core\Task\TaskList;
 
+/**
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ */
 final class InstallComposerDevDependencyTaskExecutor implements Executor
 {
     /** @var ComposerProjectFactory */
