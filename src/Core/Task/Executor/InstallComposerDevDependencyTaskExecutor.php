@@ -66,9 +66,6 @@ final class InstallComposerDevDependencyTaskExecutor implements Executor
         try {
             $this->composerProject->verifyDevDependenciesWillNotConflict($packages);
         } catch (ComposerRuntimeException $e) {
-            // The Composer project does not communicate precisely what went wrong,
-            // so inform the user of the most probable cause (a package conflict) and
-            // let the exception bubble up.
             $interviewer->warn('Something went wrong while performing a dry-run install:');
             $interviewer->say('');
 
