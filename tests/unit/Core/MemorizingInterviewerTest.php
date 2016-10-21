@@ -117,20 +117,58 @@ class MemorizingInterviewerTest extends TestCase
     /**
      * @test
      */
-    public function passes_saying_messages_to_interviewer()
+    public function passes_notices_to_interviewer()
     {
         $message = 'test message';
 
         $mockInterviewer = Mockery::mock(Interviewer::class);
         $mockInterviewer
-            ->shouldReceive('say')
+            ->shouldReceive('notice')
             ->with($message);
 
         /** @var MockInterface|Configuration $configuration */
         $configuration = Mockery::mock(Configuration::class);
 
         $memorizingInterviewer = new MemorizingInterviewer($mockInterviewer, $configuration);
-        $memorizingInterviewer->say($message);
+        $memorizingInterviewer->notice($message);
+    }
+
+    /**
+     * @test
+     */
+    public function passes_details_to_interviewer()
+    {
+        $message = 'test message';
+
+        $mockInterviewer = Mockery::mock(Interviewer::class);
+        $mockInterviewer
+            ->shouldReceive('giveDetails')
+            ->with($message);
+
+        /** @var MockInterface|Configuration $configuration */
+        $configuration = Mockery::mock(Configuration::class);
+
+        $memorizingInterviewer = new MemorizingInterviewer($mockInterviewer, $configuration);
+        $memorizingInterviewer->giveDetails($message);
+    }
+
+    /**
+     * @test
+     */
+    public function passes_success_messages_to_interviewer()
+    {
+        $message = 'test message';
+
+        $mockInterviewer = Mockery::mock(Interviewer::class);
+        $mockInterviewer
+            ->shouldReceive('success')
+            ->with($message);
+
+        /** @var MockInterface|Configuration $configuration */
+        $configuration = Mockery::mock(Configuration::class);
+
+        $memorizingInterviewer = new MemorizingInterviewer($mockInterviewer, $configuration);
+        $memorizingInterviewer->success($message);
     }
 
     /**

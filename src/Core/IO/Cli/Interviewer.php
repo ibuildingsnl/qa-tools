@@ -53,11 +53,25 @@ final class Interviewer implements InterviewerInterface
         return AnswerFactory::createFrom($consoleAnswer);
     }
 
-    public function say($sentence)
+    public function notice($sentence)
     {
         Assertion::string($sentence, 'Expected sentence to be a string, got "%s" of type "%s"', 'sentence');
 
         $this->output->writeln(sprintf('<comment>%s</comment>', $sentence));
+    }
+
+    public function giveDetails($sentence)
+    {
+        Assertion::string($sentence, 'Expected sentence to be a string, got "%s" of type "%s"', 'sentence');
+
+        $this->output->writeln(sprintf('%s', $sentence));
+    }
+
+    public function success($sentence)
+    {
+        Assertion::string($sentence, 'Expected sentence to be a string, got "%s" of type "%s"', 'sentence');
+
+        $this->output->writeln(sprintf('<fg=green>%s</>', $sentence));
     }
 
     public function warn($sentence)

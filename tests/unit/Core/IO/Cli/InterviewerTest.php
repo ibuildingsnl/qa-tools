@@ -33,7 +33,7 @@ class InterviewerTest extends TestCase
             new ConsoleQuestionFactory(new ConsoleQuestionFormatter)
         );
 
-        $interviewer->say($nonString);
+        $interviewer->notice($nonString);
     }
 
     /**

@@ -22,7 +22,7 @@ final class ProjectConfigurator
      */
     public function configure(Interviewer $interviewer, Configuration $configuration, Directory $projectDirectory)
     {
-        $interviewer->say(
+        $interviewer->notice(
             sprintf(
                 'Configuring the %s (%s).',
                 Application::NAME,

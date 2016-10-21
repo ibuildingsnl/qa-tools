@@ -48,7 +48,7 @@ final class TransactionalTaskDirectoryExecutor implements TaskDirectoryExecutor
         }
 
         if (!$allPrerequisitesAreMet) {
-            $interviewer->say('Not all prerequisites have been met, aborting...');
+            $interviewer->notice('Not all prerequisites have been met, aborting...');
 
             return false;
         }
@@ -65,8 +65,8 @@ final class TransactionalTaskDirectoryExecutor implements TaskDirectoryExecutor
                 $executor->cleanUp($taskDirectory->filterTasks([$executor, 'supports']), $project, $interviewer);
             }
         } catch (Exception $e) {
-            $interviewer->say(sprintf('Task execution failed: %s', $e->getMessage()));
-            $interviewer->say('Rolling back changes...');
+            $interviewer->notice(sprintf('Task execution failed: %s', $e->getMessage()));
+            $interviewer->notice('Rolling back changes...');
 
             while (count($executorsToRollBack) > 0) {
                 /** @var Executor $executor */
