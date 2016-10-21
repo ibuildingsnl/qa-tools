@@ -7,6 +7,7 @@ use Ibuildings\QaTools\Core\Build\Snippet;
 use Ibuildings\QaTools\Core\Build\Tool;
 use Ibuildings\QaTools\Core\Interviewer\Interviewer;
 use Ibuildings\QaTools\Core\IO\File\FileHandler;
+use Ibuildings\QaTools\Core\Project\Directory;
 use Ibuildings\QaTools\Core\Project\Project;
 use Ibuildings\QaTools\Core\Task\AddAntBuildTask;
 use Ibuildings\QaTools\Core\Task\Executor\AddBuildTaskExecutor;
@@ -75,10 +76,10 @@ class AddBuildTaskExecutorTest extends TestCase
     public function checks_that_the_files_can_be_written()
     {
         $tasks = new TaskList([new AddAntBuildTask(Build::preCommit(), Tool::withIdentifier('phpmd'), Snippet::withContentsAndTargetName('data', 'target'))]);
-        $this->project->shouldReceive('getConfigurationFilesLocation->getDirectory')->andReturn('');
+        $this->project->shouldReceive('getConfigurationFilesLocation')->andReturn(new Directory('.'));
         $this->fileHandler
             ->shouldReceive('canWriteWithBackupTo')
-            ->with('/build.xml')
+            ->with('./build.xml')
             ->once()
             ->andReturn(true);
         $this->assertTrue(
@@ -92,10 +93,10 @@ class AddBuildTaskExecutorTest extends TestCase
     public function throws_an_exception_when_the_files_cannot_be_written()
     {
         $tasks = new TaskList([new AddAntBuildTask(Build::preCommit(), Tool::withIdentifier('phpmd'), Snippet::withContentsAndTargetName('data', 'target'))]);
-        $this->project->shouldReceive('getConfigurationFilesLocation->getDirectory')->andReturn('');
+        $this->project->shouldReceive('getConfigurationFilesLocation')->andReturn(new Directory('.'));
         $this->fileHandler
             ->shouldReceive('canWriteWithBackupTo')
-            ->with('/build.xml')
+            ->with('./build.xml')
             ->once()
             ->andReturn(false);
         $this->assertFalse(
@@ -109,12 +110,12 @@ class AddBuildTaskExecutorTest extends TestCase
     public function writes_files_with_backups()
     {
         $tasks = new TaskList([new AddAntBuildTask(Build::preCommit(), Tool::withIdentifier('phpmd'), Snippet::withContentsAndTargetName('data', 'target'))]);
-        $this->project->shouldReceive('getConfigurationFilesLocation->getDirectory')->andReturn('');
+        $this->project->shouldReceive('getConfigurationFilesLocation')->andReturn(new Directory('.'));
         $this->templateEngine->shouldReceive('render')->andReturn('data')->once();
         $this->executor->execute($tasks, $this->project, $this->interviewer);
         $this->fileHandler
             ->shouldHaveReceived('writeWithBackupTo')
-            ->with('build.xml', Match::containsString('data'))
+            ->with('./build.xml', Match::containsString('data'))
             ->once();
     }
 
@@ -127,7 +128,7 @@ class AddBuildTaskExecutorTest extends TestCase
             new AddAntBuildTask(Build::preCommit(), Tool::withIdentifier('phpcs'), Snippet::withContentsAndTargetName('data', 'phpcsSnippet')),
         ]);
 
-        $this->project->shouldReceive('getConfigurationFilesLocation->getDirectory')->andReturn('');
+        $this->project->shouldReceive('getConfigurationFilesLocation')->andReturn(new Directory('.'));
         $this->templateEngine->shouldReceive('render')->andReturn('data')->once();
         $this->executor->execute($tasks, $this->project, $this->interviewer);
 
@@ -153,13 +154,13 @@ class AddBuildTaskExecutorTest extends TestCase
                 new AddAntBuildTask(Build::preCommit(), Tool::withIdentifier('phpmd'), Snippet::withContentsAndTargetName('data', 'target'))
             ]
         );
-        $this->project->shouldReceive('getConfigurationFilesLocation->getDirectory')->andReturn('');
+        $this->project->shouldReceive('getConfigurationFilesLocation')->andReturn(new Directory('.'));
         $this->executor->execute($tasks, $this->project, $this->interviewer);
         $this->executor->rollBack($tasks, $this->project, $this->interviewer);
 
         $this->fileHandler
             ->shouldHaveReceived('restoreBackupOf')
-            ->with('build.xml')
+            ->with('./build.xml')
             ->once();
     }
 
