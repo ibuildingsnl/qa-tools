@@ -2,13 +2,10 @@
 
 namespace Ibuildings\QaTools\IntegrationTest\Core\IO\File;
 
-use Exception;
 use Ibuildings\QaTools\Core\Exception\InvalidArgumentException;
 use Ibuildings\QaTools\Core\Exception\RuntimeException;
 use Ibuildings\QaTools\Core\IO\File\FilesystemFileHandler;
-use Mockery;
 use PHPUnit_Framework_TestCase as TestCase;
-use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**

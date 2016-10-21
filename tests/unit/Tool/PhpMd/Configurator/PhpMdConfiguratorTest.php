@@ -2,6 +2,9 @@
 
 namespace Ibuildings\QaTools\UnitTest\Tool\PhpMd;
 
+use Ibuildings\QaTools\Core\Build\Build;
+use Ibuildings\QaTools\Core\Build\Snippet;
+use Ibuildings\QaTools\Core\Build\Tool;
 use Ibuildings\QaTools\Core\Configuration\TaskDirectory;
 use Ibuildings\QaTools\Core\Configuration\TaskHelperSet;
 use Ibuildings\QaTools\Core\Interviewer\Answer\YesOrNoAnswer;
@@ -9,9 +12,6 @@ use Ibuildings\QaTools\Core\Interviewer\AutomatedResponseInterviewer;
 use Ibuildings\QaTools\Core\Project\Directory;
 use Ibuildings\QaTools\Core\Project\Project;
 use Ibuildings\QaTools\Core\Project\ProjectTypeSet;
-use Ibuildings\QaTools\Core\Build\Snippet;
-use Ibuildings\QaTools\Core\Build\Build;
-use Ibuildings\QaTools\Core\Build\Tool;
 use Ibuildings\QaTools\Tool\PhpMd\Configurator\PhpMdConfigurator;
 use Ibuildings\QaTools\Tool\PhpMd\PhpMd;
 use Ibuildings\QaTools\UnitTest\AddBuildTaskMatcher;

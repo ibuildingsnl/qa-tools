@@ -2,10 +2,10 @@
 namespace Ibuildings\QaTools\Core\Task\Executor;
 
 use Ibuildings\QaTools\Core\Assert\Assertion;
+use Ibuildings\QaTools\Core\Build\Build;
 use Ibuildings\QaTools\Core\Interviewer\Interviewer;
 use Ibuildings\QaTools\Core\IO\File\FileHandler;
 use Ibuildings\QaTools\Core\Project\Project;
-use Ibuildings\QaTools\Core\Build\Build;
 use Ibuildings\QaTools\Core\Task\AddAntBuildTask;
 use Ibuildings\QaTools\Core\Task\Task;
 use Ibuildings\QaTools\Core\Task\TaskList;

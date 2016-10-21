@@ -1,22 +1,22 @@
 <?php
 namespace Ibuildings\QaTools\UnitTest\Core\Task\Executor;
 
+use Hamcrest\Matchers as Match;
+use Ibuildings\QaTools\Core\Build\Build;
+use Ibuildings\QaTools\Core\Build\Snippet;
+use Ibuildings\QaTools\Core\Build\Tool;
 use Ibuildings\QaTools\Core\Interviewer\Interviewer;
 use Ibuildings\QaTools\Core\IO\File\FileHandler;
 use Ibuildings\QaTools\Core\Project\Project;
-use Ibuildings\QaTools\Core\Build\Snippet;
-use Ibuildings\QaTools\Core\Build\Build;
-use Ibuildings\QaTools\Core\Build\Tool;
+use Ibuildings\QaTools\Core\Task\AddAntBuildTask;
 use Ibuildings\QaTools\Core\Task\Executor\AddBuildTaskExecutor;
 use Ibuildings\QaTools\Core\Task\Task;
 use Ibuildings\QaTools\Core\Task\TaskList;
-use Ibuildings\QaTools\Core\Task\AddAntBuildTask;
 use Ibuildings\QaTools\Core\Templating\TemplateEngine;
 use Mockery;
 use Mockery as m;
 use Mockery\MockInterface;
 use PHPUnit\Framework\TestCase as TestCase;
-use Hamcrest\Matchers as Match;
 
 /**
  * @group Task

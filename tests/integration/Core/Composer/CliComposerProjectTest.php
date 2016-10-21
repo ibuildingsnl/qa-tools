@@ -9,7 +9,6 @@ use Ibuildings\QaTools\Core\Composer\RuntimeException;
 use Ibuildings\QaTools\SystemTest\Composer;
 use Ibuildings\QaTools\UnitTest\Diffing;
 use Mockery;
-use Mockery\Mock;
 use Mockery\MockInterface;
 use PHPUnit\Framework\TestCase as TestCase;
 use Psr\Log\LoggerInterface;

@@ -2,8 +2,8 @@
 
 namespace Ibuildings\QaTools\UnitTest;
 
-use Ibuildings\QaTools\Core\Build\Snippet;
 use Ibuildings\QaTools\Core\Build\Build;
+use Ibuildings\QaTools\Core\Build\Snippet;
 use Ibuildings\QaTools\Core\Build\Tool;
 use Ibuildings\QaTools\Core\Task\AddAntBuildTask;
 use Ibuildings\QaTools\Core\Task\Task;

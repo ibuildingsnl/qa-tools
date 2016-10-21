@@ -4,8 +4,8 @@ namespace Ibuildings\QaTools\Core\Application;
 
 use Ibuildings\QaTools\Core\Assert\Assertion;
 use Ibuildings\QaTools\Core\Tool\Tool;
-use Ibuildings\QaTools\Tool\PhpLint\PhpLint;
 use Ibuildings\QaTools\Tool\PhpCs\PhpCs;
+use Ibuildings\QaTools\Tool\PhpLint\PhpLint;
 use Ibuildings\QaTools\Tool\PhpMd\PhpMd;
 use Symfony\Component\Console\Application as ConsoleApplication;
 use Symfony\Component\Console\Command\Command;
