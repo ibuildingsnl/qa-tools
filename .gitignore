@@ -1,3 +1,4 @@
+/.couscous/
 /build/test/qa-tools*
 /build/release/qa-tools*
 !/build/release/qa-tools.pubkey
