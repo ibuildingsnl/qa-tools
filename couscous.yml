@@ -30,6 +30,9 @@ menu:
                 tool-development:
                     text: Tool development
                     relativeUrl: docs/development/tool-development.html
+                writing-documentation:
+                    text: Writing documentation
+                    relativeUrl: docs/development/writing-documentation.html
                 writing-system-tests:
                     text: Writing system tests
                     relativeUrl: docs/development/writing-system-tests.html
