@@ -28,7 +28,7 @@
         {% if menu is defined %}
 
             <nav id="sidebar" class="col-sm-4 col-lg-3" role="navigation">
-                {% macro render_menu(items, currentMenu) %}
+                {% macro render_menu(items, currentMenu, baseUrl) %}
                     <ul class="nav nav-pills nav-stacked">
                         {% for itemId, item in items %}
                             <li class="{{ itemId == currentMenu ? 'active' }}">
@@ -36,14 +36,14 @@
                                     {{ item.text|raw }}
                                 </a>
                                 {% if item.items is defined %}
-                                    {{ _self.render_menu(item.items, currentMenu) }}
+                                    {{ _self.render_menu(item.items, currentMenu, baseUrl) }}
                                 {% endif %}
                             </li>
                         {% endfor %}
                     </ul>
                 {% endmacro %}
                 {% import _self as macros %}
-                {{ macros.render_menu(menu.items, currentMenu) }}
+                {{ macros.render_menu(menu.items, currentMenu, baseUrl) }}
             </nav>
 
         {% endif %}
