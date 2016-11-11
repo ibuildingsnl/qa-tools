@@ -36,6 +36,12 @@ Available commands:
   list                  Lists commands
 ```
 
+The `configure` subcommand will start an interactive questionnaire to help you
+quickly configure various QA tools to your project's testing needs. It remembers
+your answers, so you can easily reconfigure the tools.
+
+![The configure command](docs/configure.png)
+
 ## Upgrading
 
 The QA Tools Phar distributable is self-updateable in a way that is very similar
