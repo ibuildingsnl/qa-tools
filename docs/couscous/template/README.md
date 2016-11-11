@@ -16,7 +16,6 @@ github:
     repo: my-project
 
 title: My project
-subTitle: This is a great project.
 
 # The left menu bar
 menu:
