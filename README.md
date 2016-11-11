@@ -22,7 +22,7 @@ Read why we release the QA Tools as a Phar [here](docs/phar.md).
 
 The QA Tools Phar distributable is self-updateable in a way that is very similar
 to Composer. The following command will check the QA Tools'
-[Releases][qa-tools-releases] page for the latest stable version, and replace
+[Releases][github-qa-releases] page for the latest stable version, and replace
 your executable Phar:
 
 ```sh-session
