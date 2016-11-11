@@ -34,7 +34,6 @@ Available commands:
   help                  Displays help for a command
   list                  Lists commands
   self-update           Updates Ibuildings QA Tools to the latest version
-  selfupdate            Updates Ibuildings QA Tools to the latest version
 ```
 
 ## Upgrading
