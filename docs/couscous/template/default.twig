@@ -31,7 +31,7 @@
                 {% macro render_menu(items, currentMenu) %}
                     <ul class="nav nav-pills nav-stacked">
                         {% for itemId, item in items %}
-                            <li class="{{ itemId == currentMenu ? 'active' }}" data-currrent-menu="{{ currentMenu }}">
+                            <li class="{{ itemId == currentMenu ? 'active' }}">
                                 <a href="{{ item.absoluteUrl|default(baseUrl ~ '/' ~ item.relativeUrl) }}">
                                     {{ item.text|raw }}
                                 </a>
