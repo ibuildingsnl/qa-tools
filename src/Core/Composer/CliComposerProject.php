@@ -43,6 +43,32 @@ final class CliComposerProject implements Project
         $this->logger = $logger;
     }
 
+    /**
+     * @return bool
+     */
+    public function isInitialised()
+    {
+        return file_exists($this->directory . '/composer.json');
+    }
+
+    /**
+     * @return void
+     */
+    public function initialise()
+    {
+        passthru('composer init', $exitCode);
+
+        if ($exitCode !== 0) {
+            throw new RuntimeException(
+                sprintf(
+                    "Composer project could not be initialised; 'composer init' exited with status code %d",
+                    $exitCode
+                ),
+                ''
+            );
+        }
+    }
+
     public function verifyDevDependenciesWillNotConflict(PackageSet $packages)
     {
         $this->backUpConfiguration();

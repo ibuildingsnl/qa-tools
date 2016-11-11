@@ -7,7 +7,9 @@ use Ibuildings\QaTools\Core\Composer\PackageSet;
 use Ibuildings\QaTools\Core\Composer\Project as ComposerProject;
 use Ibuildings\QaTools\Core\Composer\ProjectFactory as ComposerProjectFactory;
 use Ibuildings\QaTools\Core\Exception\RuntimeException;
+use Ibuildings\QaTools\Core\Interviewer\Answer\YesOrNoAnswer;
 use Ibuildings\QaTools\Core\Interviewer\Interviewer;
+use Ibuildings\QaTools\Core\Interviewer\Question\YesOrNoQuestion;
 use Ibuildings\QaTools\Core\Project\Directory;
 use Ibuildings\QaTools\Core\Project\Project;
 use Ibuildings\QaTools\Core\Task\Executor\InstallComposerDevDependencyTaskExecutor;
@@ -17,6 +19,7 @@ use Ibuildings\QaTools\Core\Task\TaskList;
 use Ibuildings\QaTools\UnitTest\ValueObject;
 use Mockery;
 use Mockery as m;
+use Mockery\Matcher\MatcherAbstract;
 use Mockery\MockInterface;
 use PHPUnit\Framework\TestCase as TestCase;
 
@@ -72,6 +75,8 @@ class InstallComposerDevDependencyExecutorTaskTest extends TestCase
     /** @test */
     public function verifies_that_added_dependencies_dont_conflict_with_current_configuration()
     {
+        $this->composerProject->shouldReceive('isInitialised')->andReturn(true);
+
         $tasks = new TaskList([new InstallComposerDevDependencyTask('lefty/loosy', '2')]);
 
         $this->assertTrue(
@@ -89,6 +94,8 @@ class InstallComposerDevDependencyExecutorTaskTest extends TestCase
     /** @test */
     public function lets_exceptions_from_composer_bubble_up_after_informing_the_user()
     {
+        $this->composerProject->shouldReceive('isInitialised')->andReturn(true);
+
         $tasks = new TaskList([new InstallComposerDevDependencyTask('lefty/loosy', '2')]);
 
         $expectedPackages = new PackageSet([Package::of('lefty/loosy', '2')]);
@@ -109,6 +116,8 @@ class InstallComposerDevDependencyExecutorTaskTest extends TestCase
     /** @test */
     public function requires_the_dependencies()
     {
+        $this->composerProject->shouldReceive('isInitialised')->andReturn(true);
+
         $tasks = new TaskList([new InstallComposerDevDependencyTask('rambunctious/rake', '3')]);
 
         $this->executor->arePrerequisitesMet($tasks, $this->project, $this->interviewer);
@@ -128,6 +137,8 @@ class InstallComposerDevDependencyExecutorTaskTest extends TestCase
     /** @test */
     public function cleans_up()
     {
+        $this->composerProject->shouldReceive('isInitialised')->andReturn(true);
+
         $tasks = new TaskList([new InstallComposerDevDependencyTask('rambunctious/rake', '3')]);
 
         $this->executor->arePrerequisitesMet($tasks, $this->project, $this->interviewer);
@@ -138,6 +149,8 @@ class InstallComposerDevDependencyExecutorTaskTest extends TestCase
     /** @test */
     public function rolls_back_the_required_dependencies()
     {
+        $this->composerProject->shouldReceive('isInitialised')->andReturn(true);
+
         $tasks = new TaskList([new InstallComposerDevDependencyTask('ergonomic/effigy', '4')]);
 
         $this->executor->arePrerequisitesMet($tasks, $this->project, $this->interviewer);
@@ -148,5 +161,38 @@ class InstallComposerDevDependencyExecutorTaskTest extends TestCase
             ->shouldHaveReceived('restoreConfiguration')
             ->with()
             ->once();
+    }
+
+    /** @test */
+    public function initialised_a_composer_project_when_none_has_yet_been_initialised()
+    {
+        $this->composerProject->shouldReceive('isInitialised')->andReturn(false);
+        $this->interviewer
+            ->shouldReceive('ask')
+            ->with(self::yesOrNoQuestionRegarding('initialise one?'))
+            ->andReturn(YesOrNoAnswer::yes());
+
+        $tasks = new TaskList([new InstallComposerDevDependencyTask('lefty/loosy', '2')]);
+
+        $this->assertTrue(
+            $this->executor->arePrerequisitesMet($tasks, $this->project, $this->interviewer),
+            'Nothing should prevent installation of lefty/loosy 2'
+        );
+
+        $expectedPackages = new PackageSet([Package::of('lefty/loosy', '2')]);
+        $this->composerProject->shouldHaveReceived('initialise')->once();
+    }
+
+    /**
+     * @param string $questionSubstring
+     * @return MatcherAbstract
+     */
+    private static function yesOrNoQuestionRegarding($questionSubstring)
+    {
+        return m::on(
+            function (YesOrNoQuestion $question) use ($questionSubstring) {
+                return stripos($question->getQuestion(), $questionSubstring) !== false;
+            }
+        );
     }
 }
