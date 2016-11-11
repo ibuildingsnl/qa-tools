@@ -1,9 +1,14 @@
 # Ibuildings QA Tools v3 [![Build Status](https://travis-ci.com/ibuildingsnl/qa-tools-v3.svg?token=JEaBsbhAuRqMRnCxyjuy&branch=master)](https://travis-ci.com/ibuildingsnl/qa-tools-v3)
+
 A set of quality assurance tools that are easily configurable through an installer.
 
 The QA Tools are meant to provide you with a decent base build setup, conforming to Ibuildings standards. 
 They are not meant to provide a solution for every use case. If you want a more complex setup,
 you can use the resulting configurations as a base and configure it manually.
+
+The official, full documentation can be found on our [GitHub pages][gh-pages].
+
+[gh-pages]: https://ibuildingsnl.github.io/qa-tools-v3
 
 ## Installation
 
@@ -22,7 +27,7 @@ Read why we release the QA Tools as a Phar [here](docs/phar.md).
 
 The QA Tools Phar distributable is self-updateable in a way that is very similar
 to Composer. The following command will check the QA Tools'
-[Releases][qa-tools-releases] page for the latest stable version, and replace
+[Releases][github-qa-releases] page for the latest stable version, and replace
 your executable Phar:
 
 ```sh-session

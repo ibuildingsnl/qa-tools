@@ -38,6 +38,7 @@
     },
     "require-dev": {
         "composer/composer": "^1.2",
+        "couscous/couscous": "^1.5",
         "liip/rmt": "^1.2.5",
         "mockery/mockery": "^0.9.4",
         "phpmd/phpmd": "^2.4",
