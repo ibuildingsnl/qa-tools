@@ -22,13 +22,15 @@ final class ProjectConfigurator
      */
     public function configure(Interviewer $interviewer, Configuration $configuration, Directory $projectDirectory)
     {
-        $interviewer->say(
+        $interviewer->notice('');
+        $interviewer->notice(
             sprintf(
                 'Configuring the %s (%s).',
                 Application::NAME,
                 Application::VERSION
             )
         );
+        $interviewer->notice('');
 
         $nameOfProjectAnswer = $interviewer->ask(QuestionFactory::create('What is the project\'s name?'));
 

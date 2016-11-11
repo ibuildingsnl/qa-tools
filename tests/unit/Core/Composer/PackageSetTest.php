@@ -8,13 +8,15 @@ use Ibuildings\QaTools\Core\Composer\PackageSet;
 use Ibuildings\QaTools\UnitTest\Diffing;
 use PHPUnit\Framework\TestCase as TestCase;
 
+/**
+ * @group Value
+ */
 class PackageSetTest extends TestCase
 {
     use Diffing;
 
     /**
      * @test
-     * @group value
      * @dataProvider unequalSets
      *
      * @param array $set0
@@ -56,7 +58,6 @@ class PackageSetTest extends TestCase
 
     /**
      * @test
-     * @group value
      * @dataProvider equalSets
      *
      * @param array $set0
@@ -98,7 +99,6 @@ class PackageSetTest extends TestCase
 
     /**
      * @test
-     * @group value
      * @dataProvider setsThatContainAnEntity
      */
     public function sets_can_contain_entities(PackageSet $set, Package $package)
@@ -129,7 +129,6 @@ class PackageSetTest extends TestCase
 
     /**
      * @test
-     * @group value
      * @dataProvider setsThatDontContainAnEntity
      *
      * @param PackageSet $set

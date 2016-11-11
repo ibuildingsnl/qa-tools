@@ -32,9 +32,15 @@ final class InstallComposerDevDependencyTaskExecutor implements Executor
 
     public function arePrerequisitesMet(TaskList $tasks, Project $project, Interviewer $interviewer)
     {
-        $interviewer->say("Verifying installation of Composer development dependencies won't cause a conflict...");
+        $interviewer->notice(
+            " * Verifying installation of Composer development dependencies won't cause a conflict..."
+        );
 
         $packages = $this->getPackagesToAddAsDevDependency($tasks);
+        foreach ($packages as $package) {
+            /** @var Package $package */
+            $interviewer->giveDetails(sprintf('     - %s', $package->getDescriptor()));
+        }
 
         $this->composerProject =
             $this->composerProjectFactory->forDirectory($project->getRootDirectory()->getDirectory());
@@ -46,12 +52,12 @@ final class InstallComposerDevDependencyTaskExecutor implements Executor
             // so inform the user of the most probable cause (a package conflict) and
             // let the exception bubble up.
             $interviewer->warn('Something went wrong while performing a dry-run install:');
-            $interviewer->say('');
+            $interviewer->giveDetails('');
 
             $indentedCause = preg_replace('/^/m', '  ', $e->getCause());
-            $interviewer->say($indentedCause);
+            $interviewer->giveDetails($indentedCause);
 
-            $interviewer->say('');
+            $interviewer->giveDetails('');
 
             return false;
         }
@@ -61,7 +67,7 @@ final class InstallComposerDevDependencyTaskExecutor implements Executor
 
     public function execute(TaskList $tasks, Project $project, Interviewer $interviewer)
     {
-        $interviewer->say("Installing Composer development dependencies...");
+        $interviewer->notice(" * Installing Composer development dependencies...");
 
         $packages = $this->getPackagesToAddAsDevDependency($tasks);
 
@@ -75,11 +81,12 @@ final class InstallComposerDevDependencyTaskExecutor implements Executor
 
     public function rollBack(TaskList $tasks, Project $project, Interviewer $interviewer)
     {
-        $interviewer->say("Restoring Composer configuration...");
+        $interviewer->notice(" * Restoring Composer configuration...");
         $this->composerProject->restoreConfiguration();
     }
 
     /**
+     * @param TaskList $tasks
      * @return PackageSet
      */
     private function getPackagesToAddAsDevDependency(TaskList $tasks)

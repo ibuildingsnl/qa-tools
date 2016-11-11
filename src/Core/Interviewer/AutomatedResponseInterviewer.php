@@ -57,7 +57,15 @@ final class AutomatedResponseInterviewer implements Interviewer
         throw new RuntimeException(sprintf('No answer recorded for question "%s"', $question));
     }
 
-    public function say($sentence)
+    public function notice($sentence)
+    {
+    }
+
+    public function giveDetails($sentence)
+    {
+    }
+
+    public function success($sentence)
     {
     }
 

@@ -56,9 +56,19 @@ final class MemorizingInterviewer implements ScopedInterviewer
         return $givenAnswer;
     }
 
-    public function say($sentence)
+    public function notice($sentence)
     {
-        $this->interviewer->say($sentence);
+        $this->interviewer->notice($sentence);
+    }
+
+    public function giveDetails($sentence)
+    {
+        $this->interviewer->giveDetails($sentence);
+    }
+
+    public function success($sentence)
+    {
+        $this->interviewer->success($sentence);
     }
 
     public function warn($sentence)

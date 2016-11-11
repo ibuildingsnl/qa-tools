@@ -68,6 +68,9 @@ verify-test-build-is-signed: build-test
 check-security-advisories:
 	vendor/bin/security-checker security:check
 
+list-phpunit-test-groups:
+	@grep -horE '@group .+' tests | sort | uniq
+
 
 signing-key-test.pem:
 	@test ! -e signing-key-test.pem || (echo "\n  \033[0;31mA signing key already exists. Remove it if you want to generate a new one.\033[0m\n" && false)
