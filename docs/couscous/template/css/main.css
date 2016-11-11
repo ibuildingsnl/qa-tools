@@ -71,10 +71,7 @@ header.navbar {
 
 @media (min-width: 768px) {
     #sidebar {
-        /*position:fixed;*/
         margin-top: 30px;
-        /*top: 120px;*/
-        /*bottom: 80px;*/
     }
 }
 @media (max-width: 960px) {
