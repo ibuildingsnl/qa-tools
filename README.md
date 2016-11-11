@@ -31,9 +31,9 @@ Usage:
 
 Available commands:
   configure             Configure the Ibuildings QA Tools
+  self-update           Updates Ibuildings QA Tools to the latest version
   help                  Displays help for a command
   list                  Lists commands
-  self-update           Updates Ibuildings QA Tools to the latest version
 ```
 
 ## Upgrading
