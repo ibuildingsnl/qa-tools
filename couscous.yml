@@ -1,5 +1,7 @@
 title: Ibuildings QA Tools
-github: https://github.com/ibuildingsnl/qa-tools-v3
+github:
+    user: ibuildingsnl
+    repo: qa-tools-v3
 
 template:
     directory: docs/couscous/template
