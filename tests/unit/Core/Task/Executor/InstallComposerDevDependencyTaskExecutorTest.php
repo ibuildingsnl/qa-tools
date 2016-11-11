@@ -27,7 +27,7 @@ use PHPUnit\Framework\TestCase as TestCase;
  * @group Task
  * @group TaskExecutor
  */
-class InstallComposerDevDependencyExecutorTaskTest extends TestCase
+class InstallComposerDevDependencyTaskExecutorTest extends TestCase
 {
     /** @var ComposerProjectFactory|MockInterface */
     private $composerProjectFactory;
@@ -48,7 +48,11 @@ class InstallComposerDevDependencyExecutorTaskTest extends TestCase
 
         $this->project = Mockery::mock(Project::class);
         $this->project->shouldReceive('getRootDirectory')->andReturn(new Directory('.'));
-        $this->interviewer = Mockery::spy(Interviewer::class);
+        $this->interviewer = Mockery::mock(Interviewer::class);
+        $this->interviewer->shouldReceive('notice');
+        $this->interviewer->shouldReceive('giveDetails');
+        $this->interviewer->shouldReceive('warn');
+        $this->interviewer->shouldReceive('success');
 
         $this->executor = new InstallComposerDevDependencyTaskExecutor($this->composerProjectFactory);
     }
@@ -164,7 +168,7 @@ class InstallComposerDevDependencyExecutorTaskTest extends TestCase
     }
 
     /** @test */
-    public function initialised_a_composer_project_when_none_has_yet_been_initialised()
+    public function initialises_a_composer_project_when_none_has_yet_been_initialised()
     {
         $this->composerProject->shouldReceive('isInitialised')->andReturn(false);
         $this->interviewer
@@ -179,7 +183,6 @@ class InstallComposerDevDependencyExecutorTaskTest extends TestCase
             'Nothing should prevent installation of lefty/loosy 2'
         );
 
-        $expectedPackages = new PackageSet([Package::of('lefty/loosy', '2')]);
         $this->composerProject->shouldHaveReceived('initialise')->once();
     }
 
