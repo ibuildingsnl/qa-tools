@@ -149,7 +149,6 @@ Most tools will want to install Composer packages. However, installing these
 packages during testing, both locally as on Travis, makes tests slow and
 brittle. To countermand this, all tests involving Composer (pretty much all
 system tests) work with locally emulated packages. An example of this is
-`phpmd/phpmd`, emulated in
-[`tests/composer/packages/phpmd/composer.json`](../../tests/composer/packages/phpmd/composer.json).
-These emulated packages are registered with Composer in an initialisation stage
-in each test by calling [Composer::initialise](../../tests/system/Composer.php).
+`phpmd/phpmd`, emulated in `tests/composer/packages/phpmd/phpmd/composer.json`.
+These emulated packages are registered with Composer during the bootstrap of the
+test suite in `Ibuildings\QaTools\ComposerTest\Composer::mockRepositories()`.

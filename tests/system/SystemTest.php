@@ -57,6 +57,7 @@ final class SystemTest extends TestCase
         $process = ProcessBuilder::create(['expect'])
             ->setInput($fullScript)
             ->setWorkingDirectory($workingDirectory)
+            ->setEnv('COMPOSER_HOME', getenv('COMPOSER_HOME'))
             ->getProcess();
         $process->run();
 

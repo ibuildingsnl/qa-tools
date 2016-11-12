@@ -75,7 +75,10 @@ final class CliComposerProject implements Project
 
         $options = ['--dev', '--no-update', '--no-interaction'];
         $arguments = array_merge([$this->composerBinary, 'require'], $options, $packages->getDescriptors());
-        $process = ProcessBuilder::create($arguments)->setWorkingDirectory($this->directory)->getProcess();
+        $process = ProcessBuilder::create($arguments)
+            ->setWorkingDirectory($this->directory)
+            ->setEnv('COMPOSER_HOME', getenv('COMPOSER_HOME'))
+            ->getProcess();
 
         if ($process->run() !== 0) {
             // Restore the old JSON in case Composer wrote to the Composer file anyway.
@@ -89,7 +92,10 @@ final class CliComposerProject implements Project
 
         $options = ['--dry-run', '--no-interaction'];
         $arguments = array_merge([$this->composerBinary, 'install'], $options);
-        $process = ProcessBuilder::create($arguments)->setWorkingDirectory($this->directory)->getProcess();
+        $process = ProcessBuilder::create($arguments)
+            ->setWorkingDirectory($this->directory)
+            ->setEnv('COMPOSER_HOME', getenv('COMPOSER_HOME'))
+            ->getProcess();
 
         if ($process->run() !== 0) {
             $this->restoreConfiguration();
@@ -108,7 +114,10 @@ final class CliComposerProject implements Project
     {
         $options = ['--dev', '--no-interaction'];
         $arguments = array_merge([$this->composerBinary, 'require'], $options, $packages->getDescriptors());
-        $process = ProcessBuilder::create($arguments)->setWorkingDirectory($this->directory)->getProcess();
+        $process = ProcessBuilder::create($arguments)
+            ->setWorkingDirectory($this->directory)
+            ->setEnv('COMPOSER_HOME', getenv('COMPOSER_HOME'))
+            ->getProcess();
 
         if ($process->run() !== 0) {
             $packageNames = join("\n - ", $packages->getDescriptors());
@@ -153,7 +162,10 @@ final class CliComposerProject implements Project
 
         $options = ['--no-interaction'];
         $arguments = array_merge([$this->composerBinary, 'install'], $options);
-        $process = ProcessBuilder::create($arguments)->setWorkingDirectory($this->directory)->getProcess();
+        $process = ProcessBuilder::create($arguments)
+            ->setWorkingDirectory($this->directory)
+            ->setEnv('COMPOSER_HOME', getenv('COMPOSER_HOME'))
+            ->getProcess();
 
         if ($process->run() !== 0) {
             throw new RuntimeException(
