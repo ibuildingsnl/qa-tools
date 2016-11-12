@@ -140,4 +140,32 @@ class TransactionalTaskDirectoryExecutorTest extends TestCase
             );
         }
     }
+
+    /** @test */
+    public function does_not_execute_executors_for_which_there_are_no_tasks()
+    {
+        /** @var MockInterface|Executor $executorA */
+        $executorA = m::namedMock('ExecutorA', Executor::class);
+        $executorA->shouldReceive('supports')->andReturn(false);
+        $executorA->shouldReceive('arePrerequisitesMet')->never();
+        $executorA->shouldReceive('execute')->never();
+        $executorA->shouldReceive('cleanUp')->never();
+        $executorA->shouldReceive('rollBack')->never();
+
+        $executors = [$executorA];
+        $transactionalExecutor = new TransactionalTaskDirectoryExecutor($executors);
+
+        $taskDirectory = new InMemoryTaskDirectory(
+            new Project('name', new Directory('.'), new Directory('.'), new ProjectTypeSet(), false)
+        );
+        $taskDirectory->registerTask(new BarTask());
+
+        /** @var MockInterface|ScopedInterviewer $interviewer */
+        $interviewer = m::spy(ScopedInterviewer::class);
+
+        $this->assertTrue(
+            $transactionalExecutor->execute($taskDirectory, $interviewer),
+            'The executor should succeed, regardless of whether all tasks were handled by an executor'
+        );
+    }
 }

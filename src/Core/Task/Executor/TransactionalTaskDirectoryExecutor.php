@@ -34,12 +34,16 @@ final class TransactionalTaskDirectoryExecutor implements TaskDirectoryExecutor
 
     public function execute(TaskDirectory $taskDirectory, ScopedInterviewer $interviewer)
     {
+        $executorsWithTasks = array_filter($this->executors, function (Executor $executor) use ($taskDirectory) {
+            return count($taskDirectory->filterTasks([$executor, 'supports'])) > 0;
+        });
+
         $interviewer->notice('');
 
         $project = $taskDirectory->getProject();
 
         $allPrerequisitesAreMet = true;
-        foreach ($this->executors as $executor) {
+        foreach ($executorsWithTasks as $executor) {
             $interviewer->setScope(get_class($executor));
             $prerequisitesAreMet = $executor->arePrerequisitesMet(
                 $taskDirectory->filterTasks([$executor, 'supports']),
@@ -57,12 +61,13 @@ final class TransactionalTaskDirectoryExecutor implements TaskDirectoryExecutor
 
         $executorsToRollBack = [];
         try {
-            foreach ($this->executors as $executor) {
+            foreach ($executorsWithTasks as $executor) {
                 array_unshift($executorsToRollBack, $executor);
                 $interviewer->setScope(get_class($executor));
                 $executor->execute($taskDirectory->filterTasks([$executor, 'supports']), $project, $interviewer);
             }
-            foreach ($this->executors as $executor) {
+
+            foreach ($executorsWithTasks as $executor) {
                 $interviewer->setScope(get_class($executor));
                 $executor->cleanUp($taskDirectory->filterTasks([$executor, 'supports']), $project, $interviewer);
             }
