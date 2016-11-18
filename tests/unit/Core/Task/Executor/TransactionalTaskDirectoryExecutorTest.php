@@ -54,7 +54,7 @@ class TransactionalTaskDirectoryExecutorTest extends TestCase
         $taskDirectory->registerTask(new NoopTask());
 
         /** @var MockInterface|ScopedInterviewer $interviewer */
-        $interviewer = m::spy(ScopedInterviewer::class);
+        $interviewer = m::mock(ScopedInterviewer::class)->shouldIgnoreMissing();
 
         $this->assertTrue(
             $transactionalExecutor->execute($taskDirectory, $interviewer),
@@ -90,7 +90,7 @@ class TransactionalTaskDirectoryExecutorTest extends TestCase
         $taskDirectory->registerTask(new NoopTask());
 
         /** @var MockInterface|ScopedInterviewer $interviewer */
-        $interviewer = m::spy(ScopedInterviewer::class);
+        $interviewer = m::mock(ScopedInterviewer::class)->shouldIgnoreMissing();
 
         $this->assertFalse(
             $transactionalExecutor->execute($taskDirectory, $interviewer),
@@ -128,7 +128,7 @@ class TransactionalTaskDirectoryExecutorTest extends TestCase
         $taskDirectory->registerTask(new NoopTask());
 
         /** @var MockInterface|ScopedInterviewer $interviewer */
-        $interviewer = m::spy(ScopedInterviewer::class);
+        $interviewer = m::mock(ScopedInterviewer::class)->shouldIgnoreMissing();
 
         try {
             $transactionalExecutor->execute($taskDirectory, $interviewer);
@@ -161,7 +161,7 @@ class TransactionalTaskDirectoryExecutorTest extends TestCase
         $taskDirectory->registerTask(new NoopTask());
 
         /** @var MockInterface|ScopedInterviewer $interviewer */
-        $interviewer = m::spy(ScopedInterviewer::class);
+        $interviewer = m::mock(ScopedInterviewer::class)->shouldIgnoreMissing();
 
         $this->assertTrue(
             $transactionalExecutor->execute($taskDirectory, $interviewer),
