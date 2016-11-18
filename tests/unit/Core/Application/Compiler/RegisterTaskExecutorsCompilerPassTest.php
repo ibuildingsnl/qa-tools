@@ -3,6 +3,7 @@
 namespace Ibuildings\QaTools\UnitTest\Core\Application\Compiler;
 
 use Ibuildings\QaTools\Core\Application\Compiler\RegisterTaskExecutorsCompilerPass;
+use Ibuildings\QaTools\Core\Task\Executor\ExecutorCollection;
 use Mockery;
 use PHPUnit\Framework\TestCase as TestCase;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
@@ -48,7 +49,7 @@ class RegisterTaskExecutorsCompilerPassTest extends TestCase
 
         $this->executorExecutorDefinition
             ->shouldHaveReceived('replaceArgument')
-            ->with(0, Mockery::anyOf([new Reference('service_a'), new Reference('service_b')]))
+            ->with(0, self::executors(['service_a', 'service_b']))
             ->once();
     }
 
@@ -64,7 +65,7 @@ class RegisterTaskExecutorsCompilerPassTest extends TestCase
 
         $this->executorExecutorDefinition
             ->shouldHaveReceived('replaceArgument')
-            ->with(0, Mockery::anyOf([new Reference('service_b'), new Reference('service_a')]))
+            ->with(0, self::executors(['service_b', 'service_a']))
             ->once();
     }
 
@@ -92,5 +93,25 @@ class RegisterTaskExecutorsCompilerPassTest extends TestCase
         $this->expectException(InvalidConfigurationException::class);
         $this->expectExceptionMessage('task executor "service_a" is already registered at that priority');
         $this->compilerPass->process($this->container);
+    }
+
+    /**
+     * @param string[] $executorServiceIds
+     * @return Mockery\Matcher\Closure
+     */
+    private static function executors(array $executorServiceIds)
+    {
+        Return \Mockery::on(function (Definition $definition) use ($executorServiceIds) {
+            self::assertTrue(
+                is_a($definition->getClass(), ExecutorCollection::class, true),
+                'Definition of collection of executors should yield an instance of a class ' .
+                'that implements ExecutorCollection'
+            );
+
+            $references = array_map(function ($id) { return new Reference($id); }, $executorServiceIds);
+            self::assertEquals([$references], $definition->getArguments());
+
+            return true;
+        });
     }
 }

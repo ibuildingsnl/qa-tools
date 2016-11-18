@@ -10,6 +10,7 @@ use Ibuildings\QaTools\Core\Project\Directory;
 use Ibuildings\QaTools\Core\Project\Project;
 use Ibuildings\QaTools\Core\Project\ProjectTypeSet;
 use Ibuildings\QaTools\Core\Task\Executor\Executor;
+use Ibuildings\QaTools\Core\Task\Executor\ExecutorCollection;
 use Ibuildings\QaTools\Core\Task\Executor\TransactionalTaskDirectoryExecutor;
 use Ibuildings\QaTools\UnitTest\Core\Task\NoopTask;
 use Mockery as m;
@@ -45,7 +46,10 @@ class TransactionalTaskDirectoryExecutorTest extends TestCase
         $executorB->shouldReceive('cleanUp')->once();
         $executorB->shouldReceive('rollBack')->never();
 
-        $executors = [$executorA, $executorB];
+        $executors = m::mock(ExecutorCollection::class);
+        $executors
+            ->shouldReceive('findExecutorsWithAtLeastOneTaskToExecute')
+            ->andReturn([$executorA, $executorB]);
         $transactionalExecutor = new TransactionalTaskDirectoryExecutor($executors);
 
         $taskDirectory = new InMemoryTaskDirectory(
@@ -81,7 +85,10 @@ class TransactionalTaskDirectoryExecutorTest extends TestCase
         $executorWithUnmetPrerequisites->shouldNotReceive('cleanUp');
         $executorWithUnmetPrerequisites->shouldNotReceive('rollBack');
 
-        $executors = [$executorWithMetPrerequisites, $executorWithUnmetPrerequisites];
+        $executors = m::mock(ExecutorCollection::class);
+        $executors
+            ->shouldReceive('findExecutorsWithAtLeastOneTaskToExecute')
+            ->andReturn([$executorWithMetPrerequisites, $executorWithUnmetPrerequisites]);
         $transactionalExecutor = new TransactionalTaskDirectoryExecutor($executors);
 
         $taskDirectory = new InMemoryTaskDirectory(
@@ -119,7 +126,10 @@ class TransactionalTaskDirectoryExecutorTest extends TestCase
         $executorWithUnmetPrerequisites->shouldNotReceive('cleanUp');
         $executorWithUnmetPrerequisites->shouldNotReceive('rollBack');
 
-        $executors = [$executorWithMetPrerequisites, $executorWithUnmetPrerequisites];
+        $executors = m::mock(ExecutorCollection::class);
+        $executors
+            ->shouldReceive('findExecutorsWithAtLeastOneTaskToExecute')
+            ->andReturn([$executorWithMetPrerequisites, $executorWithUnmetPrerequisites]);
         $transactionalExecutor = new TransactionalTaskDirectoryExecutor($executors);
 
         $taskDirectory = new InMemoryTaskDirectory(
@@ -139,33 +149,5 @@ class TransactionalTaskDirectoryExecutorTest extends TestCase
                 'The transactional executor should let a prerequisites exception bubble'
             );
         }
-    }
-
-    /** @test */
-    public function does_not_execute_executors_for_which_there_are_no_tasks()
-    {
-        /** @var MockInterface|Executor $executorA */
-        $executorA = m::namedMock('ExecutorA', Executor::class);
-        $executorA->shouldReceive('supports')->andReturn(false);
-        $executorA->shouldReceive('arePrerequisitesMet')->never();
-        $executorA->shouldReceive('execute')->never();
-        $executorA->shouldReceive('cleanUp')->never();
-        $executorA->shouldReceive('rollBack')->never();
-
-        $executors = [$executorA];
-        $transactionalExecutor = new TransactionalTaskDirectoryExecutor($executors);
-
-        $taskDirectory = new InMemoryTaskDirectory(
-            new Project('name', new Directory('.'), new Directory('.'), new ProjectTypeSet(), false)
-        );
-        $taskDirectory->registerTask(new NoopTask());
-
-        /** @var MockInterface|ScopedInterviewer $interviewer */
-        $interviewer = m::mock(ScopedInterviewer::class)->shouldIgnoreMissing();
-
-        $this->assertTrue(
-            $transactionalExecutor->execute($taskDirectory, $interviewer),
-            'The executor should succeed, regardless of whether all tasks were handled by an executor'
-        );
     }
 }

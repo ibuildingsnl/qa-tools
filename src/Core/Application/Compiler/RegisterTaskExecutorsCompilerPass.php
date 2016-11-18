@@ -3,9 +3,11 @@
 namespace Ibuildings\QaTools\Core\Application\Compiler;
 
 use Ibuildings\QaTools\Core\Exception\RuntimeException;
+use Ibuildings\QaTools\Core\Task\Executor\ArrayExecutorCollection;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 
 final class RegisterTaskExecutorsCompilerPass implements CompilerPassInterface
@@ -65,7 +67,9 @@ final class RegisterTaskExecutorsCompilerPass implements CompilerPassInterface
             throw new RuntimeException('Could not sort task executors based on prioritisation (ksort failed)');
         }
         $prioritisedReferences = array_reverse($prioritisedReferences);
+        $executorsDefinition = new Definition(ArrayExecutorCollection::class);
+        $executorsDefinition->setArguments([$prioritisedReferences]);
 
-        $executorExecutorDefinition->replaceArgument(0, $prioritisedReferences);
+        $executorExecutorDefinition->replaceArgument(0, $executorsDefinition);
     }
 }
