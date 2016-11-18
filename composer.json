@@ -9,7 +9,8 @@
         "psr-4": {
             "Ibuildings\\QaTools\\UnitTest\\": ["tests/unit"],
             "Ibuildings\\QaTools\\IntegrationTest\\": ["tests/integration"],
-            "Ibuildings\\QaTools\\SystemTest\\": ["tests/system"]
+            "Ibuildings\\QaTools\\SystemTest\\": ["tests/system"],
+            "Ibuildings\\QaTools\\ComposerTest\\": ["tests/composer"]
         },
         "files": ["tests/system/assert.php"]
     },
@@ -46,7 +47,8 @@
         "sebastian/diff": "^1.4",
         "sebastian/exporter": "^1.2",
         "sensiolabs/security-checker": "^3.0",
-        "squizlabs/php_codesniffer": "^2.6"
+        "squizlabs/php_codesniffer": "^2.6",
+        "symfony/filesystem": "^3.1"
     },
     "config": {
         "sort-packages": true

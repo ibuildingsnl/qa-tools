@@ -10,8 +10,9 @@ use Ibuildings\QaTools\Core\Project\Directory;
 use Ibuildings\QaTools\Core\Project\Project;
 use Ibuildings\QaTools\Core\Project\ProjectTypeSet;
 use Ibuildings\QaTools\Core\Task\Executor\Executor;
+use Ibuildings\QaTools\Core\Task\Executor\ExecutorCollection;
 use Ibuildings\QaTools\Core\Task\Executor\TransactionalTaskDirectoryExecutor;
-use Ibuildings\QaTools\UnitTest\Core\Task\BarTask;
+use Ibuildings\QaTools\UnitTest\Core\Task\NoopTask;
 use Mockery as m;
 use Mockery\MockInterface;
 use PHPUnit\Framework\TestCase as TestCase;
@@ -45,16 +46,19 @@ class TransactionalTaskDirectoryExecutorTest extends TestCase
         $executorB->shouldReceive('cleanUp')->once();
         $executorB->shouldReceive('rollBack')->never();
 
-        $executors = [$executorA, $executorB];
+        $executors = m::mock(ExecutorCollection::class);
+        $executors
+            ->shouldReceive('findExecutorsWithAtLeastOneTaskToExecute')
+            ->andReturn([$executorA, $executorB]);
         $transactionalExecutor = new TransactionalTaskDirectoryExecutor($executors);
 
         $taskDirectory = new InMemoryTaskDirectory(
             new Project('name', new Directory('.'), new Directory('.'), new ProjectTypeSet(), false)
         );
-        $taskDirectory->registerTask(new BarTask());
+        $taskDirectory->registerTask(new NoopTask());
 
         /** @var MockInterface|ScopedInterviewer $interviewer */
-        $interviewer = m::spy(ScopedInterviewer::class);
+        $interviewer = m::mock(ScopedInterviewer::class)->shouldIgnoreMissing();
 
         $this->assertTrue(
             $transactionalExecutor->execute($taskDirectory, $interviewer),
@@ -81,16 +85,19 @@ class TransactionalTaskDirectoryExecutorTest extends TestCase
         $executorWithUnmetPrerequisites->shouldNotReceive('cleanUp');
         $executorWithUnmetPrerequisites->shouldNotReceive('rollBack');
 
-        $executors = [$executorWithMetPrerequisites, $executorWithUnmetPrerequisites];
+        $executors = m::mock(ExecutorCollection::class);
+        $executors
+            ->shouldReceive('findExecutorsWithAtLeastOneTaskToExecute')
+            ->andReturn([$executorWithMetPrerequisites, $executorWithUnmetPrerequisites]);
         $transactionalExecutor = new TransactionalTaskDirectoryExecutor($executors);
 
         $taskDirectory = new InMemoryTaskDirectory(
             new Project('name', new Directory('.'), new Directory('.'), new ProjectTypeSet(), false)
         );
-        $taskDirectory->registerTask(new BarTask());
+        $taskDirectory->registerTask(new NoopTask());
 
         /** @var MockInterface|ScopedInterviewer $interviewer */
-        $interviewer = m::spy(ScopedInterviewer::class);
+        $interviewer = m::mock(ScopedInterviewer::class)->shouldIgnoreMissing();
 
         $this->assertFalse(
             $transactionalExecutor->execute($taskDirectory, $interviewer),
@@ -119,16 +126,19 @@ class TransactionalTaskDirectoryExecutorTest extends TestCase
         $executorWithUnmetPrerequisites->shouldNotReceive('cleanUp');
         $executorWithUnmetPrerequisites->shouldNotReceive('rollBack');
 
-        $executors = [$executorWithMetPrerequisites, $executorWithUnmetPrerequisites];
+        $executors = m::mock(ExecutorCollection::class);
+        $executors
+            ->shouldReceive('findExecutorsWithAtLeastOneTaskToExecute')
+            ->andReturn([$executorWithMetPrerequisites, $executorWithUnmetPrerequisites]);
         $transactionalExecutor = new TransactionalTaskDirectoryExecutor($executors);
 
         $taskDirectory = new InMemoryTaskDirectory(
             new Project('name', new Directory('.'), new Directory('.'), new ProjectTypeSet(), false)
         );
-        $taskDirectory->registerTask(new BarTask());
+        $taskDirectory->registerTask(new NoopTask());
 
         /** @var MockInterface|ScopedInterviewer $interviewer */
-        $interviewer = m::spy(ScopedInterviewer::class);
+        $interviewer = m::mock(ScopedInterviewer::class)->shouldIgnoreMissing();
 
         try {
             $transactionalExecutor->execute($taskDirectory, $interviewer);

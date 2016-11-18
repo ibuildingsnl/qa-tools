@@ -15,7 +15,7 @@ To create a new tool:
  
 Fix the tests you broke as a result of creating the new tool:
 
- 0. Add Composer package stub in `tests/composer/packages/<package>/composer.json` and add it to the list of repositories in `Ibuildings\QaTools\SystemTest\Composer::initialise()`.
+ 0. Add Composer package stub in `tests/composer/packages/<package>/composer.json` and add it to the list of repositories in `Ibuildings\QaTools\ComposerTest\Composer::mockRepositories()`.
  0. Make sure the question is answered for adding your tool in:
    0. `tests/system/specs/000_can-configure-a-php-project.tcl`
    0. `tests/system/specs/010_developer-need-not-reanswer-previously-answered-questions.tcl`

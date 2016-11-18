@@ -3,6 +3,7 @@
 namespace Ibuildings\QaTools\SystemTest;
 
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Process\ProcessBuilder;
 
 final class SystemTest extends TestCase
@@ -35,6 +36,8 @@ final class SystemTest extends TestCase
         chdir($projectDirectory);
         try {
             $spec();
+
+            (new Filesystem())->remove($projectDirectory);
         } finally {
             chdir($cwd);
         }
@@ -57,6 +60,7 @@ final class SystemTest extends TestCase
         $process = ProcessBuilder::create(['expect'])
             ->setInput($fullScript)
             ->setWorkingDirectory($workingDirectory)
+            ->setEnv('COMPOSER_HOME', getenv('COMPOSER_HOME'))
             ->getProcess();
         $process->run();
 

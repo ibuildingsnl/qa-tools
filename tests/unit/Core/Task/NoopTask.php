@@ -4,6 +4,9 @@ namespace Ibuildings\QaTools\UnitTest\Core\Task;
 
 use Ibuildings\QaTools\Core\Task\Task;
 
-final class BarTask implements Task
+/**
+ * A no-operation task for use during testing.
+ */
+final class NoopTask implements Task
 {
 }

@@ -69,7 +69,9 @@ final class InstallComposerDevDependencyTaskExecutor implements Executor
                 return false;
             }
 
-            $interviewer->say("Verifying installation of Composer development dependencies won't cause a conflict...");
+            $interviewer->notice(
+                "Verifying installation of Composer development dependencies won't cause a conflict..."
+            );
         }
 
         try {

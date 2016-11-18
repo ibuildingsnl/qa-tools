@@ -3,7 +3,6 @@
 namespace Ibuildings\QaTools\Core\Task\Executor;
 
 use Exception;
-use Ibuildings\QaTools\Core\Assert\Assertion;
 use Ibuildings\QaTools\Core\Configuration\TaskDirectory;
 use Ibuildings\QaTools\Core\Interviewer\ScopedInterviewer;
 
@@ -14,32 +13,29 @@ use Ibuildings\QaTools\Core\Interviewer\ScopedInterviewer;
 final class TransactionalTaskDirectoryExecutor implements TaskDirectoryExecutor
 {
     /**
-     * @var Executor[]
+     * @var ExecutorCollection
      */
     private $executors;
 
     /**
-     * @param Executor[] $executors
+     * @param ExecutorCollection $executors
      */
-    public function __construct(array $executors)
+    public function __construct(ExecutorCollection $executors)
     {
-        Assertion::allIsInstanceOf(
-            $executors,
-            Executor::class,
-            'Executor ought to be an instance of Executor, got "%s" of type "%s"'
-        );
-
         $this->executors = $executors;
     }
 
     public function execute(TaskDirectory $taskDirectory, ScopedInterviewer $interviewer)
     {
+        $executorsWithTasks = $this->executors->findExecutorsWithAtLeastOneTaskToExecute($taskDirectory);
+
         $interviewer->notice('');
 
         $project = $taskDirectory->getProject();
 
         $allPrerequisitesAreMet = true;
-        foreach ($this->executors as $executor) {
+        /** @var Executor $executor */
+        foreach ($executorsWithTasks as $executor) {
             $interviewer->setScope(get_class($executor));
             $prerequisitesAreMet = $executor->arePrerequisitesMet(
                 $taskDirectory->filterTasks([$executor, 'supports']),
@@ -57,12 +53,13 @@ final class TransactionalTaskDirectoryExecutor implements TaskDirectoryExecutor
 
         $executorsToRollBack = [];
         try {
-            foreach ($this->executors as $executor) {
+            foreach ($executorsWithTasks as $executor) {
                 array_unshift($executorsToRollBack, $executor);
                 $interviewer->setScope(get_class($executor));
                 $executor->execute($taskDirectory->filterTasks([$executor, 'supports']), $project, $interviewer);
             }
-            foreach ($this->executors as $executor) {
+
+            foreach ($executorsWithTasks as $executor) {
                 $interviewer->setScope(get_class($executor));
                 $executor->cleanUp($taskDirectory->filterTasks([$executor, 'supports']), $project, $interviewer);
             }

@@ -13,43 +13,7 @@ final class Composer
      */
     public static function initialise()
     {
-        $url = function ($packageName) {
-            return __DIR__ . '/../composer/packages/'. $packageName;
-        };
-
-        $configuration = [
-            // Emulate all the tools' Composer packages locally to guarantee test
-            // reliability by removing the Internet factor and to speed up tests.
-            'repositories' => [
-                ['packagist' => false],
-                ['type' => 'path', 'url' => $url('phpmd/phpmd')],
-                ['type' => 'path', 'url' => $url('squizlabs/php_codesniffer')],
-                [
-                    'type' => 'package',
-                    'package' => [
-                        'name' => 'drupal/coder',
-                        'version' => '8.0',
-                        'dist' => [
-                            'url' => $url('drupal/coder8'),
-                            'type' => 'path'
-                        ]
-                    ]
-                ],
-                [
-                    'type' => 'package',
-                    'package' => [
-                        'name' => 'drupal/coder',
-                        'version' => '7.0',
-                        'dist' => [
-                            'url' => $url('drupal/coder7'),
-                            'type' => 'path'
-                        ]
-                    ]
-                ],
-                ['type' => 'path', 'url' => $url('escapestudios/symfony2-coding-standard')],
-            ],
-        ];
-        file_put_contents('composer.json', json_encode($configuration, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+        file_put_contents('composer.json', '{}');
     }
 
     /**
