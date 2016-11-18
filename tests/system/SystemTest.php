@@ -25,7 +25,10 @@ final class SystemTest extends TestCase
                 symlink(__DIR__ . '/../../bin/qa-tools', $projectDirectory . '/qa-tools');
         }
 
-        $expect = function () use ($scriptPath, $projectDirectory) {
+        $expect = function ($chapter = null) use ($scriptPath, $projectDirectory) {
+            if ($chapter) {
+                $scriptPath = preg_replace('~\.tcl$~', sprintf('_%s.tcl', $chapter), $scriptPath);
+            }
             $this->expect(file_get_contents($scriptPath), $projectDirectory);
         };
         $spec = function () use ($expect, $specPath) {
