@@ -7,7 +7,7 @@ use Ibuildings\QaTools\Core\Project\Project;
 use Ibuildings\QaTools\Core\Task\Specification\AnySpecification;
 use Ibuildings\QaTools\Core\Task\Specification\EqualsSpecification;
 use Ibuildings\QaTools\Core\Task\TaskList;
-use Ibuildings\QaTools\UnitTest\Core\Task\FooTask;
+use Ibuildings\QaTools\UnitTest\Core\Task\NoopTask;
 use Mockery;
 use PHPUnit_Framework_TestCase as TestCase;
 
@@ -54,7 +54,7 @@ class InMemoryTaskDirectoryTest extends TestCase
     {
         $dummyProject = Mockery::mock(Project::class);
 
-        $fakeTask = new FooTask('Some task');
+        $fakeTask = new NoopTask('Some task');
 
         $taskDirectory = new InMemoryTaskDirectory($dummyProject);
         $taskDirectory->registerTask($fakeTask);

@@ -41,8 +41,8 @@ class TaskListTest extends TestCase
      */
     public function two_tasklists_with_overlapping_tasks_are_merged_resulting_in_one_tasklist()
     {
-        $fakeTaskA = new FooTask('A');
-        $fakeTaskB = new FooTask('B');
+        $fakeTaskA = new NoopTask('A');
+        $fakeTaskB = new NoopTask('B');
 
         $taskListA = new TaskList([$fakeTaskA]);
         $taskListB = new TaskList([$fakeTaskA, $fakeTaskB]);
@@ -59,8 +59,8 @@ class TaskListTest extends TestCase
      */
     public function two_tasklists_without_overlapping_tasks_are_merged_resulting_in_one_tasklist()
     {
-        $fakeTaskA = new FooTask('A');
-        $fakeTaskB = new FooTask('B');
+        $fakeTaskA = new NoopTask('A');
+        $fakeTaskB = new NoopTask('B');
 
         $taskListA = new TaskList([$fakeTaskA]);
         $taskListB = new TaskList([$fakeTaskB]);
@@ -77,7 +77,7 @@ class TaskListTest extends TestCase
      */
     public function a_task_is_added_to_a_tasklist()
     {
-        $task = new FooTask('A');
+        $task = new NoopTask('A');
         $taskList = new TaskList([]);
 
         $appendedTaskList = $taskList->add($task);
@@ -91,8 +91,8 @@ class TaskListTest extends TestCase
      */
     public function tasklist_with_two_tasks_counts_as_two()
     {
-        $fakeTaskA = new FooTask('A');
-        $fakeTaskB = new FooTask('B');
+        $fakeTaskA = new NoopTask('A');
+        $fakeTaskB = new NoopTask('B');
 
         $taskList = new TaskList([$fakeTaskA, $fakeTaskB]);
 
@@ -114,8 +114,8 @@ class TaskListTest extends TestCase
      */
     public function tasklist_is_iterable()
     {
-        $fakeTaskA = new FooTask('A');
-        $fakeTaskB = new FooTask('B');
+        $fakeTaskA = new NoopTask('A');
+        $fakeTaskB = new NoopTask('B');
 
         $taskList = new TaskList([$fakeTaskA, $fakeTaskB]);
 

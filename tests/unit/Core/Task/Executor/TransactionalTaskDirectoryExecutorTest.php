@@ -11,7 +11,7 @@ use Ibuildings\QaTools\Core\Project\Project;
 use Ibuildings\QaTools\Core\Project\ProjectTypeSet;
 use Ibuildings\QaTools\Core\Task\Executor\Executor;
 use Ibuildings\QaTools\Core\Task\Executor\TransactionalTaskDirectoryExecutor;
-use Ibuildings\QaTools\UnitTest\Core\Task\BarTask;
+use Ibuildings\QaTools\UnitTest\Core\Task\NoopTask;
 use Mockery as m;
 use Mockery\MockInterface;
 use PHPUnit\Framework\TestCase as TestCase;
@@ -51,7 +51,7 @@ class TransactionalTaskDirectoryExecutorTest extends TestCase
         $taskDirectory = new InMemoryTaskDirectory(
             new Project('name', new Directory('.'), new Directory('.'), new ProjectTypeSet(), false)
         );
-        $taskDirectory->registerTask(new BarTask());
+        $taskDirectory->registerTask(new NoopTask());
 
         /** @var MockInterface|ScopedInterviewer $interviewer */
         $interviewer = m::spy(ScopedInterviewer::class);
@@ -87,7 +87,7 @@ class TransactionalTaskDirectoryExecutorTest extends TestCase
         $taskDirectory = new InMemoryTaskDirectory(
             new Project('name', new Directory('.'), new Directory('.'), new ProjectTypeSet(), false)
         );
-        $taskDirectory->registerTask(new BarTask());
+        $taskDirectory->registerTask(new NoopTask());
 
         /** @var MockInterface|ScopedInterviewer $interviewer */
         $interviewer = m::spy(ScopedInterviewer::class);
@@ -125,7 +125,7 @@ class TransactionalTaskDirectoryExecutorTest extends TestCase
         $taskDirectory = new InMemoryTaskDirectory(
             new Project('name', new Directory('.'), new Directory('.'), new ProjectTypeSet(), false)
         );
-        $taskDirectory->registerTask(new BarTask());
+        $taskDirectory->registerTask(new NoopTask());
 
         /** @var MockInterface|ScopedInterviewer $interviewer */
         $interviewer = m::spy(ScopedInterviewer::class);
@@ -158,7 +158,7 @@ class TransactionalTaskDirectoryExecutorTest extends TestCase
         $taskDirectory = new InMemoryTaskDirectory(
             new Project('name', new Directory('.'), new Directory('.'), new ProjectTypeSet(), false)
         );
-        $taskDirectory->registerTask(new BarTask());
+        $taskDirectory->registerTask(new NoopTask());
 
         /** @var MockInterface|ScopedInterviewer $interviewer */
         $interviewer = m::spy(ScopedInterviewer::class);
