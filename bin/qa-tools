@@ -13,8 +13,6 @@ $isDebug = Phar::running() === '';
 $application = new Application($isDebug);
 $application->addCommands([
     new ConfigureCommand(),
-    new PreCommitCommand(),
-    new PrePushCommand(),
     new SelfUpdateCommand(),
 ]);
 $application->boot();

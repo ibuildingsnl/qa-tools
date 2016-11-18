@@ -23,6 +23,25 @@ Read why we release the QA Tools as a Phar [here](docs/phar.md).
 [path]: https://en.wikipedia.org/wiki/PATH_(variable)
 [public-key]: build/release/qa-tools.phar.pubkey
 
+## Usage
+
+```sh-session
+Usage:
+  command [options] [arguments]
+
+Available commands:
+  configure             Configure the Ibuildings QA Tools
+  self-update           Updates Ibuildings QA Tools to the latest version
+  help                  Displays help for a command
+  list                  Lists commands
+```
+
+The `configure` subcommand will start an interactive questionnaire to help you
+quickly configure various QA tools to your project's testing needs. It remembers
+your answers, so you can easily reconfigure the tools.
+
+![The configure command](docs/configure.png)
+
 ## Upgrading
 
 The QA Tools Phar distributable is self-updateable in a way that is very similar
@@ -52,7 +71,7 @@ $ GITHUB_TOKEN=`cat github-token` ./qa-tools.phar self-update
 
 [personal-access-tokens]: https://github.com/settings/tokens
 
-## Documentation
+## Contributing
 
  * [Contributing guidelines](CONTRIBUTING.md)
  * [Development](docs/development.md)
