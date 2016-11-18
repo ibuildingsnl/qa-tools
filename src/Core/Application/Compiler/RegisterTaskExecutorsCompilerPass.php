@@ -14,7 +14,7 @@ final class RegisterTaskExecutorsCompilerPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)
     {
-        $executorExecutorDefinition = $container->findDefinition('qa_tools.task.task_directory_executor');
+        $taskDirectoryExecutor = $container->findDefinition('qa_tools.task.task_directory_executor');
         $taggedExecutors = $container->findTaggedServiceIds('qa_tools.task_executor');
 
         $prioritisedReferences = [];
@@ -70,6 +70,6 @@ final class RegisterTaskExecutorsCompilerPass implements CompilerPassInterface
         $executorsDefinition = new Definition(ArrayExecutorCollection::class);
         $executorsDefinition->setArguments([$prioritisedReferences]);
 
-        $executorExecutorDefinition->replaceArgument(0, $executorsDefinition);
+        $taskDirectoryExecutor->replaceArgument(0, $executorsDefinition);
     }
 }
