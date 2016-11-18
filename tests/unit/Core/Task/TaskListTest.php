@@ -2,7 +2,6 @@
 
 namespace Ibuildings\QaTools\UnitTest\Core\Task;
 
-use Ibuildings\QaTools\Core\Task\EqualsSpecification;
 use Ibuildings\QaTools\Core\Task\Task;
 use Ibuildings\QaTools\Core\Task\TaskList;
 use Mockery;
