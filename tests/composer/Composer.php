@@ -2,10 +2,6 @@
 
 namespace Ibuildings\QaTools\ComposerTest;
 
-use Composer\Json\JsonManipulator;
-use Ibuildings\QaTools\Core\Exception\RuntimeException;
-use Symfony\Component\Process\ProcessBuilder;
-
 final class Composer
 {
     /**
