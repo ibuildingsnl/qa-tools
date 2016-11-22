@@ -107,6 +107,23 @@ assertFileExists('qa-tools.json');
 Composer::assertPackageIsInstalled('phpmd/phpmd');
 ```
 
+## Multiple dialogue expectations
+
+When a specification requires multiple interactions with the QA Tools program,
+you can use multiple dialogue expectations. By passing a *chapter* to the
+ `$expect` helper callable, different dialogues are executed.
+
+```php
+// 050_my-first-test.php
+
+namespace Ibuildings\QaTools\SystemTest;
+
+// Runs dialogue 050_my-first-test_setup.tcl
+$expect('setup');
+// Runs dialogue 050_my-first-test_test.tcl
+$expect('test');
+```
+
 ## Example specification
 
 ```tcl

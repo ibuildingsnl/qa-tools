@@ -76,12 +76,8 @@ final class ConfigurationService
         $configurators = $this->configuratorRepository->getConfiguratorsForProject($configuration->getProject());
         $this->toolConfigurator->configure($configurators, $memorizingInterviewer, $taskDirectory);
 
-        if (!$this->taskDirectoryExecutor->execute($taskDirectory, $memorizingInterviewer)) {
-            return false;
-        }
-
         $this->configurationRepository->save($configuration);
 
-        return true;
+        return $this->taskDirectoryExecutor->execute($taskDirectory, $memorizingInterviewer);
     }
 }
