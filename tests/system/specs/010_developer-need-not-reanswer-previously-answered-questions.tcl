@@ -18,6 +18,8 @@ answer "Would you like to use PHP Mess Detector?" with "Y"
 
 answer "Would you like to use PHP Code Sniffer?" with "N"
 
+answer "Would you like to check for vulnerable dependencies using SensioLabs Security Checker?" with "N"
+
 # Allow Composer to do its thing
 set timeout 5
 
@@ -35,6 +37,7 @@ accept_default_for "Would you like to integrate Travis in your project?"
 accept_default_for "Would you like to use PHP Lint?"
 accept_default_for "Would you like to use PHP Mess Detector?"
 accept_default_for "Would you like to use PHP Code Sniffer?"
+accept_default_for "Would you like to check for vulnerable dependencies using SensioLabs Security Checker?"
 
 # Allow Composer to do its thing
 set timeout 5

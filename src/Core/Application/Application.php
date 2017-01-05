@@ -7,6 +7,7 @@ use Ibuildings\QaTools\Core\Tool\Tool;
 use Ibuildings\QaTools\Tool\PhpCs\PhpCs;
 use Ibuildings\QaTools\Tool\PhpLint\PhpLint;
 use Ibuildings\QaTools\Tool\PhpMd\PhpMd;
+use Ibuildings\QaTools\Tool\SensioLabsSecurityChecker\SensioLabsSecurityChecker;
 use Symfony\Component\Console\Application as ConsoleApplication;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -28,18 +29,6 @@ final class Application extends ConsoleApplication
     private $isDebug;
 
     /**
-     * @return Tool[]
-     */
-    public function getRegisteredTools()
-    {
-        return [
-            new PhpLint(),
-            new PhpMd(),
-            new PhpCs()
-        ];
-    }
-
-    /**
      * @var ContainerInterface
      */
     private $container;
@@ -52,6 +41,19 @@ final class Application extends ConsoleApplication
         define('APPLICATION_ROOT_DIR', __DIR__ . '/../../..');
 
         $this->isDebug = $isDebug;
+    }
+
+    /**
+     * @return Tool[]
+     */
+    public function getRegisteredTools()
+    {
+        return [
+            new PhpLint(),
+            new PhpMd(),
+            new PhpCs(),
+            new SensioLabsSecurityChecker(),
+        ];
     }
 
     public function boot()

@@ -1,0 +1,7 @@
+<target name="{{ targetName }}"
+    description="Check if your application uses dependencies with known security vulnerabilities using SensioLabs Security Checker">
+    <exec executable="vendor/bin/security-checker" failonerror="true">
+        <arg value="security:check" />
+        <arg value="--ansi" />
+    </exec>
+</target>
