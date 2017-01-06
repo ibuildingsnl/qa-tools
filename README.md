@@ -10,6 +10,14 @@ The official, full documentation can be found on our [GitHub pages][gh-pages].
 
 [gh-pages]: https://ibuildingsnl.github.io/qa-tools-v3
 
+## Requirements
+
+At this moment, QA Tools requires your project to be under Git version control.
+Furthermore, it requires you to have a Linuxy environment with the Dash shell
+(`sh`), Ant (`ant`), and the common tools `find`, `tr`, and `xargs` in your
+[PATH][path]. After installing Ant, QA Tools should work on your Linux or
+macOS machine.
+
 ## Installation
 
 The recommended way to install the QA Tools is by downloading the latest Phar
