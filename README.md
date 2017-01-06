@@ -15,7 +15,8 @@ The official, full documentation can be found on our [GitHub pages][gh-pages].
 At this moment, QA Tools requires your project to be under Git version control.
 Furthermore, it requires you to have a Linuxy environment with the Dash shell
 (`sh`), Ant (`ant`), and the common tools `find`, `tr`, and `xargs` in your
-[PATH][path]. As such, QA Tools should work on your Linux or macOS machine.
+[PATH][path]. After installing Ant, QA Tools should work on your Linux or
+macOS machine.
 
 ## Installation
 
