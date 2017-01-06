@@ -39,6 +39,7 @@
         "zendframework/zend-json": "^3.0"
     },
     "require-dev": {
+        "ext-posix": "*",
         "composer/composer": "^1.2",
         "couscous/couscous": "^1.5",
         "liip/rmt": "^1.2.5",
