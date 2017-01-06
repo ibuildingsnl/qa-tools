@@ -25,6 +25,15 @@ final class TransactionalTaskDirectoryExecutor implements TaskDirectoryExecutor
         $this->executors = $executors;
     }
 
+    /**
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity) -- I've spent a considerable amount of time attempting to reduce
+     *     the complexity; there are lots of little details to manage and, for now, abstracting things won't make the
+     *     process easier to grok.
+     * @param TaskDirectory     $taskDirectory
+     * @param ScopedInterviewer $interviewer
+     * @return bool
+     * @throws Exception
+     */
     public function execute(TaskDirectory $taskDirectory, ScopedInterviewer $interviewer)
     {
         $executorsWithTasks = $this->executors->findExecutorsWithAtLeastOneTaskToExecute($taskDirectory);
@@ -51,19 +60,30 @@ final class TransactionalTaskDirectoryExecutor implements TaskDirectoryExecutor
             return false;
         }
 
+        Sigints::trap();
         $executorsToRollBack = [];
         try {
             foreach ($executorsWithTasks as $executor) {
+                if (Sigints::wereTrapped()) {
+                    break;
+                }
+
                 array_unshift($executorsToRollBack, $executor);
                 $interviewer->setScope(get_class($executor));
                 $executor->execute($taskDirectory->filterTasks([$executor, 'supports']), $project, $interviewer);
             }
 
             foreach ($executorsWithTasks as $executor) {
+                if (Sigints::wereTrapped()) {
+                    break;
+                }
+
                 $interviewer->setScope(get_class($executor));
                 $executor->cleanUp($taskDirectory->filterTasks([$executor, 'supports']), $project, $interviewer);
             }
         } catch (Exception $e) {
+            Sigints::resetTrap();
+
             $interviewer->notice(sprintf('Task execution failed: %s', $e->getMessage()));
             $interviewer->notice('Rolling back changes...');
 
@@ -75,6 +95,18 @@ final class TransactionalTaskDirectoryExecutor implements TaskDirectoryExecutor
             }
 
             throw $e;
+        }
+
+        if (Sigints::wereTrapped()) {
+            Sigints::resetTrap();
+            $interviewer->notice('Received SIGINT; rolling back changes...');
+
+            while (count($executorsToRollBack) > 0) {
+                /** @var Executor $executor */
+                $executor = array_shift($executorsToRollBack);
+                $interviewer->setScope(get_class($executor));
+                $executor->rollBack($taskDirectory->filterTasks([$executor, 'supports']), $project, $interviewer);
+            }
         }
 
         $interviewer->success('');
