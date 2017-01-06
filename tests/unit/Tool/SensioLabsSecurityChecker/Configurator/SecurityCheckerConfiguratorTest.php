@@ -102,5 +102,7 @@ class SecurityCheckerConfiguratorTest extends PHPUnit_Framework_TestCase
 
         $configurator = new SecurityCheckerConfigurator();
         $configurator->configure($this->interviewer, $this->taskDirectory, $this->taskHelperSet);
+
+        $this->taskDirectory->shouldNotHaveReceived('registerTask');
     }
 }
