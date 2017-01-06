@@ -51,19 +51,29 @@ final class TransactionalTaskDirectoryExecutor implements TaskDirectoryExecutor
             return false;
         }
 
+        pcntl_signal(SIGINT, function () {
+            throw new \Exception('Received SIGINT signal. Rolling back changes...');
+        });
+
         $executorsToRollBack = [];
         try {
             foreach ($executorsWithTasks as $executor) {
                 array_unshift($executorsToRollBack, $executor);
                 $interviewer->setScope(get_class($executor));
                 $executor->execute($taskDirectory->filterTasks([$executor, 'supports']), $project, $interviewer);
+                pcntl_signal_dispatch();
             }
 
             foreach ($executorsWithTasks as $executor) {
                 $interviewer->setScope(get_class($executor));
                 $executor->cleanUp($taskDirectory->filterTasks([$executor, 'supports']), $project, $interviewer);
+                pcntl_signal_dispatch();
             }
+
+            pcntl_signal(SIGINT, SIG_DFL);
         } catch (Exception $e) {
+            pcntl_signal(SIGINT, SIG_DFL);
+
             $interviewer->notice(sprintf('Task execution failed: %s', $e->getMessage()));
             $interviewer->notice('Rolling back changes...');
 

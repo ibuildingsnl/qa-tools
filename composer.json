@@ -24,6 +24,7 @@
     },
     "require": {
         "php": "^5.6|^7.0",
+        "ext-pcntl": "*",
         "beberlei/assert": "^2.5",
         "composer/semver": "^1.4",
         "guzzlehttp/guzzle": "^6.2",
