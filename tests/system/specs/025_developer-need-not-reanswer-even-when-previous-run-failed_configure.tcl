@@ -13,6 +13,7 @@ answer "Would you like to integrate Travis in your project?" with "N"
 answer "Would you like to use PHP Lint?" with "N"
 answer "Would you like to use PHP Mess Detector?" with "Y"
 answer "Would you like to use PHP Code Sniffer?" with "N"
+answer "Would you like to check for vulnerable dependencies using SensioLabs Security Checker?" with "N"
 
 set timeout 5
 

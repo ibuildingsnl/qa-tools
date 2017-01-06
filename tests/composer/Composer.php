@@ -49,6 +49,7 @@ final class Composer
                     ]
                 ],
                 ['type' => 'path', 'url' => $pathTo('escapestudios/symfony2-coding-standard')],
+                ['type' => 'path', 'url' => $pathTo('sensiolabs/security-checker')],
             ],
         ];
         file_put_contents(
