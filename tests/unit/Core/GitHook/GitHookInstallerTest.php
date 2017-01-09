@@ -34,6 +34,30 @@ class GitHookInstallerTest extends PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function returns_true_if_pre_commit_hook_already_exists()
+    {
+        $installer = new GitHookInstaller($this->fileHandler);
+
+        $this->fileHandler->shouldReceive('exists')->with('/var/project/.git/hooks/pre-commit')->andReturn(true);
+
+        $this->assertTrue($installer->preCommitHookExist($this->directory));
+    }
+
+    /**
+     * @test
+     */
+    public function returns_false_if_pre_commit_hook_does_not_exist()
+    {
+        $installer = new GitHookInstaller($this->fileHandler);
+
+        $this->fileHandler->shouldReceive('exists')->with('/var/project/.git/hooks/pre-commit')->andReturn(false);
+
+        $this->assertFalse($installer->preCommitHookExist($this->directory));
+    }
+
+    /**
+     * @test
+     */
     public function installs_git_hook()
     {
         $installer = new GitHookInstaller($this->fileHandler);

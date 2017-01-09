@@ -19,6 +19,14 @@ final class GitHookInstaller
         $this->fileHandler = $fileHandler;
     }
 
+    /**
+     * @return bool
+     */
+    public function preCommitHookExist(Directory $projectRoot)
+    {
+        return $this->fileHandler->exists($projectRoot->getDirectory().self::PRE_COMMIT_PATH);
+    }
+
     public function installPreCommitHook(Directory $projectRoot)
     {
         $filePath = $projectRoot->getDirectory().self::PRE_COMMIT_PATH;
