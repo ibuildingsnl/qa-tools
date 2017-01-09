@@ -38,6 +38,8 @@ class GitHookInstallerTest extends PHPUnit_Framework_TestCase
     {
         $installer = new GitHookInstaller($this->fileHandler);
 
+        $this->fileHandler->shouldReceive('readFrom')->andReturn('ant precommit');
+
         $installer->installPreCommitHook($this->directory);
 
         $this->fileHandler->shouldHaveReceived('writeTo', [self::PRE_COMMIT_HOOK_FILE, '/ant precommit/']);

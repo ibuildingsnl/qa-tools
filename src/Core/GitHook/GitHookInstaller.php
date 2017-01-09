@@ -23,7 +23,7 @@ final class GitHookInstaller
     {
         $filePath = $projectRoot->getDirectory().self::PRE_COMMIT_PATH;
 
-        $this->fileHandler->writeTo($filePath, file_get_contents(__DIR__.'/files/pre-commit'));
+        $this->fileHandler->writeTo($filePath, $this->fileHandler->readFrom(__DIR__.'/files/pre-commit'));
         $this->fileHandler->changeMode($filePath, 0775);
     }
 }
