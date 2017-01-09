@@ -2,6 +2,7 @@
 
 namespace Ibuildings\QaTools\Core\Application\Command;
 
+use Ibuildings\QaTools\Core\Project\Directory;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -22,6 +23,10 @@ final class PreCommitCommand extends Command implements ContainerAwareInterface
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        // Implementation
+        $installer = $this->container->get('qa_tools.git.hook_installer');
+
+        $installer->installPreCommitHook(new Directory(getcwd()));
+
+        $output->writeln('Installed Git pre-commit hook');
     }
 }

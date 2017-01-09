@@ -82,6 +82,11 @@ services:
         arguments:
             - "@logger"
 
+    qa_tools.git.hook_installer:
+        class: Ibuildings\QaTools\Core\GitHook\GitHookInstaller
+        arguments:
+            - '@qa_tools.io.file.filesystem_file_handler'
+
     symfony.filesystem:
         class: Symfony\Component\Filesystem\Filesystem
 
