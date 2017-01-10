@@ -50,6 +50,7 @@ final class Composer
                 ],
                 ['type' => 'path', 'url' => $pathTo('escapestudios/symfony2-coding-standard')],
                 ['type' => 'path', 'url' => $pathTo('sensiolabs/security-checker')],
+                ['type' => 'path', 'url' => $pathTo('behat/behat')],
             ],
         ];
         file_put_contents(

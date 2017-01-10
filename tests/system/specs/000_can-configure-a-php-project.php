@@ -2,6 +2,7 @@
 
 namespace Ibuildings\QaTools\SystemTest;
 
+use Ibuildings\QaTools\Tool\Behat\Behat;
 use Ibuildings\QaTools\Tool\PhpCs\PhpCs;
 use Ibuildings\QaTools\Tool\PhpLint\PhpLint;
 use Ibuildings\QaTools\Tool\PhpMd\PhpMd;
@@ -21,9 +22,12 @@ assertFileContains('build.xml', PhpMd::ANT_TARGET);
 assertFileContains('build.xml', PhpLint::ANT_TARGET_FULL);
 assertFileContains('build.xml', PhpLint::ANT_TARGET_DIFF);
 assertFileContains('build.xml', SensioLabsSecurityChecker::ANT_TARGET);
+assertFileContains('build.xml', Behat::ANT_TARGET);
 
 assertFileExists('phpmd.xml');
 assertFileContains('phpmd.xml', 'Ibuildings QA Tools Default Ruleset');
 
 assertFileExists('ruleset.xml');
 Composer::assertPackageIsInstalled('squizlabs/php_codesniffer');
+
+Composer::assertPackageIsInstalled('behat/behat');

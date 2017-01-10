@@ -9,6 +9,7 @@ accept_default_for "Would you like to use PHP Lint?"
 accept_default_for "Would you like to use PHP Mess Detector?"
 accept_default_for "Would you like to use PHP Code Sniffer?"
 accept_default_for "Would you like to check for vulnerable dependencies using SensioLabs Security Checker?"
+accept_default_for "Would you like to install Behat for feature testing?"
 
 set timeout 5
 
