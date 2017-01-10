@@ -35,13 +35,15 @@ final class PreCommitCommand extends Command implements ContainerAwareInterface
 
         if ($installer->preCommitHookExist($projectRoot)) {
             $question = new ConfirmationQuestion(
-                '<question>A pre-commit hook already exists in this project. Are you sure you want to overwrite it? (y/N)</question>',
+                '<question>A pre-commit hook already exists in this project. Are you sure you want to overwrite it? '.
+                '(y/N)</question>',
                 false
             );
 
             if (!$questionHelper->ask($input, $output, $question)) {
                 $output->writeln(
-                    '<info>The pre-commit hook was left unchanged. You can manually add `ant precommit` to your pre-commit hook in order to run the pre-commit build before every commit.</info>'
+                    '<info>The pre-commit hook was left unchanged. You can manually add `ant precommit` to your '.
+                    'pre-commit hook in order to run the pre-commit build before every commit.</info>'
                 );
 
                 return;
