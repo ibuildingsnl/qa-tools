@@ -1,6 +1,6 @@
 <?php
 
-namespace unit\Installer;
+namespace Ibuildings\QaTools\UnitTest\Installer;
 
 use HttpClient;
 use Installer;
