@@ -5,7 +5,9 @@
  * Largely based on the Composer installer.
  */
 
-installQaTools(is_array($argv) ? $argv : []);
+if (!defined('TESTING_QA_TOOLS_INSTALLER')) {
+    installQaTools(is_array($argv) ? $argv : []);
+}
 
 /**
  * processes the installer
@@ -43,7 +45,7 @@ function installQaTools($argv)
     }
 
     if ($ok || $force) {
-        $installer = new Installer($quiet, new HttpClient($cafile), 'ibuildingsnl', 'qa-tools-v3');
+        $installer = new Installer($quiet, new HttpClient($cafile), new PharValidator(), 'ibuildingsnl', 'qa-tools-v3');
         if ($installer->run($version, $installDir, $filename)) {
             showWarnings($warnings);
             exit(0);
@@ -82,21 +84,26 @@ EOF;
  */
 function setUseAnsi($argv)
 {
-    // --no-ansi wins over --ansi
+    if (defined('USE_ANSI')) {
+        return;
+    }
+
     if (in_array('--no-ansi', $argv)) {
         define('USE_ANSI', false);
-    } elseif (in_array('--ansi', $argv)) {
-        define('USE_ANSI', true);
-    } else {
-        // On Windows, default to no ANSI, except in ANSICON and ConEmu.
-        // Everywhere else, default to ANSI if stdout is a terminal.
-        define(
-            'USE_ANSI',
-            (DIRECTORY_SEPARATOR == '\\')
-                ? (false !== getenv('ANSICON') || 'ON' === getenv('ConEmuANSI'))
-                : (function_exists('posix_isatty') && posix_isatty(1))
-        );
+        return;
     }
+
+    if (in_array('--ansi', $argv)) {
+        define('USE_ANSI', true);
+        return;
+    }
+
+    define(
+        'USE_ANSI',
+        (DIRECTORY_SEPARATOR === '\\')
+            ? (false !== getenv('ANSICON') || 'ON' === getenv('ConEmuANSI'))
+            : (function_exists('posix_isatty') && posix_isatty(1))
+    );
 }
 
 /**
@@ -234,13 +241,6 @@ function getPlatformIssues(&$errors, &$warnings)
         $errors['phar'] = [
             'The phar extension is missing.',
             'Install it or recompile php without --disable-phar',
-        ];
-    }
-
-    if (!extension_loaded('hash')) {
-        $errors['hash'] = [
-            'The hash extension is missing.',
-            'Install it or recompile php without --disable-hash',
         ];
     }
 
@@ -410,9 +410,6 @@ class Installer
     /** @var string $tmpPubkeyPath */
     private $tmpPubkeyPath;
 
-    /** @var ErrorHandler $errHandler */
-    private $errHandler;
-
     /** @var HttpClient $httpClient */
     private $httpClient;
 
@@ -421,22 +418,28 @@ class Installer
 
     /** @var string $repositoryName */
     private $repositoryName;
+    /**
+     * @var PharValidator
+     */
+    private $pharValidator;
 
     /**
      * @param bool   $quiet Quiet mode
      * @param mixed  $caFile Path to CA bundle, or false
+     * @param HttpClient $httpClient Http client to download release info and files
+     * @param PharValidator $pharValidator A class that can validate Phar files
      * @param string $repositoryOwner Owner of repository to download from
      * @param string $repositoryName Name of repository to download release from
      */
-    public function __construct($quiet, HttpClient $httpClient, $repositoryOwner, $repositoryName)
+    public function __construct($quiet, HttpClient $httpClient, PharValidator $pharValidator, $repositoryOwner, $repositoryName)
     {
         if (($this->quiet = $quiet)) {
             ob_start();
         }
         $this->httpClient = $httpClient;
-        $this->errHandler = new ErrorHandler();
         $this->repositoryOwner = $repositoryOwner;
         $this->repositoryName = $repositoryName;
+        $this->pharValidator = $pharValidator;
     }
 
     /**
@@ -461,7 +464,9 @@ class Installer
             }
             out($e->getMessage(), 'error');
         } finally {
-            $this->cleanUp($result);
+            if (!$result) {
+                $this->cleanUp();
+            }
         }
 
         return $result;
@@ -474,10 +479,12 @@ class Installer
      * @param string $filename Specific filename to save to
      * @throws RuntimeException If the installation directory is not writable
      */
-    protected function initTargets($installDir, $filename)
+    private function initTargets($installDir, $filename)
     {
-        $this->installPath = (is_dir($installDir) ? rtrim($installDir, '/') . '/' : '') . $filename;
-        $installDir = realpath($installDir) ? realpath($installDir) : getcwd();
+        if ($installDir === false) {
+            $installDir = getcwd();
+        }
+        $this->installPath = rtrim($installDir, '/') . '/'. $filename;
 
         if (!is_writable($installDir)) {
             throw new RuntimeException('The installation directory "' . $installDir . '" is not writable');
@@ -496,7 +503,7 @@ class Installer
      *
      * @return bool If the installation succeeded
      */
-    protected function install($version)
+    private function install($version)
     {
         $retries = 3;
         $infoMsg = 'Downloading...';
@@ -518,13 +525,7 @@ class Installer
                 }
 
                 $releaseInfo = $this->getLatestReleaseInfo($version);
-                $version = $releaseInfo['tag_name'];
-
-                if (count($releaseInfo['assets']) < 2) {
-                    throw new RuntimeException(
-                        sprintf('Expected at least 2 assets, found %d', count($releaseInfo['assets']))
-                    );
-                }
+                $releaseVersion = $releaseInfo['tag_name'];
 
                 $pharUrl = $pubkeyUrl = false;
                 foreach ($releaseInfo['assets'] as $asset) {
@@ -537,10 +538,14 @@ class Installer
                 }
 
                 if ($pharUrl === false) {
-                    throw new RuntimeException('Unable to find qa-tools.phar in release');
+                    throw new RuntimeException(
+                        sprintf('Unable to find qa-tools.phar in release %s', $releaseVersion)
+                    );
                 }
                 if ($pubkeyUrl === false) {
-                    throw new RuntimeException('Unable to find qa-tools.phar.pubkey in release');
+                    throw new RuntimeException(
+                        sprintf('Unable to find qa-tools.phar.pubkey in release %s', $releaseVersion)
+                    );
                 }
 
                 $this->downloadTemporaryFile($pharUrl, $this->tmpPharPath);
@@ -557,7 +562,7 @@ class Installer
 
         if (!$this->quiet) {
             if ($success) {
-                out(PHP_EOL . "QA Tools (version {$version}) successfully installed to: {$this->target}", 'success');
+                out(PHP_EOL . "QA Tools (version {$releaseVersion}) successfully installed to: {$this->target}", 'success');
                 out("Use it: php {$this->installPath}", 'info');
                 out('');
             } else {
@@ -610,32 +615,29 @@ class Installer
      * @return bool If the operation succeeded
      * @throws \RuntimeException
      */
-    protected function downloadTemporaryFile($url, $target)
+    private function downloadTemporaryFile($url, $target)
     {
-        $this->errHandler->start();
-
         try {
-            if (!$fh = fopen($target, 'w')) {
+            if (($fh = @fopen($target, 'w')) === false) {
                 throw new RuntimeException(
                     sprintf(
                         'Could not create file "%s": %s',
                         $target,
-                        $this->errHandler->message
+                        @error_get_last()['message']
                     )
                 );
             }
 
-            if (!fwrite($fh, $this->httpClient->get($url, 'application/octet-stream'))) {
+            if ((@fwrite($fh, $this->httpClient->get($url, 'application/octet-stream'))) === false) {
                 throw new RuntimeException(
                     sprintf(
                         'The "%s" file could not be downloaded: %s',
                         $url,
-                        $this->errHandler->message
+                        @error_get_last()['message']
                     )
                 );
             }
         } finally {
-            $this->errHandler->stop();
             if (is_resource($fh)) {
                 fclose($fh);
             }
@@ -648,158 +650,54 @@ class Installer
      * @return bool If the operation succeeded
      * @throws \RuntimeException
      */
-    protected function verifyAndSave()
+    private function verifyAndSave()
     {
-        $this->assertPharValid();
+        $this->pharValidator->assertPharValid($this->tmpPharPath);
 
-        $this->errHandler->start();
-
-        try {
-            if (!rename($this->tmpPharPath, $this->target)) {
-                throw new RuntimeException(
-                    sprintf(
-                        'Could not write to file "%s": %s',
-                        $this->target,
-                        $this->errHandler->message
-                    )
-                );
-            }
-            if (!rename($this->tmpPubkeyPath, $this->target . '.pubkey')) {
-                throw new RuntimeException(
-                    sprintf(
-                        'Could not write to file "%s": %s',
-                        $this->target,
-                        $this->errHandler->message
-                    )
-                );
-            }
-
-            chmod($this->target, 0755);
-        } finally {
-            $this->errHandler->stop();
-        }
-    }
-
-    /**
-     * Validates the downloaded phar file
-     *
-     * @return bool If the operation succeeded
-     * @throws \RuntimeException
-     */
-    protected function assertPharValid()
-    {
-        try {
-            // Test the phar validity - simply opening the PHAR will actually
-            // check the against the <pharname>.pubkey file
-            $phar = new Phar($this->tmpPharPath);
-            $signature = $phar->getSignature();
-            if (strtolower($signature['hash_type']) !== 'openssl') {
-                throw new RuntimeException('Downloaded PHAR was not signed!');
-            }
-            // Free the variable to unlock the file
-            unset($phar);
-        } catch (Exception $e) {
+        if (!@rename($this->tmpPharPath, $this->target)) {
             throw new RuntimeException(
                 sprintf(
-                    'Unable to open PHAR file: %s',
-                    $e->getMessage()
-                ),
-                0,
-                $e
+                    'Could not write to file "%s": %s',
+                    $this->target,
+                    @error_get_last()['message']
+                )
             );
         }
-    }
-
-    /**
-     * Cleans up resources at the end of the installation
-     *
-     * @param bool $result If the installation succeeded
-     */
-    protected function cleanUp($result)
-    {
-        if (!$result) {
-            // Output buffered errors
-            if ($this->quiet) {
-                $this->outputErrors();
-            }
-            // Clean up stuff we created
-            $this->uninstall();
+        if (!@rename($this->tmpPubkeyPath, $this->target . '.pubkey')) {
+            throw new RuntimeException(
+                sprintf(
+                    'Could not write to file "%s": %s',
+                    $this->target,
+                    @error_get_last()['message']
+                )
+            );
         }
+
+        chmod($this->target, 0755);
     }
 
     /**
-     * Outputs unique errors
+     * Cleans up resources at the end of a failed installation
      */
-    protected function outputErrors()
+    private function cleanUp()
     {
-        $errors = explode(PHP_EOL, ob_get_clean());
-        $shown = [];
+        if ($this->quiet) {
+            $errors = explode(PHP_EOL, ob_get_clean());
+            $shown = [];
 
-        foreach ($errors as $error) {
-            if ($error && !in_array($error, $shown)) {
-                out($error, 'error');
-                $shown[] = $error;
+            foreach ($errors as $error) {
+                if ($error && !in_array($error, $shown)) {
+                    out($error, 'error');
+                    $shown[] = $error;
+                }
             }
         }
-    }
 
-    /**
-     * Uninstalls newly-created files and directories on failure
-     */
-    protected function uninstall()
-    {
         if (file_exists($this->tmpPharPath)) {
             @unlink($this->tmpPharPath);
         }
         if (file_exists($this->tmpPubkeyPath)) {
             @unlink($this->tmpPharPath);
-        }
-    }
-}
-
-class ErrorHandler
-{
-    public $message;
-    protected $active;
-
-    /**
-     * Handle php errors
-     *
-     * @param mixed $code The error code
-     * @param mixed $msg The error message
-     */
-    public function handleError($code, $msg)
-    {
-        if ($this->message) {
-            $this->message .= PHP_EOL;
-        }
-        $this->message .= preg_replace('{^file_get_contents\(.*?\): }', '', $msg);
-    }
-
-    /**
-     * Starts error-handling if not already active
-     *
-     * Any message is cleared
-     */
-    public function start()
-    {
-        if (!$this->active) {
-            set_error_handler([$this, 'handleError']);
-            $this->active = true;
-        }
-        $this->message = '';
-    }
-
-    /**
-     * Stops error-handling if active
-     *
-     * Any message is preserved until the next call to start()
-     */
-    public function stop()
-    {
-        if ($this->active) {
-            restore_error_handler();
-            $this->active = false;
         }
     }
 }
@@ -816,8 +714,10 @@ class HttpClient
                 throw new RuntimeException('The configured cafile (' . $cafile . ') was not valid or could not be read.');
             }
         }
-        $options = $this->getTlsStreamContextDefaults($cafile);
-        $this->options = array_replace_recursive($this->options, $options);
+        $this->options = array_replace_recursive(
+            $this->options,
+            $this->getTlsStreamContextDefaults($cafile)
+        );
     }
 
     public function get($url, $acceptMimeType = 'application/octet-stream')
@@ -852,7 +752,7 @@ class HttpClient
         return $result;
     }
 
-    protected function getTlsStreamContextDefaults($cafile)
+    private function getTlsStreamContextDefaults($cafile)
     {
         $ciphers = implode(':', [
             'ECDHE-RSA-AES128-GCM-SHA256',
@@ -935,7 +835,7 @@ class HttpClient
      * @return resource Default context
      * @throws \RuntimeException if https proxy required and OpenSSL uninstalled
      */
-    protected function getMergedStreamContext($url, $acceptMimeType)
+    private function getMergedStreamContext($url, $acceptMimeType)
     {
         $options = $this->options;
 
@@ -1108,5 +1008,32 @@ class HttpClient
         }
 
         return $caPath = false;
+    }
+}
+
+class PharValidator
+{
+    public function assertPharValid($path)
+    {
+        try {
+            // Test the phar validity - simply opening the PHAR will actually
+            // check the against the <pharname>.pubkey file
+            $phar = new Phar($path);
+            $signature = $phar->getSignature();
+            if (strtolower($signature['hash_type']) !== 'openssl') {
+                throw new RuntimeException('Downloaded PHAR was not signed!');
+            }
+            // Free the variable to unlock the file
+            unset($phar);
+        } catch (Exception $e) {
+            throw new RuntimeException(
+                sprintf(
+                    'Unable to open PHAR file: %s',
+                    $e->getMessage()
+                ),
+                0,
+                $e
+            );
+        }
     }
 }
