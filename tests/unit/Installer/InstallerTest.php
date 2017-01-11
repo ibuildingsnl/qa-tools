@@ -26,11 +26,20 @@ final class InstallerTest extends TestCase
     const PUBKEY_ASSET_URL = 'https://api.github.com/assets/2';
     const PUBKEY_ASSET_CONTENTS = 'PUBKEY';
 
+    /** @var Mockery\Mock|PharValidator */
+    private $pharValidator;
+
+    public function setUp()
+    {
+        $this->pharValidator = Mockery::mock(PharValidator::class);
+    }
+
     /**
      * @test
      */
     public function calls_correct_url_for_latest()
     {
+        /** @var Mockery\Mock|HttpClient $httpClient */
         $httpClient = Mockery::mock(HttpClient::class);
         $httpClient->shouldReceive('get')
             ->once()
@@ -47,7 +56,7 @@ final class InstallerTest extends TestCase
         $installer = new Installer(
             false,
             $httpClient,
-            new PharValidator(),
+            $this->pharValidator,
             self::REPOSITORY_OWNER,
             self::REPOSITORY_NAME
         );
@@ -59,6 +68,7 @@ final class InstallerTest extends TestCase
      */
     public function calls_correct_url_for_specific_version()
     {
+        /** @var Mockery\Mock|HttpClient $httpClient */
         $httpClient = Mockery::mock(HttpClient::class);
         $httpClient->shouldReceive('get')
             ->once()
@@ -75,7 +85,7 @@ final class InstallerTest extends TestCase
         $installer = new Installer(
             false,
             $httpClient,
-            new PharValidator(),
+            $this->pharValidator,
             self::REPOSITORY_OWNER,
             self::REPOSITORY_NAME
         );
@@ -87,6 +97,7 @@ final class InstallerTest extends TestCase
      */
     public function fails_on_invalid_json_from_github()
     {
+        /** @var Mockery\Mock|HttpClient $httpClient */
         $httpClient = Mockery::mock(HttpClient::class);
         $httpClient->shouldReceive('get')
             ->once()
@@ -103,7 +114,7 @@ final class InstallerTest extends TestCase
         $installer = new Installer(
             false,
             $httpClient,
-            new PharValidator(),
+            $this->pharValidator,
             self::REPOSITORY_OWNER,
             self::REPOSITORY_NAME
         );
@@ -117,6 +128,7 @@ final class InstallerTest extends TestCase
      */
     public function fails_when_no_phar_available_in_release()
     {
+        /** @var Mockery\Mock|HttpClient $httpClient */
         $httpClient = Mockery::mock(HttpClient::class);
         $httpClient->shouldReceive('get')
             ->with(
@@ -140,7 +152,7 @@ final class InstallerTest extends TestCase
         $installer = new Installer(
             false,
             $httpClient,
-            new PharValidator(),
+            $this->pharValidator,
             self::REPOSITORY_OWNER,
             self::REPOSITORY_NAME
         );
@@ -157,6 +169,7 @@ final class InstallerTest extends TestCase
      */
     public function fails_when_no_pubkey_available_in_release()
     {
+        /** @var Mockery\Mock|HttpClient $httpClient */
         $httpClient = Mockery::mock(HttpClient::class);
         $httpClient->shouldReceive('get')
             ->with(
@@ -180,7 +193,7 @@ final class InstallerTest extends TestCase
         $installer = new Installer(
             false,
             $httpClient,
-            new PharValidator(),
+            $this->pharValidator,
             self::REPOSITORY_OWNER,
             self::REPOSITORY_NAME
         );
@@ -197,6 +210,7 @@ final class InstallerTest extends TestCase
      */
     public function download_correct_files()
     {
+        /** @var Mockery\Mock|HttpClient $httpClient */
         $httpClient = Mockery::mock(HttpClient::class);
         $httpClient->shouldReceive('get')
             ->once()
@@ -244,6 +258,7 @@ final class InstallerTest extends TestCase
             ->with($getAssetUrl(self::PUBKEY_ASSET_URL), 'application/octet-stream')
             ->andReturn(self::PUBKEY_ASSET_CONTENTS);
 
+        /** @var Mockery\Mock|PharValidator $pharValidator */
         $pharValidator = Mockery::mock(PharValidator::class);
         $pharValidator->shouldReceive('assertPharValid')->once();
 
