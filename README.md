@@ -24,7 +24,7 @@ The recommended way to install the QA Tools is by using our installer:
 
 ```
 php -r "copy('https://github.com/ibuildingsnl/qa-tools-v3/blob/master/installer.php', 'qa-tools-setup.php');"
-php -r "if (hash_file('SHA384', 'qa-tools-setup.php') === '08e5d27443244f51b1dd28fa632b676635dd861d50697405f6ef6a2cb878be5503f28d6666bc23478abea3aa5e5ce002') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('qa-tools-setup.php'); } echo PHP_EOL;"
+php -r "if (hash_file('SHA384', 'qa-tools-setup.php') === 'd1e78d49758ac3ca978112a187f0b0c60cf5f13da7e65994e1f515b9db6da62fa86c6e686b58fc5c7e7510735bcd7680') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('qa-tools-setup.php'); } echo PHP_EOL;"
 php qa-tools-setup.php
 php -r "unlink('qa-tools-setup.php');"
 ```
