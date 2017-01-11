@@ -21,10 +21,8 @@ final class InstallerTest extends TestCase
     const REPOSITORY_NAME = 'qa-tools-v3';
 
     const PHAR_ASSET_URL = 'https://api.github.com/assets/1';
-    const PHAR_ASSET_CONTENTS = 'PHAR';
-
     const PUBKEY_ASSET_URL = 'https://api.github.com/assets/2';
-    const PUBKEY_ASSET_CONTENTS = 'PUBKEY';
+
     const VERSION = '1.0.0';
 
     /** @var Mockery\Mock|PharValidator */
@@ -240,64 +238,6 @@ final class InstallerTest extends TestCase
             '~^Unable to find qa-tools\.phar\.pubkey in release '.preg_quote(self::VERSION, '~').'~sm',
             $output
         );
-    }
-
-    /**
-     * @test
-     */
-    public function download_correct_files()
-    {
-        /** @var Mockery\Mock|HttpClient $httpClient */
-        $httpClient = Mockery::mock(HttpClient::class);
-        $httpClient->shouldReceive('get')
-            ->with(
-                sprintf(
-                    'https://api.github.com/repos/%s/%s/releases/latest',
-                    urlencode(self::REPOSITORY_OWNER),
-                    urlencode(self::REPOSITORY_NAME)
-                ),
-                'application/vnd.github.v3+json'
-            )
-            ->andReturn(json_encode([
-                'tag_name' => self::VERSION,
-                'assets' => [
-                    [
-                        'name' => 'qa-tools.phar',
-                        'url' => self::PHAR_ASSET_URL,
-                    ],
-                    [
-                        'name' => 'qa-tools.phar.pubkey',
-                        'url' => self::PUBKEY_ASSET_URL,
-                    ]
-                ]
-            ]));
-
-        $httpClient->shouldReceive('get')
-            ->with($this->getAssetUrl(self::PHAR_ASSET_URL), 'application/octet-stream')
-            ->andReturn(self::PHAR_ASSET_CONTENTS);
-
-        $httpClient->shouldReceive('get')
-            ->with($this->getAssetUrl(self::PUBKEY_ASSET_URL), 'application/octet-stream')
-            ->andReturn(self::PUBKEY_ASSET_CONTENTS);
-
-        /** @var Mockery\Mock|PharValidator $pharValidator */
-        $pharValidator = Mockery::mock(PharValidator::class);
-        $pharValidator->shouldReceive('assertPharValid');
-
-        $installer = new Installer(false, $httpClient, $pharValidator, self::REPOSITORY_OWNER, self::REPOSITORY_NAME);
-
-        $root = vfsStream::setup('temp');
-        ob_start();
-        $installer->run(false, vfsStream::url('temp'), 'qa-tools');
-        $output = ob_get_clean();
-
-        $this->assertRegexp('~^QA Tools \(version 1\.0\.0\) successfully installed~sm', $output);
-
-        $this->assertTrue($root->hasChild('temp/qa-tools'));
-        $this->assertEquals(self::PHAR_ASSET_CONTENTS, $root->getChild('temp/qa-tools')->getContent());
-
-        $this->assertTrue($root->hasChild('temp/qa-tools.pubkey'));
-        $this->assertEquals(self::PUBKEY_ASSET_CONTENTS, $root->getChild('temp/qa-tools.pubkey')->getContent());
     }
 
     private function getAssetUrl($url)

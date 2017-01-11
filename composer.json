@@ -28,7 +28,6 @@
         "beberlei/assert": "^2.5",
         "composer/semver": "^1.4",
         "guzzlehttp/guzzle": "^6.2",
-        "mikey179/vfsStream": "^1.6",
         "padraic/phar-updater": "^1.0",
         "psr/log": "^1.0",
         "symfony/config": "^3.1",
