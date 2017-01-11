@@ -7,6 +7,7 @@ use Ibuildings\QaTools\Core\Tool\Tool;
 use Ibuildings\QaTools\Tool\PhpCs\PhpCs;
 use Ibuildings\QaTools\Tool\PhpLint\PhpLint;
 use Ibuildings\QaTools\Tool\PhpMd\PhpMd;
+use Ibuildings\QaTools\Tool\PhpUnit\PhpUnit;
 use Ibuildings\QaTools\Tool\SensioLabsSecurityChecker\SensioLabsSecurityChecker;
 use Symfony\Component\Console\Application as ConsoleApplication;
 use Symfony\Component\Console\Command\Command;
@@ -48,6 +49,7 @@ final class Application extends ConsoleApplication
     public function getRegisteredTools()
     {
         return [
+            new PhpUnit(),
             new PhpLint(),
             new PhpMd(),
             new PhpCs(),
