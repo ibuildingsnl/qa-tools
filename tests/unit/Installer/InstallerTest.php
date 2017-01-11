@@ -29,25 +29,6 @@ final class InstallerTest extends TestCase
     /**
      * @test
      */
-    public function verify_readme_installer_hash()
-    {
-        $readme = file_get_contents(__DIR__.'/../../../README.md');
-        preg_match_all('~\'([a-f0-9]{96})\'~', $readme, $regexResults);
-
-        $this->assertCount(1, $regexResults[1], 'Exactly one SHA384 hash expected in README.md, found '.count($regexResults[1]));
-
-        $shaOfInstaller = hash_file('SHA384', __DIR__.'/../../../installer.php');
-
-        $this->assertEquals(
-            $shaOfInstaller,
-            $regexResults[1][0],
-            'SHA384 signature in README.md does not match that of installer.php'
-        );
-    }
-
-    /**
-     * @test
-     */
     public function calls_correct_url_for_latest()
     {
         $httpClient = Mockery::mock(HttpClient::class);
