@@ -45,8 +45,8 @@ final class InstallerTest extends TestCase
             ->with(
                 sprintf(
                     'https://api.github.com/repos/%s/%s/releases/latest',
-                    self::REPOSITORY_OWNER,
-                    self::REPOSITORY_NAME
+                    urlencode(self::REPOSITORY_OWNER),
+                    urlencode(self::REPOSITORY_NAME)
                 ),
                 'application/vnd.github.v3+json'
             )
@@ -73,8 +73,8 @@ final class InstallerTest extends TestCase
             ->with(
                 sprintf(
                     'https://api.github.com/repos/%s/%s/releases/1.0.0',
-                    self::REPOSITORY_OWNER,
-                    self::REPOSITORY_NAME
+                    urlencode(self::REPOSITORY_OWNER),
+                    urlencode(self::REPOSITORY_NAME)
                 ),
                 'application/vnd.github.v3+json'
             )
@@ -101,8 +101,8 @@ final class InstallerTest extends TestCase
             ->with(
                 sprintf(
                     'https://api.github.com/repos/%s/%s/releases/1.0.0',
-                    self::REPOSITORY_OWNER,
-                    self::REPOSITORY_NAME
+                    urlencode(self::REPOSITORY_OWNER),
+                    urlencode(self::REPOSITORY_NAME)
                 ),
                 'application/vnd.github.v3+json'
             )
@@ -131,8 +131,8 @@ final class InstallerTest extends TestCase
             ->with(
                 sprintf(
                     'https://api.github.com/repos/%s/%s/releases/latest',
-                    self::REPOSITORY_OWNER,
-                    self::REPOSITORY_NAME
+                    urlencode(self::REPOSITORY_OWNER),
+                    urlencode(self::REPOSITORY_NAME)
                 ),
                 'application/vnd.github.v3+json'
             )
@@ -172,8 +172,8 @@ final class InstallerTest extends TestCase
             ->with(
                 sprintf(
                     'https://api.github.com/repos/%s/%s/releases/latest',
-                    self::REPOSITORY_OWNER,
-                    self::REPOSITORY_NAME
+                    urlencode(self::REPOSITORY_OWNER),
+                    urlencode(self::REPOSITORY_NAME)
                 ),
                 'application/vnd.github.v3+json'
             )
@@ -213,8 +213,8 @@ final class InstallerTest extends TestCase
             ->with(
                 sprintf(
                     'https://api.github.com/repos/%s/%s/releases/latest',
-                    self::REPOSITORY_OWNER,
-                    self::REPOSITORY_NAME
+                    urlencode(self::REPOSITORY_OWNER),
+                    urlencode(self::REPOSITORY_NAME)
                 ),
                 'application/vnd.github.v3+json'
             )
@@ -234,7 +234,7 @@ final class InstallerTest extends TestCase
 
         $getAssetUrl = function ($url) {
             if (getenv('GITHUB_TOKEN') !== false) {
-                $url .= '?access_token='.getenv('GITHUB_TOKEN');
+                return sprintf('%s?access_token=%s', $url, urlencode(getenv('GITHUB_TOKEN')));
             }
             return $url;
         };

@@ -493,7 +493,7 @@ class Installer
         $infoType = 'info';
         $getDownloadUrl = function ($url) {
             if (getenv('GITHUB_TOKEN') !== false) {
-                $url .= '?access_token='.getenv('GITHUB_TOKEN');
+                return sprintf('%s?access_token=%s', $url, urlencode(getenv('GITHUB_TOKEN')));
             }
             return $url;
         };
@@ -570,7 +570,7 @@ class Installer
             'https://api.github.com/repos/%s/%s/releases/%s',
             urlencode($this->repositoryOwner),
             urlencode($this->repositoryName),
-            $version
+            urlencode($version)
         );
 
         try {
