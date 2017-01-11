@@ -491,12 +491,6 @@ class Installer
         $retries = 3;
         $infoMsg = 'Downloading...';
         $infoType = 'info';
-        $getDownloadUrl = function ($url) {
-            if (getenv('GITHUB_TOKEN') !== false) {
-                return sprintf('%s?access_token=%s', $url, urlencode(getenv('GITHUB_TOKEN')));
-            }
-            return $url;
-        };
 
         $success = false;
         while ($retries--) {
@@ -508,31 +502,9 @@ class Installer
                 }
 
                 $releaseInfo = $this->getLatestReleaseInfo($version);
-                $releaseVersion = $releaseInfo['tag_name'];
 
-                $pharUrl = $pubkeyUrl = false;
-                foreach ($releaseInfo['assets'] as $asset) {
-                    if ($asset['name'] === 'qa-tools.phar') {
-                        $pharUrl = $getDownloadUrl($asset['url']);
-                    }
-                    if ($asset['name'] === 'qa-tools.phar.pubkey') {
-                        $pubkeyUrl = $getDownloadUrl($asset['url']);
-                    }
-                }
-
-                if ($pharUrl === false) {
-                    throw new RuntimeException(
-                        sprintf('Unable to find qa-tools.phar in release %s', $releaseVersion)
-                    );
-                }
-                if ($pubkeyUrl === false) {
-                    throw new RuntimeException(
-                        sprintf('Unable to find qa-tools.phar.pubkey in release %s', $releaseVersion)
-                    );
-                }
-
-                $this->downloadTemporaryFile($pharUrl, $this->tmpPharPath);
-                $this->downloadTemporaryFile($pubkeyUrl, $this->tmpPubkeyPath);
+                $this->downloadTemporaryFile($releaseInfo['pharUrl'], $this->tmpPharPath);
+                $this->downloadTemporaryFile($releaseInfo['pubkeyUrl'], $this->tmpPubkeyPath);
 
                 $this->verifyAndSave();
 
@@ -545,7 +517,7 @@ class Installer
 
         if (!$this->quiet) {
             if ($success) {
-                out(PHP_EOL . "QA Tools (version {$releaseVersion}) successfully installed to: {$this->target}", 'success');
+                out(PHP_EOL . "QA Tools (version {$releaseInfo['version']}) successfully installed to: {$this->target}", 'success');
                 out("Use it: php {$this->installPath}", 'info');
                 out('');
             } else {
@@ -579,10 +551,43 @@ class Installer
             throw new RuntimeException('Unable to download version information from '.$url.': '.$e->getMessage());
         }
 
-        $releaseInfo = json_decode($response, true);
+        $allReleaseInfo = json_decode($response, true);
         if (json_last_error()) {
             throw new RuntimeException(
                 'Invalid response from GitHub when requesting version information (' . json_last_error_msg() . ')'
+            );
+        }
+
+        if (!isset($allReleaseInfo['tag_name'])) {
+            throw new RuntimeException('Unable to determine version number from release');
+        }
+
+        $releaseInfo = ['version' => $allReleaseInfo['tag_name']];
+
+        $getDownloadUrl = function ($url) {
+            if (getenv('GITHUB_TOKEN') !== false) {
+                return sprintf('%s?access_token=%s', $url, urlencode(getenv('GITHUB_TOKEN')));
+            }
+            return $url;
+        };
+
+        foreach ($allReleaseInfo['assets'] as $asset) {
+            if ($asset['name'] === 'qa-tools.phar') {
+                $releaseInfo['pharUrl'] = $getDownloadUrl($asset['url']);
+            }
+            if ($asset['name'] === 'qa-tools.phar.pubkey') {
+                $releaseInfo['pubkeyUrl'] = $getDownloadUrl($asset['url']);
+            }
+        }
+
+        if (!isset($releaseInfo['pharUrl'])) {
+            throw new RuntimeException(
+                sprintf('Unable to find qa-tools.phar in release %s', $releaseInfo['version'])
+            );
+        }
+        if (!isset($releaseInfo['pubkeyUrl'])) {
+            throw new RuntimeException(
+                sprintf('Unable to find qa-tools.phar.pubkey in release %s', $releaseInfo['version'])
             );
         }
 

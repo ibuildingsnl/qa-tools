@@ -25,6 +25,7 @@ final class InstallerTest extends TestCase
 
     const PUBKEY_ASSET_URL = 'https://api.github.com/assets/2';
     const PUBKEY_ASSET_CONTENTS = 'PUBKEY';
+    const VERSION = '1.0.0';
 
     /** @var Mockery\Mock|PharValidator */
     private $pharValidator;
@@ -37,7 +38,7 @@ final class InstallerTest extends TestCase
     /**
      * @test
      */
-    public function calls_correct_url_for_latest()
+    public function correctly_parses_github_release_response()
     {
         /** @var Mockery\Mock|HttpClient $httpClient */
         $httpClient = Mockery::mock(HttpClient::class);
@@ -50,7 +51,19 @@ final class InstallerTest extends TestCase
                 ),
                 'application/vnd.github.v3+json'
             )
-            ->andReturn('[]');
+            ->andReturn(json_encode([
+                'tag_name' => self::VERSION,
+                'assets' => [
+                    [
+                        'name' => 'qa-tools.phar',
+                        'url' => self::PHAR_ASSET_URL,
+                    ],
+                    [
+                        'name' => 'qa-tools.phar.pubkey',
+                        'url' => self::PUBKEY_ASSET_URL,
+                    ]
+                ]
+            ]));
 
         $installer = new Installer(
             false,
@@ -59,35 +72,12 @@ final class InstallerTest extends TestCase
             self::REPOSITORY_OWNER,
             self::REPOSITORY_NAME
         );
-        $installer->getLatestReleaseInfo(false);
-    }
 
-    /**
-     * @test
-     */
-    public function calls_correct_url_for_specific_version()
-    {
-        /** @var Mockery\Mock|HttpClient $httpClient */
-        $httpClient = Mockery::mock(HttpClient::class);
-        $httpClient->shouldReceive('get')
-            ->with(
-                sprintf(
-                    'https://api.github.com/repos/%s/%s/releases/1.0.0',
-                    urlencode(self::REPOSITORY_OWNER),
-                    urlencode(self::REPOSITORY_NAME)
-                ),
-                'application/vnd.github.v3+json'
-            )
-            ->andReturn('[]');
+        $info = $installer->getLatestReleaseInfo(false);
 
-        $installer = new Installer(
-            false,
-            $httpClient,
-            $this->pharValidator,
-            self::REPOSITORY_OWNER,
-            self::REPOSITORY_NAME
-        );
-        $installer->getLatestReleaseInfo('1.0.0');
+        $this->assertEquals(self::VERSION, $info['version']);
+        $this->assertEquals($this->getAssetUrl(self::PHAR_ASSET_URL), $info['pharUrl']);
+        $this->assertEquals($this->getAssetUrl(self::PUBKEY_ASSET_URL), $info['pubkeyUrl']);
     }
 
     /**
@@ -117,7 +107,51 @@ final class InstallerTest extends TestCase
         );
 
         $this->expectException(RuntimeException::class);
-        $installer->getLatestReleaseInfo('1.0.0');
+        $installer->getLatestReleaseInfo(self::VERSION);
+    }
+
+    /**
+     * @test
+     */
+    public function fails_when_no_version_number_available_in_release()
+    {
+        /** @var Mockery\Mock|HttpClient $httpClient */
+        $httpClient = Mockery::mock(HttpClient::class);
+        $httpClient->shouldReceive('get')
+            ->with(
+                sprintf(
+                    'https://api.github.com/repos/%s/%s/releases/latest',
+                    urlencode(self::REPOSITORY_OWNER),
+                    urlencode(self::REPOSITORY_NAME)
+                ),
+                'application/vnd.github.v3+json'
+            )
+            ->andReturn(json_encode([
+                'assets' => [
+                    [
+                        'name' => 'qa-tools.phar',
+                        'url' => self::PHAR_ASSET_URL,
+                    ],
+                    [
+                        'name' => 'qa-tools.phar.pubkey',
+                        'url' => self::PUBKEY_ASSET_URL,
+                    ]
+                ]
+            ]));
+
+        $installer = new Installer(
+            false,
+            $httpClient,
+            $this->pharValidator,
+            self::REPOSITORY_OWNER,
+            self::REPOSITORY_NAME
+        );
+
+        ob_start();
+        $installer->run(false, '.', 'qa-tools');
+        $output = ob_get_clean();
+
+        $this->assertRegexp('~^Unable to determine version number from release~sm', $output);
     }
 
     /**
@@ -137,7 +171,7 @@ final class InstallerTest extends TestCase
                 'application/vnd.github.v3+json'
             )
             ->andReturn(json_encode([
-                'tag_name' => '1.0.0',
+                'tag_name' => self::VERSION,
                 'assets' => [
                     [
                         'name' => 'qa-tools.phar.pubkey',
@@ -158,7 +192,10 @@ final class InstallerTest extends TestCase
         $installer->run(false, '.', 'qa-tools');
         $output = ob_get_clean();
 
-        $this->assertRegexp('~^Unable to find qa-tools\.phar in release 1\.0\.0~sm', $output);
+        $this->assertRegExp(
+            '~^Unable to find qa-tools\.phar in release '.preg_quote(self::VERSION, '~').'~sm',
+            $output
+        );
     }
 
     /**
@@ -178,7 +215,7 @@ final class InstallerTest extends TestCase
                 'application/vnd.github.v3+json'
             )
             ->andReturn(json_encode([
-                'tag_name' => '1.0.0',
+                'tag_name' => self::VERSION,
                 'assets' => [
                     [
                         'name' => 'qa-tools.phar',
@@ -199,7 +236,10 @@ final class InstallerTest extends TestCase
         $installer->run(false, '.', 'qa-tools');
         $output = ob_get_clean();
 
-        $this->assertRegexp('~^Unable to find qa-tools\.phar\.pubkey in release 1\.0\.0~sm', $output);
+        $this->assertRegExp(
+            '~^Unable to find qa-tools\.phar\.pubkey in release '.preg_quote(self::VERSION, '~').'~sm',
+            $output
+        );
     }
 
     /**
@@ -219,7 +259,7 @@ final class InstallerTest extends TestCase
                 'application/vnd.github.v3+json'
             )
             ->andReturn(json_encode([
-                'tag_name' => '1.0.0',
+                'tag_name' => self::VERSION,
                 'assets' => [
                     [
                         'name' => 'qa-tools.phar',
@@ -232,19 +272,12 @@ final class InstallerTest extends TestCase
                 ]
             ]));
 
-        $getAssetUrl = function ($url) {
-            if (getenv('GITHUB_TOKEN') !== false) {
-                return sprintf('%s?access_token=%s', $url, urlencode(getenv('GITHUB_TOKEN')));
-            }
-            return $url;
-        };
-
         $httpClient->shouldReceive('get')
-            ->with($getAssetUrl(self::PHAR_ASSET_URL), 'application/octet-stream')
+            ->with($this->getAssetUrl(self::PHAR_ASSET_URL), 'application/octet-stream')
             ->andReturn(self::PHAR_ASSET_CONTENTS);
 
         $httpClient->shouldReceive('get')
-            ->with($getAssetUrl(self::PUBKEY_ASSET_URL), 'application/octet-stream')
+            ->with($this->getAssetUrl(self::PUBKEY_ASSET_URL), 'application/octet-stream')
             ->andReturn(self::PUBKEY_ASSET_CONTENTS);
 
         /** @var Mockery\Mock|PharValidator $pharValidator */
@@ -265,5 +298,13 @@ final class InstallerTest extends TestCase
 
         $this->assertTrue($root->hasChild('temp/qa-tools.pubkey'));
         $this->assertEquals(self::PUBKEY_ASSET_CONTENTS, $root->getChild('temp/qa-tools.pubkey')->getContent());
+    }
+
+    private function getAssetUrl($url)
+    {
+        if (getenv('GITHUB_TOKEN') !== false) {
+            return sprintf('%s?access_token=%s', $url, urlencode(getenv('GITHUB_TOKEN')));
+        }
+        return $url;
     }
 }
