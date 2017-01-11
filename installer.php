@@ -33,7 +33,7 @@ function installQaTools($argv)
         exit(1);
     }
 
-    $ok = checkPlatform($warnings, $quiet, true);
+    $ok = checkPlatform($warnings, $quiet);
 
     if ($check) {
         // Only show warnings if we haven't output any errors
@@ -163,13 +163,12 @@ function checkParams($installDir, $version)
  *
  * @param array $warnings Populated by method, to be shown later
  * @param bool  $quiet Quiet mode
- * @param bool  $install If we are installing, rather than diagnosing
  *
  * @return bool True if there are no errors
  */
-function checkPlatform(&$warnings, $quiet, $install)
+function checkPlatform(&$warnings, $quiet)
 {
-    getPlatformIssues($errors, $warnings, $install);
+    getPlatformIssues($errors, $warnings);
 
     if (!empty($errors)) {
         out('Some settings on your machine make it impossible for QA Tools to work properly.', 'error');
@@ -191,7 +190,6 @@ function checkPlatform(&$warnings, $quiet, $install)
  *
  * @param array $errors Populated by method
  * @param array $warnings Populated by method
- * @param bool  $install If we are installing, rather than diagnosing
  *
  * @return bool If any errors or warnings have been found
  */
@@ -278,7 +276,7 @@ function getPlatformIssues(&$errors, &$warnings)
         // Attempt to parse version number out, fallback to whole string value.
         $opensslVersion = trim(strstr(OPENSSL_VERSION_TEXT, ' '));
         $opensslVersion = substr($opensslVersion, 0, strpos($opensslVersion, ' '));
-        $opensslVersion = $opensslVersion ? $opensslVersion : OPENSSL_VERSION_TEXT;
+        $opensslVersion = $opensslVersion ?: OPENSSL_VERSION_TEXT;
 
         $warnings['openssl_version'] = [
             'The OpenSSL library (' . $opensslVersion . ') used by PHP does not support TLSv1.2 or TLSv1.1.',
@@ -411,8 +409,8 @@ class Installer
     private $pharValidator;
 
     /**
-     * @param bool   $quiet Quiet mode
-     * @param HttpClient $httpClient Http client to download release info and files
+     * @param bool          $quiet Quiet mode
+     * @param HttpClient    $httpClient Http client to download release info and files
      * @param PharValidator $pharValidator A class that can validate Phar files
      * @param string $repositoryOwner Owner of repository to download from
      * @param string $repositoryName Name of repository to download release from
@@ -485,7 +483,6 @@ class Installer
      * The main install function
      *
      * @param mixed  $version Specific version to install, or false
-     * @param string $channel Version channel to use
      *
      * @return bool If the installation succeeded
      */
@@ -560,7 +557,7 @@ class Installer
     }
 
     /**
-     * @return string The version of the latest QA tools release
+     * @return string The version information of the latest QA tools release
      * @throws \RuntimeException
      */
     public function getLatestReleaseInfo($version)
@@ -598,7 +595,6 @@ class Installer
      * @param string      $url The versioned download url
      * @param string      $target The target location to download to
      *
-     * @return bool If the operation succeeded
      * @throws \RuntimeException
      */
     private function downloadTemporaryFile($url, $target)
@@ -633,7 +629,6 @@ class Installer
     /**
      * Verifies the downloaded file and saves it to the target location
      *
-     * @return bool If the operation succeeded
      * @throws \RuntimeException
      */
     private function verifyAndSave()
