@@ -28,9 +28,8 @@ function installQaTools($argv)
     $installDir = getOptValue('--install-dir', $argv, false);
     $version = getOptValue('--version', $argv, false);
     $filename = getOptValue('--filename', $argv, 'qa-tools');
-    $cafile = getOptValue('--cafile', $argv, false);
 
-    if (!checkParams($installDir, $version, $cafile)) {
+    if (!checkParams($installDir, $version)) {
         exit(1);
     }
 
@@ -45,7 +44,7 @@ function installQaTools($argv)
     }
 
     if ($ok || $force) {
-        $installer = new Installer($quiet, new HttpClient($cafile), new PharValidator(), 'ibuildingsnl', 'qa-tools-v3');
+        $installer = new Installer($quiet, new HttpClient(), new PharValidator(), 'ibuildingsnl', 'qa-tools-v3');
         if ($installer->run($version, $installDir, $filename)) {
             showWarnings($warnings);
             exit(0);
@@ -73,7 +72,6 @@ Options
 --install-dir="..."  accepts a target installation directory
 --version="..."      accepts a specific version to install instead of the latest
 --filename="..."     accepts a target filename (default: composer.phar)
---cafile="..."       accepts a path to a Certificate Authority (CA) certificate file for SSL/TLS verification
 EOF;
 }
 
@@ -138,11 +136,10 @@ function getOptValue($opt, $argv, $default)
  *
  * @param mixed $installDir The required istallation directory
  * @param mixed $version The required composer version to install
- * @param mixed $cafile Certificate Authority file
  *
  * @return bool True if the supplied params are okay
  */
-function checkParams($installDir, $version, $cafile)
+function checkParams($installDir, $version)
 {
     $result = true;
 
@@ -153,11 +150,6 @@ function checkParams($installDir, $version, $cafile)
 
     if (false !== $version && 1 !== preg_match('/^\d+\.\d+\.\d+(\-(alpha|beta|RC)\d*)*$/', $version)) {
         out("The defined install version ({$version}) does not match release pattern.", 'info');
-        $result = false;
-    }
-
-    if (false !== $cafile && (!file_exists($cafile) || !is_readable($cafile))) {
-        out("The defined Certificate Authority (CA) cert file ({$cafile}) does not exist or is not readable.", 'info');
         $result = false;
     }
 
@@ -388,11 +380,6 @@ function out($text, $color = null, $newLine = true)
     printf($format, $text);
 }
 
-function validateCaFile($contents)
-{
-    return (bool)openssl_x509_parse($contents);
-}
-
 class Installer
 {
     /** @var bool $quiet */
@@ -425,7 +412,6 @@ class Installer
 
     /**
      * @param bool   $quiet Quiet mode
-     * @param mixed  $caFile Path to CA bundle, or false
      * @param HttpClient $httpClient Http client to download release info and files
      * @param PharValidator $pharValidator A class that can validate Phar files
      * @param string $repositoryOwner Owner of repository to download from
@@ -707,16 +693,11 @@ class HttpClient
     /** @var array $options */
     private $options = ['http' => []];
 
-    public function __construct($cafile = false)
+    public function __construct()
     {
-        if (!empty($cafile) && !is_dir($cafile)) {
-            if (!is_readable($cafile) || !validateCaFile(file_get_contents($cafile))) {
-                throw new RuntimeException('The configured cafile (' . $cafile . ') was not valid or could not be read.');
-            }
-        }
         $this->options = array_replace_recursive(
             $this->options,
-            $this->getTlsStreamContextDefaults($cafile)
+            $this->getTlsStreamContextDefaults()
         );
     }
 
@@ -752,7 +733,7 @@ class HttpClient
         return $result;
     }
 
-    private function getTlsStreamContextDefaults($cafile)
+    private function getTlsStreamContextDefaults()
     {
         $ciphers = implode(':', [
             'ECDHE-RSA-AES128-GCM-SHA256',
@@ -793,13 +774,7 @@ class HttpClient
             '!PSK',
         ]);
 
-        /**
-         * CN_match and SNI_server_name are only known once a URL is passed.
-         * They will be set in the getOptionsForUrl() method which receives a URL.
-         *
-         * cafile or capath can be overridden by passing in those options to constructor.
-         */
-        $options = [
+        return [
             'ssl' => [
                 'ciphers' => $ciphers,
                 'verify_peer' => true,
@@ -807,23 +782,6 @@ class HttpClient
                 'SNI_enabled' => true,
             ],
         ];
-
-        /**
-         * Attempt to find a local cafile or throw an exception.
-         * The user may go download one if this occurs.
-         */
-        if (!$cafile) {
-            $cafile = self::getSystemCaRootBundlePath();
-        }
-        if (is_dir($cafile)) {
-            $options['ssl']['capath'] = $cafile;
-        } elseif ($cafile) {
-            $options['ssl']['cafile'] = $cafile;
-        } else {
-            throw new RuntimeException('A valid cafile could not be located automatically.');
-        }
-
-        return $options;
     }
 
     /**
@@ -915,99 +873,6 @@ class HttpClient
         $options['http']['protocol_version'] = 1.1;
 
         return stream_context_create($options);
-    }
-
-    /**
-     * This method was adapted from Sslurp.
-     * https://github.com/EvanDotPro/Sslurp
-     *
-     * (c) Evan Coury <me@evancoury.com>
-     *
-     * For the full copyright and license information, please see below:
-     *
-     * Copyright (c) 2013, Evan Coury
-     * All rights reserved.
-     *
-     * Redistribution and use in source and binary forms, with or without modification,
-     * are permitted provided that the following conditions are met:
-     *
-     *     * Redistributions of source code must retain the above copyright notice,
-     *       this list of conditions and the following disclaimer.
-     *
-     *     * Redistributions in binary form must reproduce the above copyright notice,
-     *       this list of conditions and the following disclaimer in the documentation
-     *       and/or other materials provided with the distribution.
-     *
-     * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-     * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-     * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-     * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
-     * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-     * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-     * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
-     * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-     * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-     * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-     */
-    public static function getSystemCaRootBundlePath()
-    {
-        static $caPath = null;
-
-        if ($caPath !== null) {
-            return $caPath;
-        }
-
-        // If SSL_CERT_FILE env variable points to a valid certificate/bundle, use that.
-        // This mimics how OpenSSL uses the SSL_CERT_FILE env variable.
-        $envCertFile = getenv('SSL_CERT_FILE');
-        if ($envCertFile && is_readable($envCertFile) && validateCaFile(file_get_contents($envCertFile))) {
-            return $caPath = $envCertFile;
-        }
-
-        // If SSL_CERT_DIR env variable points to a valid certificate/bundle, use that.
-        // This mimics how OpenSSL uses the SSL_CERT_FILE env variable.
-        $envCertDir = getenv('SSL_CERT_DIR');
-        if ($envCertDir && is_dir($envCertDir) && is_readable($envCertDir)) {
-            return $caPath = $envCertDir;
-        }
-
-        $configured = ini_get('openssl.cafile');
-        if ($configured && strlen($configured) > 0 && is_readable($configured) && validateCaFile(file_get_contents($configured))) {
-            return $caPath = $configured;
-        }
-
-        $configured = ini_get('openssl.capath');
-        if ($configured && is_dir($configured) && is_readable($configured)) {
-            return $caPath = $configured;
-        }
-
-        $caBundlePaths = [
-            '/etc/pki/tls/certs/ca-bundle.crt', // Fedora, RHEL, CentOS (ca-certificates package)
-            '/etc/ssl/certs/ca-certificates.crt', // Debian, Ubuntu, Gentoo, Arch Linux (ca-certificates package)
-            '/etc/ssl/ca-bundle.pem', // SUSE, openSUSE (ca-certificates package)
-            '/usr/local/share/certs/ca-root-nss.crt', // FreeBSD (ca_root_nss_package)
-            '/usr/ssl/certs/ca-bundle.crt', // Cygwin
-            '/opt/local/share/curl/curl-ca-bundle.crt', // OS X macports, curl-ca-bundle package
-            '/usr/local/share/curl/curl-ca-bundle.crt', // Default cURL CA bunde path (without --with-ca-bundle option)
-            '/usr/share/ssl/certs/ca-bundle.crt', // Really old RedHat?
-            '/etc/ssl/cert.pem', // OpenBSD
-            '/usr/local/etc/ssl/cert.pem', // FreeBSD 10.x
-        ];
-
-        foreach ($caBundlePaths as $caBundle) {
-            if (@is_readable($caBundle) && validateCaFile(file_get_contents($caBundle))) {
-                return $caPath = $caBundle;
-            }
-        }
-
-        foreach ($caBundlePaths as $caBundle) {
-            $caBundle = dirname($caBundle);
-            if (is_dir($caBundle) && glob($caBundle . '/*')) {
-                return $caPath = $caBundle;
-            }
-        }
-
-        return $caPath = false;
     }
 }
 
