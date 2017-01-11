@@ -42,7 +42,6 @@ final class InstallerTest extends TestCase
         /** @var Mockery\Mock|HttpClient $httpClient */
         $httpClient = Mockery::mock(HttpClient::class);
         $httpClient->shouldReceive('get')
-            ->once()
             ->with(
                 sprintf(
                     'https://api.github.com/repos/%s/%s/releases/latest',
@@ -71,7 +70,6 @@ final class InstallerTest extends TestCase
         /** @var Mockery\Mock|HttpClient $httpClient */
         $httpClient = Mockery::mock(HttpClient::class);
         $httpClient->shouldReceive('get')
-            ->once()
             ->with(
                 sprintf(
                     'https://api.github.com/repos/%s/%s/releases/1.0.0',
@@ -100,7 +98,6 @@ final class InstallerTest extends TestCase
         /** @var Mockery\Mock|HttpClient $httpClient */
         $httpClient = Mockery::mock(HttpClient::class);
         $httpClient->shouldReceive('get')
-            ->once()
             ->with(
                 sprintf(
                     'https://api.github.com/repos/%s/%s/releases/1.0.0',
@@ -213,8 +210,6 @@ final class InstallerTest extends TestCase
         /** @var Mockery\Mock|HttpClient $httpClient */
         $httpClient = Mockery::mock(HttpClient::class);
         $httpClient->shouldReceive('get')
-            ->once()
-            ->ordered()->globally()
             ->with(
                 sprintf(
                     'https://api.github.com/repos/%s/%s/releases/latest',
@@ -245,22 +240,16 @@ final class InstallerTest extends TestCase
         };
 
         $httpClient->shouldReceive('get')
-            ->once()
-            ->ordered()
-            ->globally()
             ->with($getAssetUrl(self::PHAR_ASSET_URL), 'application/octet-stream')
             ->andReturn(self::PHAR_ASSET_CONTENTS);
 
         $httpClient->shouldReceive('get')
-            ->once()
-            ->ordered()
-            ->globally()
             ->with($getAssetUrl(self::PUBKEY_ASSET_URL), 'application/octet-stream')
             ->andReturn(self::PUBKEY_ASSET_CONTENTS);
 
         /** @var Mockery\Mock|PharValidator $pharValidator */
         $pharValidator = Mockery::mock(PharValidator::class);
-        $pharValidator->shouldReceive('assertPharValid')->once();
+        $pharValidator->shouldReceive('assertPharValid');
 
         $installer = new Installer(false, $httpClient, $pharValidator, self::REPOSITORY_OWNER, self::REPOSITORY_NAME);
 
