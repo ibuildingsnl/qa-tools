@@ -57,7 +57,7 @@ phpunit-system-phar:
 phpcs:
 	# Blank line is needed to provide STDIN input to phpcs when phpcs is called from the Git pre-push hook context
 	# See https://github.com/squizlabs/PHP_CodeSniffer/issues/993
-	echo '' | vendor/bin/phpcs --standard=phpcs.xml --extensions=php --report=full src
+	echo '' | vendor/bin/phpcs --runtime-set ignore_warnings_on_exit 1 --standard=phpcs.xml --extensions=php --report=full src
 phpmd:
 	vendor/bin/phpmd src text phpmd.xml
 
