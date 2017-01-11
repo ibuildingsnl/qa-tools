@@ -1,7 +1,6 @@
 <?php
-declare(strict_types = 1);
 
-namespace integration\Installer;
+namespace Ibuildings\QaTools\IntegrationTest\Installer;
 
 use DirectoryIterator;
 use HttpClient;
@@ -9,6 +8,7 @@ use Installer;
 use Mockery;
 use PharValidator;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Filesystem\Filesystem;
 
 define('TESTING_QA_TOOLS_INSTALLER', true);
 define('QA_TOOLS_INSTALLER_ANSI', false);
@@ -31,29 +31,43 @@ final class InstallerTest extends TestCase
     /** @var string $tempDirectory */
     private $tempDirectory;
 
+    /** @var Filesystem $filesystem */
+    private $filesystem;
+
     public function setUp()
     {
-        $cwd = realpath(getcwd());
-        $this->tempDirectory = $cwd.'/qa-tools-download-test';
+        $this->tempDirectory = sys_get_temp_dir().'/qa-tools-download-test';
+        $this->filesystem = new Filesystem();
 
         if (file_exists($this->tempDirectory) && !is_dir($this->tempDirectory)) {
             $this->markTestSkipped(
-                'Unable to create temp directory '.$this->tempDirectory.' because there already exists a file with that name.'
+                sprintf(
+                    'Unable to create temp directory (%s) because there already exists a file with that name.',
+                    $this->tempDirectory
+                )
             );
         }
 
         if (is_dir($this->tempDirectory)) {
-            $this->rmdirRecursive($this->tempDirectory);
+            $this->filesystem->remove($this->tempDirectory);
         }
 
-        if (!@mkdir($this->tempDirectory)) {
-            $this->markTestSkipped('Unable to create qa-tools temp download folder '.$this->tempDirectory);
+        try {
+            $this->filesystem->mkdir($this->tempDirectory);
+        } catch (\Exception $e) {
+            $this->markTestSkipped(
+                sprintf(
+                    'Unable to create qa-tools temp download folder (%s): %s'.
+                    $this->tempDirectory,
+                    $e->getMessage()
+                )
+            );
         }
     }
 
     public function tearDown()
     {
-        $this->rmdirRecursive($this->tempDirectory);
+        $this->filesystem->remove($this->tempDirectory);
     }
 
     /**
@@ -122,24 +136,5 @@ final class InstallerTest extends TestCase
             return sprintf('%s?access_token=%s', $url, urlencode(getenv('GITHUB_TOKEN')));
         }
         return $url;
-    }
-
-    private function rmdirRecursive($dir)
-    {
-        if (!is_dir($dir)) {
-            return;
-        }
-
-        $directory = new DirectoryIterator($dir);
-        foreach ($directory as $file) {
-            if ($file->isDot()) {
-                continue;
-            }
-            if ($file->isDir()) {
-                $this->rmdirRecursive($file->getPathname());
-            }
-            @unlink($file->getPathname());
-        }
-        rmdir($dir);
     }
 }
