@@ -15,6 +15,7 @@ use Ibuildings\QaTools\Core\Project\ProjectTypeSet;
 use Ibuildings\QaTools\Tool\PhpUnit\Configurator\PhpUnitConfigurator;
 use Ibuildings\QaTools\UnitTest\AddBuildTaskMatcher;
 use Ibuildings\QaTools\UnitTest\InstallComposerDevDependencyTaskMatcher;
+use Ibuildings\QaTools\UnitTest\WriteFileTaskMatcher;
 use Mockery;
 use PHPUnit_Framework_TestCase;
 
@@ -66,16 +67,26 @@ class PhpUnitConfiguratorTest extends PHPUnit_Framework_TestCase
 
         $this->taskHelperSet
             ->shouldReceive('renderTemplate')
+            ->with('phpunit.xml.twig')
+            ->andReturn('<?xml version="1.0" encoding="UTF-8"?>');
+
+        $this->taskHelperSet
+            ->shouldReceive('renderTemplate')
             ->with('ant-build.xml.twig', ['targetName' => self::TARGET_NAME])
             ->andReturn('phpunit-snippet');
 
-        $configurator = new PhpUnitConfigurator();
+        $configurator = new PhpUnitConfigurator('phpunit.xml.twig');
         $configurator->configure($this->interviewer, $this->taskDirectory, $this->taskHelperSet);
 
         $this->taskDirectory->shouldHaveReceived(
             'registerTask',
             [InstallComposerDevDependencyTaskMatcher::forVersionOf('phpunit/phpunit', '^5.7')]
         );
+
+        $this->taskDirectory
+            ->shouldHaveReceived('registerTask')
+            ->with(WriteFileTaskMatcher::contains('./phpunit.xml', '<?xml version="1.0" encoding="UTF-8"?>'))
+            ->once();
 
         $this->taskDirectory->shouldHaveReceived(
             'registerTask',
@@ -99,7 +110,7 @@ class PhpUnitConfiguratorTest extends PHPUnit_Framework_TestCase
             YesOrNoAnswer::no()
         );
 
-        $configurator = new PhpUnitConfigurator();
+        $configurator = new PhpUnitConfigurator('phpunit.xml.twig');
         $configurator->configure($this->interviewer, $this->taskDirectory, $this->taskHelperSet);
 
         $this->taskDirectory->shouldNotHaveReceived('registerTask');

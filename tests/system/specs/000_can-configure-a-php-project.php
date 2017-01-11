@@ -13,6 +13,7 @@ Composer::initialise();
 $expect();
 
 Composer::assertPackageIsInstalled('phpunit/phpunit');
+assertFileExists('phpunit.xml');
 
 assertFileExists('qa-tools.json');
 Composer::assertPackageIsInstalled('phpmd/phpmd');
