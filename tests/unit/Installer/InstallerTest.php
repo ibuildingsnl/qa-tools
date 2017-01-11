@@ -11,6 +11,7 @@ use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
 define('TESTING_QA_TOOLS_INSTALLER', true);
+define('QA_TOOLS_INSTALLER_ANSI', false);
 
 require __DIR__.'/../../../installer.php';
 
@@ -24,12 +25,6 @@ final class InstallerTest extends TestCase
 
     const PUBKEY_ASSET_URL = 'https://api.github.com/assets/2';
     const PUBKEY_ASSET_CONTENTS = 'PUBKEY';
-
-    public static function setUpBeforeClass()
-    {
-        define('USE_ANSI', false);
-        parent::setUpBeforeClass();
-    }
 
     /**
      * @test

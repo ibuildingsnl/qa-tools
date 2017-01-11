@@ -76,28 +76,28 @@ EOF;
 }
 
 /**
- * Sets the USE_ANSI define for colorizing output
+ * Sets the QA_TOOLS_INSTALLER_ANSI define for colorizing output
  *
  * @param array $argv Command-line arguments
  */
 function setUseAnsi($argv)
 {
-    if (defined('USE_ANSI')) {
+    if (defined('QA_TOOLS_INSTALLER_ANSI')) {
         return;
     }
 
     if (in_array('--no-ansi', $argv)) {
-        define('USE_ANSI', false);
+        define('QA_TOOLS_INSTALLER_ANSI', false);
         return;
     }
 
     if (in_array('--ansi', $argv)) {
-        define('USE_ANSI', true);
+        define('QA_TOOLS_INSTALLER_ANSI', true);
         return;
     }
 
     define(
-        'USE_ANSI',
+        'QA_TOOLS_INSTALLER_ANSI',
         (DIRECTORY_SEPARATOR === '\\')
             ? (false !== getenv('ANSICON') || 'ON' === getenv('ConEmuANSI'))
             : (function_exists('posix_isatty') && posix_isatty(1))
@@ -367,7 +367,7 @@ function out($text, $color = null, $newLine = true)
 
     $format = '%s';
 
-    if (isset($styles[$color]) && USE_ANSI) {
+    if (isset($styles[$color]) && QA_TOOLS_INSTALLER_ANSI) {
         $format = $styles[$color];
     }
 
