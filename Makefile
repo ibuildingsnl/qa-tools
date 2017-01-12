@@ -42,7 +42,7 @@ test-unit: phpunit-unit
 test-integration: phpunit-integration
 test-system-dev: phpunit-system-dev
 test-system-phar: phpunit-system-phar
-test-security: verify-test-build-is-signed check-security-advisories
+test-security: verify-test-build-is-signed check-security-advisories verify-readme-installer-hash
 code-metrics: phpcs phpmd
 
 
@@ -67,6 +67,9 @@ verify-test-build-is-signed: build-test
 
 check-security-advisories:
 	vendor/bin/security-checker security:check
+
+verify-readme-installer-hash:
+	tests/security/verify-readme-installer-hash
 
 list-phpunit-test-groups:
 	@grep -horE '@group .+' tests | sort | uniq
