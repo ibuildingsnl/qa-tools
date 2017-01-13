@@ -1,4 +1,5 @@
 <?php
+declare(strict_types = 1);
 
 namespace Ibuildings\QaTools\UnitTest\Tool\Behat\Configurator;
 
@@ -12,14 +13,14 @@ use Ibuildings\QaTools\Core\Interviewer\AutomatedResponseInterviewer;
 use Ibuildings\QaTools\Core\Project\Directory;
 use Ibuildings\QaTools\Core\Project\Project;
 use Ibuildings\QaTools\Core\Project\ProjectTypeSet;
-use Ibuildings\QaTools\Tool\Behat\Configurator\BehatConfigurator;
+use Ibuildings\QaTools\Tool\Behat\Configurator\DrupalBehatConfigurator;
 use Ibuildings\QaTools\UnitTest\AddBuildTaskMatcher;
 use Ibuildings\QaTools\UnitTest\InstallComposerDevDependencyTaskMatcher;
 use Ibuildings\QaTools\UnitTest\WriteFileTaskMatcher;
 use Mockery;
 use PHPUnit_Framework_TestCase;
 
-class BehatConfiguratorTest extends PHPUnit_Framework_TestCase
+class DrupalBehatConfiguratorTest extends PHPUnit_Framework_TestCase
 {
     const TARGET_NAME = 'behat';
 
@@ -66,32 +67,36 @@ class BehatConfiguratorTest extends PHPUnit_Framework_TestCase
 
         $this->taskHelperSet
             ->shouldReceive('renderTemplate')
-            ->with('behat.yml')
+            ->with('drupal/behat.yml')
             ->andReturn('default:');
         $this->taskHelperSet
             ->shouldReceive('renderTemplate')
-            ->with('FeatureContext.php')
+            ->with('drupal/FeatureContext.php')
             ->andReturn('<?php');
         $this->taskHelperSet
             ->shouldReceive('renderTemplate')
             ->with('ant-build.xml.twig', ['targetName' => self::TARGET_NAME])
             ->andReturn('behat-snippet');
 
-        $configurator = new BehatConfigurator();
+        $configurator = new DrupalBehatConfigurator();
         $configurator->configure($this->interviewer, $this->taskDirectory, $this->taskHelperSet);
 
         $this->taskDirectory->shouldHaveReceived(
             'registerTask',
             [InstallComposerDevDependencyTaskMatcher::forVersionOf('behat/behat', '^3.0')]
         );
+        $this->taskDirectory->shouldHaveReceived(
+            'registerTask',
+            [InstallComposerDevDependencyTaskMatcher::forVersionOf('drupal/drupal-extension', '^3.2')]
+        );
 
         $this->taskDirectory
             ->shouldHaveReceived('registerTask')
-            ->with(WriteFileTaskMatcher::contains('./behat.yml', 'default:'))
+            ->with(WriteFileTaskMatcher::contains('./features/bootstrap/FeatureContext.php', '<?php'))
             ->once();
         $this->taskDirectory
             ->shouldHaveReceived('registerTask')
-            ->with(WriteFileTaskMatcher::contains('./features/bootstrap/FeatureContext.php', '<?php'))
+            ->with(WriteFileTaskMatcher::contains('./behat.yml', 'default:'))
             ->once();
 
         $this->taskDirectory->shouldHaveReceived(

@@ -5,6 +5,8 @@
         By default it is less stringent about long lines than other coding standards
     </description>
 
+    <exclude-pattern>*/Resources/*</exclude-pattern>
+
     <!-- This is the rule we inherit from. If you want to exlude some specific rules, see the docs on how to do that -->
     <rule ref="PSR2"/>
 </ruleset>

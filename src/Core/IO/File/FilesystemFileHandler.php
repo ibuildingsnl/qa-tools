@@ -36,7 +36,7 @@ final class FilesystemFileHandler implements FileHandler
     {
         Assertion::nonEmptyString($filePath, 'File path ought to be a non-empty string, got "%s" of type "%s"');
 
-        return is_writable(dirname($filePath));
+        return $this->isDirectoryWritable(dirname($filePath));
     }
 
     public function writeWithBackupTo($filePath, $data)
@@ -131,15 +131,6 @@ final class FilesystemFileHandler implements FileHandler
 
     /**
      * @param string $filePath
-     * @return string
-     */
-    private function filePathForBackup($filePath)
-    {
-        return sprintf('%s.qatools-bak', $filePath);
-    }
-
-    /**
-     * @param string $filePath
      * @param int    $mode
      * @return void
      */
@@ -151,5 +142,30 @@ final class FilesystemFileHandler implements FileHandler
             $newMessage = sprintf("Could not change mode of %s to %o", $filePath, $mode);
             throw new RuntimeException($newMessage, null, $exception);
         }
+    }
+
+    /**
+     * @param string $directory
+     *
+     * @return bool
+     */
+    private function isDirectoryWritable($directory)
+    {
+        if (is_dir($directory)) {
+            return is_writable($directory);
+        }
+
+        // Check if the parent directory is writable
+        return $this->isDirectoryWritable(dirname($directory));
+    }
+
+    /**
+     * @param string $filePath
+     *
+     * @return string
+     */
+    private function filePathForBackup($filePath)
+    {
+        return sprintf('%s.qatools-bak', $filePath);
     }
 }

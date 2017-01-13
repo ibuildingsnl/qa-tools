@@ -12,13 +12,3 @@ services:
               project_type: 'php.drupal8'
             - name: qa_tools.tool
               project_type: 'php.other'
-
-    qa_tools.task_executor.initialise_behat:
-        class: Ibuildings\QaTools\Tool\Behat\Task\Executor\InitialiseBehatTaskExecutor
-        arguments:
-            - '@qa_tools.behat_initialiser'
-        tags:
-            - { name: qa_tools.task_executor, priority: 1 }
-
-    qa_tools.behat_initialiser:
-        class: Ibuildings\QaTools\Tool\Behat\Initialiser\BehatInitialiser

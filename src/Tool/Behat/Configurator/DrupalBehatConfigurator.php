@@ -1,4 +1,5 @@
 <?php
+declare(strict_types = 1);
 
 namespace Ibuildings\QaTools\Tool\Behat\Configurator;
 
@@ -16,7 +17,7 @@ use Ibuildings\QaTools\Core\Task\InstallComposerDevDependencyTask;
 use Ibuildings\QaTools\Core\Task\WriteFileTask;
 use Ibuildings\QaTools\Tool\Behat\Behat;
 
-final class BehatConfigurator implements Configurator
+final class DrupalBehatConfigurator implements Configurator
 {
     public function configure(
         Interviewer $interviewer,
@@ -33,19 +34,20 @@ final class BehatConfigurator implements Configurator
         }
 
         $taskDirectory->registerTask(new InstallComposerDevDependencyTask('behat/behat', '^3.0'));
+        $taskDirectory->registerTask(new InstallComposerDevDependencyTask('drupal/drupal-extension', '^3.2'));
 
         $directory = $taskDirectory->getProject()->getConfigurationFilesLocation()->getDirectory();
 
         $taskDirectory->registerTask(
             new WriteFileTask(
                 $directory.'behat.yml',
-                $taskHelperSet->renderTemplate('behat.yml')
+                $taskHelperSet->renderTemplate('drupal/behat.yml')
             )
         );
         $taskDirectory->registerTask(
             new WriteFileTask(
                 $directory.'features/bootstrap/FeatureContext.php',
-                $taskHelperSet->renderTemplate('FeatureContext.php')
+                $taskHelperSet->renderTemplate('drupal/FeatureContext.php')
             )
         );
 
