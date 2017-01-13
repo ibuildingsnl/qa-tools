@@ -42,7 +42,6 @@ final class Application extends ConsoleApplication
         Assertion::boolean($isDebug);
 
         parent::__construct(self::NAME, self::VERSION);
-        define('APPLICATION_ROOT_DIR', __DIR__ . '/../../..');
 
         $this->isDebug = $isDebug;
     }

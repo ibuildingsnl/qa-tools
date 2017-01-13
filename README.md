@@ -20,16 +20,28 @@ macOS machine.
 
 ## Installation
 
-The recommended way to install the QA Tools is by downloading the latest Phar
-from the [Releases][github-qa-releases] page. Place the Phar in your project, or
-somewhere in your [PATH][path], and make it executable. Then download the
-[public key][public-key] and place it next to the executable.
+The recommended way to install the QA Tools is by using our installer:
+
+```
+php -r "copy('https://raw.githubusercontent.com/ibuildingsnl/qa-tools-v3/master/installer.php', 'qa-tools-setup.php');"
+php -r "if (hash_file('SHA384', 'qa-tools-setup.php') === '6a4d0736afbf1e8ea37de1d692ccb1235cd9b5c68151e64b2d58b11da3de5d1b19dcb266231fdd2a5afcbb86f1d199e6') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('qa-tools-setup.php'); } echo PHP_EOL;"
+php qa-tools-setup.php
+php -r "unlink('qa-tools-setup.php');"
+```
+
+If you want, you can use the `--install-dir` option for `qa-tool-setup.php` to indicate where QA tools
+should be installed. E.g., `php qa-tools-setup.php --install-dir=/usr/local/bin`. It is recommended you
+download QA tools to either your project directory or to some location that is in your [PATH][path].
+
+To see all the options of the installer, run `php qa-tools-setup.php --help`.
+
+Note that downloading the `qa-tools-setup.php` will not work as long as the repository is private. 
+The comment below on using a `GITHUB_TOKEN` is required for the installer during the development phase
+as well (i.e., while the repository is private).
 
 Read why we release the QA Tools as a Phar [here](docs/phar.md).
 
-[github-qa-releases]: https://github.com/ibuildingsnl/qa-tools-v3/releases
 [path]: https://en.wikipedia.org/wiki/PATH_(variable)
-[public-key]: build/release/qa-tools.phar.pubkey
 
 ## Usage
 
