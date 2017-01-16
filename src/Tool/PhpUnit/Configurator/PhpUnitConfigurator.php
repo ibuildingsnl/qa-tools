@@ -39,7 +39,7 @@ final class PhpUnitConfigurator implements Configurator
     {
         $usePhpUnit = $interviewer->ask(
             QuestionFactory::createYesOrNo(
-                'Would you like to run automated tests with PHPUnit?',
+                'Would you like to install PHPUnit for running automated tests?',
                 YesOrNoAnswer::YES
             )
         );

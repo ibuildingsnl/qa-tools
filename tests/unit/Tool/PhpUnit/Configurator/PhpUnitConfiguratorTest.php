@@ -61,7 +61,7 @@ class PhpUnitConfiguratorTest extends PHPUnit_Framework_TestCase
     public function installs_phpunit_when_desired()
     {
         $this->interviewer->recordAnswer(
-            'Would you like to run automated tests with PHPUnit?',
+            'Would you like to install PHPUnit for running automated tests?',
             YesOrNoAnswer::yes()
         );
 
@@ -106,7 +106,7 @@ class PhpUnitConfiguratorTest extends PHPUnit_Framework_TestCase
     public function does_not_install_phpunit_when_not_desired()
     {
         $this->interviewer->recordAnswer(
-            'Would you like to run automated tests with PHPUnit?',
+            'Would you like to install PHPUnit for running automated tests?',
             YesOrNoAnswer::no()
         );
 
