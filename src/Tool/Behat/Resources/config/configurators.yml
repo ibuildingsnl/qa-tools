@@ -7,8 +7,12 @@ services:
             - name: qa_tools.tool
               project_type: 'php.sf3'
             - name: qa_tools.tool
+              project_type: 'php.other'
+
+    qa_tools.tool.configurator.behat.drupal:
+        class: Ibuildings\QaTools\Tool\Behat\Configurator\BehatConfigurator
+        tags:
+            - name: qa_tools.tool
               project_type: 'php.drupal7'
             - name: qa_tools.tool
               project_type: 'php.drupal8'
-            - name: qa_tools.tool
-              project_type: 'php.other'
