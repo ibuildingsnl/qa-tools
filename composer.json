@@ -56,8 +56,8 @@
         "sort-packages": true
     },
     "extra": {
-        "qa-tools-box-source": "https://github.com/box-project/box2/releases/download/2.7.2/box-2.7.2.phar",
+        "qa-tools-box-source": "https://github.com/box-project/box2/releases/download/2.7.5/box-2.7.5.phar",
         "qa-tools-box-install-path": "./bin/box",
-        "qa-tools-box-sha-sum": "47c34f95a322e9f8cc6572696decc6473b9331c5"
+        "qa-tools-box-sha-sum": "77561a72b84880572bc6d3ad3b36a905c42b68ba"
     }
 }
