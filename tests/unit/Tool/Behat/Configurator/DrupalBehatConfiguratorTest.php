@@ -110,4 +110,20 @@ class DrupalBehatConfiguratorTest extends PHPUnit_Framework_TestCase
             ]
         );
     }
+
+    /**
+     * @test
+     */
+    public function does_not_install_behat_when_not_desired()
+    {
+        $this->interviewer->recordAnswer(
+            'Would you like to install Behat for feature testing?',
+            YesOrNoAnswer::no()
+        );
+
+        $configurator = new DrupalBehatConfigurator();
+        $configurator->configure($this->interviewer, $this->taskDirectory, $this->taskHelperSet);
+
+        $this->taskDirectory->shouldNotHaveReceived('registerTask');
+    }
 }
