@@ -14,8 +14,6 @@ class GitHookInstallerTest extends PHPUnit_Framework_TestCase
 {
     const DIRECTORY = '/var/project/';
 
-    const PRE_COMMIT_HOOK_FILE = self::DIRECTORY.'.git/hooks/pre-commit';
-
     /**
      * @var Mockery\MockInterface|FileHandler
      */
@@ -45,13 +43,13 @@ class GitHookInstallerTest extends PHPUnit_Framework_TestCase
     {
         $installer = new GitHookInstaller($this->fileHandler);
 
-        $this->fileHandler->shouldReceive('exists')->with(self::PRE_COMMIT_HOOK_FILE)->andReturn(false);
+        $this->fileHandler->shouldReceive('exists')->with(self::DIRECTORY.GitHookInstaller::PRE_COMMIT_PATH)->andReturn(false);
         $this->fileHandler->shouldReceive('readFrom')->andReturn('ant precommit');
 
         $installer->installPreCommitHook($this->interviewer, $this->directory);
 
-        $this->fileHandler->shouldHaveReceived('writeTo', [self::PRE_COMMIT_HOOK_FILE, '/ant precommit/']);
-        $this->fileHandler->shouldHaveReceived('changeMode', [self::PRE_COMMIT_HOOK_FILE, 0775]);
+        $this->fileHandler->shouldHaveReceived('writeTo', [self::DIRECTORY.GitHookInstaller::PRE_COMMIT_PATH, '/ant precommit/']);
+        $this->fileHandler->shouldHaveReceived('changeMode', [self::DIRECTORY.GitHookInstaller::PRE_COMMIT_PATH, 0775]);
     }
 
     /**
@@ -61,7 +59,7 @@ class GitHookInstallerTest extends PHPUnit_Framework_TestCase
     {
         $installer = new GitHookInstaller($this->fileHandler);
 
-        $this->fileHandler->shouldReceive('exists')->with(self::PRE_COMMIT_HOOK_FILE)->andReturn(true);
+        $this->fileHandler->shouldReceive('exists')->with(self::DIRECTORY.GitHookInstaller::PRE_COMMIT_PATH)->andReturn(true);
 
         $this->interviewer->recordAnswer(
             'A pre-commit hook already exists in this project. Are you sure you want to overwrite it?',
@@ -80,7 +78,7 @@ class GitHookInstallerTest extends PHPUnit_Framework_TestCase
     {
         $installer = new GitHookInstaller($this->fileHandler);
 
-        $this->fileHandler->shouldReceive('exists')->with(self::PRE_COMMIT_HOOK_FILE)->andReturn(true);
+        $this->fileHandler->shouldReceive('exists')->with(self::DIRECTORY.GitHookInstaller::PRE_COMMIT_PATH)->andReturn(true);
 
         $this->interviewer->recordAnswer(
             'A pre-commit hook already exists in this project. Are you sure you want to overwrite it?',
@@ -91,7 +89,64 @@ class GitHookInstallerTest extends PHPUnit_Framework_TestCase
 
         $installer->installPreCommitHook($this->interviewer, $this->directory);
 
-        $this->fileHandler->shouldHaveReceived('writeTo', [self::PRE_COMMIT_HOOK_FILE, '/ant precommit/']);
-        $this->fileHandler->shouldHaveReceived('changeMode', [self::PRE_COMMIT_HOOK_FILE, 0775]);
+        $this->fileHandler->shouldHaveReceived('writeTo', [self::DIRECTORY.GitHookInstaller::PRE_COMMIT_PATH, '/ant precommit/']);
+        $this->fileHandler->shouldHaveReceived('changeMode', [self::DIRECTORY.GitHookInstaller::PRE_COMMIT_PATH, 0775]);
+    }
+
+    /**
+     * @test
+     */
+    public function installs_pre_push_hook()
+    {
+        $installer = new GitHookInstaller($this->fileHandler);
+
+        $this->fileHandler->shouldReceive('exists')->with(self::DIRECTORY.GitHookInstaller::PRE_PUSH_PATH)->andReturn(false);
+        $this->fileHandler->shouldReceive('readFrom')->andReturn('ant prepush');
+
+        $installer->installPrePushHook($this->interviewer, $this->directory);
+
+        $this->fileHandler->shouldHaveReceived('writeTo', [self::DIRECTORY.GitHookInstaller::PRE_PUSH_PATH, '/ant prepush/']);
+        $this->fileHandler->shouldHaveReceived('changeMode', [self::DIRECTORY.GitHookInstaller::PRE_PUSH_PATH, 0775]);
+    }
+
+    /**
+     * @test
+     */
+    public function should_not_overwrite_pre_push_hook_if_user_refuses()
+    {
+        $installer = new GitHookInstaller($this->fileHandler);
+
+        $this->fileHandler->shouldReceive('exists')->with(self::DIRECTORY.GitHookInstaller::PRE_PUSH_PATH)->andReturn(true);
+
+        $this->interviewer->recordAnswer(
+            'A pre-push hook already exists in this project. Are you sure you want to overwrite it?',
+            YesOrNoAnswer::no()
+        );
+
+        $installer->installPrePushHook($this->interviewer, $this->directory);
+
+        $this->fileHandler->shouldNotHaveReceived('writeTo');
+    }
+
+    /**
+     * @test
+     */
+    public function should_overwrite_pre_push_hook_if_user_confirms()
+    {
+        $installer = new GitHookInstaller($this->fileHandler);
+
+        $this->fileHandler->shouldReceive('exists')->with(self::DIRECTORY.GitHookInstaller::PRE_PUSH_PATH)->andReturn(true);
+
+        $this->interviewer->recordAnswer(
+            'A pre-push hook already exists in this project. Are you sure you want to overwrite it?',
+            YesOrNoAnswer::yes()
+        );
+
+        $this->fileHandler->shouldReceive('readFrom')->andReturn('ant prepush');
+
+        $installer->installPrePushHook($this->interviewer, $this->directory);
+
+        $this->fileHandler->shouldHaveReceived('writeTo', [self::DIRECTORY.GitHookInstaller::PRE_PUSH_PATH, '/ant prepush/']);
+        $this->fileHandler->shouldHaveReceived('changeMode', [self::DIRECTORY.GitHookInstaller::PRE_PUSH_PATH, 0775]);
     }
 }

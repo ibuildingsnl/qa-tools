@@ -15,6 +15,7 @@ $application->addCommands([
     new ConfigureCommand(),
     new SelfUpdateCommand(),
     new PreCommitCommand(),
+    new PrePushCommand(),
 ]);
 $application->boot();
 
