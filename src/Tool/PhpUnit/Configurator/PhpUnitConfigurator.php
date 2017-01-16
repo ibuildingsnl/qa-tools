@@ -45,7 +45,7 @@ final class PhpUnitConfigurator implements Configurator
         );
 
         /** @var YesOrNoAnswer $usePhpUnit */
-        if ($usePhpUnit->is(false)) {
+        if ($usePhpUnit->is(YesOrNoAnswer::NO)) {
             return;
         }
 
