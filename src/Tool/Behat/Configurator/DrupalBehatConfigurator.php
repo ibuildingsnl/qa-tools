@@ -46,7 +46,7 @@ final class DrupalBehatConfigurator implements Configurator
         $taskDirectory->registerTask(
             new WriteFileTask(
                 $directory . 'features/bootstrap/FeatureContext.php',
-                $taskHelperSet->renderTemplate('drupal/FeatureContext.php')
+                $taskHelperSet->renderTemplate('drupal/FeatureContext.php.twig')
             )
         );
 

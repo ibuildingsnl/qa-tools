@@ -70,7 +70,7 @@ class DrupalBehatConfiguratorTest extends PHPUnit_Framework_TestCase
             ->andReturn('default:');
         $this->taskHelperSet
             ->shouldReceive('renderTemplate')
-            ->with('drupal/FeatureContext.php')
+            ->with('drupal/FeatureContext.php.twig')
             ->andReturn('<?php');
         $this->taskHelperSet
             ->shouldReceive('renderTemplate')
