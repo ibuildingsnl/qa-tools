@@ -38,13 +38,13 @@ final class BehatConfigurator implements Configurator
 
         $taskDirectory->registerTask(
             new WriteFileTask(
-                $directory.'behat.yml',
+                $directory . 'behat.yml',
                 $taskHelperSet->renderTemplate('behat.yml')
             )
         );
         $taskDirectory->registerTask(
             new WriteFileTask(
-                $directory.'features/bootstrap/FeatureContext.php',
+                $directory . 'features/bootstrap/FeatureContext.php',
                 $taskHelperSet->renderTemplate('FeatureContext.php')
             )
         );
