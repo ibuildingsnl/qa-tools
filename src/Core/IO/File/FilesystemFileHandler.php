@@ -36,7 +36,7 @@ final class FilesystemFileHandler implements FileHandler
     {
         Assertion::nonEmptyString($filePath, 'File path ought to be a non-empty string, got "%s" of type "%s"');
 
-        return $this->isDirectoryWritable(dirname($filePath));
+        return $this->isDirectoryWritableOrCanBeCreated(dirname($filePath));
     }
 
     public function writeWithBackupTo($filePath, $data)
@@ -149,14 +149,15 @@ final class FilesystemFileHandler implements FileHandler
      *
      * @return bool
      */
-    private function isDirectoryWritable($directory)
+    private function isDirectoryWritableOrCanBeCreated($directory)
     {
+        // If the directory exists, check if it's writable
         if (is_dir($directory)) {
             return is_writable($directory);
         }
 
-        // Check if the parent directory is writable
-        return $this->isDirectoryWritable(dirname($directory));
+        // If the directory doesn't exist, check if the parent directory is writable so we can create it
+        return $this->isDirectoryWritableOrCanBeCreated(dirname($directory));
     }
 
     /**
