@@ -1,5 +1,4 @@
 <?php
-declare(strict_types = 1);
 
 namespace Ibuildings\QaTools\UnitTest\Tool\Behat\Configurator;
 
@@ -83,7 +82,7 @@ class DrupalBehatConfiguratorTest extends PHPUnit_Framework_TestCase
 
         $this->taskDirectory->shouldHaveReceived(
             'registerTask',
-            [InstallComposerDevDependencyTaskMatcher::forVersionOf('behat/behat', '^3.0')]
+            [InstallComposerDevDependencyTaskMatcher::forVersionOf('behat/behat', '^3.3')]
         );
         $this->taskDirectory->shouldHaveReceived(
             'registerTask',

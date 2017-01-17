@@ -1,5 +1,4 @@
 <?php
-declare(strict_types = 1);
 
 namespace Ibuildings\QaTools\Tool\Behat\Configurator;
 
@@ -33,7 +32,7 @@ final class DrupalBehatConfigurator implements Configurator
             return;
         }
 
-        $taskDirectory->registerTask(new InstallComposerDevDependencyTask('behat/behat', '^3.0'));
+        $taskDirectory->registerTask(new InstallComposerDevDependencyTask('behat/behat', '^3.3'));
         $taskDirectory->registerTask(new InstallComposerDevDependencyTask('drupal/drupal-extension', '^3.2'));
 
         $directory = $taskDirectory->getProject()->getConfigurationFilesLocation()->getDirectory();

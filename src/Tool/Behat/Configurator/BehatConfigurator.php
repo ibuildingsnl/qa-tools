@@ -32,7 +32,7 @@ final class BehatConfigurator implements Configurator
             return;
         }
 
-        $taskDirectory->registerTask(new InstallComposerDevDependencyTask('behat/behat', '^3.0'));
+        $taskDirectory->registerTask(new InstallComposerDevDependencyTask('behat/behat', '^3.3'));
 
         $directory = $taskDirectory->getProject()->getConfigurationFilesLocation()->getDirectory();
 
