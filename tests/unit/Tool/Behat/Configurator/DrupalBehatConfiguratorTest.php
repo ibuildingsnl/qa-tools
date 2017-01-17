@@ -60,7 +60,7 @@ class DrupalBehatConfiguratorTest extends PHPUnit_Framework_TestCase
     public function installs_behat_when_desired()
     {
         $this->interviewer->recordAnswer(
-            'Would you like to install Behat for feature testing?',
+            'Would you like to install Behat?',
             YesOrNoAnswer::yes()
         );
 
@@ -116,7 +116,7 @@ class DrupalBehatConfiguratorTest extends PHPUnit_Framework_TestCase
     public function does_not_install_behat_when_not_desired()
     {
         $this->interviewer->recordAnswer(
-            'Would you like to install Behat for feature testing?',
+            'Would you like to install Behat?',
             YesOrNoAnswer::no()
         );
 

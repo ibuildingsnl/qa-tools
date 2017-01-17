@@ -25,7 +25,7 @@ final class BehatConfigurator implements Configurator
     ) {
         /** @var YesOrNoAnswer $installBehat */
         $installBehat = $interviewer->ask(
-            QuestionFactory::createYesOrNo('Would you like to install Behat for feature testing?', YesOrNoAnswer::YES)
+            QuestionFactory::createYesOrNo('Would you like to install Behat?', YesOrNoAnswer::YES)
         );
 
         if ($installBehat->is(YesOrNoAnswer::NO)) {

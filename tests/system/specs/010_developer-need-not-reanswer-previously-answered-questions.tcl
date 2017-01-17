@@ -20,7 +20,7 @@ answer "Would you like to use PHP Code Sniffer?" with "N"
 
 answer "Would you like to check for vulnerable dependencies using SensioLabs Security Checker?" with "N"
 
-answer "Would you like to install Behat for feature testing?" with "Y"
+answer "Would you like to install Behat?" with "Y"
 
 # Allow Composer to do its thing
 set timeout 5
@@ -40,7 +40,7 @@ accept_default_for "Would you like to use PHP Lint?"
 accept_default_for "Would you like to use PHP Mess Detector?"
 accept_default_for "Would you like to use PHP Code Sniffer?"
 accept_default_for "Would you like to check for vulnerable dependencies using SensioLabs Security Checker?"
-accept_default_for "Would you like to install Behat for feature testing?"
+accept_default_for "Would you like to install Behat?"
 
 # Allow Composer to do its thing
 set timeout 5
