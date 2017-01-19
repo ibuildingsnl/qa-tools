@@ -11,6 +11,7 @@ use Ibuildings\QaTools\Core\Project\Directory;
 final class GitHookInstaller
 {
     const PRE_COMMIT_PATH = '.git/hooks/pre-commit';
+    const PRE_PUSH_PATH = '.git/hooks/pre-push';
 
     /**
      * @var FileHandler
@@ -24,30 +25,57 @@ final class GitHookInstaller
 
     public function installPreCommitHook(Interviewer $interviewer, Directory $projectRoot)
     {
-        $filePath = $projectRoot->getDirectory().self::PRE_COMMIT_PATH;
+        $this->installHook(
+            $interviewer,
+            $projectRoot->getDirectory() . self::PRE_COMMIT_PATH,
+            'pre-commit'
+        );
+    }
+
+    public function installPrePushHook(Interviewer $interviewer, Directory $projectRoot)
+    {
+        $this->installHook(
+            $interviewer,
+            $projectRoot->getDirectory() . self::PRE_PUSH_PATH,
+            'pre-push'
+        );
+    }
+
+    private function installHook(Interviewer $interviewer, $filePath, $hookName)
+    {
+        $hookContents = $this->fileHandler->readFrom(sprintf('%s/files/%s', __DIR__, $hookName));
 
         if ($this->fileHandler->exists($filePath)) {
             /** @var YesOrNoAnswer $overwrite */
             $overwrite = $interviewer->ask(
                 QuestionFactory::createYesOrNo(
-                    'A pre-commit hook already exists in this project. Are you sure you want to overwrite it?',
+                    sprintf(
+                        'A %s hook already exists in this project. Are you sure you want to overwrite it?',
+                        $hookName
+                    ),
                     YesOrNoAnswer::NO
                 )
             );
 
-            if ($overwrite->is(false)) {
+            if ($overwrite->is(YesOrNoAnswer::NO)) {
                 $interviewer->notice(
-                    'The pre-commit hook was left unchanged. You can manually add `ant precommit` to your '.
-                    'pre-commit hook in order to run the pre-commit build before every commit.'
+                    sprintf(
+                        'The %1$s hook was left unchanged. You can manually add the following to your %1$s hook:',
+                        $hookName
+                    )
                 );
+                $interviewer->giveDetails(sprintf("\n%s", $hookContents));
 
                 return;
             }
         }
 
-        $this->fileHandler->writeTo($filePath, $this->fileHandler->readFrom(__DIR__.'/files/pre-commit'));
+        $this->fileHandler->writeTo(
+            $filePath,
+            $hookContents
+        );
         $this->fileHandler->changeMode($filePath, 0775);
 
-        $interviewer->success(sprintf('Installed Git pre-commit hook in %s.', $filePath));
+        $interviewer->success(sprintf('Installed Git %s hook in %s.', $hookName, $filePath));
     }
 }
