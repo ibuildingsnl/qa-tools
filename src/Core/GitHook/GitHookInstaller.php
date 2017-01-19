@@ -60,21 +60,11 @@ final class GitHookInstaller
             if ($overwrite->is(YesOrNoAnswer::NO)) {
                 $interviewer->notice(
                     sprintf(
-                        'The %s hook was left unchanged. You can manually add the following to your %s hook:'."\n\n".
-                        '%s'."\n",
-                        $hookName,
-                        $hookName,
-                        implode(
-                            "\n",
-                            array_filter(
-                                explode("\n", $hookContents),
-                                function ($line) {
-                                    return trim($line) !== '' && 0 !== strpos($line, '#!');
-                                }
-                            )
-                        )
+                        'The %1$s hook was left unchanged. You can manually add the following to your %1$s hook:',
+                        $hookName
                     )
                 );
+                $interviewer->giveDetails(sprintf("\n%s", $hookContents));
 
                 return;
             }
