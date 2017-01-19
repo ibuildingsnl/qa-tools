@@ -27,7 +27,7 @@ final class GitHookInstaller
     {
         $this->installHook(
             $interviewer,
-            $projectRoot->getDirectory().self::PRE_COMMIT_PATH,
+            $projectRoot->getDirectory() . self::PRE_COMMIT_PATH,
             'pre-commit'
         );
     }
@@ -36,7 +36,7 @@ final class GitHookInstaller
     {
         $this->installHook(
             $interviewer,
-            $projectRoot->getDirectory().self::PRE_PUSH_PATH,
+            $projectRoot->getDirectory() . self::PRE_PUSH_PATH,
             'pre-push'
         );
     }
