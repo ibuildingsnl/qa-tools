@@ -141,6 +141,16 @@ class FilesystemFileHandlerTest extends TestCase
     }
 
     /** @test */
+    public function creates_directory_to_write_file()
+    {
+        $this->assertTrue($this->adapter->canWriteWithBackupTo('directory/file'));
+
+        $this->adapter->writeTo('directory/file', 'data');
+
+        $this->assertFileExists('directory/file');
+    }
+
+    /** @test */
     public function keeps_backups_for_overwritten_file()
     {
         $this->adapter->writeTo('file', 'data');
