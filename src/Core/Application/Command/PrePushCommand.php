@@ -2,6 +2,8 @@
 
 namespace Ibuildings\QaTools\Core\Application\Command;
 
+use Ibuildings\QaTools\Core\IO\Cli\InterviewerFactory;
+use Ibuildings\QaTools\Core\Project\Directory;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -22,6 +24,13 @@ final class PrePushCommand extends Command implements ContainerAwareInterface
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        // Implementation
+        /** @var InterviewerFactory $interviewerFactory */
+        $interviewerFactory = $this->container->get('qa_tools.io.cli.interviewer_factory');
+        $interviewer = $interviewerFactory->createWith($input, $output);
+
+        $installer = $this->container->get('qa_tools.git.hook_installer');
+        $projectRoot = new Directory(getcwd());
+
+        $installer->installPrePushHook($interviewer, $projectRoot);
     }
 }
