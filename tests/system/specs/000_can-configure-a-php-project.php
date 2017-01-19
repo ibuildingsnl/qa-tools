@@ -29,5 +29,5 @@ assertFileContains('phpmd.xml', 'Ibuildings QA Tools Default Ruleset');
 
 assertFileExists('ruleset.xml');
 Composer::assertPackageIsInstalled('squizlabs/php_codesniffer');
-
 Composer::assertPackageIsInstalled('behat/behat');
+Composer::assertPackageIsInstalled('drupal/drupal-extension');

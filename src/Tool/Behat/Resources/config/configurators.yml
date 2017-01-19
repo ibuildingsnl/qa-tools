@@ -10,7 +10,7 @@ services:
               project_type: 'php.other'
 
     qa_tools.tool.configurator.behat.drupal:
-        class: Ibuildings\QaTools\Tool\Behat\Configurator\BehatConfigurator
+        class: Ibuildings\QaTools\Tool\Behat\Configurator\DrupalBehatConfigurator
         tags:
             - name: qa_tools.tool
               project_type: 'php.drupal7'
