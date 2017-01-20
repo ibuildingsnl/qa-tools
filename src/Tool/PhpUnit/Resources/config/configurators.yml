@@ -2,7 +2,7 @@ services:
     qa_tools.tool.configurator.phpunit.default:
         class: Ibuildings\QaTools\Tool\PhpUnit\Configurator\PhpUnitConfigurator
         arguments:
-            - 'phpunit.xml.twig'
+            - 'phpunit.default.xml.twig'
         tags:
             - name: qa_tools.tool
               project_type: 'php.drupal7'
