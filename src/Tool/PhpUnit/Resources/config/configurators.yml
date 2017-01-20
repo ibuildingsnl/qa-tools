@@ -7,9 +7,15 @@ services:
             - name: qa_tools.tool
               project_type: 'php.drupal7'
             - name: qa_tools.tool
-              project_type: 'php.drupal8'
-            - name: qa_tools.tool
               project_type: 'php.other'
+
+    qa_tools.tool.configurator.phpunit.drupal8:
+        class: Ibuildings\QaTools\Tool\PhpUnit\Configurator\Drupal8PhpUnitConfigurator
+        arguments:
+            - 'drupal8/phpunit.xml.twig'
+        tags:
+            - name: qa_tools.tool
+              project_type: 'php.drupal8'
 
     qa_tools.tool.configurator.phpunit.symfony:
         class: Ibuildings\QaTools\Tool\PhpUnit\Configurator\PhpUnitConfigurator
