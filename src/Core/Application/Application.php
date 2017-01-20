@@ -35,6 +35,9 @@ final class Application extends ConsoleApplication
      */
     private $container;
 
+    /**
+     * @param bool $isDebug
+     */
     public function __construct($isDebug)
     {
         Assertion::boolean($isDebug);
