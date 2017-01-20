@@ -18,6 +18,7 @@ answer "Would you like to use PHP Lint?" with "n"
 answer "Would you like to use PHP Mess Detector?" with "Y"
 answer "Would you like to use PHP Code Sniffer?" with "n"
 answer "Would you like to check for vulnerable dependencies using SensioLabs Security Checker?" with "Y"
+answer "Would you like to install Behat?" with "N"
 
 answer "There is no Composer project initialised in this directory. Initialise one?" with "Y"
 answer "Package name (<vendor>/<name>)" with "qa-tools/test-package"

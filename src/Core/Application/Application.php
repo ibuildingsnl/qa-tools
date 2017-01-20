@@ -4,6 +4,7 @@ namespace Ibuildings\QaTools\Core\Application;
 
 use Ibuildings\QaTools\Core\Assert\Assertion;
 use Ibuildings\QaTools\Core\Tool\Tool;
+use Ibuildings\QaTools\Tool\Behat\Behat;
 use Ibuildings\QaTools\Tool\PhpCs\PhpCs;
 use Ibuildings\QaTools\Tool\PhpLint\PhpLint;
 use Ibuildings\QaTools\Tool\PhpMd\PhpMd;
@@ -57,6 +58,7 @@ final class Application extends ConsoleApplication
             new PhpMd(),
             new PhpCs(),
             new SensioLabsSecurityChecker(),
+            new Behat(),
         ];
     }
 

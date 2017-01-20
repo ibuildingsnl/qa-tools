@@ -2,15 +2,19 @@
 
 <project name="Ant Build" default="main">
 <target name="precommit" depends="{{ precommit_targets | join(',') }}"/>
+<target name="prepush" depends="main"/>
 <target name="main" depends="{{ main_targets | join(',') }}"/>
 
-
+{% if precommit_snippets | length > 0 %}
 <!-- PRECOMMIT -->
 
 {{ precommit_snippets | join('\n') | raw }}
+{% endif %}
 
+{% if main_snippets | length > 0 %}
 <!-- MAIN -->
 
 {{ main_snippets | join('\n')| raw }}
+{% endif %}
 
 </project>

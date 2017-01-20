@@ -37,6 +37,8 @@ answer "Which locations should be ignored?" with "behat/*"
 
 answer "Would you like to check for vulnerable dependencies using SensioLabs Security Checker?" with "Y"
 
+answer "Would you like to install Behat?" with "Y"
+
 # Allow Composer to do its thing
 set timeout 5
 
@@ -83,6 +85,8 @@ answer "Which locations should be ignored?" with "behat/*"
 
 answer "Would you like to check for vulnerable dependencies using SensioLabs Security Checker?" with "Y"
 
+answer "Would you like to install Behat?" with "Y"
+
 
 # Allow Composer to do its thing
 set timeout 5
@@ -116,6 +120,8 @@ answer "Would you like to use PHP Code Sniffer?" with "Y"
 
 answer "Would you like to check for vulnerable dependencies using SensioLabs Security Checker?" with "Y"
 
+answer "Would you like to install Behat?" with "Y"
+
 # Allow Composer to do its thing
 set timeout 5
 
@@ -146,6 +152,8 @@ answer "Would you like to use PHP Mess Detector?" with "Y"
 answer "Would you like to use PHP Code Sniffer?" with "Y"
 
 answer "Would you like to check for vulnerable dependencies using SensioLabs Security Checker?" with "Y"
+
+answer "Would you like to install Behat?" with "Y"
 
 # Allow Composer to do its thing
 set timeout 5
@@ -178,6 +186,8 @@ answer "Would you like to use PHP Code Sniffer?" with "Y"
 
 answer "Would you like to check for vulnerable dependencies using SensioLabs Security Checker?" with "Y"
 
+answer "Would you like to install Behat?" with "Y"
+
 # Allow Composer to do its thing
 set timeout 5
 
@@ -208,6 +218,8 @@ answer "Would you like to use PHP Mess Detector?" with "Y"
 answer "Would you like to use PHP Code Sniffer?" with "Y"
 
 answer "Would you like to check for vulnerable dependencies using SensioLabs Security Checker?" with "Y"
+
+answer "Would you like to install Behat?" with "Y"
 
 # Allow Composer to do its thing
 set timeout 5
