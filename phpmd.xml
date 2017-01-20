@@ -25,7 +25,15 @@
 
     <rule ref="rulesets/controversial.xml" />
 
-    <rule ref="rulesets/design.xml" />
+    <rule ref="rulesets/design.xml">
+        <exclude name="CouplingBetweenObjects" />
+    </rule>
+    <rule ref="rulesets/design.xml/CouplingBetweenObjects">
+        <properties>
+            <!-- Due to wide-spread value object usage a higher coupling is acceptable -->
+            <property name="minimum" value="15" />
+        </properties>
+    </rule>
 
     <rule ref="rulesets/naming.xml">
         <exclude name="ShortVariable" />
