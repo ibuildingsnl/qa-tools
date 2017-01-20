@@ -30,7 +30,6 @@ final class PhpUnitConfigurator implements Configurator
     public function __construct($phpunitConfigurationTemplate)
     {
         Assertion::string($phpunitConfigurationTemplate);
-        Assertion::file(__DIR__ . '/../Resources/templates/' . $phpunitConfigurationTemplate);
 
         $this->phpunitConfigurationTemplate = $phpunitConfigurationTemplate;
     }
