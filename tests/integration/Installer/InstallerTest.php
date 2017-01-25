@@ -10,11 +10,6 @@ use PharValidator;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 
-define('TESTING_QA_TOOLS_INSTALLER', true);
-define('QA_TOOLS_INSTALLER_ANSI', false);
-
-require __DIR__.'/../../../installer.php';
-
 final class InstallerTest extends TestCase
 {
     const REPOSITORY_OWNER = 'ibuildingsnl';
@@ -33,6 +28,14 @@ final class InstallerTest extends TestCase
 
     /** @var Filesystem $filesystem */
     private $filesystem;
+
+    public static function setUpBeforeClass()
+    {
+        define('TESTING_QA_TOOLS_INSTALLER', true);
+        define('QA_TOOLS_INSTALLER_ANSI', false);
+
+        require_once __DIR__.'/../../../installer.php';
+    }
 
     public function setUp()
     {

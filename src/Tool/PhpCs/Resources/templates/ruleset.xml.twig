@@ -9,7 +9,7 @@
     <exclude-pattern>{{ ignoredLocation }}</exclude-pattern>
 {% endif %}
 
-{% if beLessStrictAboutLineLength %}
+{% if useCustomizedLineLengthSettings %}
 {{ include('snippet-line-length.xml.twig') }}
 {% endif %}
 
