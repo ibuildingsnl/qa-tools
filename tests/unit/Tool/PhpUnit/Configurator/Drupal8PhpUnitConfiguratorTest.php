@@ -67,7 +67,7 @@ class Drupal8PhpUnitConfiguratorTest extends PHPUnit_Framework_TestCase
 
         $this->taskHelperSet
             ->shouldReceive('renderTemplate')
-            ->with('phpunit.xml.twig')
+            ->with('drupal8/phpunit.xml.twig')
             ->andReturn('<?xml version="1.0" encoding="UTF-8"?>');
 
         $this->taskHelperSet
@@ -80,7 +80,7 @@ class Drupal8PhpUnitConfiguratorTest extends PHPUnit_Framework_TestCase
             ->with('ant-build.xml.twig', ['targetName' => self::TARGET_NAME])
             ->andReturn('phpunit-snippet');
 
-        $configurator = new Drupal8PhpUnitConfigurator('phpunit.xml.twig');
+        $configurator = new Drupal8PhpUnitConfigurator('drupal8/phpunit.xml.twig');
         $configurator->configure($this->interviewer, $this->taskDirectory, $this->taskHelperSet);
 
         $this->taskDirectory->shouldHaveReceived(
@@ -120,7 +120,7 @@ class Drupal8PhpUnitConfiguratorTest extends PHPUnit_Framework_TestCase
             YesOrNoAnswer::no()
         );
 
-        $configurator = new Drupal8PhpUnitConfigurator('phpunit.xml.twig');
+        $configurator = new Drupal8PhpUnitConfigurator('drupal8/phpunit.xml.twig');
         $configurator->configure($this->interviewer, $this->taskDirectory, $this->taskHelperSet);
 
         $this->taskDirectory->shouldNotHaveReceived('registerTask');

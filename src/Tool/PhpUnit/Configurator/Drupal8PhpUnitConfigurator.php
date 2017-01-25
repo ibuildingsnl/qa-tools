@@ -19,18 +19,6 @@ use Ibuildings\QaTools\Tool\PhpUnit\PhpUnit;
 
 final class Drupal8PhpUnitConfigurator implements Configurator
 {
-    /**
-     * @var string
-     */
-    private $phpunitConfigurationTemplate;
-
-    public function __construct($phpunitConfigurationTemplate)
-    {
-        Assertion::string($phpunitConfigurationTemplate);
-
-        $this->phpunitConfigurationTemplate = $phpunitConfigurationTemplate;
-    }
-
     public function configure(Interviewer $interviewer, TaskDirectory $taskDirectory, TaskHelperSet $taskHelperSet)
     {
         $usePhpUnit = $interviewer->ask(
@@ -50,7 +38,7 @@ final class Drupal8PhpUnitConfigurator implements Configurator
         $taskDirectory->registerTask(
             new WriteFileTask(
                 $taskDirectory->getProject()->getConfigurationFilesLocation()->getDirectory() . 'phpunit.xml',
-                $taskHelperSet->renderTemplate($this->phpunitConfigurationTemplate)
+                $taskHelperSet->renderTemplate('drupal8/phpunit.xml.twig')
             )
         );
 
