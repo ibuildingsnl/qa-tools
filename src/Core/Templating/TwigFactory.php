@@ -12,7 +12,9 @@ final class TwigFactory
      */
     public static function create()
     {
-        $twig = new Environment();
+        $twig = new Environment(null, [
+            'strict_variables' => true,
+        ]);
 
         /** @var CoreExtension $coreExtension */
         $coreExtension = $twig->getExtension('core');

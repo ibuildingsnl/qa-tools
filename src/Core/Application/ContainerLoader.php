@@ -4,6 +4,7 @@ namespace Ibuildings\QaTools\Core\Application;
 
 use Ibuildings\QaTools\Core\Application\Compiler\RegisterConfiguratorsCompilerPass;
 use Ibuildings\QaTools\Core\Application\Compiler\RegisterTaskExecutorsCompilerPass;
+use Ibuildings\QaTools\Core\Assert\Assertion as Assert;
 use Ibuildings\QaTools\Core\IO\File\FilesystemFileHandler;
 use Ibuildings\QaTools\Core\Tool\Tool;
 use Symfony\Component\Config\ConfigCache;
@@ -15,8 +16,15 @@ use Symfony\Component\Filesystem\Filesystem;
 
 final class ContainerLoader
 {
+    /**
+     * @param Application $application
+     * @param boolean     $isDebug
+     * @return CompiledContainer
+     */
     public static function load(Application $application, $isDebug)
     {
+        Assert::boolean($isDebug, 'Container debug mode ought to be a boolean, got "%s"');
+
         $file = __DIR__ . '/../../../var/cache/container.php';
         $precompiledContainer = new ConfigCache($file, $isDebug);
 

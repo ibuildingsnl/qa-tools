@@ -12,6 +12,8 @@ answer "\[0\] Symfony 2" with "0"
 
 answer "Would you like to integrate Travis in your project?" with "Y"
 
+answer "Would you like to install PHPUnit for running automated tests?" with "Y"
+
 answer "Would you like to use PHP Lint?" with "N"
 
 answer "Would you like to use PHP Mess Detector?" with "Y"
@@ -36,6 +38,7 @@ accept_default_for "Where would you like to store the generated files?"
 accept_default_for "What type of project would you like to configure?"
 accept_default_for "What type of PHP project would you like to configure?"
 accept_default_for "Would you like to integrate Travis in your project?"
+accept_default_for "Would you like to install PHPUnit for running automated tests?"
 accept_default_for "Would you like to use PHP Lint?"
 accept_default_for "Would you like to use PHP Mess Detector?"
 accept_default_for "Would you like to use PHP Code Sniffer?"
