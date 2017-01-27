@@ -2,9 +2,6 @@
 
 namespace Ibuildings\QaTools\IntegrationTest\Core\Templating;
 
-use Exception;
-use Ibuildings\QaTools\Core\Application\Application;
-use Ibuildings\QaTools\Core\Application\ContainerLoader;
 use Ibuildings\QaTools\Core\Templating\TemplateEngine;
 use Ibuildings\QaTools\IntegrationTest\ContainerTestCase;
 use Mockery as m;
@@ -21,7 +18,7 @@ class TemplateEngineTestCase extends ContainerTestCase
         $twig = $this->container->get('twig.environment');
 
         $engine = new TemplateEngine($twig);
-        $engine->setPath(__DIR__ . '/templates');
+        $engine->setPath('../tests/integration/Core/Templating/templates');
 
         $this->expectException(Twig_Error_Runtime::class);
         $this->expectExceptionMessage('Variable "variableDoesNotExist" does not exist in ');

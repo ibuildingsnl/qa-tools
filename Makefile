@@ -31,7 +31,7 @@ build/test/qa-tools.phar: signing-key-test.pem
 	@tools/build-phar.php
 	@rm box.json
 
-test: test-unit test-integration test-system-dev code-metrics clean build-test test-system-phar test-security
+test: test-unit test-integration test-system-dev code-metrics clean build-test test-system-phar test-security verify-build
 test-fast: test-unit test-integration test-system-dev code-metrics
 
 coverage:
@@ -44,6 +44,7 @@ test-system-dev: phpunit-system-dev
 test-system-phar: phpunit-system-phar
 test-security: verify-test-build-is-signed check-security-advisories verify-readme-installer-hash
 code-metrics: phpcs phpmd
+verify-build: test-no-absolute-paths-in-container
 
 
 phpunit-unit:
@@ -67,6 +68,12 @@ verify-test-build-is-signed: build-test
 
 check-security-advisories:
 	vendor/bin/security-checker security:check
+
+test-no-absolute-paths-in-container:
+	@! grep -q $(CURDIR) var/cache/container.php \
+		|| (echo "\n\033[0;31mThe compiled container contains an absolute path to the project directory. This will cause QA Tools to fail on other machines, where the absolute path will most likely not be present.\033[0m\n" \
+			&& echo "\033[0;33mvar/cache/container.php:\033[0m\n" \
+			&& grep $(CURDIR) var/cache/container.php)
 
 verify-readme-installer-hash:
 	tests/security/verify-readme-installer-hash
