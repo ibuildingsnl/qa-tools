@@ -24,8 +24,7 @@ answer "Would you like to check for vulnerable dependencies using SensioLabs Sec
 
 answer "Would you like to install Behat?" with "Y"
 
-# Allow Composer to do its thing
-set timeout 10
+give_tasks_time_to_run
 
 exits_with 0
 
@@ -45,7 +44,6 @@ accept_default_for "Would you like to use PHP Code Sniffer?"
 accept_default_for "Would you like to check for vulnerable dependencies using SensioLabs Security Checker?"
 accept_default_for "Would you like to install Behat?"
 
-# Allow Composer to do its thing
-set timeout 10
+give_tasks_time_to_run
 
 exits_with 0
