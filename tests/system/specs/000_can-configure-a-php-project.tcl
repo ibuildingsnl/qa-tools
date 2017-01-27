@@ -7,9 +7,6 @@ answer "What is the project's name?" with "Boolean Bust"
 answer "Where would you like to store the generated files?" with "./"
 
 should_see "What type of project would you like to configure?"
-answer "\[0\] PHP" with "0"
-
-should_see "What type of PHP project would you like to configure?"
 answer "\[4\] Other PHP Project" with "4"
 
 answer "Would you like to integrate Travis in your project?" with "Y"
@@ -54,9 +51,6 @@ answer "What is the project's name?" with "Float Flush"
 answer "Where would you like to store the generated files?" with "./"
 
 should_see "What type of project would you like to configure?"
-answer "\[0\] PHP" with "0"
-
-should_see "What type of PHP project would you like to configure?"
 answer "\[4\] Other PHP Project" with "4"
 
 answer "Would you like to integrate Travis in your project?" with "Y"
@@ -101,9 +95,6 @@ answer "What is the project's name?" with "Tuple Thrust"
 answer "Where would you like to store the generated files?" with "./"
 
 should_see "What type of project would you like to configure?"
-answer "\[0\] PHP" with "0"
-
-should_see "What type of PHP project would you like to configure?"
 answer "\[1\] Symfony 3" with "1"
 
 answer "Would you like to integrate Travis in your project?" with "Y"
@@ -133,9 +124,6 @@ answer "What is the project's name?" with "Crypto Crunch"
 answer "Where would you like to store the generated files?" with "./"
 
 should_see "What type of project would you like to configure?"
-answer "\[0\] PHP" with "0"
-
-should_see "What type of PHP project would you like to configure?"
 answer "\[0\] Symfony 2" with "0"
 
 answer "Would you like to integrate Travis in your project?" with "Y"
@@ -165,9 +153,6 @@ answer "What is the project's name?" with "Lunch Lost"
 answer "Where would you like to store the generated files?" with "./"
 
 should_see "What type of project would you like to configure?"
-answer "\[0\] PHP" with "0"
-
-should_see "What type of PHP project would you like to configure?"
 answer "\[2\] Drupal 7" with "2"
 
 answer "Would you like to integrate Travis in your project?" with "Y"
@@ -197,9 +182,6 @@ answer "What is the project's name?" with "Monads Mocked"
 answer "Where would you like to store the generated files?" with "./"
 
 should_see "What type of project would you like to configure?"
-answer "\[0\] PHP" with "0"
-
-should_see "What type of PHP project would you like to configure?"
 answer "\[3\] Drupal 8" with "3"
 
 answer "Would you like to integrate Travis in your project?" with "Y"

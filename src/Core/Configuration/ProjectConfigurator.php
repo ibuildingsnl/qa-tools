@@ -38,57 +38,25 @@ final class ProjectConfigurator
             QuestionFactory::create('Where would you like to store the generated files?', './')
         );
 
-        $projectCategoryAnswer = $interviewer->ask(
+        $projectTypeAnswer = $interviewer->ask(
             QuestionFactory::createMultipleChoice(
                 'What type of project would you like to configure?',
                 [
-                    'PHP',
-                    'JavaScript',
-                    sprintf('%s and %s', 'PHP', 'JavaScript'),
+                    'Symfony 2',
+                    'Symfony 3',
+                    'Drupal 7',
+                    'Drupal 8',
+                    'Other PHP Project',
                 ]
             )
         );
-
-        $projectTypeAnswers = [];
-
-        if ($projectCategoryAnswer->equals(new TextualAnswer('PHP'))
-            || $projectCategoryAnswer->equals(new TextualAnswer('PHP and JavaScript'))
-        ) {
-            $projectTypeAnswers[] = $interviewer->ask(
-                QuestionFactory::createMultipleChoice(
-                    'What type of PHP project would you like to configure?',
-                    [
-                        'Symfony 2',
-                        'Symfony 3',
-                        'Drupal 7',
-                        'Drupal 8',
-                        'Other PHP Project',
-                    ]
-                )
-            );
-        }
-
-        if ($projectCategoryAnswer->equals(new TextualAnswer('JavaScript'))
-            || $projectCategoryAnswer->equals(new TextualAnswer('PHP and JavaScript'))
-        ) {
-            $projectTypeAnswers[] = $interviewer->ask(
-                QuestionFactory::createMultipleChoice(
-                    'What type of JavaScript project would you like to configure?',
-                    [
-                        'AngularJS 1',
-                        'Angular 2',
-                        'Other JS Project',
-                    ]
-                )
-            );
-        }
 
         $projectTypes = new ProjectTypeSet(
             array_map(
                 function (TextualAnswer $answer) {
                     return ProjectType::fromHumanReadableString($answer->getRaw());
                 },
-                $projectTypeAnswers
+                [$projectTypeAnswer]
             )
         );
 
