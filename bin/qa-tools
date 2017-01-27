@@ -2,12 +2,15 @@
 <?php
 
 use Ibuildings\QaTools\Core\Application\Application;
+use Ibuildings\QaTools\Core\Application\Basedir;
 use Ibuildings\QaTools\Core\Application\Command\ConfigureCommand;
 use Ibuildings\QaTools\Core\Application\Command\PreCommitCommand;
 use Ibuildings\QaTools\Core\Application\Command\PrePushCommand;
 use Ibuildings\QaTools\Core\Application\Command\SelfUpdateCommand;
 
 require __DIR__ . '/../vendor/autoload.php';
+
+Basedir::set(__DIR__);
 
 $isDebug = Phar::running() === '';
 $application = new Application($isDebug);

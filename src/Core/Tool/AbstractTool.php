@@ -2,10 +2,12 @@
 
 namespace Ibuildings\QaTools\Core\Tool;
 
+use Ibuildings\QaTools\Core\Application\Basedir;
 use ReflectionClass;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
+use Symfony\Component\Filesystem\Filesystem;
 
 abstract class AbstractTool implements Tool
 {
@@ -16,7 +18,7 @@ abstract class AbstractTool implements Tool
         $containerBuilder->setParameter('tool.' . static::class . '.resource_path', $resourcePath);
         $configurationFileLoader = new YamlFileLoader(
             $containerBuilder,
-            new FileLocator($resourcePath . '/config')
+            new FileLocator(Basedir::get() . '/' . $resourcePath . '/config')
         );
 
         foreach ($this->getConfigurationFiles() as $configurationFile) {
@@ -25,15 +27,28 @@ abstract class AbstractTool implements Tool
     }
 
     /**
+     * Returns the path to this tool's resources relative to the application
+     * entrypoint `./bin/qa-tools`.
+     *
      * @return string
      */
     protected function determineResourcePath()
     {
         $toolReflection = new ReflectionClass($this);
         $toolFilePath = $toolReflection->getFileName();
-        $resourcesPath = dirname($toolFilePath) . '/Resources';
+        $absoluteResourcesPath = dirname($toolFilePath) . '/Resources';
 
-        return $resourcesPath;
+        // dirname() is used to traverse up several directories. `../` directories
+        // are not supported by Filesystem::makePathRelative().
+        $projectDirectory = dirname(dirname(dirname(__DIR__)));
+
+        $fs = new Filesystem();
+        $relativeResourcesPath = $fs->makePathRelative(
+            $absoluteResourcesPath,
+            $projectDirectory . '/bin'
+        );
+
+        return $relativeResourcesPath;
     }
 
     /**

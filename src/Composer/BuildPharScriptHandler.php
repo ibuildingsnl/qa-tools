@@ -4,6 +4,7 @@ namespace Ibuildings\QaTools\Composer;
 
 use Composer\Script\Event;
 use Ibuildings\QaTools\Core\Application\Application;
+use Ibuildings\QaTools\Core\Application\Basedir;
 use Ibuildings\QaTools\Core\Application\ContainerLoader;
 use RuntimeException;
 
@@ -48,6 +49,7 @@ final class BuildPharScriptHandler
             );
         }
 
+        Basedir::set(__DIR__ . '/../../bin');
         ContainerLoader::load(new Application(true), true);
 
         $boxCommand = sprintf('%s build', escapeshellcmd($config['qa-tools-box-install-path']));
