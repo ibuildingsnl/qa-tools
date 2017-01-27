@@ -38,10 +38,14 @@ abstract class AbstractTool implements Tool
         $toolFilePath = $toolReflection->getFileName();
         $absoluteResourcesPath = dirname($toolFilePath) . '/Resources';
 
+        // dirname() is used to traverse up several directories. `../` directories
+        // are not supported by Filesystem::makePathRelative().
+        $projectDirectory = dirname(dirname(dirname(__DIR__)));
+
         $fs = new Filesystem();
         $relativeResourcesPath = $fs->makePathRelative(
             $absoluteResourcesPath,
-            dirname(__DIR__, 3) . '/bin'
+            $projectDirectory . '/bin'
         );
 
         return $relativeResourcesPath;
