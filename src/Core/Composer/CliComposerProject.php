@@ -78,6 +78,7 @@ final class CliComposerProject implements Project
         $process = ProcessBuilder::create($arguments)
             ->setWorkingDirectory($this->directory)
             ->setEnv('COMPOSER_HOME', getenv('COMPOSER_HOME'))
+            ->setTimeout(null)
             ->getProcess();
 
         if ($process->run() !== 0) {
@@ -95,6 +96,7 @@ final class CliComposerProject implements Project
         $process = ProcessBuilder::create($arguments)
             ->setWorkingDirectory($this->directory)
             ->setEnv('COMPOSER_HOME', getenv('COMPOSER_HOME'))
+            ->setTimeout(null)
             ->getProcess();
 
         if ($process->run() !== 0) {
@@ -117,6 +119,7 @@ final class CliComposerProject implements Project
         $process = ProcessBuilder::create($arguments)
             ->setWorkingDirectory($this->directory)
             ->setEnv('COMPOSER_HOME', getenv('COMPOSER_HOME'))
+            ->setTimeout(null)
             ->getProcess();
 
         if ($process->run() !== 0) {
@@ -165,6 +168,7 @@ final class CliComposerProject implements Project
         $process = ProcessBuilder::create($arguments)
             ->setWorkingDirectory($this->directory)
             ->setEnv('COMPOSER_HOME', getenv('COMPOSER_HOME'))
+            ->setTimeout(null)
             ->getProcess();
 
         if ($process->run() !== 0) {
