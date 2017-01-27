@@ -40,7 +40,7 @@ answer "Would you like to check for vulnerable dependencies using SensioLabs Sec
 answer "Would you like to install Behat?" with "Y"
 
 # Allow Composer to do its thing
-set timeout 5
+set timeout 10
 
 exits_with 0
 
@@ -89,7 +89,7 @@ answer "Would you like to install Behat?" with "Y"
 
 
 # Allow Composer to do its thing
-set timeout 5
+set timeout 10
 
 exits_with 0
 
@@ -123,7 +123,7 @@ answer "Would you like to check for vulnerable dependencies using SensioLabs Sec
 answer "Would you like to install Behat?" with "Y"
 
 # Allow Composer to do its thing
-set timeout 5
+set timeout 10
 
 exits_with 0
 
@@ -156,7 +156,7 @@ answer "Would you like to check for vulnerable dependencies using SensioLabs Sec
 answer "Would you like to install Behat?" with "Y"
 
 # Allow Composer to do its thing
-set timeout 5
+set timeout 10
 
 exits_with 0
 
@@ -189,7 +189,7 @@ answer "Would you like to check for vulnerable dependencies using SensioLabs Sec
 answer "Would you like to install Behat?" with "Y"
 
 # Allow Composer to do its thing
-set timeout 5
+set timeout 10
 
 exits_with 0
 
@@ -222,7 +222,7 @@ answer "Would you like to check for vulnerable dependencies using SensioLabs Sec
 answer "Would you like to install Behat?" with "Y"
 
 # Allow Composer to do its thing
-set timeout 5
+set timeout 10
 
 exits_with 0
 

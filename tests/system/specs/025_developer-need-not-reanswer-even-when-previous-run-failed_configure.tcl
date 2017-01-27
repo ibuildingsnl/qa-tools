@@ -17,7 +17,7 @@ answer "Would you like to use PHP Code Sniffer?" with "N"
 answer "Would you like to check for vulnerable dependencies using SensioLabs Security Checker?" with "N"
 answer "Would you like to install Behat?" with "N"
 
-set timeout 5
+set timeout 10
 
 should_see "Not all prerequisites have been met, aborting..."
 

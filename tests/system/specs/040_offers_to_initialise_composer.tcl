@@ -32,6 +32,6 @@ answer "Would you like to define your dev dependencies (require-dev) interactive
 accept_default_for "Do you confirm generation"
 
 # Allow tasks to run
-set timeout 5
+set timeout 10
 
 exits_with 0
