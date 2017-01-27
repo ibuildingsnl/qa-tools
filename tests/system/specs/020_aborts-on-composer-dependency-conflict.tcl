@@ -23,8 +23,7 @@ answer "Would you like to check for vulnerable dependencies using SensioLabs Sec
 
 answer "Would you like to install Behat?" with "N"
 
-# Allow Composer to do its thing
-set timeout 5
+give_tasks_time_to_run
 
 should_see "Something went wrong while performing a dry-run install:"
 should_see "  Your requirements could not be resolved to an installable set of packages."

@@ -14,6 +14,10 @@ proc test { args } {
     set timeout 2
 }
 
+proc give_tasks_time_to_run {} {
+    set timeout 10
+}
+
 # Writes a message to screen informing the contributor the expected string did
 # not appear in time. Afterwards, the script exits with status code 1.
 #
