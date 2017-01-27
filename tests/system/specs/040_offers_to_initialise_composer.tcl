@@ -7,9 +7,6 @@ answer "What is the project's name?" with "Boolean Bust"
 answer "Where would you like to store the generated files?" with "./"
 
 should_see "What type of project would you like to configure?"
-answer "\[0\] PHP" with "0"
-
-should_see "What type of PHP project would you like to configure?"
 answer "\[4\] Other PHP Project" with "4"
 
 answer "Would you like to integrate Travis in your project?" with "n"
@@ -31,7 +28,6 @@ answer "Would you like to define your dependencies (require) interactively" with
 answer "Would you like to define your dev dependencies (require-dev) interactively" with "no"
 accept_default_for "Do you confirm generation"
 
-# Allow tasks to run
-set timeout 5
+give_tasks_time_to_run
 
 exits_with 0
