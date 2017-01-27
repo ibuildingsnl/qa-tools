@@ -17,7 +17,6 @@ answer "Would you like to use PHP Code Sniffer?" with "N"
 answer "Would you like to check for vulnerable dependencies using SensioLabs Security Checker?" with "N"
 answer "Would you like to install Behat?" with "N"
 
-# Allow Composer to do its thing
-set timeout 5
+give_tasks_time_to_run
 
 exits_with 0
