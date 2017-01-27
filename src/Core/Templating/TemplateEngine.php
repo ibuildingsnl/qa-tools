@@ -2,6 +2,7 @@
 
 namespace Ibuildings\QaTools\Core\Templating;
 
+use Ibuildings\QaTools\Core\Application\Basedir;
 use Ibuildings\QaTools\Core\Assert\Assertion;
 use Twig_Environment;
 use Twig_Loader_Filesystem;
@@ -19,13 +20,13 @@ class TemplateEngine
     }
 
     /**
-     * @param string $path
+     * @param string $path A path relative to the application entrypoint `./bin/qa-tools`.
      */
     public function setPath($path)
     {
         Assertion::string($path);
 
-        $this->twig->setLoader(new Twig_loader_Filesystem($path));
+        $this->twig->setLoader(new Twig_Loader_Filesystem(Basedir::get() . '/'. $path));
     }
 
     /**

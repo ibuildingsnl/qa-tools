@@ -1,8 +1,11 @@
 <?php
 
 use Ibuildings\QaTools\ComposerTest\Composer;
+use Ibuildings\QaTools\Core\Application\Basedir;
 
 require __DIR__ . '/../vendor/autoload.php';
+
+Basedir::set(__DIR__ . '/../bin');
 
 // Don't introduce globals by wrapping assignments in immediately-invoked function.
 call_user_func(function () {
