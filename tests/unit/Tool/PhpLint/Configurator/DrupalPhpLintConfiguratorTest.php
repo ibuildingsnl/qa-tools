@@ -12,7 +12,7 @@ use Ibuildings\QaTools\Core\Interviewer\AutomatedResponseInterviewer;
 use Ibuildings\QaTools\Core\Project\Directory;
 use Ibuildings\QaTools\Core\Project\Project;
 use Ibuildings\QaTools\Core\Project\ProjectTypeSet;
-use Ibuildings\QaTools\Tool\PhpLint\Configurator\PhpLintConfigurator;
+use Ibuildings\QaTools\Tool\PhpLint\Configurator\DrupalPhpLintConfigurator;
 use Ibuildings\QaTools\Tool\PhpLint\PhpLint;
 use Ibuildings\QaTools\UnitTest\AddBuildTaskMatcher;
 use Mockery;
@@ -23,7 +23,7 @@ use PHPUnit\Framework\TestCase as TestCase;
  * @group Tool
  * @group Phplint
  */
-class PhpLintConfiguratorTest extends TestCase
+class DrupalPhpLintConfiguratorTest extends TestCase
 {
     /** @var AutomatedResponseInterviewer */
     private $interviewer;
@@ -57,7 +57,7 @@ class PhpLintConfiguratorTest extends TestCase
             ->with('ant-full.xml.twig',
                 [
                     'targetName' => PhpLint::ANT_TARGET_FULL,
-                    'extensions' => ['php'],
+                    'extensions' => ['php', 'module', 'inc', 'theme', 'profile', 'install'],
                 ]
             )
             ->andReturn('php-lint-full-template')
@@ -69,30 +69,34 @@ class PhpLintConfiguratorTest extends TestCase
                 'ant-diff.xml.twig',
                 [
                     'targetName' => PhpLint::ANT_TARGET_DIFF,
-                    'extensions' => ['php'],
+                    'extensions' => ['php', 'module', 'inc', 'theme', 'profile', 'install'],
                 ]
             )
             ->andReturn('php-lint-diff-template')
             ->once();
 
-        $configurator = new PhpLintConfigurator();
+        $configurator = new DrupalPhpLintConfigurator();
         $configurator->configure($this->interviewer, $this->taskDirectory, $this->taskHelperSet);
 
         $this->taskDirectory
             ->shouldHaveReceived('registerTask')
-            ->with(AddBuildTaskMatcher::with(
-                Build::main(),
-                Tool::withIdentifier('phplint'),
-                Snippet::withContentsAndTargetName('php-lint-full-template', PhpLint::ANT_TARGET_FULL)
-            ));
+            ->with(
+                AddBuildTaskMatcher::with(
+                    Build::main(),
+                    Tool::withIdentifier('phplint'),
+                    Snippet::withContentsAndTargetName('php-lint-full-template', PhpLint::ANT_TARGET_FULL)
+                )
+            );
 
         $this->taskDirectory
             ->shouldHaveReceived('registerTask')
-            ->with(AddBuildTaskMatcher::with(
-                Build::preCommit(),
-                Tool::withIdentifier('phplint'),
-                Snippet::withContentsAndTargetName('php-lint-diff-template', PhpLint::ANT_TARGET_DIFF)
-            ));
+            ->with(
+                AddBuildTaskMatcher::with(
+                    Build::preCommit(),
+                    Tool::withIdentifier('phplint'),
+                    Snippet::withContentsAndTargetName('php-lint-diff-template', PhpLint::ANT_TARGET_DIFF)
+                )
+            );
 
     }
 
@@ -101,7 +105,7 @@ class PhpLintConfiguratorTest extends TestCase
     {
         $this->interviewer->recordAnswer('Would you like to use PHP Lint?', YesOrNoAnswer::no());
 
-        $configurator = new PhpLintConfigurator();
+        $configurator = new DrupalPhpLintConfigurator();
         $configurator->configure($this->interviewer, $this->taskDirectory, $this->taskHelperSet);
 
         $this->taskDirectory->shouldNotHaveReceived('registerTask');
