@@ -19,21 +19,24 @@ class FilesystemFileHandlerTest extends TestCase
     /** @var FilesystemFileHandler */
     private $adapter;
 
-    protected function setUp()
-    {
-        $uniqueId = bin2hex(openssl_random_pseudo_bytes(8));
-        $this->workingDirectory = sys_get_temp_dir() . '/qa-tools_' . microtime(true)  . '-' . $uniqueId . '_fs-adapter';
-        $this->adapter = new FilesystemFileHandler(new Filesystem());
-    }
-
     protected function runTest()
     {
         $oldWd = getcwd();
 
+        $uniqueId = bin2hex(openssl_random_pseudo_bytes(8));
+        $this->workingDirectory = sys_get_temp_dir() . '/qa-tools_' . microtime(true)  . '-' . $uniqueId . '_fs-adapter';
+        $filesystem = new Filesystem();
+        $this->adapter = new FilesystemFileHandler($filesystem);
+
+        mkdir($this->workingDirectory);
+        chdir($this->workingDirectory);
+
         try {
-            mkdir($this->workingDirectory);
-            chdir($this->workingDirectory);
             parent::runTest();
+
+            // Remove the directory when the test passed.
+            $filesystem->chmod($this->workingDirectory, 0775);
+            $filesystem->remove($this->workingDirectory);
         } finally {
             chdir($oldWd);
         }
