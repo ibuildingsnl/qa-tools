@@ -86,7 +86,7 @@ class DrupalBehatConfiguratorTest extends PHPUnit_Framework_TestCase
         );
         $this->taskDirectory->shouldHaveReceived(
             'registerTask',
-            [InstallComposerDevDependencyTaskMatcher::forVersionOf('drupal/drupal-extension', '^3.2')]
+            [InstallComposerDevDependencyTaskMatcher::forVersionOf('drupal/drupal-extension', '^3.1')]
         );
 
         $this->taskDirectory

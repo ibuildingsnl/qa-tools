@@ -33,7 +33,7 @@ final class DrupalBehatConfigurator implements Configurator
         }
 
         $taskDirectory->registerTask(new InstallComposerDevDependencyTask('behat/behat', '^3.3'));
-        $taskDirectory->registerTask(new InstallComposerDevDependencyTask('drupal/drupal-extension', '^3.2'));
+        $taskDirectory->registerTask(new InstallComposerDevDependencyTask('drupal/drupal-extension', '^3.1'));
 
         $directory = $taskDirectory->getProject()->getConfigurationFilesLocation()->getDirectory();
 
