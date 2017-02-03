@@ -43,7 +43,7 @@ test-integration: phpunit-integration
 test-system-dev: phpunit-system-dev
 test-system-phar: phpunit-system-phar
 test-security: verify-test-build-is-signed check-security-advisories verify-readme-installer-hash
-code-metrics: phpcs phpmd
+code-metrics: phplint phpcs phpmd
 verify-build: test-no-absolute-paths-in-container
 
 
@@ -55,6 +55,8 @@ phpunit-system-dev:
 	vendor/bin/phpunit -c . --testsuite system
 phpunit-system-phar:
 	QA_TOOLS_BIN=phar vendor/bin/phpunit -c . --testsuite system
+phplint:
+	vendor/bin/parallel-lint -e php --exclude vendor .
 phpcs:
 	# Blank line is needed to provide STDIN input to phpcs when phpcs is called from the Git pre-push hook context
 	# See https://github.com/squizlabs/PHP_CodeSniffer/issues/993
