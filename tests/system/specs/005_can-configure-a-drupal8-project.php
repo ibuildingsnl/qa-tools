@@ -3,7 +3,7 @@
 namespace Ibuildings\QaTools\SystemTest;
 
 use Ibuildings\QaTools\Tool\PhpCs\PhpCs;
-use Ibuildings\QaTools\Tool\PhpLint\PhpLint;
+use Ibuildings\QaTools\Tool\PhpParallelLint\PhpParallelLint;
 use Ibuildings\QaTools\Tool\PhpMd\PhpMd;
 use Ibuildings\QaTools\Tool\PhpUnit\PhpUnit;
 use Ibuildings\QaTools\Tool\SensioLabsSecurityChecker\SensioLabsSecurityChecker;
@@ -23,10 +23,10 @@ assertFileContains('tests/bootstrap.php', "<?php");
 assertFileExists('build.xml');
 assertFileContains('build.xml', PhpUnit::ANT_TARGET);
 
-assertFileContains('build.xml', PhpLint::ANT_TARGET_FULL);
-assertFileContains('build.xml', "find ./  -type f -name '*.php' ! -path './vendor/*' -o -type f -name '*.module' ! -path './vendor/*' -o -type f -name '*.inc' ! -path './vendor/*' -o -type f -name '*.theme' ! -path './vendor/*' -o -type f -name '*.profile' ! -path './vendor/*' -o -type f -name '*.install' ! -path './vendor/*' | ");
+assertFileContains('build.xml', PhpParallelLint::ANT_TARGET_FULL);
+assertFileContains('build.xml', 'vendor/bin/parallel-lint --exclude vendor -e php,module,inc,theme,profile,install');
 
-assertFileContains('build.xml', PhpLint::ANT_TARGET_DIFF);
+assertFileContains('build.xml', PhpParallelLint::ANT_TARGET_DIFF);
 assertFileContains('build.xml', "git diff --cached --name-only --  '*.php' '*.module' '*.inc' '*.theme' '*.profile' '*.install' | ");
 
 assertFileContains('build.xml', PhpCs::ANT_TARGET);

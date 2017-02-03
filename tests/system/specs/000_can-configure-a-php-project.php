@@ -4,7 +4,7 @@ namespace Ibuildings\QaTools\SystemTest;
 
 use Ibuildings\QaTools\Tool\Behat\Behat;
 use Ibuildings\QaTools\Tool\PhpCs\PhpCs;
-use Ibuildings\QaTools\Tool\PhpLint\PhpLint;
+use Ibuildings\QaTools\Tool\PhpParallelLint\PhpParallelLint;
 use Ibuildings\QaTools\Tool\PhpMd\PhpMd;
 use Ibuildings\QaTools\Tool\SensioLabsSecurityChecker\SensioLabsSecurityChecker;
 
@@ -22,8 +22,8 @@ Composer::assertPackageIsInstalled('phpmd/phpmd');
 assertFileExists('build.xml');
 assertFileContains('build.xml', PhpCs::ANT_TARGET);
 assertFileContains('build.xml', PhpMd::ANT_TARGET);
-assertFileContains('build.xml', PhpLint::ANT_TARGET_FULL);
-assertFileContains('build.xml', PhpLint::ANT_TARGET_DIFF);
+assertFileContains('build.xml', PhpParallelLint::ANT_TARGET_FULL);
+assertFileContains('build.xml', PhpParallelLint::ANT_TARGET_DIFF);
 assertFileContains('build.xml', SensioLabsSecurityChecker::ANT_TARGET);
 assertFileContains('build.xml', Behat::ANT_TARGET);
 

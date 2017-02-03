@@ -1,7 +1,7 @@
 services:
 
-    qa_tools.tool.configurator.phplint.php:
-        class: Ibuildings\QaTools\Tool\PhpLint\Configurator\PhpLintConfigurator
+    qa_tools.tool.configurator.php_parallel_lint.php:
+        class: Ibuildings\QaTools\Tool\PhpParallelLint\Configurator\PhpParallelLintConfigurator
         tags:
             - name: qa_tools.tool
               project_type: 'php.sf2'
@@ -10,8 +10,8 @@ services:
             - name: qa_tools.tool
               project_type: 'php.other'
 
-    qa_tools.tool.configurator.phplint.php_drupal:
-        class: Ibuildings\QaTools\Tool\PhpLint\Configurator\DrupalPhpLintConfigurator
+    qa_tools.tool.configurator.php_parallel_lint.php_drupal:
+        class: Ibuildings\QaTools\Tool\PhpParallelLint\Configurator\DrupalPhpParallelLintConfigurator
         tags:
             - name: qa_tools.tool
               project_type: 'php.drupal7'

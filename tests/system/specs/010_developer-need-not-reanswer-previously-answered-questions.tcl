@@ -11,7 +11,7 @@ answer "Would you like to integrate Travis in your project?" with "Y"
 
 answer "Would you like to install PHPUnit for running automated tests?" with "Y"
 
-answer "Would you like to use PHP Lint?" with "N"
+answer "Would you like to lint PHP files?" with "N"
 
 answer "Would you like to use PHP Mess Detector?" with "Y"
 
@@ -34,7 +34,7 @@ accept_default_for "Where would you like to store the generated files?"
 accept_default_for "What type of project would you like to configure?"
 accept_default_for "Would you like to integrate Travis in your project?"
 accept_default_for "Would you like to install PHPUnit for running automated tests?"
-accept_default_for "Would you like to use PHP Lint?"
+accept_default_for "Would you like to lint PHP files?"
 accept_default_for "Would you like to use PHP Mess Detector?"
 accept_default_for "Would you like to use PHP Code Sniffer?"
 accept_default_for "Would you like to check for vulnerable dependencies using SensioLabs Security Checker?"

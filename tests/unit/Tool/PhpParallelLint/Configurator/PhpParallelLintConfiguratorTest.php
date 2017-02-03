@@ -12,9 +12,10 @@ use Ibuildings\QaTools\Core\Interviewer\AutomatedResponseInterviewer;
 use Ibuildings\QaTools\Core\Project\Directory;
 use Ibuildings\QaTools\Core\Project\Project;
 use Ibuildings\QaTools\Core\Project\ProjectTypeSet;
-use Ibuildings\QaTools\Tool\PhpLint\Configurator\PhpLintConfigurator;
-use Ibuildings\QaTools\Tool\PhpLint\PhpLint;
+use Ibuildings\QaTools\Tool\PhpParallelLint\Configurator\PhpParallelLintConfigurator;
+use Ibuildings\QaTools\Tool\PhpParallelLint\PhpParallelLint;
 use Ibuildings\QaTools\UnitTest\AddBuildTaskMatcher;
+use Ibuildings\QaTools\UnitTest\InstallComposerDevDependencyTaskMatcher;
 use Mockery;
 use Mockery\MockInterface;
 use PHPUnit\Framework\TestCase as TestCase;
@@ -23,7 +24,7 @@ use PHPUnit\Framework\TestCase as TestCase;
  * @group Tool
  * @group Phplint
  */
-class PhpLintConfiguratorTest extends TestCase
+class PhpParallelLintConfiguratorTest extends TestCase
 {
     /** @var AutomatedResponseInterviewer */
     private $interviewer;
@@ -50,13 +51,13 @@ class PhpLintConfiguratorTest extends TestCase
     /** @test */
     public function installs_phplint_when_desired()
     {
-        $this->interviewer->recordAnswer('Would you like to use PHP Lint?', YesOrNoAnswer::yes());
+        $this->interviewer->recordAnswer('Would you like to lint PHP files?', YesOrNoAnswer::yes());
 
         $this->taskHelperSet
             ->shouldReceive('renderTemplate')
             ->with('ant-full.xml.twig',
                 [
-                    'targetName' => PhpLint::ANT_TARGET_FULL,
+                    'targetName' => PhpParallelLint::ANT_TARGET_FULL,
                     'extensions' => ['php'],
                 ]
             )
@@ -68,22 +69,27 @@ class PhpLintConfiguratorTest extends TestCase
             ->with(
                 'ant-diff.xml.twig',
                 [
-                    'targetName' => PhpLint::ANT_TARGET_DIFF,
+                    'targetName' => PhpParallelLint::ANT_TARGET_DIFF,
                     'extensions' => ['php'],
                 ]
             )
             ->andReturn('php-lint-diff-template')
             ->once();
 
-        $configurator = new PhpLintConfigurator();
+        $configurator = new PhpParallelLintConfigurator();
         $configurator->configure($this->interviewer, $this->taskDirectory, $this->taskHelperSet);
+
+        $this->taskDirectory
+            ->shouldHaveReceived('registerTask')
+            ->with(InstallComposerDevDependencyTaskMatcher::forAnyVersionOf('jakub-onderka/php-parallel-lint'))
+            ->once();
 
         $this->taskDirectory
             ->shouldHaveReceived('registerTask')
             ->with(AddBuildTaskMatcher::with(
                 Build::main(),
                 Tool::withIdentifier('phplint'),
-                Snippet::withContentsAndTargetName('php-lint-full-template', PhpLint::ANT_TARGET_FULL)
+                Snippet::withContentsAndTargetName('php-lint-full-template', PhpParallelLint::ANT_TARGET_FULL)
             ));
 
         $this->taskDirectory
@@ -91,7 +97,7 @@ class PhpLintConfiguratorTest extends TestCase
             ->with(AddBuildTaskMatcher::with(
                 Build::preCommit(),
                 Tool::withIdentifier('phplint'),
-                Snippet::withContentsAndTargetName('php-lint-diff-template', PhpLint::ANT_TARGET_DIFF)
+                Snippet::withContentsAndTargetName('php-lint-diff-template', PhpParallelLint::ANT_TARGET_DIFF)
             ));
 
     }
@@ -99,9 +105,9 @@ class PhpLintConfiguratorTest extends TestCase
     /** @test */
     public function does_not_install_phplint_when_not_desired()
     {
-        $this->interviewer->recordAnswer('Would you like to use PHP Lint?', YesOrNoAnswer::no());
+        $this->interviewer->recordAnswer('Would you like to lint PHP files?', YesOrNoAnswer::no());
 
-        $configurator = new PhpLintConfigurator();
+        $configurator = new PhpParallelLintConfigurator();
         $configurator->configure($this->interviewer, $this->taskDirectory, $this->taskHelperSet);
 
         $this->taskDirectory->shouldNotHaveReceived('registerTask');

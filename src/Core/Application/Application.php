@@ -6,7 +6,7 @@ use Ibuildings\QaTools\Core\Assert\Assertion;
 use Ibuildings\QaTools\Core\Tool\Tool;
 use Ibuildings\QaTools\Tool\Behat\Behat;
 use Ibuildings\QaTools\Tool\PhpCs\PhpCs;
-use Ibuildings\QaTools\Tool\PhpLint\PhpLint;
+use Ibuildings\QaTools\Tool\PhpParallelLint\PhpParallelLint;
 use Ibuildings\QaTools\Tool\PhpMd\PhpMd;
 use Ibuildings\QaTools\Tool\PhpUnit\PhpUnit;
 use Ibuildings\QaTools\Tool\SensioLabsSecurityChecker\SensioLabsSecurityChecker;
@@ -54,7 +54,7 @@ final class Application extends ConsoleApplication
     {
         return [
             new PhpUnit(),
-            new PhpLint(),
+            new PhpParallelLint(),
             new PhpMd(),
             new PhpCs(),
             new SensioLabsSecurityChecker(),

@@ -13,7 +13,7 @@ answer "Would you like to integrate Travis in your project?" with "Y"
 
 answer "Would you like to install PHPUnit for running automated tests?" with "Y"
 
-answer "Would you like to use PHP Lint?" with "Y"
+answer "Would you like to lint PHP files?" with "Y"
 
 answer "Would you like to use PHP Mess Detector?" with "Y"
 
@@ -57,7 +57,7 @@ answer "Would you like to integrate Travis in your project?" with "Y"
 
 answer "Would you like to install PHPUnit for running automated tests?" with "Y"
 
-answer "Would you like to use PHP Lint?" with "Y"
+answer "Would you like to lint PHP files?" with "Y"
 
 answer "Would you like to use PHP Mess Detector?" with "Y"
 
@@ -101,7 +101,7 @@ answer "Would you like to integrate Travis in your project?" with "Y"
 
 answer "Would you like to install PHPUnit for running automated tests?" with "Y"
 
-answer "Would you like to use PHP Lint?" with "Y"
+answer "Would you like to lint PHP files?" with "Y"
 
 answer "Would you like to use PHP Mess Detector?" with "Y"
 
@@ -130,7 +130,7 @@ answer "Would you like to integrate Travis in your project?" with "Y"
 
 answer "Would you like to install PHPUnit for running automated tests?" with "Y"
 
-answer "Would you like to use PHP Lint?" with "Y"
+answer "Would you like to lint PHP files?" with "Y"
 
 answer "Would you like to use PHP Mess Detector?" with "Y"
 
@@ -159,7 +159,7 @@ answer "Would you like to integrate Travis in your project?" with "Y"
 
 answer "Would you like to install PHPUnit for running automated tests?" with "Y"
 
-answer "Would you like to use PHP Lint?" with "Y"
+answer "Would you like to lint PHP files?" with "Y"
 
 answer "Would you like to use PHP Mess Detector?" with "Y"
 
@@ -188,7 +188,7 @@ answer "Would you like to integrate Travis in your project?" with "Y"
 
 answer "Would you like to install PHPUnit for running automated tests?" with "Y"
 
-answer "Would you like to use PHP Lint?" with "Y"
+answer "Would you like to lint PHP files?" with "Y"
 
 answer "Would you like to use PHP Mess Detector?" with "Y"
 
