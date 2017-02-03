@@ -71,7 +71,13 @@ class PhpCsOtherConfiguratorTest extends TestCase
 
         $this->taskHelperSet
             ->shouldReceive('renderTemplate')
-            ->with('ant-build.xml.twig', ['targetName' => PhpCs::ANT_TARGET])
+            ->with(
+                'ant-build.xml.twig',
+                [
+                    'targetName' => PhpCs::ANT_TARGET,
+                    'extensions' => ['php/php'],
+                ]
+            )
             ->andReturn('snippet')
             ->once();
 
@@ -114,7 +120,13 @@ class PhpCsOtherConfiguratorTest extends TestCase
 
         $this->taskHelperSet
             ->shouldReceive('renderTemplate')
-            ->with('ant-build.xml.twig', ['targetName' => PhpCs::ANT_TARGET])
+            ->with(
+                'ant-build.xml.twig',
+                [
+                    'targetName' => PhpCs::ANT_TARGET,
+                    'extensions' => ['php/php'],
+                ]
+            )
             ->andReturn('snippet')
             ->once();
 
