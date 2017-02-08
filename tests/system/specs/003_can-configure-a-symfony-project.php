@@ -27,7 +27,7 @@ assertFileContains('build.xml', 'executable="vendor/bin/parallel-lint"');
 assertFileContains('build.xml', '<arg value="php"');
 
 assertFileContains('build.xml', PhpParallelLint::ANT_TARGET_DIFF);
-assertFileContains('build.xml', "git diff --cached --name-only --  '*.php' | ");
+assertFileContains('build.xml', "git diff --cached --name-only --diff-filter=d --  '*.php' | ");
 
 assertFileContains('build.xml', PhpCs::ANT_TARGET);
 assertFileContains('build.xml', '"--extensions=php/php"');
