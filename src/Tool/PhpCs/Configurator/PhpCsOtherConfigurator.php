@@ -80,7 +80,7 @@ final class PhpCsOtherConfigurator implements Configurator
                     'Where are the tests located for which doc block sniffs will be disabled?',
                     $testLocation
                 ))
-                ->getRaw();
+                ->getAnswer();
         }
 
         /** @var YesOrNoAnswer $beLessStrictAboutDocblocksInTests */
@@ -96,7 +96,7 @@ final class PhpCsOtherConfigurator implements Configurator
         if ($shouldIgnoreSomeLocationsCompletely->is(true)) {
             $ignoredLocation = $interviewer
                 ->ask(QuestionFactory::create('Which locations should be ignored?', $ignoredLocation))
-                ->getRaw();
+                ->getAnswer();
         }
 
         $taskDirectory->registerTask(new InstallComposerDevDependencyTask('squizlabs/php_codesniffer', '^2.7'));
