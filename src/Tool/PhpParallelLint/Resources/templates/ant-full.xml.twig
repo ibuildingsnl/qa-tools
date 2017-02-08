@@ -1,7 +1,10 @@
 <target name="{{ targetName }}" description="Perform syntax check of sourcecode files in parallel">
-    <exec executable="sh" failonerror="true">
-        <arg value="-c"/>
-        <arg value="vendor/bin/parallel-lint --exclude vendor -e {{ extensions|join(',')|escape('xml') }}"/>
+    <exec executable="vendor/bin/parallel-lint" failonerror="true">
+        <arg value="--exclude"/>
+        <arg value="vendor"/>
+        <arg value="-e"/>
+        <arg value="{{ extensions|join(',')|escape('xml') }}"/>
+        <arg value="."/>
     </exec>
     <echo message="OK"/>
 </target>
