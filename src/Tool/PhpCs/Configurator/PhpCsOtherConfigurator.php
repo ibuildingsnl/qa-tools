@@ -23,6 +23,11 @@ final class PhpCsOtherConfigurator implements Configurator
      * This is a long script and readability will not improve by splitting this method up.
      * Therefore a suppressed warning.
      * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
+     *
+     * @param Interviewer   $interviewer
+     * @param TaskDirectory $taskDirectory
+     * @param TaskHelperSet $taskHelperSet
+     * @return void
      */
     public function configure(
         Interviewer $interviewer,
