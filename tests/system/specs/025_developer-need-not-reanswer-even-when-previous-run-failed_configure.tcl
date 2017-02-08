@@ -6,7 +6,6 @@ answer "Where would you like to store the generated files?" with "./"
 should_see "What type of project would you like to configure?"
 answer "\[0\] Symfony 2" with "0"
 
-answer "Would you like to integrate Travis in your project?" with "N"
 answer "Would you like to install PHPUnit for running automated tests?" with "N"
 answer "Would you like to lint PHP files?" with "N"
 answer "Would you like to use PHP Mess Detector?" with "Y"
