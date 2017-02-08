@@ -14,7 +14,7 @@ use Ibuildings\QaTools\Core\Interviewer\Question\QuestionFactory;
 use Ibuildings\QaTools\Core\Task\AddAntBuildTask;
 use Ibuildings\QaTools\Tool\PhpLint\PhpLint;
 
-final class PhpLintConfigurator implements Configurator
+final class DrupalPhpLintConfigurator implements Configurator
 {
     public function configure(
         Interviewer $interviewer,
@@ -34,9 +34,10 @@ final class PhpLintConfigurator implements Configurator
             'ant-full.xml.twig',
             [
                 'targetName' => PhpLint::ANT_TARGET_FULL,
-                'extensions' => ['php'],
+                'extensions' => ['php', 'module', 'inc', 'theme', 'profile', 'install'],
             ]
         );
+
 
         $taskDirectory->registerTask(
             new AddAntBuildTask(
@@ -50,7 +51,7 @@ final class PhpLintConfigurator implements Configurator
             'ant-diff.xml.twig',
             [
                 'targetName' => PhpLint::ANT_TARGET_DIFF,
-                'extensions' => ['php'],
+                'extensions' => ['php', 'module', 'inc', 'theme', 'profile', 'install'],
             ]
         );
 

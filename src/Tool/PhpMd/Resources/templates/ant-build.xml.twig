@@ -3,5 +3,6 @@
         <arg path="src" />
         <arg value="text" />
         <arg value="phpmd.xml" />
+        <arg line="--suffixes {{ suffixes|join(',')|escape('xml') }}"/>
     </exec>
 </target>

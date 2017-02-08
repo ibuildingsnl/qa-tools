@@ -1,6 +1,6 @@
 <?php
 
-namespace Ibuildings\QaTools\UnitTest\Tool\PhpMd;
+namespace Ibuildings\QaTools\UnitTest\Tool\Phplint;
 
 use Ibuildings\QaTools\Core\Build\Build;
 use Ibuildings\QaTools\Core\Build\Snippet;
@@ -12,20 +12,18 @@ use Ibuildings\QaTools\Core\Interviewer\AutomatedResponseInterviewer;
 use Ibuildings\QaTools\Core\Project\Directory;
 use Ibuildings\QaTools\Core\Project\Project;
 use Ibuildings\QaTools\Core\Project\ProjectTypeSet;
-use Ibuildings\QaTools\Tool\PhpMd\Configurator\PhpMdConfigurator;
-use Ibuildings\QaTools\Tool\PhpMd\PhpMd;
+use Ibuildings\QaTools\Tool\PhpLint\Configurator\DrupalPhpLintConfigurator;
+use Ibuildings\QaTools\Tool\PhpLint\PhpLint;
 use Ibuildings\QaTools\UnitTest\AddBuildTaskMatcher;
-use Ibuildings\QaTools\UnitTest\InstallComposerDevDependencyTaskMatcher;
-use Ibuildings\QaTools\UnitTest\WriteFileTaskMatcher;
 use Mockery;
 use Mockery\MockInterface;
 use PHPUnit\Framework\TestCase as TestCase;
 
 /**
  * @group Tool
- * @group PhpMd
+ * @group Phplint
  */
-class PhpMdConfiguratorTest extends TestCase
+class DrupalPhpLintConfiguratorTest extends TestCase
 {
     /** @var AutomatedResponseInterviewer */
     private $interviewer;
@@ -38,7 +36,7 @@ class PhpMdConfiguratorTest extends TestCase
     {
         $this->interviewer = new AutomatedResponseInterviewer();
         $this->project = new Project(
-            'Xenophobic Xavier',
+            'Innocuous Insulation',
             new Directory('.'),
             new Directory('.'),
             new ProjectTypeSet(),
@@ -50,50 +48,64 @@ class PhpMdConfiguratorTest extends TestCase
     }
 
     /** @test */
-    public function installs_phpmd_when_desired()
+    public function installs_phplint_when_desired()
     {
-        $this->interviewer->recordAnswer('Would you like to use PHP Mess Detector?', YesOrNoAnswer::yes());
+        $this->interviewer->recordAnswer('Would you like to use PHP Lint?', YesOrNoAnswer::yes());
 
         $this->taskHelperSet
             ->shouldReceive('renderTemplate')
-            ->with('phpmd-default.xml.twig', Mockery::any())
-            ->andReturn('<?xml version="1.0"?>')
+            ->with('ant-full.xml.twig',
+                [
+                    'targetName' => PhpLint::ANT_TARGET_FULL,
+                    'extensions' => ['php', 'module', 'inc', 'theme', 'profile', 'install'],
+                ]
+            )
+            ->andReturn('php-lint-full-template')
             ->once();
 
         $this->taskHelperSet
             ->shouldReceive('renderTemplate')
-            ->with('ant-build.xml.twig', ['targetName' => 'phpmd', 'suffixes' => ['php']])
-            ->andReturn('phpmd-snippet')
+            ->with(
+                'ant-diff.xml.twig',
+                [
+                    'targetName' => PhpLint::ANT_TARGET_DIFF,
+                    'extensions' => ['php', 'module', 'inc', 'theme', 'profile', 'install'],
+                ]
+            )
+            ->andReturn('php-lint-diff-template')
             ->once();
 
-        $configurator = new PhpMdConfigurator();
+        $configurator = new DrupalPhpLintConfigurator();
         $configurator->configure($this->interviewer, $this->taskDirectory, $this->taskHelperSet);
 
         $this->taskDirectory
             ->shouldHaveReceived('registerTask')
-            ->with(InstallComposerDevDependencyTaskMatcher::forAnyVersionOf('phpmd/phpmd'))
-            ->once();
+            ->with(
+                AddBuildTaskMatcher::with(
+                    Build::main(),
+                    Tool::withIdentifier('phplint'),
+                    Snippet::withContentsAndTargetName('php-lint-full-template', PhpLint::ANT_TARGET_FULL)
+                )
+            );
 
         $this->taskDirectory
             ->shouldHaveReceived('registerTask')
-            ->with(WriteFileTaskMatcher::contains('./phpmd.xml', '<?xml version="1.0"?>'))
-            ->once();
+            ->with(
+                AddBuildTaskMatcher::with(
+                    Build::preCommit(),
+                    Tool::withIdentifier('phplint'),
+                    Snippet::withContentsAndTargetName('php-lint-diff-template', PhpLint::ANT_TARGET_DIFF)
+                )
+            );
 
-        $this->taskDirectory
-            ->shouldHaveReceived('registerTask')
-            ->with(AddBuildTaskMatcher::with(
-                Build::main(),
-                Tool::withIdentifier('phpmd'),
-                Snippet::withContentsAndTargetName('phpmd-snippet', PhpMd::ANT_TARGET)
-            ));
     }
 
     /** @test */
-    public function does_not_install_phpmd_when_not_desired()
+    public function does_not_install_phplint_when_not_desired()
     {
-        $this->interviewer->recordAnswer('Would you like to use PHP Mess Detector?', YesOrNoAnswer::no());
+        $this->interviewer->recordAnswer('Would you like to use PHP Lint?', YesOrNoAnswer::no());
 
-        $configurator = new PhpMdConfigurator();
+        $configurator = new DrupalPhpLintConfigurator();
         $configurator->configure($this->interviewer, $this->taskDirectory, $this->taskHelperSet);
 
         $this->taskDirectory->shouldNotHaveReceived('registerTask');

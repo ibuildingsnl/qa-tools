@@ -118,7 +118,10 @@ final class PhpCsOtherConfigurator implements Configurator
 
         $antSnippet = $taskHelperSet->renderTemplate(
             'ant-build.xml.twig',
-            ['targetName' => PhpCs::ANT_TARGET]
+            [
+                'targetName' => PhpCs::ANT_TARGET,
+                'extensions' => ['php/php'],
+            ]
         );
 
         $taskDirectory->registerTask(

@@ -1,7 +1,7 @@
 <target name="{{ targetName }}" description="Perform syntax check of sourcecode files in parallel">
     <exec executable="sh" failonerror="true">
         <arg value="-c"/>
-        <arg value="find ./ -type f -name '*.php' ! -path './vendor/*' | tr '\n' ' ' | xargs -n 1 -P 4 php -l 1>/dev/null"/>
+        <arg value="find ./ {% for extension in extensions %}{% if not loop.first %} -o{% endif %} -type f -name '*.{{ extension|escape('xml') }}' ! -path './vendor/*'{% endfor %} | tr '\n' ' ' | xargs -n 1 -P 4 php -l 1>/dev/null"/>
     </exec>
     <echo message="OK"/>
 </target>

@@ -16,7 +16,7 @@ use Ibuildings\QaTools\Core\Task\InstallComposerDevDependencyTask;
 use Ibuildings\QaTools\Core\Task\WriteFileTask;
 use Ibuildings\QaTools\Tool\PhpMd\PhpMd;
 
-final class PhpMdConfigurator implements Configurator
+final class DrupalPhpMdConfigurator implements Configurator
 {
     public function configure(
         Interviewer $interviewer,
@@ -43,7 +43,7 @@ final class PhpMdConfigurator implements Configurator
 
         $antBuildSnippet = $taskHelperSet->renderTemplate(
             'ant-build.xml.twig',
-            ['targetName' => PhpMd::ANT_TARGET, 'suffixes' => ['php']]
+            ['targetName' => PhpMd::ANT_TARGET, 'suffixes' => ['php', 'module', 'inc', 'theme', 'profile', 'install']]
         );
         $taskDirectory->registerTask(
             new AddAntBuildTask(
