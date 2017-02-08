@@ -12,7 +12,7 @@ use Ibuildings\QaTools\Core\Interviewer\AutomatedResponseInterviewer;
 use Ibuildings\QaTools\Core\Project\Directory;
 use Ibuildings\QaTools\Core\Project\Project;
 use Ibuildings\QaTools\Core\Project\ProjectTypeSet;
-use Ibuildings\QaTools\Tool\PhpMd\Configurator\PhpMdConfigurator;
+use Ibuildings\QaTools\Tool\PhpMd\Configurator\DrupalPhpMdConfigurator;
 use Ibuildings\QaTools\Tool\PhpMd\PhpMd;
 use Ibuildings\QaTools\UnitTest\AddBuildTaskMatcher;
 use Ibuildings\QaTools\UnitTest\InstallComposerDevDependencyTaskMatcher;
@@ -25,7 +25,7 @@ use PHPUnit\Framework\TestCase as TestCase;
  * @group Tool
  * @group PhpMd
  */
-class PhpMdConfiguratorTest extends TestCase
+class DrupalPhpMdConfiguratorTest extends TestCase
 {
     /** @var AutomatedResponseInterviewer */
     private $interviewer;
@@ -62,11 +62,14 @@ class PhpMdConfiguratorTest extends TestCase
 
         $this->taskHelperSet
             ->shouldReceive('renderTemplate')
-            ->with('ant-build.xml.twig', ['targetName' => 'phpmd', 'suffixes' => ['php']])
+            ->with(
+                'ant-build.xml.twig',
+                ['targetName' => 'phpmd', 'suffixes' => ['php', 'module', 'inc', 'theme', 'profile', 'install']]
+            )
             ->andReturn('phpmd-snippet')
             ->once();
 
-        $configurator = new PhpMdConfigurator();
+        $configurator = new DrupalPhpMdConfigurator();
         $configurator->configure($this->interviewer, $this->taskDirectory, $this->taskHelperSet);
 
         $this->taskDirectory
@@ -81,11 +84,13 @@ class PhpMdConfiguratorTest extends TestCase
 
         $this->taskDirectory
             ->shouldHaveReceived('registerTask')
-            ->with(AddBuildTaskMatcher::with(
-                Build::main(),
-                Tool::withIdentifier('phpmd'),
-                Snippet::withContentsAndTargetName('phpmd-snippet', PhpMd::ANT_TARGET)
-            ));
+            ->with(
+                AddBuildTaskMatcher::with(
+                    Build::main(),
+                    Tool::withIdentifier('phpmd'),
+                    Snippet::withContentsAndTargetName('phpmd-snippet', PhpMd::ANT_TARGET)
+                )
+            );
     }
 
     /** @test */
@@ -93,7 +98,7 @@ class PhpMdConfiguratorTest extends TestCase
     {
         $this->interviewer->recordAnswer('Would you like to use PHP Mess Detector?', YesOrNoAnswer::no());
 
-        $configurator = new PhpMdConfigurator();
+        $configurator = new DrupalPhpMdConfigurator();
         $configurator->configure($this->interviewer, $this->taskDirectory, $this->taskHelperSet);
 
         $this->taskDirectory->shouldNotHaveReceived('registerTask');

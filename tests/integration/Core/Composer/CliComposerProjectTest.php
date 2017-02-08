@@ -12,6 +12,7 @@ use Mockery;
 use Mockery\MockInterface;
 use PHPUnit\Framework\TestCase as TestCase;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * @group Composer
@@ -29,8 +30,10 @@ class CliComposerProjectTest extends TestCase
     /** @var LoggerInterface|MockInterface */
     private $logger;
 
-    protected function setUp()
+    protected function runTest()
     {
+        $oldWd = getcwd();
+
         $this->logger = Mockery::spy(LoggerInterface::class);
         $this->workingDirectory = sys_get_temp_dir() . '/qa-tools_' . microtime(true) . '_install-composer-task';
         $this->project = new CliComposerProject(
@@ -38,16 +41,17 @@ class CliComposerProjectTest extends TestCase
             __DIR__ . '/../../../../vendor/bin/composer',
             $this->logger
         );
-    }
 
-    protected function runTest()
-    {
-        $oldWd = getcwd();
+        mkdir($this->workingDirectory);
+        chdir($this->workingDirectory);
 
         try {
-            mkdir($this->workingDirectory);
-            chdir($this->workingDirectory);
             parent::runTest();
+
+            // Remove the directory when the test passed.
+            $filesystem = new Filesystem();
+            $filesystem->chmod($this->workingDirectory, 0775);
+            $filesystem->remove($this->workingDirectory);
         } finally {
             chdir($oldWd);
         }

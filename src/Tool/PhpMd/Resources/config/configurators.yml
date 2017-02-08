@@ -1,4 +1,5 @@
 services:
+
     qa_tools.tool.configurator.phpmd.php:
         class: Ibuildings\QaTools\Tool\PhpMd\Configurator\PhpMdConfigurator
         tags:
@@ -7,8 +8,12 @@ services:
             - name: qa_tools.tool
               project_type: 'php.sf3'
             - name: qa_tools.tool
+              project_type: 'php.other'
+
+    qa_tools.tool.configurator.phpmd.php_drupal:
+        class: Ibuildings\QaTools\Tool\PhpMd\Configurator\DrupalPhpMdConfigurator
+        tags:
+            - name: qa_tools.tool
               project_type: 'php.drupal7'
             - name: qa_tools.tool
               project_type: 'php.drupal8'
-            - name: qa_tools.tool
-              project_type: 'php.other'

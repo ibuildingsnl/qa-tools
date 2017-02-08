@@ -63,7 +63,13 @@ class PhpCsDrupal8ConfiguratorTest extends TestCase
 
         $this->taskHelperSet
             ->shouldReceive('renderTemplate')
-            ->with('ant-build.xml.twig', ['targetName' => PhpCs::ANT_TARGET])
+            ->with(
+                'ant-build.xml.twig',
+                [
+                    'targetName' => PhpCs::ANT_TARGET,
+                    'extensions' => ['php/php', 'module/php', 'inc/php', 'install/php', 'profile/php', 'theme/php'],
+                ]
+            )
             ->andReturn('snippet')
             ->once();
 
@@ -107,7 +113,13 @@ class PhpCsDrupal8ConfiguratorTest extends TestCase
 
         $this->taskHelperSet
             ->shouldReceive('renderTemplate')
-            ->with('ant-build.xml.twig', ['targetName' => PhpCs::ANT_TARGET])
+            ->with(
+                'ant-build.xml.twig',
+                [
+                    'targetName' => PhpCs::ANT_TARGET,
+                    'extensions' => ['php/php', 'module/php', 'inc/php', 'install/php', 'profile/php', 'theme/php'],
+                ]
+            )
             ->andReturn('snippet')
             ->once();
 
