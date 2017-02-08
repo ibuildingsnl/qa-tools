@@ -52,7 +52,10 @@ final class PhpCsDrupal7Configurator implements Configurator
 
         $antSnippet = $taskHelperSet->renderTemplate(
             'ant-build.xml.twig',
-            ['targetName' => PhpCs::ANT_TARGET]
+            [
+                'targetName' => PhpCs::ANT_TARGET,
+                'extensions' => ['php/php', 'module/php', 'inc/php', 'install/php', 'profile/php', 'theme/php'],
+            ]
         );
 
         $taskDirectory->registerTask(

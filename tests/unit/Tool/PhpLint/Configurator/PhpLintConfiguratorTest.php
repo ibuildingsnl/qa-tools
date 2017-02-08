@@ -54,13 +54,24 @@ class PhpLintConfiguratorTest extends TestCase
 
         $this->taskHelperSet
             ->shouldReceive('renderTemplate')
-            ->with('ant-full.xml.twig', ['targetName' => PhpLint::ANT_TARGET_FULL])
+            ->with('ant-full.xml.twig',
+                [
+                    'targetName' => PhpLint::ANT_TARGET_FULL,
+                    'extensions' => ['php'],
+                ]
+            )
             ->andReturn('php-lint-full-template')
             ->once();
 
         $this->taskHelperSet
             ->shouldReceive('renderTemplate')
-            ->with('ant-diff.xml.twig', ['targetName' => PhpLint::ANT_TARGET_DIFF])
+            ->with(
+                'ant-diff.xml.twig',
+                [
+                    'targetName' => PhpLint::ANT_TARGET_DIFF,
+                    'extensions' => ['php'],
+                ]
+            )
             ->andReturn('php-lint-diff-template')
             ->once();
 

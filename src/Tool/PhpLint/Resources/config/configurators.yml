@@ -1,4 +1,5 @@
 services:
+
     qa_tools.tool.configurator.phplint.php:
         class: Ibuildings\QaTools\Tool\PhpLint\Configurator\PhpLintConfigurator
         tags:
@@ -7,8 +8,12 @@ services:
             - name: qa_tools.tool
               project_type: 'php.sf3'
             - name: qa_tools.tool
+              project_type: 'php.other'
+
+    qa_tools.tool.configurator.phplint.php_drupal:
+        class: Ibuildings\QaTools\Tool\PhpLint\Configurator\DrupalPhpLintConfigurator
+        tags:
+            - name: qa_tools.tool
               project_type: 'php.drupal7'
             - name: qa_tools.tool
               project_type: 'php.drupal8'
-            - name: qa_tools.tool
-              project_type: 'php.other'

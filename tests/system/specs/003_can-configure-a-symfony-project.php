@@ -17,20 +17,19 @@ assertFileExists('qa-tools.json');
 
 Composer::assertPackageIsInstalled('phpunit/phpunit');
 assertFileExists('phpunit.xml');
-assertFileExists('tests/bootstrap.php');
-assertFileContains('tests/bootstrap.php', "<?php");
+assertFileNotExists('tests/bootstrap.php');
 
 assertFileExists('build.xml');
 assertFileContains('build.xml', PhpUnit::ANT_TARGET);
 
 assertFileContains('build.xml', PhpLint::ANT_TARGET_FULL);
-assertFileContains('build.xml', "find ./  -type f -name '*.php' ! -path './vendor/*' -o -type f -name '*.module' ! -path './vendor/*' -o -type f -name '*.inc' ! -path './vendor/*' -o -type f -name '*.theme' ! -path './vendor/*' -o -type f -name '*.profile' ! -path './vendor/*' -o -type f -name '*.install' ! -path './vendor/*' | ");
+assertFileContains('build.xml', "find ./  -type f -name '*.php' ! -path './vendor/*' | ");
 
 assertFileContains('build.xml', PhpLint::ANT_TARGET_DIFF);
-assertFileContains('build.xml', "git diff --cached --name-only --  '*.php' '*.module' '*.inc' '*.theme' '*.profile' '*.install' | ");
+assertFileContains('build.xml', "git diff --cached --name-only --  '*.php' | ");
 
 assertFileContains('build.xml', PhpCs::ANT_TARGET);
-assertFileContains('build.xml', "--extensions=php/php,module/php,inc/php,install/php,profile/php,theme/php");
+assertFileContains('build.xml', '"--extensions=php/php"');
 
 assertFileContains('build.xml', PhpMd::ANT_TARGET);
-assertFileContains('build.xml', "--suffixes php,module,inc,theme,profile,install");
+assertFileContains('build.xml', '"--suffixes php"');
