@@ -16,7 +16,7 @@ use Ibuildings\QaTools\Core\Task\InstallComposerDevDependencyTask;
 use Ibuildings\QaTools\Core\Task\WriteFileTask;
 use Ibuildings\QaTools\Tool\PhpCs\PhpCs;
 
-final class PhpCsSymfony2Configurator implements Configurator
+final class PhpCsSymfonyConfigurator implements Configurator
 {
     /**
      * @see https://github.com/djoos/Symfony2-coding-standard for more info on the coding standard

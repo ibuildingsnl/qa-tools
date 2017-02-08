@@ -1,6 +1,6 @@
 services:
     qa_tools.tool.configurator.phpcs.symfony2.php:
-        class: Ibuildings\QaTools\Tool\PhpCs\Configurator\PhpCsSymfony2Configurator
+        class: Ibuildings\QaTools\Tool\PhpCs\Configurator\PhpCsSymfonyConfigurator
         tags:
             - name: qa_tools.tool
               project_type: 'php.sf2'

@@ -13,7 +13,7 @@ use Ibuildings\QaTools\Core\Project\Directory;
 use Ibuildings\QaTools\Core\Project\Project;
 use Ibuildings\QaTools\Core\Project\ProjectType;
 use Ibuildings\QaTools\Core\Project\ProjectTypeSet;
-use Ibuildings\QaTools\Tool\PhpCs\Configurator\PhpCsSymfony2Configurator;
+use Ibuildings\QaTools\Tool\PhpCs\Configurator\PhpCsSymfonyConfigurator;
 use Ibuildings\QaTools\Tool\PhpCs\PhpCs;
 use Ibuildings\QaTools\UnitTest\AddBuildTaskMatcher;
 use Ibuildings\QaTools\UnitTest\InstallComposerDevDependencyTaskMatcher;
@@ -26,7 +26,7 @@ use PHPUnit\Framework\TestCase as TestCase;
  * @group Tool
  * @group PhpCs
  */
-class PhpCsSymfony2ConfiguratorTest extends TestCase
+class PhpCsSymfonyConfiguratorTest extends TestCase
 {
     /** @var AutomatedResponseInterviewer */
     private $interviewer;
@@ -73,7 +73,7 @@ class PhpCsSymfony2ConfiguratorTest extends TestCase
             ->andReturn('snippet')
             ->once();
 
-        $configurator = new PhpCsSymfony2Configurator();
+        $configurator = new PhpCsSymfonyConfigurator();
         $configurator->configure($this->interviewer, $this->taskDirectory, $this->taskHelperSet);
 
         $this->taskDirectory
@@ -122,7 +122,7 @@ class PhpCsSymfony2ConfiguratorTest extends TestCase
             ->andReturn('snippet')
             ->once();
 
-        $configurator = new PhpCsSymfony2Configurator();
+        $configurator = new PhpCsSymfonyConfigurator();
         $configurator->configure($this->interviewer, $this->taskDirectory, $this->taskHelperSet);
 
         $this->taskDirectory
@@ -149,7 +149,7 @@ class PhpCsSymfony2ConfiguratorTest extends TestCase
     {
         $this->interviewer->recordAnswer('Would you like to use PHP Code Sniffer?', YesOrNoAnswer::no());
 
-        $configurator = new PhpCsSymfony2Configurator();
+        $configurator = new PhpCsSymfonyConfigurator();
         $configurator->configure($this->interviewer, $this->taskDirectory, $this->taskHelperSet);
 
         $this->taskDirectory->shouldNotHaveReceived('registerTask');
