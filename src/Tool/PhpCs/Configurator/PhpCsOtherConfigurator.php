@@ -83,7 +83,7 @@ final class PhpCsOtherConfigurator implements Configurator
                 ->getAnswer();
         }
 
-        /** @var YesOrNoAnswer $beLessStrictAboutDocblocksInTests */
+        /** @var YesOrNoAnswer $shouldIgnoreSomeLocationsCompletely */
         $shouldIgnoreSomeLocationsCompletely = $interviewer->ask(
             QuestionFactory::createYesOrNo(
                 'Would you like PHPCS to ignore some locations completely? ' .
