@@ -60,20 +60,13 @@ final class ProjectConfigurator
             )
         );
 
-        $travisEnabledAnswer = $interviewer->ask(
-            QuestionFactory::createYesOrNo(
-                'Would you like to integrate Travis in your project?',
-                YesOrNoAnswer::YES
-            )
-        );
-
         $configuration->reconfigureProject(
             new Project(
                 $nameOfProjectAnswer->getRaw(),
                 $projectDirectory,
                 new Directory($configFileLocationAnswer->getRaw()),
                 $projectTypes,
-                $travisEnabledAnswer->getRaw()
+                false
             )
         );
     }
