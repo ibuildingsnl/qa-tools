@@ -10,7 +10,7 @@ services:
             - name: qa_tools.tool
               project_type: 'php.drupal8'
     qa_tools.tool.configurator.phpcs.php:
-        class: Ibuildings\QaTools\Tool\PhpCs\Configurator\PhpCsOtherConfigurator
+        class: Ibuildings\QaTools\Tool\PhpCs\Configurator\PhpCsConfigurator
         tags:
             - name: qa_tools.tool
               project_type: 'php.other'

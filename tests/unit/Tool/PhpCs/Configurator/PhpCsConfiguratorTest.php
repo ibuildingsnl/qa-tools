@@ -14,7 +14,7 @@ use Ibuildings\QaTools\Core\Project\Directory;
 use Ibuildings\QaTools\Core\Project\Project;
 use Ibuildings\QaTools\Core\Project\ProjectType;
 use Ibuildings\QaTools\Core\Project\ProjectTypeSet;
-use Ibuildings\QaTools\Tool\PhpCs\Configurator\PhpCsOtherConfigurator;
+use Ibuildings\QaTools\Tool\PhpCs\Configurator\PhpCsConfigurator;
 use Ibuildings\QaTools\Tool\PhpCs\PhpCs;
 use Ibuildings\QaTools\UnitTest\AddBuildTaskMatcher;
 use Ibuildings\QaTools\UnitTest\InstallComposerDevDependencyTaskMatcher;
@@ -27,7 +27,7 @@ use PHPUnit\Framework\TestCase;
  * @group Tool
  * @group PhpCs
  */
-class PhpCsOtherConfiguratorTest extends TestCase
+class PhpCsConfiguratorTest extends TestCase
 {
     /** @var AutomatedResponseInterviewer */
     private $interviewer;
@@ -92,7 +92,7 @@ class PhpCsOtherConfiguratorTest extends TestCase
             ->andReturn('snippet')
             ->once();
 
-        $configurator = new PhpCsOtherConfigurator();
+        $configurator = new PhpCsConfigurator();
         $configurator->configure($this->interviewer, $this->taskDirectory, $this->taskHelperSet);
 
         $this->taskDirectory
@@ -151,7 +151,7 @@ class PhpCsOtherConfiguratorTest extends TestCase
             ->andReturn('snippet')
             ->once();
 
-        $configurator = new PhpCsOtherConfigurator();
+        $configurator = new PhpCsConfigurator();
         $configurator->configure($this->interviewer, $this->taskDirectory, $this->taskHelperSet);
 
         $this->taskDirectory
@@ -210,7 +210,7 @@ class PhpCsOtherConfiguratorTest extends TestCase
             ->andReturn('snippet')
             ->once();
 
-        $configurator = new PhpCsOtherConfigurator();
+        $configurator = new PhpCsConfigurator();
         $configurator->configure($this->interviewer, $this->taskDirectory, $this->taskHelperSet);
 
         $this->taskDirectory
@@ -241,7 +241,7 @@ class PhpCsOtherConfiguratorTest extends TestCase
     {
         $this->interviewer->recordAnswer('Would you like to use PHP Code Sniffer?', YesOrNoAnswer::no());
 
-        $configurator = new PhpCsOtherConfigurator();
+        $configurator = new PhpCsConfigurator();
         $configurator->configure($this->interviewer, $this->taskDirectory, $this->taskHelperSet);
 
         $this->taskDirectory->shouldNotHaveReceived('registerTask');
