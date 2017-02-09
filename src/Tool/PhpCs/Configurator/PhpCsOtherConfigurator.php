@@ -19,6 +19,8 @@ use Ibuildings\QaTools\Tool\PhpCs\PhpCs;
 
 final class PhpCsOtherConfigurator implements Configurator
 {
+    const RULESET_SYMFONY = 'Symfony';
+
     /**
      * This is a long script and readability will not improve by splitting this method up.
      * Therefore a suppressed warning.
@@ -47,10 +49,11 @@ final class PhpCsOtherConfigurator implements Configurator
         $baseRuleset = $interviewer->ask(
             QuestionFactory::createMultipleChoice(
                 'What ruleset would you like to use as a base?',
-                ['PSR1', 'PSR2', 'Squiz', 'Zend'],
+                ['PSR1', 'PSR2', 'Squiz', self::RULESET_SYMFONY, 'Zend'],
                 'PSR2'
             )
         );
+        $isBaseRulesetSymfony = $baseRuleset->equals(new TextualAnswer(self::RULESET_SYMFONY));
 
         /** @var TextualAnswer $useCustomizedLineLengthSettings */
         $useCustomizedLineLengthSettings = $interviewer->ask(
@@ -101,10 +104,18 @@ final class PhpCsOtherConfigurator implements Configurator
 
         $taskDirectory->registerTask(new InstallComposerDevDependencyTask('squizlabs/php_codesniffer', '^2.7'));
 
+        $pathToBaseRuleset = $baseRuleset->getAnswer();
+        if ($isBaseRulesetSymfony) {
+            $taskDirectory->registerTask(
+                new InstallComposerDevDependencyTask('escapestudios/symfony2-coding-standard', '~2.0')
+            );
+            $pathToBaseRuleset = 'vendor/escapestudios/symfony2-coding-standard/Symfony2';
+        }
+
         $phpCsConfiguration = $taskHelperSet->renderTemplate(
             'ruleset.xml.twig',
             [
-                'baseRuleset' => $baseRuleset->getAnswer(),
+                'baseRuleset'                         => $pathToBaseRuleset,
                 'useCustomizedLineLengthSettings'     =>
                     $useCustomizedLineLengthSettings->equals(new TextualAnswer('Warn when >120. Fail when >150')),
                 'beLessStrictAboutDocblocksInTests'   => $beLessStrictAboutDocblocksInTests->is(YesOrNoAnswer::YES),

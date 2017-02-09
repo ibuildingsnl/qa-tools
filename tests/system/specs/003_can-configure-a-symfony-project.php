@@ -31,6 +31,10 @@ assertFileContains('build.xml', "git diff --cached --name-only --diff-filter=d -
 
 assertFileContains('build.xml', PhpCs::ANT_TARGET);
 assertFileContains('build.xml', '"--extensions=php/php"');
+assertFileExists('ruleset.xml');
+assertFileContains('ruleset.xml', '<rule ref="vendor/escapestudios/symfony2-coding-standard/Symfony2"');
+assertFileContains('ruleset.xml', '<property name="lineLimit" value="120"');
+assertFileContains('ruleset.xml', '<property name="absoluteLineLimit" value="150"');
 
 assertFileContains('build.xml', PhpMd::ANT_TARGET);
 assertFileContains('build.xml', '"--suffixes php"');

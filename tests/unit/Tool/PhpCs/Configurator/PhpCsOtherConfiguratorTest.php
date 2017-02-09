@@ -174,6 +174,69 @@ class PhpCsOtherConfiguratorTest extends TestCase
     }
 
     /** @test */
+    public function uses_another_ruleset_when_selecting_symfony()
+    {
+        $this->interviewer->recordAnswer('Would you like to use PHP Code Sniffer?', YesOrNoAnswer::yes());
+        $this->interviewer->recordAnswer('What ruleset would you like to use as a base?', new TextualAnswer('Symfony'));
+        $this->interviewer->recordAnswer('How would you like to handle line lengths?', new TextualAnswer('Warn when >120. Fail when >150'));
+        $this->interviewer->recordAnswer('Would you like to skip any sniffs regarding the doc blocks in tests?', YesOrNoAnswer::no());
+        $this->interviewer->recordAnswer('Would you like PHPCS to ignore some locations completely? (you may use a regex to match multiple directories)', YesOrNoAnswer::no());
+
+        $this->taskHelperSet
+            ->shouldReceive('renderTemplate')
+            ->with(
+                'ruleset.xml.twig',
+                [
+                    'baseRuleset'                         => 'vendor/escapestudios/symfony2-coding-standard/Symfony2',
+                    'useCustomizedLineLengthSettings'     => true,
+                    'beLessStrictAboutDocblocksInTests'   => false,
+                    'shouldIgnoreSomeLocationsCompletely' => false,
+                    'testLocation'    => 'tests/*',
+                    'ignoredLocation' => null,
+                ]
+            )
+            ->andReturn('<?xml version="1.0"?>')
+            ->once();
+
+        $this->taskHelperSet
+            ->shouldReceive('renderTemplate')
+            ->with(
+                'ant-build.xml.twig',
+                [
+                    'targetName' => PhpCs::ANT_TARGET,
+                    'extensions' => ['php/php'],
+                ]
+            )
+            ->andReturn('snippet')
+            ->once();
+
+        $configurator = new PhpCsOtherConfigurator();
+        $configurator->configure($this->interviewer, $this->taskDirectory, $this->taskHelperSet);
+
+        $this->taskDirectory
+            ->shouldHaveReceived('registerTask')
+            ->with(InstallComposerDevDependencyTaskMatcher::forAnyVersionOf('squizlabs/php_codesniffer'))
+            ->once();
+        $this->taskDirectory
+            ->shouldHaveReceived('registerTask')
+            ->with(InstallComposerDevDependencyTaskMatcher::forAnyVersionOf('escapestudios/symfony2-coding-standard'))
+            ->once();
+
+        $this->taskDirectory
+            ->shouldHaveReceived('registerTask')
+            ->with(WriteFileTaskMatcher::contains('./ruleset.xml', '<?xml version="1.0"?>'))
+            ->once();
+
+        $this->taskDirectory
+            ->shouldHaveReceived('registerTask')
+            ->with(AddBuildTaskMatcher::with(
+                Build::main(),
+                Tool::withIdentifier('phpcs'),
+                Snippet::withContentsAndTargetName('snippet', PhpCs::ANT_TARGET))
+            );
+    }
+
+    /** @test */
     public function does_not_install_phpcs_when_not_desired()
     {
         $this->interviewer->recordAnswer('Would you like to use PHP Code Sniffer?', YesOrNoAnswer::no());
