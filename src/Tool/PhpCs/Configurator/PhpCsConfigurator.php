@@ -53,7 +53,6 @@ final class PhpCsConfigurator implements Configurator
                 'PSR2'
             )
         );
-        $isBaseRulesetSymfony = $baseRuleset->equals(new TextualAnswer(self::RULESET_SYMFONY));
 
         /** @var TextualAnswer $useCustomizedLineLengthSettings */
         $useCustomizedLineLengthSettings = $interviewer->ask(
@@ -105,7 +104,7 @@ final class PhpCsConfigurator implements Configurator
         $taskDirectory->registerTask(new InstallComposerDevDependencyTask('squizlabs/php_codesniffer', '^2.7'));
 
         $pathToBaseRuleset = $baseRuleset->getAnswer();
-        if ($isBaseRulesetSymfony) {
+        if ($baseRuleset->equals(new TextualAnswer(self::RULESET_SYMFONY))) {
             $taskDirectory->registerTask(
                 new InstallComposerDevDependencyTask('escapestudios/symfony2-coding-standard', '~2.0')
             );
