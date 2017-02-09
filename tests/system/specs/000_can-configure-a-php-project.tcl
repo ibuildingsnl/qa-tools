@@ -100,6 +100,11 @@ answer "Would you like to lint PHP files?" with "Y"
 answer "Would you like to use PHP Mess Detector?" with "Y"
 
 answer "Would you like to use PHP Code Sniffer?" with "Y"
+should_see "What ruleset would you like to use as a base?"
+answer "\[3\] Symfony" with "3"
+answer "How would you like to handle line lengths?" with "Warn when >120. Fail when >150"
+answer "Would you like to skip any sniffs regarding the doc blocks in tests?" with "n"
+answer "Would you like PHPCS to ignore some locations completely? (you may use a regex to match multiple directories)" with "n"
 
 answer "Would you like to check for vulnerable dependencies using SensioLabs Security Checker?" with "Y"
 
@@ -127,6 +132,11 @@ answer "Would you like to lint PHP files?" with "Y"
 answer "Would you like to use PHP Mess Detector?" with "Y"
 
 answer "Would you like to use PHP Code Sniffer?" with "Y"
+should_see "What ruleset would you like to use as a base?"
+answer "\[1\] PSR2" with "1"
+answer "How would you like to handle line lengths?" with "Warn when >120. Fail when >150"
+answer "Would you like to skip any sniffs regarding the doc blocks in tests?" with "n"
+answer "Would you like PHPCS to ignore some locations completely? (you may use a regex to match multiple directories)" with "n"
 
 answer "Would you like to check for vulnerable dependencies using SensioLabs Security Checker?" with "Y"
 

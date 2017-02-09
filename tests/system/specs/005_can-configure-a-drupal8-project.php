@@ -32,6 +32,8 @@ assertFileContains('build.xml', "git diff --cached --name-only --diff-filter=d -
 
 assertFileContains('build.xml', PhpCs::ANT_TARGET);
 assertFileContains('build.xml', "--extensions=php/php,module/php,inc/php,install/php,profile/php,theme/php");
+assertFileExists('ruleset.xml');
+assertFileContains('ruleset.xml', '<rule ref="vendor/drupal/coder/coder_sniffer/Drupal"');
 
 assertFileContains('build.xml', PhpMd::ANT_TARGET);
 assertFileContains('build.xml', "--suffixes php,module,inc,theme,profile,install");

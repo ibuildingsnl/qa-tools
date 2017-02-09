@@ -17,12 +17,19 @@ use Ibuildings\QaTools\Core\Task\InstallComposerDevDependencyTask;
 use Ibuildings\QaTools\Core\Task\WriteFileTask;
 use Ibuildings\QaTools\Tool\PhpCs\PhpCs;
 
-final class PhpCsOtherConfigurator implements Configurator
+final class PhpCsConfigurator implements Configurator
 {
+    const RULESET_SYMFONY = 'Symfony';
+
     /**
      * This is a long script and readability will not improve by splitting this method up.
      * Therefore a suppressed warning.
      * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
+     *
+     * @param Interviewer   $interviewer
+     * @param TaskDirectory $taskDirectory
+     * @param TaskHelperSet $taskHelperSet
+     * @return void
      */
     public function configure(
         Interviewer $interviewer,
@@ -42,7 +49,7 @@ final class PhpCsOtherConfigurator implements Configurator
         $baseRuleset = $interviewer->ask(
             QuestionFactory::createMultipleChoice(
                 'What ruleset would you like to use as a base?',
-                ['PSR1', 'PSR2', 'Squiz', 'Zend'],
+                ['PSR1', 'PSR2', 'Squiz', self::RULESET_SYMFONY, 'Zend'],
                 'PSR2'
             )
         );
@@ -75,10 +82,10 @@ final class PhpCsOtherConfigurator implements Configurator
                     'Where are the tests located for which doc block sniffs will be disabled?',
                     $testLocation
                 ))
-                ->getRaw();
+                ->getAnswer();
         }
 
-        /** @var YesOrNoAnswer $beLessStrictAboutDocblocksInTests */
+        /** @var YesOrNoAnswer $shouldIgnoreSomeLocationsCompletely */
         $shouldIgnoreSomeLocationsCompletely = $interviewer->ask(
             QuestionFactory::createYesOrNo(
                 'Would you like PHPCS to ignore some locations completely? ' .
@@ -87,23 +94,31 @@ final class PhpCsOtherConfigurator implements Configurator
             )
         );
 
-        $ignoredLocation = 'behat/*';
+        $ignoredLocation = null;
         if ($shouldIgnoreSomeLocationsCompletely->is(true)) {
             $ignoredLocation = $interviewer
-                ->ask(QuestionFactory::create('Which locations should be ignored?', $ignoredLocation))
-                ->getRaw();
+                ->ask(QuestionFactory::create('Which locations should be ignored?', 'behat/*'))
+                ->getAnswer();
         }
 
         $taskDirectory->registerTask(new InstallComposerDevDependencyTask('squizlabs/php_codesniffer', '^2.7'));
 
+        $pathToBaseRuleset = $baseRuleset->getAnswer();
+        if ($baseRuleset->equals(new TextualAnswer(self::RULESET_SYMFONY))) {
+            $taskDirectory->registerTask(
+                new InstallComposerDevDependencyTask('escapestudios/symfony2-coding-standard', '~2.0')
+            );
+            $pathToBaseRuleset = 'vendor/escapestudios/symfony2-coding-standard/Symfony2';
+        }
+
         $phpCsConfiguration = $taskHelperSet->renderTemplate(
             'ruleset.xml.twig',
             [
-                'baseRuleset' => $baseRuleset->getRaw(),
+                'baseRuleset' => $pathToBaseRuleset,
                 'useCustomizedLineLengthSettings' =>
-                    $useCustomizedLineLengthSettings->getRaw() === 'Warn when >120. Fail when >150',
-                'beLessStrictAboutDocblocksInTests' => $beLessStrictAboutDocblocksInTests->is(true),
-                'shouldIgnoreSomeLocationsCompletely' => $shouldIgnoreSomeLocationsCompletely,
+                    $useCustomizedLineLengthSettings->equals(new TextualAnswer('Warn when >120. Fail when >150')),
+                'beLessStrictAboutDocblocksInTests' => $beLessStrictAboutDocblocksInTests->is(YesOrNoAnswer::YES),
+                'shouldIgnoreSomeLocationsCompletely' => $shouldIgnoreSomeLocationsCompletely->is(YesOrNoAnswer::YES),
                 'testLocation' => $testLocation,
                 'ignoredLocation' => $ignoredLocation,
             ]
