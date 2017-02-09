@@ -92,10 +92,10 @@ final class PhpCsOtherConfigurator implements Configurator
             )
         );
 
-        $ignoredLocation = 'behat/*';
+        $ignoredLocation = null;
         if ($shouldIgnoreSomeLocationsCompletely->is(true)) {
             $ignoredLocation = $interviewer
-                ->ask(QuestionFactory::create('Which locations should be ignored?', $ignoredLocation))
+                ->ask(QuestionFactory::create('Which locations should be ignored?', 'behat/*'))
                 ->getAnswer();
         }
 
@@ -104,13 +104,13 @@ final class PhpCsOtherConfigurator implements Configurator
         $phpCsConfiguration = $taskHelperSet->renderTemplate(
             'ruleset.xml.twig',
             [
-                'baseRuleset' => $baseRuleset->getRaw(),
-                'useCustomizedLineLengthSettings' =>
-                    $useCustomizedLineLengthSettings->getRaw() === 'Warn when >120. Fail when >150',
-                'beLessStrictAboutDocblocksInTests' => $beLessStrictAboutDocblocksInTests->is(true),
-                'shouldIgnoreSomeLocationsCompletely' => $shouldIgnoreSomeLocationsCompletely,
-                'testLocation' => $testLocation,
-                'ignoredLocation' => $ignoredLocation,
+                'baseRuleset' => $baseRuleset->getAnswer(),
+                'useCustomizedLineLengthSettings'     =>
+                    $useCustomizedLineLengthSettings->equals(new TextualAnswer('Warn when >120. Fail when >150')),
+                'beLessStrictAboutDocblocksInTests'   => $beLessStrictAboutDocblocksInTests->is(YesOrNoAnswer::YES),
+                'shouldIgnoreSomeLocationsCompletely' => $shouldIgnoreSomeLocationsCompletely->is(YesOrNoAnswer::YES),
+                'testLocation'                        => $testLocation,
+                'ignoredLocation'                     => $ignoredLocation,
             ]
         );
 
