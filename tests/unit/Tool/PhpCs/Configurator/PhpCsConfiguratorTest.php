@@ -69,11 +69,11 @@ class PhpCsConfiguratorTest extends TestCase
             ->with(
                 'ruleset.xml.twig',
                 [
-                    'baseRuleset'                         => 'PSR2',
-                    'useCustomizedLineLengthSettings'     => true,
-                    'beLessStrictAboutDocblocksInTests'   => true,
+                    'baseRuleset' => 'PSR2',
+                    'useCustomizedLineLengthSettings' => true,
+                    'beLessStrictAboutDocblocksInTests' => true,
                     'shouldIgnoreSomeLocationsCompletely' => true,
-                    'testLocation'    => 'tests/*',
+                    'testLocation' => 'tests/*',
                     'ignoredLocation' => 'behat/*',
                 ]
             )
@@ -128,11 +128,11 @@ class PhpCsConfiguratorTest extends TestCase
             ->with(
                 'ruleset.xml.twig',
                 [
-                    'baseRuleset'                         => 'Zend',
-                    'useCustomizedLineLengthSettings'     => false,
-                    'beLessStrictAboutDocblocksInTests'   => false,
+                    'baseRuleset' => 'Zend',
+                    'useCustomizedLineLengthSettings' => false,
+                    'beLessStrictAboutDocblocksInTests' => false,
                     'shouldIgnoreSomeLocationsCompletely' => false,
-                    'testLocation'    => 'tests/*',
+                    'testLocation' => 'tests/*',
                     'ignoredLocation' => null,
                 ]
             )
@@ -187,11 +187,11 @@ class PhpCsConfiguratorTest extends TestCase
             ->with(
                 'ruleset.xml.twig',
                 [
-                    'baseRuleset'                         => 'vendor/escapestudios/symfony2-coding-standard/Symfony2',
-                    'useCustomizedLineLengthSettings'     => true,
-                    'beLessStrictAboutDocblocksInTests'   => false,
+                    'baseRuleset' => 'vendor/escapestudios/symfony2-coding-standard/Symfony2',
+                    'useCustomizedLineLengthSettings' => true,
+                    'beLessStrictAboutDocblocksInTests' => false,
                     'shouldIgnoreSomeLocationsCompletely' => false,
-                    'testLocation'    => 'tests/*',
+                    'testLocation' => 'tests/*',
                     'ignoredLocation' => null,
                 ]
             )
