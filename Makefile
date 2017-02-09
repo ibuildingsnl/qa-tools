@@ -32,7 +32,7 @@ build/test/qa-tools.phar: signing-key-test.pem
 	@rm box.json
 
 test: test-unit test-integration test-system-dev code-metrics clean build-test test-system-phar test-security verify-build
-test-fast: test-unit test-integration test-system-dev code-metrics
+test-fast: test-unit test-integration test-system-dev code-metrics verify-readme-installer-hash
 
 coverage:
 	vendor/bin/phpunit -c . --testsuite unit,integration --coverage-text
