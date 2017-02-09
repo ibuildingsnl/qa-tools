@@ -115,13 +115,13 @@ final class PhpCsConfigurator implements Configurator
         $phpCsConfiguration = $taskHelperSet->renderTemplate(
             'ruleset.xml.twig',
             [
-                'baseRuleset'                         => $pathToBaseRuleset,
-                'useCustomizedLineLengthSettings'     =>
+                'baseRuleset' => $pathToBaseRuleset,
+                'useCustomizedLineLengthSettings' =>
                     $useCustomizedLineLengthSettings->equals(new TextualAnswer('Warn when >120. Fail when >150')),
-                'beLessStrictAboutDocblocksInTests'   => $beLessStrictAboutDocblocksInTests->is(YesOrNoAnswer::YES),
+                'beLessStrictAboutDocblocksInTests' => $beLessStrictAboutDocblocksInTests->is(YesOrNoAnswer::YES),
                 'shouldIgnoreSomeLocationsCompletely' => $shouldIgnoreSomeLocationsCompletely->is(YesOrNoAnswer::YES),
-                'testLocation'                        => $testLocation,
-                'ignoredLocation'                     => $ignoredLocation,
+                'testLocation' => $testLocation,
+                'ignoredLocation' => $ignoredLocation,
             ]
         );
 
