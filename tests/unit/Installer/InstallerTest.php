@@ -74,8 +74,8 @@ final class InstallerTest extends TestCase
         $info = $installer->getLatestReleaseInfo(false);
 
         $this->assertEquals(self::VERSION, $info['version']);
-        $this->assertEquals($this->getAssetUrl(self::PHAR_ASSET_URL), $info['pharUrl']);
-        $this->assertEquals($this->getAssetUrl(self::PUBKEY_ASSET_URL), $info['pubkeyUrl']);
+        $this->assertEquals(self::PHAR_ASSET_URL, $info['pharUrl']);
+        $this->assertEquals(self::PUBKEY_ASSET_URL, $info['pubkeyUrl']);
     }
 
     /**
@@ -238,13 +238,5 @@ final class InstallerTest extends TestCase
             '~^Unable to find qa-tools\.phar\.pubkey in release '.preg_quote(self::VERSION, '~').'~sm',
             $output
         );
-    }
-
-    private function getAssetUrl($url)
-    {
-        if (getenv('GITHUB_TOKEN') !== false) {
-            return sprintf('%s?access_token=%s', $url, urlencode(getenv('GITHUB_TOKEN')));
-        }
-        return $url;
     }
 }
