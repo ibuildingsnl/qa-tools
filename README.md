@@ -24,7 +24,7 @@ The recommended way to install the QA Tools is by using our installer:
 
 ```
 php -r "copy('https://raw.githubusercontent.com/ibuildingsnl/qa-tools-v3/master/installer.php', 'qa-tools-setup.php');"
-php -r "if (hash_file('SHA384', 'qa-tools-setup.php') === '52f6bc4eb5cd08b5f9de1946d86b94157efc19ed04190995f53803ef70a743f50627ba7c564b6f226f281c13689ccb84') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('qa-tools-setup.php'); } echo PHP_EOL;"
+php -r "if (hash_file('SHA384', 'qa-tools-setup.php') === '53c54ab9dd67b12f8748a529f6bc039a158a12c38bf5596e5ba628974bc28cd173750aa358b4db0f1fad6824d9cbc028') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('qa-tools-setup.php'); } echo PHP_EOL;"
 php qa-tools-setup.php
 php -r "unlink('qa-tools-setup.php');"
 ```
@@ -34,10 +34,6 @@ should be installed. E.g., `php qa-tools-setup.php --install-dir=/usr/local/bin`
 download QA tools to either your project directory or to some location that is in your [PATH][path].
 
 To see all the options of the installer, run `php qa-tools-setup.php --help`.
-
-Note that downloading the `qa-tools-setup.php` will not work as long as the repository is private. 
-The comment below on using a `GITHUB_TOKEN` is required for the installer during the development phase
-as well (i.e., while the repository is private).
 
 Read why we release the QA Tools as a Phar [here](docs/phar.md).
 
@@ -72,24 +68,6 @@ your executable Phar:
 ```sh-session
 $ ./qa-tools.phar self-update
 ```
-
-**NB:** While Ibuildings QA Tools resides in a private repository, it needs
-access to a [personal access token][personal-access-tokens] with `repo`
-permissions, to be able to view the releases and download the latest Phar
-distributable. Pass the GitHub token to QA Tools using the environment variable
-`GITHUB_TOKEN`, like so:
-
-```sh-session
-$ GITHUB_TOKEN=xxx ./qa-tools.phar self-update
-```
-
-... or by storing it in a file for reuse:
-
-```sh-session
-$ GITHUB_TOKEN=`cat github-token` ./qa-tools.phar self-update
-```
-
-[personal-access-tokens]: https://github.com/settings/tokens
 
 ## Contributing
 
