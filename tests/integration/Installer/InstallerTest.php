@@ -104,11 +104,11 @@ final class InstallerTest extends TestCase
             ]));
 
         $httpClient->shouldReceive('get')
-            ->with($this->getAssetUrl(self::PHAR_ASSET_URL), 'application/octet-stream')
+            ->with(self::PHAR_ASSET_URL, 'application/octet-stream')
             ->andReturn(self::PHAR_ASSET_CONTENTS);
 
         $httpClient->shouldReceive('get')
-            ->with($this->getAssetUrl(self::PUBKEY_ASSET_URL), 'application/octet-stream')
+            ->with(self::PUBKEY_ASSET_URL, 'application/octet-stream')
             ->andReturn(self::PUBKEY_ASSET_CONTENTS);
 
         /** @var Mockery\Mock|PharValidator $pharValidator */
@@ -131,13 +131,5 @@ final class InstallerTest extends TestCase
 
         $this->assertFileExists($this->tempDirectory.'/qa-tools.pubkey');
         $this->assertEquals(self::PUBKEY_ASSET_CONTENTS, file_get_contents($this->tempDirectory.'/qa-tools.pubkey'));
-    }
-
-    private function getAssetUrl($url)
-    {
-        if (getenv('GITHUB_TOKEN') !== false) {
-            return sprintf('%s?access_token=%s', $url, urlencode(getenv('GITHUB_TOKEN')));
-        }
-        return $url;
     }
 }

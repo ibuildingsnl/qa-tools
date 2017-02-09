@@ -52,9 +52,8 @@ final class SelfUpdateCommand extends Command implements ContainerAwareInterface
             return 1;
         }
 
-        $gitHubToken = getenv('GITHUB_TOKEN');
         $updaterStrategy = new GitHubReleasesApiStrategy(
-            new GuzzleHttpClient(['headers' => ['Authorization' => "token $gitHubToken"]]),
+            new GuzzleHttpClient(),
             'ibuildingsnl',
             'qa-tools-v3',
             'qa-tools.phar',

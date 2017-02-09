@@ -576,19 +576,12 @@ class Installer
 
         $releaseInfo = ['version' => $allReleaseInfo['tag_name']];
 
-        $getDownloadUrl = function ($url) {
-            if (getenv('GITHUB_TOKEN') !== false) {
-                return sprintf('%s?access_token=%s', $url, urlencode(getenv('GITHUB_TOKEN')));
-            }
-            return $url;
-        };
-
         foreach ($allReleaseInfo['assets'] as $asset) {
             if ($asset['name'] === 'qa-tools.phar') {
-                $releaseInfo['pharUrl'] = $getDownloadUrl($asset['url']);
+                $releaseInfo['pharUrl'] = $asset['url'];
             }
             if ($asset['name'] === 'qa-tools.phar.pubkey') {
-                $releaseInfo['pubkeyUrl'] = $getDownloadUrl($asset['url']);
+                $releaseInfo['pubkeyUrl'] = $asset['url'];
             }
         }
 
@@ -813,10 +806,6 @@ class HttpClient
             $options['http']['header'] .= "Connection: close\r\n";
         } else {
             $options['http']['header'] = "Connection: close\r\n";
-        }
-
-        if (getenv('GITHUB_TOKEN') !== false && strpos($url, '?access_token=') === false) {
-            $options['http']['header'] .= 'Authorization: token ' . getenv('GITHUB_TOKEN') . "\r\n";
         }
 
         if (extension_loaded('zlib')) {
