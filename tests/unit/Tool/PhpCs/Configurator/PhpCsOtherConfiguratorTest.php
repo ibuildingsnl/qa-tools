@@ -32,6 +32,8 @@ class PhpCsOtherConfiguratorTest extends TestCase
 {
     /** @var AutomatedResponseInterviewer */
     private $interviewer;
+    /** @var Project */
+    private $project;
     /** @var TaskDirectory|MockInterface */
     private $taskDirectory;
     /** @var TaskHelperSet|MockInterface */
