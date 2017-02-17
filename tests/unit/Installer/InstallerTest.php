@@ -71,7 +71,55 @@ final class InstallerTest extends TestCase
             self::REPOSITORY_NAME
         );
 
-        $info = $installer->getLatestReleaseInfo(false);
+        $info = $installer->getReleaseInfo(false);
+
+        $this->assertEquals(self::VERSION, $info['version']);
+        $this->assertEquals(self::PHAR_ASSET_URL, $info['pharUrl']);
+        $this->assertEquals(self::PUBKEY_ASSET_URL, $info['pubkeyUrl']);
+    }
+
+    /**
+     * @test
+     */
+    public function supports_fetching_a_specific_version()
+    {
+        $version = '1.0.0-alpha3';
+
+        /** @var Mockery\Mock|HttpClient $httpClient */
+        $httpClient = Mockery::mock(HttpClient::class);
+        $httpClient->shouldReceive('get')
+            ->with(
+                sprintf(
+                    'https://api.github.com/repos/%s/%s/releases/tags/%s',
+                    urlencode(self::REPOSITORY_OWNER),
+                    urlencode(self::REPOSITORY_NAME),
+                    urlencode($version)
+                ),
+                'application/vnd.github.v3+json'
+            )
+            ->andReturn(json_encode([
+                'tag_name' => self::VERSION,
+                'assets' => [
+                    [
+                        'name' => 'qa-tools.phar',
+                        'url' => self::PHAR_ASSET_URL,
+                    ],
+                    [
+                        'name' => 'qa-tools.phar.pubkey',
+                        'url' => self::PUBKEY_ASSET_URL,
+                    ]
+                ]
+            ]));
+
+        $installer = new Installer(
+            false,
+            $httpClient,
+            $this->pharValidator,
+            self::REPOSITORY_OWNER,
+            self::REPOSITORY_NAME
+        );
+
+        $info = $installer->getReleaseInfo($version);
 
         $this->assertEquals(self::VERSION, $info['version']);
         $this->assertEquals(self::PHAR_ASSET_URL, $info['pharUrl']);
@@ -105,7 +153,7 @@ final class InstallerTest extends TestCase
         );
 
         $this->expectException(RuntimeException::class);
-        $installer->getLatestReleaseInfo(self::VERSION);
+        $installer->getReleaseInfo(self::VERSION);
     }
 
     /**
