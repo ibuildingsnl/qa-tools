@@ -18,6 +18,9 @@ class GitHubReleasesApiStrategy implements StrategyInterface
 {
     const URL_RELEASES = 'https://api.github.com/repos/%s/%s/releases';
 
+    const ALLOW_UNSTABLE = true;
+    const DISALLOW_UNSTABLE = false;
+
     /** @var Client */
     private $httpClient;
     /** @var string */
