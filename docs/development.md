@@ -9,7 +9,7 @@ To get ready for contributing to the Ibuildings QA Tools:
 
 ```sh-session
 $ # Check out the repository
-$ git clone git@github.com:ibuildingsnl/qa-tools-v3.git
+$ git clone git@github.com:ibuildingsnl/qa-tools.git
 $ # Install the Composer dependencies
 $ composer install
 $ # Install the Git hooks

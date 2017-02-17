@@ -40,4 +40,4 @@ on GitHub.
 [github-rmt]: https://github.com/liip/RMT
 [semver]: http://semver.org/
 [path]: https://en.wikipedia.org/wiki/PATH_(variable)
-[github-qa-releases]: https://github.com/ibuildingsnl/qa-tools-v3/releases
+[github-qa-releases]: https://github.com/ibuildingsnl/qa-tools/releases

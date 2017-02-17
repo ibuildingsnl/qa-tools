@@ -19,5 +19,5 @@ If your problem definitely looks like a bug, report it using the
 * and give as much detail as possible about your environment (OS, PHP version,
   enabled extensions, ...).
 
-[qa-tools-docs]:   https://github.com/ibuildingsnl/qa-tools-v3#documentation
-[qa-tools-issues]: https://github.com/ibuildingsnl/qa-tools-v3/issues
+[qa-tools-docs]:   https://github.com/ibuildingsnl/qa-tools#documentation
+[qa-tools-issues]: https://github.com/ibuildingsnl/qa-tools/issues

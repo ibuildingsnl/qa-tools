@@ -13,7 +13,7 @@ use Symfony\Component\Filesystem\Filesystem;
 final class InstallerTest extends TestCase
 {
     const REPOSITORY_OWNER = 'ibuildingsnl';
-    const REPOSITORY_NAME = 'qa-tools-v3';
+    const REPOSITORY_NAME = 'qa-tools';
 
     const PHAR_ASSET_URL = 'https://api.github.com/assets/1';
     const PHAR_ASSET_CONTENTS = 'PHAR';

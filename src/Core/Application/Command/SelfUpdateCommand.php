@@ -55,7 +55,7 @@ final class SelfUpdateCommand extends Command implements ContainerAwareInterface
         $updaterStrategy = new GitHubReleasesApiStrategy(
             new GuzzleHttpClient(),
             'ibuildingsnl',
-            'qa-tools-v3',
+            'qa-tools',
             'qa-tools.phar',
             Application::VERSION
         );
