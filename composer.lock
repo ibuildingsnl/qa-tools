@@ -1636,16 +1636,16 @@
         },
         {
             "name": "liip/rmt",
-            "version": "1.2.5",
+            "version": "1.2.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/liip/RMT.git",
-                "reference": "db89cfab05e89257f08bfc91f3ca2989ab88fcb7"
+                "reference": "41c32996aaaf95c508927d77bbca67e2795dbc78"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liip/RMT/zipball/db89cfab05e89257f08bfc91f3ca2989ab88fcb7",
-                "reference": "db89cfab05e89257f08bfc91f3ca2989ab88fcb7",
+                "url": "https://api.github.com/repos/liip/RMT/zipball/41c32996aaaf95c508927d77bbca67e2795dbc78",
+                "reference": "41c32996aaaf95c508927d77bbca67e2795dbc78",
                 "shasum": ""
             },
             "require": {
@@ -1691,7 +1691,7 @@
                 "vcs tag",
                 "version"
             ],
-            "time": "2016-09-09 13:48:33"
+            "time": "2016-11-07 05:33:08"
         },
         {
             "name": "mnapoli/front-yaml",
