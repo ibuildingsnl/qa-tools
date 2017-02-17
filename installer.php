@@ -56,7 +56,7 @@ function installQaTools($argv)
     }
 
     if ($ok || $force) {
-        $installer = new Installer($quiet, new HttpClient(), new PharValidator(), 'ibuildingsnl', 'qa-tools-v3');
+        $installer = new Installer($quiet, new HttpClient(), new PharValidator(), 'ibuildingsnl', 'qa-tools');
         if ($installer->run($version, $installDir, $filename)) {
             showWarnings($warnings);
             exit(0);

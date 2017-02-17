@@ -1,8 +1,8 @@
-baseUrl: https://ibuildingsnl.github.io/qa-tools-v3
+baseUrl: https://ibuildingsnl.github.io/qa-tools
 title: Ibuildings QA Tools
 github:
     user: ibuildingsnl
-    repo: qa-tools-v3
+    repo: qa-tools
 
 template:
     directory: docs/couscous/template
@@ -14,7 +14,7 @@ menu:
             relativeUrl: ""
         github:
             text: <i class="fa fa-github"></i> GitHub
-            absoluteUrl: https://github.com/ibuildingsnl/qa-tools-v3
+            absoluteUrl: https://github.com/ibuildingsnl/qa-tools
         contributing-guidelines:
             text: Contributing guidelines
             relativeUrl: contributing.html

@@ -1,4 +1,4 @@
-# Ibuildings QA Tools v3 [![Build Status](https://travis-ci.com/ibuildingsnl/qa-tools-v3.svg?token=JEaBsbhAuRqMRnCxyjuy&branch=master)](https://travis-ci.com/ibuildingsnl/qa-tools-v3)
+# Ibuildings QA Tools [![Build Status](https://travis-ci.org/ibuildingsnl/qa-tools.svg?branch=master)](https://travis-ci.org/ibuildingsnl/qa-tools)
 
 A set of quality assurance tools that are easily configurable through an installer.
 
@@ -8,7 +8,7 @@ you can use the resulting configurations as a base and configure it manually.
 
 The official, full documentation can be found on our [GitHub pages][gh-pages].
 
-[gh-pages]: https://ibuildingsnl.github.io/qa-tools-v3
+[gh-pages]: https://ibuildingsnl.github.io/qa-tools
 
 ## Requirements
 
@@ -23,8 +23,8 @@ macOS machine.
 The recommended way to install the QA Tools is by using our installer:
 
 ```
-php -r "copy('https://raw.githubusercontent.com/ibuildingsnl/qa-tools-v3/master/installer.php', 'qa-tools-setup.php');"
-php -r "if (hash_file('SHA384', 'qa-tools-setup.php') === '53c54ab9dd67b12f8748a529f6bc039a158a12c38bf5596e5ba628974bc28cd173750aa358b4db0f1fad6824d9cbc028') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('qa-tools-setup.php'); } echo PHP_EOL;"
+php -r "copy('https://raw.githubusercontent.com/ibuildingsnl/qa-tools/master/installer.php', 'qa-tools-setup.php');"
+php -r "if (hash_file('SHA384', 'qa-tools-setup.php') === '46f5c9d6cfe9d6d08759f031ebc251179b87fe8b7a1deccabb68020f1c5b74fb9ce219df4e7341da8cc689118de69ac7') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('qa-tools-setup.php'); } echo PHP_EOL;"
 php qa-tools-setup.php
 php -r "unlink('qa-tools-setup.php');"
 ```

@@ -28,7 +28,7 @@ script:
 
 after_success:
     # Deploy documentation to gh-pages branch when Travis CI build against PHP 7.1 on master succeeds
-  - GIT_NAME=TravisCI GIT_EMAIL=info@ibuildings.nl GH_REF=github.com/ibuildingsnl/qa-tools-v3 vendor/bin/couscous travis-auto-deploy --php-version=7.1
+  - GIT_NAME=TravisCI GIT_EMAIL=info@ibuildings.nl GH_REF=github.com/ibuildingsnl/qa-tools vendor/bin/couscous travis-auto-deploy --php-version=7.1
 
 branches:
   only: [master, develop]
