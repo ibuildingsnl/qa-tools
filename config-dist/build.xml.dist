@@ -180,6 +180,15 @@
 {% endif %}
             <arg line="--coverage-text"/>
         </exec>
+
+{% if buildArtifacts.enabled %}
+        <!-- Check code coverage percentage -->
+        <exec executable="{{ composerBinDir }}/qa-tools" failonerror="true">
+            <arg value="minimum-code-coverage" />
+            <arg value="{{ buildArtifacts.path }}/logs/clover.xml" />
+            <arg value="100" />
+        </exec>
+{% endif %}
     </target>
 
 {% endif %}

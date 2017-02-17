@@ -29,5 +29,8 @@ $application->add(new \Ibuildings\QA\Tools\Javascript\Console\InstallJsHintComma
 $application->add(new \Ibuildings\QA\Tools\Common\Console\InstallPreCommitHookCommand());
 $application->add(new \Ibuildings\QA\Tools\Common\Console\ChangeSetPreCommitCommand());
 $application->add(new \Ibuildings\QA\Tools\Common\Console\RunCommand());
+$minimumCoverageCommand = new \Ibuildings\QA\Tools\PHP\Console\CodeCoverageCheckCommand();
+$minimumCoverageCommand->setCloverReportFile($baseDir . '/build/artifacts/logs/clover.xml');
+$application->add($minimumCoverageCommand);
 
 $application->run();

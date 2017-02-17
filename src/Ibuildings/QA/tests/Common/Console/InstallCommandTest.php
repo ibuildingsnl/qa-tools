@@ -217,6 +217,41 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
         $this->assertContains('Ant pre commit build file written', $display);
     }
 
+
+    /**
+     * @test
+     */
+    public function shouldAddMinimumCodeCoverageCheckForPhpUnitWhenArtifactsAreEnabled()
+    {
+        /** @var \Ibuildings\QA\tests\mock\InstallCommand $command */
+        $command = $this->application->find('install');
+
+        // We mock the DialogHelper
+        $dialog = $this->application->getDialogHelper();
+
+        $startAt = 0;
+        $this->addBaseExpects($dialog, $startAt);
+        $this->addBuildArtifactExpects($dialog, $startAt, true);
+        $this->addTravisExpects($dialog, $startAt);
+        $this->addQAExpects($dialog, $startAt);
+        $this->addPHPMDExpects($dialog, $startAt);
+        $this->addPHPCSExpects($dialog, $startAt);
+        $this->addCodeDuplicateExpects($dialog, $startAt);
+        $this->addPhpUnitExpects($dialog, $startAt);
+        $this->addFinishingExpects($dialog, $startAt);
+
+        $commandTester = new CommandTester($command);
+        $commandTester->execute(array('command' => $command->getName()), array('verbosity' => OutputInterface::VERBOSITY_VERY_VERBOSE));
+
+        $display = $commandTester->getDisplay();
+
+        $this->assertXmlStringEqualsXmlFile(
+            __DIR__ . '/fixtures/build_with_artifacts_enabled.xml',
+            $command->buildXmlOutput
+        );
+        $this->assertContains('Ant build file written', $display);
+    }
+
     /**
      * @test
      */
@@ -362,8 +397,9 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
     /**
      * @param DialogHelper $dialog
      * @param int          $startAt
+     * @param boolean      $returnValue
      */
-    protected function addBuildArtifactExpects(DialogHelper $dialog, &$startAt)
+    protected function addBuildArtifactExpects(DialogHelper $dialog, &$startAt, $returnValue = false)
     {
         $dialog
             ->expects($this->at($startAt++))
@@ -373,7 +409,18 @@ class InstallCommandTest extends \PHPUnit_Framework_TestCase
                 $this->equalTo("By default results are shown on the CLI (recommended if you are using travis)
   - Do you want to generate build artifacts?")
             )
-            ->will($this->returnValue(false));
+            ->will($this->returnValue($returnValue));
+
+        if ($returnValue) {
+            $dialog
+                ->expects($this->at($startAt++))
+                ->method('askAndValidate')
+                ->with(
+                    $this->anything(),
+                    $this->equalTo("Where do you want to store the build artifacts? [build/artifacts] ")
+                )
+                ->will($this->returnValue('build/artifacts'));
+        }
     }
 
     /**
