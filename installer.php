@@ -513,7 +513,7 @@ class Installer
                     $infoType = 'error';
                 }
 
-                $releaseInfo = $this->getLatestReleaseInfo($version);
+                $releaseInfo = $this->getReleaseInfo($version);
 
                 $this->downloadTemporaryFile($releaseInfo['pharUrl'], $this->tmpPharPath);
                 $this->downloadTemporaryFile($releaseInfo['pubkeyUrl'], $this->tmpPubkeyPath);
@@ -541,21 +541,32 @@ class Installer
     }
 
     /**
-     * @return string The version information of the latest QA tools release
+     * @return string|false $version The release information of the specified version, if given, or the latest version.
      * @throws \RuntimeException
      */
-    public function getLatestReleaseInfo($version)
+    public function getReleaseInfo($version)
     {
-        if (!$version) {
-            $version = 'latest';
+        if ($version === false) {
+            $url = sprintf(
+                'https://api.github.com/repos/%s/%s/releases/latest',
+                urlencode($this->repositoryOwner),
+                urlencode($this->repositoryName)
+            );
+        } elseif (is_string($version) && $version !== '') {
+            $url = sprintf(
+                'https://api.github.com/repos/%s/%s/releases/tags/%s',
+                urlencode($this->repositoryOwner),
+                urlencode($this->repositoryName),
+                urlencode($version)
+            );
+        } else {
+            throw new InvalidArgumentException(
+                sprintf(
+                    'Version must be either `false` or a non-empty string, got value of type "%s"',
+                    gettype($version)
+                )
+            );
         }
-
-        $url = sprintf(
-            'https://api.github.com/repos/%s/%s/releases/%s',
-            urlencode($this->repositoryOwner),
-            urlencode($this->repositoryName),
-            urlencode($version)
-        );
 
         try {
             $response = $this->httpClient->get($url, 'application/vnd.github.v3+json');
