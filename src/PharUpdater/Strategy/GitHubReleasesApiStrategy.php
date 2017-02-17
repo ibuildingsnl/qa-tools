@@ -28,6 +28,8 @@ class GitHubReleasesApiStrategy implements StrategyInterface
     private $repositoryOwner;
     /** @var string */
     private $repositoryName;
+    /** @var bool */
+    private $allowUnstable;
 
     /** @var string|null */
     private $remoteVersion;
@@ -35,14 +37,21 @@ class GitHubReleasesApiStrategy implements StrategyInterface
     private $remoteUrl;
 
     /**
-     * @param Client $httpClient A Guzzle HTTP client to use for talking to the GitHub API
-     * @param string $repositoryOwner
-     * @param string $repositoryName
-     * @param string $releasePharName
-     * @param string $localVersion
+     * @param Client  $httpClient A Guzzle HTTP client to use for talking to the GitHub API
+     * @param string  $repositoryOwner
+     * @param string  $repositoryName
+     * @param string  $releasePharName
+     * @param string  $localVersion
+     * @param boolean $allowUnstable Whether to allow installation of an unstable version.
      */
-    public function __construct(Client $httpClient, $repositoryOwner, $repositoryName, $releasePharName, $localVersion)
-    {
+    public function __construct(
+        Client $httpClient,
+        $repositoryOwner,
+        $repositoryName,
+        $releasePharName,
+        $localVersion,
+        $allowUnstable
+    ) {
         Assertion::nonEmptyString($repositoryOwner, 'The repository owner ought to be a string, got "%s" of type "%s"');
         Assertion::nonEmptyString($repositoryName, 'The repository name ought to be a string, got "%s" of type "%s"');
         Assertion::nonEmptyString(
@@ -50,12 +59,14 @@ class GitHubReleasesApiStrategy implements StrategyInterface
             'The release Phar name ought to be a string, got "%s" of type "%s"'
         );
         Assertion::nonEmptyString($localVersion, 'The local version ought to be a string, got "%s" of type "%s"');
+        Assertion::boolean($allowUnstable, '"Allow unstable" ought to be a boolean, got "%s"');
 
         $this->httpClient = $httpClient;
         $this->repositoryOwner = $repositoryOwner;
         $this->repositoryName = $repositoryName;
         $this->releasePharName = $releasePharName;
         $this->localVersion = $localVersion;
+        $this->allowUnstable = $allowUnstable;
     }
 
     /**
@@ -78,7 +89,7 @@ class GitHubReleasesApiStrategy implements StrategyInterface
             throw new JsonParsingException(sprintf('Error parsing JSON release data: %s', json_last_error_msg()));
         }
 
-        $stableReleasesWithPhar = array_filter(
+        $releasesWithPhar = array_filter(
             $releases,
             function (array $release) {
                 $pharAssets = array_filter(
@@ -88,25 +99,29 @@ class GitHubReleasesApiStrategy implements StrategyInterface
                     }
                 );
 
-                return !$release['prerelease'] && !$release['draft'] && count($pharAssets) > 0;
+                return !$release['draft'] && count($pharAssets) > 0;
             }
         );
 
-        if (count($stableReleasesWithPhar) === 0) {
+        if (count($releasesWithPhar) === 0) {
             return false;
         }
 
-        $tagNames = array_column($stableReleasesWithPhar, 'tag_name');
-
+        $tagNames = array_column($releasesWithPhar, 'tag_name');
         $versionParser = new VersionParser($tagNames);
-        $this->remoteVersion = $versionParser->getMostRecentStable();
+
+        if ($this->allowUnstable) {
+            $this->remoteVersion = $versionParser->getMostRecentAll();
+        } else {
+            $this->remoteVersion = $versionParser->getMostRecentStable();
+        }
 
         if (!$this->remoteVersion) {
             return $this->remoteVersion;
         }
 
-        $stableReleasesWithPharIndexedByTagName = array_combine($tagNames, $stableReleasesWithPhar);
-        $release = $stableReleasesWithPharIndexedByTagName[$this->remoteVersion];
+        $releasesWithPharIndexedByTagName = array_combine($tagNames, $releasesWithPhar);
+        $release = $releasesWithPharIndexedByTagName[$this->remoteVersion];
         $pharAssets = array_filter(
             $release['assets'],
             function (array $asset) {
