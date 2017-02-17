@@ -546,7 +546,13 @@ class Installer
      */
     public function getReleaseInfo($version)
     {
-        if ($version) {
+        if ($version === false) {
+            $url = sprintf(
+                'https://api.github.com/repos/%s/%s/releases/latest',
+                urlencode($this->repositoryOwner),
+                urlencode($this->repositoryName)
+            );
+        } elseif (is_string($version) && $version !== '') {
             $url = sprintf(
                 'https://api.github.com/repos/%s/%s/releases/tags/%s',
                 urlencode($this->repositoryOwner),
@@ -554,10 +560,11 @@ class Installer
                 urlencode($version)
             );
         } else {
-            $url = sprintf(
-                'https://api.github.com/repos/%s/%s/releases/latest',
-                urlencode($this->repositoryOwner),
-                urlencode($this->repositoryName)
+            throw new InvalidArgumentException(
+                sprintf(
+                    'Version must be either `false` or a non-empty string, got value of type "%s"',
+                    gettype($version)
+                )
             );
         }
 
