@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Ibuildings QA Tools</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://ibuildingsnl.github.io/qa-tools/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://ibuildingsnl.github.io/qa-tools/css/main.css">
+</head>
+<body>
+
+<main class="container">
+
+            <a href="https://github.com/ibuildingsnl/qa-tools">
+            <img style="position: absolute; top: 0; right: 0; border: 0;"
+                 src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67"
+                 alt="Fork me on GitHub"
+                 data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png">
+        </a>
+    
+    <div class="row">
+
+        
+            <nav id="sidebar" class="col-sm-4 col-lg-3" role="navigation">
+                                                                    <ul class="nav nav-pills nav-stacked">
+                                                    <li class="">
+                                <a href="https://ibuildingsnl.github.io/qa-tools/">
+                                    <i class="fa fa-check"></i> Ibuildings QA Tools
+                                </a>
+                                                            </li>
+                                                    <li class="">
+                                <a href="https://github.com/ibuildingsnl/qa-tools">
+                                    <i class="fa fa-github"></i> GitHub
+                                </a>
+                                                            </li>
+                                                    <li class="">
+                                <a href="https://ibuildingsnl.github.io/qa-tools/contributing.html">
+                                    Contributing guidelines
+                                </a>
+                                                            </li>
+                                                    <li class="">
+                                <a href="https://ibuildingsnl.github.io/qa-tools/docs/development.html">
+                                    Development
+                                </a>
+                                                                                        <ul class="nav nav-pills nav-stacked">
+                                                    <li class="">
+                                <a href="https://ibuildingsnl.github.io/qa-tools/docs/development/configuration-process.html">
+                                    Configuration process
+                                </a>
+                                                            </li>
+                                                    <li class="">
+                                <a href="https://ibuildingsnl.github.io/qa-tools/docs/development/task-development.html">
+                                    Task development
+                                </a>
+                                                            </li>
+                                                    <li class="">
+                                <a href="https://ibuildingsnl.github.io/qa-tools/docs/development/tool-development.html">
+                                    Tool development
+                                </a>
+                                                            </li>
+                                                    <li class="">
+                                <a href="https://ibuildingsnl.github.io/qa-tools/docs/development/writing-documentation.html">
+                                    Writing documentation
+                                </a>
+                                                            </li>
+                                                    <li class="">
+                                <a href="https://ibuildingsnl.github.io/qa-tools/docs/development/writing-system-tests.html">
+                                    Writing system tests
+                                </a>
+                                                            </li>
+                                            </ul>
+                
+                                                            </li>
+                                                    <li class="">
+                                <a href="https://ibuildingsnl.github.io/qa-tools/docs/phar.html">
+                                    Phar
+                                </a>
+                                                            </li>
+                                                    <li class="">
+                                <a href="https://ibuildingsnl.github.io/qa-tools/docs/release-process.html">
+                                    Release process
+                                </a>
+                                                            </li>
+                                                    <li class="">
+                                <a href="https://ibuildingsnl.github.io/qa-tools/docs/reporting-a-bug.html">
+                                    Reporting a bug
+                                </a>
+                                                            </li>
+                                                    <li class="">
+                                <a href="https://ibuildingsnl.github.io/qa-tools/docs/ubiquitous-language.html">
+                                    Ubiquitous language
+                                </a>
+                                                            </li>
+                                            </ul>
+                
+            </nav>
+
+        
+        <section id="content" class="col-sm-8 col-lg-9">
+            <div class="page-header"><h1 id="developing-tasks">Developing tasks</h1></div>
+<h2 id="context">Context</h2>
+<p><a href="../ubiquitous-language.html">Tasks</a> describe actions to be performed on the target project, like installing a set of Composer packages, or writing an Ant build file. Tools, by means of Configurators, register these tasks for execution at a later stage.</p>
+<p>Example registration of a task to install a Composer development dependency:</p>
+<pre><code class="language-php">final class PhpMdConfigurator implements Configurator
+{
+    public function configure(Interviewer $interviewer, TaskDirectory $taskDirectory, TaskHelperSet $taskHelperSet) {
+        $taskDirectory-&gt;registerTask(new InstallComposerDevDependencyTask('phpmd/phpmd', '^2.0'));
+    }
+}</code></pre>
+<p>Each task implements the marker interface <code>Ibuildings\QaTools\Core\Task\Task</code>; it does not have any methods. This allows the task to be registered with the <code>TaskDirectory</code> for later execution. During the execution stage, an executor picks up the task for execution. Each executor implements <code>Ibuildings\QaTools\Core\Task\Executor\Executor</code>. This interface has the following methods, which are, for simplicity's sake, always executed one after the other:</p>
+<ul>
+<li><code>supports(Task $task): bool</code></li>
+<li><code>arePrerequisitesMet(TaskList $tasks, ...): void</code></li>
+<li><code>execute(TaskList $tasks, ...): void</code></li>
+<li><code>cleanUp(TaskList $tasks, ...): void</code></li>
+<li><code>rollBack(TaskList $tasks, ...): void</code></li>
+</ul>
+<p>The execution process takes place as follows:</p>
+<ol>
+<li>Each executor's support for the tasks registered during the configuration stage is tested using the <code>support</code> method.</li>
+<li>The tasks that pass support test are then passed to the <code>arePrerequisitesMet</code> method. This method allows the executor check whether actually executing the task won't fail. For example, installing Composer package A, while one of the developer's dependencies conflicts with that package, would cause actually requiring the package to fail. By checking these prerequisites beforehand, the chance for the need for a rollback, or worse, the developer having to clean up their project, is reduced.</li>
+<li>When all prerequisites have been checked, each executor is asked to execute the tasks it supports.</li>
+<li>When all executors have executed their tasks, they are allowed to perform a clean-up. For example, while writing files, a backup may be kept on disk to allow for an automatic or user rollback.</li>
+<li>If an error occurs at any point during execution, an automatic rollback is attempted. This rollback instructs each executor to revert the work it has performed.</li>
+</ol>
+<h2 id="concrete-steps-to-create-a-new-task">Concrete steps to create a new task</h2>
+<ol>
+<li>Create a new task implementation. For an example, look at <code>Ibuildings\QaTools\Core\Task\WriteFileTask</code>.</li>
+<li>Create a new executor implementation. For an example, look at <code>Ibuildings\QaTools\Core\Task\Executor\WriteFileTaskExecutor</code>.</li>
+<li>If you're up to the job, create a unit test for your executor implementation. Again, for an example, look at <code>Ibuildings\QaTools\UnitTest\Core\Task\Executor\WriteFileTaskExecutorTest</code>.</li>
+<li>Define your executor as a Symfony service in <code>src/Core/Resources/config/task_executors.yml</code>. Look to the other executors for examples, or read the Symfony Framework's documentation on [defining services] using YAML(<a href="http://symfony.com/doc/current/service_container.html#creating-configuring-services-in-the-container">http://symfony.com/doc/current/service_container.html#creating-configuring-services-in-the-container</a>). Note that this documentation contains information about the Symfony Framework, while we only use its dependency injection component.</li>
+<li>Register your task executor with the tag <code>qa_tools.task_executor</code>. The tag's <code>priority</code> property influences the order in which task execution will take place; a higher priority means the executor is called sooner.</li>
+<li>If you're up to the job, please <a href="writing-system-tests.html">expand the system tests</a> to assert that your executor does it work properly. </li>
+</ol>
+        </section>
+
+    </div>
+</main>
+
+<footer>
+    <div class="container-fluid">
+        <p class="text-muted">
+            website generated with <a href="http://couscous.io" title="Markdown website generator">Couscous</a>
+        </p>
+    </div>
+</footer>
+
+<link rel="stylesheet" href="https://ibuildingsnl.github.io/qa-tools/css/highlight.forest-light.css">
+<script src="https://ibuildingsnl.github.io/qa-tools/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+</body>
+</html>

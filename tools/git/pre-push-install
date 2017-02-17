@@ -1,9 +1,0 @@
-#!/bin/bash
-
-# Absolute path to this script, e.g. /path/to/pre-push-install
-SCRIPT=$(readlink -f "$0")
-# Absolute path this script is in, thus /path/to
-SCRIPTPATH=$(dirname "$SCRIPT")
-
-ln -is $SCRIPTPATH/pre-push $SCRIPTPATH/../../.git/hooks/pre-push
-echo "Pre-push hook installed!"

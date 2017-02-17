@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Ibuildings QA Tools</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://ibuildingsnl.github.io/qa-tools/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://ibuildingsnl.github.io/qa-tools/css/main.css">
+</head>
+<body>
+
+<main class="container">
+
+            <a href="https://github.com/ibuildingsnl/qa-tools">
+            <img style="position: absolute; top: 0; right: 0; border: 0;"
+                 src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67"
+                 alt="Fork me on GitHub"
+                 data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png">
+        </a>
+    
+    <div class="row">
+
+        
+            <nav id="sidebar" class="col-sm-4 col-lg-3" role="navigation">
+                                                                    <ul class="nav nav-pills nav-stacked">
+                                                    <li class="">
+                                <a href="https://ibuildingsnl.github.io/qa-tools/">
+                                    <i class="fa fa-check"></i> Ibuildings QA Tools
+                                </a>
+                                                            </li>
+                                                    <li class="">
+                                <a href="https://github.com/ibuildingsnl/qa-tools">
+                                    <i class="fa fa-github"></i> GitHub
+                                </a>
+                                                            </li>
+                                                    <li class="">
+                                <a href="https://ibuildingsnl.github.io/qa-tools/contributing.html">
+                                    Contributing guidelines
+                                </a>
+                                                            </li>
+                                                    <li class="">
+                                <a href="https://ibuildingsnl.github.io/qa-tools/docs/development.html">
+                                    Development
+                                </a>
+                                                                                        <ul class="nav nav-pills nav-stacked">
+                                                    <li class="">
+                                <a href="https://ibuildingsnl.github.io/qa-tools/docs/development/configuration-process.html">
+                                    Configuration process
+                                </a>
+                                                            </li>
+                                                    <li class="">
+                                <a href="https://ibuildingsnl.github.io/qa-tools/docs/development/task-development.html">
+                                    Task development
+                                </a>
+                                                            </li>
+                                                    <li class="">
+                                <a href="https://ibuildingsnl.github.io/qa-tools/docs/development/tool-development.html">
+                                    Tool development
+                                </a>
+                                                            </li>
+                                                    <li class="">
+                                <a href="https://ibuildingsnl.github.io/qa-tools/docs/development/writing-documentation.html">
+                                    Writing documentation
+                                </a>
+                                                            </li>
+                                                    <li class="">
+                                <a href="https://ibuildingsnl.github.io/qa-tools/docs/development/writing-system-tests.html">
+                                    Writing system tests
+                                </a>
+                                                            </li>
+                                            </ul>
+                
+                                                            </li>
+                                                    <li class="">
+                                <a href="https://ibuildingsnl.github.io/qa-tools/docs/phar.html">
+                                    Phar
+                                </a>
+                                                            </li>
+                                                    <li class="">
+                                <a href="https://ibuildingsnl.github.io/qa-tools/docs/release-process.html">
+                                    Release process
+                                </a>
+                                                            </li>
+                                                    <li class="">
+                                <a href="https://ibuildingsnl.github.io/qa-tools/docs/reporting-a-bug.html">
+                                    Reporting a bug
+                                </a>
+                                                            </li>
+                                                    <li class="">
+                                <a href="https://ibuildingsnl.github.io/qa-tools/docs/ubiquitous-language.html">
+                                    Ubiquitous language
+                                </a>
+                                                            </li>
+                                            </ul>
+                
+            </nav>
+
+        
+        <section id="content" class="col-sm-8 col-lg-9">
+            <div class="page-header"><h1 id="ibuildings-qa-tools">Ibuildings QA Tools <a href="https://travis-ci.org/ibuildingsnl/qa-tools"><img src="https://travis-ci.org/ibuildingsnl/qa-tools.svg?branch=master" alt="Build Status" /></a></h1></div>
+<p>A set of quality assurance tools that are easily configurable through an installer.</p>
+<p>The QA Tools are meant to provide you with a decent base build setup, conforming to Ibuildings standards.
+They are not meant to provide a solution for every use case. If you want a more complex setup,
+you can use the resulting configurations as a base and configure it manually.</p>
+<p>The official, full documentation can be found on our <a href="https://ibuildingsnl.github.io/qa-tools">GitHub pages</a>.</p>
+<h2 id="requirements">Requirements</h2>
+<p>At this moment, QA Tools requires your project to be under Git version control.
+Furthermore, it requires you to have a Linuxy environment with the Dash shell
+(<code>sh</code>), Ant (<code>ant</code>), and the common tools <code>find</code>, <code>tr</code>, and <code>xargs</code> in your
+<a href="https://en.wikipedia.org/wiki/PATH_(variable)">PATH</a>. After installing Ant, QA Tools should work on your Linux or
+macOS machine.</p>
+<h2 id="installation">Installation</h2>
+<p>The recommended way to install the QA Tools is by using our installer:</p>
+<pre><code>php -r "copy('https://raw.githubusercontent.com/ibuildingsnl/qa-tools/master/installer.php', 'qa-tools-setup.php');"
+php -r "if (hash_file('SHA384', 'qa-tools-setup.php') === '46f5c9d6cfe9d6d08759f031ebc251179b87fe8b7a1deccabb68020f1c5b74fb9ce219df4e7341da8cc689118de69ac7') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('qa-tools-setup.php'); } echo PHP_EOL;"
+php qa-tools-setup.php
+php -r "unlink('qa-tools-setup.php');"</code></pre>
+<p>If you want, you can use the <code>--install-dir</code> option for <code>qa-tool-setup.php</code> to indicate where QA tools
+should be installed. E.g., <code>php qa-tools-setup.php --install-dir=/usr/local/bin</code>. It is recommended you
+download QA tools to either your project directory or to some location that is in your <a href="https://en.wikipedia.org/wiki/PATH_(variable)">PATH</a>.</p>
+<p>To see all the options of the installer, run <code>php qa-tools-setup.php --help</code>.</p>
+<p>Read why we release the QA Tools as a Phar <a href="docs/phar.html">here</a>.</p>
+<h2 id="usage">Usage</h2>
+<pre><code class="language-sh-session">Usage:
+  command [options] [arguments]
+
+Available commands:
+  configure             Configure the Ibuildings QA Tools
+  self-update           Updates Ibuildings QA Tools to the latest version
+  help                  Displays help for a command
+  list                  Lists commands</code></pre>
+<p>The <code>configure</code> subcommand will start an interactive questionnaire to help you
+quickly configure various QA tools to your project's testing needs. It remembers
+your answers, so you can easily reconfigure the tools.</p>
+<p><img src="docs/configure.png" alt="The configure command" /></p>
+<h2 id="upgrading">Upgrading</h2>
+<p>The QA Tools Phar distributable is self-updateable in a way that is very similar
+to Composer. The following command will check the QA Tools'
+[Releases][github-qa-releases] page for the latest stable version, and replace
+your executable Phar:</p>
+<pre><code class="language-sh-session">$ ./qa-tools.phar self-update</code></pre>
+<h2 id="contributing">Contributing</h2>
+<ul>
+<li><a href="contributing.html">Contributing guidelines</a></li>
+<li><a href="docs/development.html">Development</a>
+<ul>
+<li><a href="docs/development/configuration-process.html">Configuration process</a></li>
+<li><a href="docs/development/task-development.html">Task development</a></li>
+<li><a href="docs/development/tool-development.html">Tool development</a></li>
+<li><a href="docs/development/writing-system-tests.html">Writing system tests</a></li>
+</ul></li>
+<li><a href="docs/phar.html">Phar</a></li>
+<li><a href="docs/release-process.html">Release process</a></li>
+<li><a href="docs/reporting-a-bug.html">Reporting a bug</a></li>
+<li><a href="docs/ubiquitous-language.html">Ubiquitous language</a></li>
+</ul>
+        </section>
+
+    </div>
+</main>
+
+<footer>
+    <div class="container-fluid">
+        <p class="text-muted">
+            website generated with <a href="http://couscous.io" title="Markdown website generator">Couscous</a>
+        </p>
+    </div>
+</footer>
+
+<link rel="stylesheet" href="https://ibuildingsnl.github.io/qa-tools/css/highlight.forest-light.css">
+<script src="https://ibuildingsnl.github.io/qa-tools/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+</body>
+</html>

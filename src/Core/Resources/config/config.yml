@@ -1,7 +1,0 @@
-parameters:
-    qa_tools.configuration_location: "./qa-tools.json"
-
-    # Path relative to the application entrypoint (./bin/qa-tools)
-    qa_tools.ant_template_location: "../src/Core/Resources/templates"
-
-    qa_tools.ant.tool_priorities: ["phplint", "phpcs", "phpmd"]

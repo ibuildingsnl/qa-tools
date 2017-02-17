@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Ibuildings QA Tools</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://ibuildingsnl.github.io/qa-tools/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://ibuildingsnl.github.io/qa-tools/css/main.css">
+</head>
+<body>
+
+<main class="container">
+
+            <a href="https://github.com/ibuildingsnl/qa-tools">
+            <img style="position: absolute; top: 0; right: 0; border: 0;"
+                 src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67"
+                 alt="Fork me on GitHub"
+                 data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png">
+        </a>
+    
+    <div class="row">
+
+        
+            <nav id="sidebar" class="col-sm-4 col-lg-3" role="navigation">
+                                                                    <ul class="nav nav-pills nav-stacked">
+                                                    <li class="">
+                                <a href="https://ibuildingsnl.github.io/qa-tools/">
+                                    <i class="fa fa-check"></i> Ibuildings QA Tools
+                                </a>
+                                                            </li>
+                                                    <li class="">
+                                <a href="https://github.com/ibuildingsnl/qa-tools">
+                                    <i class="fa fa-github"></i> GitHub
+                                </a>
+                                                            </li>
+                                                    <li class="">
+                                <a href="https://ibuildingsnl.github.io/qa-tools/contributing.html">
+                                    Contributing guidelines
+                                </a>
+                                                            </li>
+                                                    <li class="">
+                                <a href="https://ibuildingsnl.github.io/qa-tools/docs/development.html">
+                                    Development
+                                </a>
+                                                                                        <ul class="nav nav-pills nav-stacked">
+                                                    <li class="">
+                                <a href="https://ibuildingsnl.github.io/qa-tools/docs/development/configuration-process.html">
+                                    Configuration process
+                                </a>
+                                                            </li>
+                                                    <li class="">
+                                <a href="https://ibuildingsnl.github.io/qa-tools/docs/development/task-development.html">
+                                    Task development
+                                </a>
+                                                            </li>
+                                                    <li class="">
+                                <a href="https://ibuildingsnl.github.io/qa-tools/docs/development/tool-development.html">
+                                    Tool development
+                                </a>
+                                                            </li>
+                                                    <li class="">
+                                <a href="https://ibuildingsnl.github.io/qa-tools/docs/development/writing-documentation.html">
+                                    Writing documentation
+                                </a>
+                                                            </li>
+                                                    <li class="">
+                                <a href="https://ibuildingsnl.github.io/qa-tools/docs/development/writing-system-tests.html">
+                                    Writing system tests
+                                </a>
+                                                            </li>
+                                            </ul>
+                
+                                                            </li>
+                                                    <li class="">
+                                <a href="https://ibuildingsnl.github.io/qa-tools/docs/phar.html">
+                                    Phar
+                                </a>
+                                                            </li>
+                                                    <li class="">
+                                <a href="https://ibuildingsnl.github.io/qa-tools/docs/release-process.html">
+                                    Release process
+                                </a>
+                                                            </li>
+                                                    <li class="">
+                                <a href="https://ibuildingsnl.github.io/qa-tools/docs/reporting-a-bug.html">
+                                    Reporting a bug
+                                </a>
+                                                            </li>
+                                                    <li class="">
+                                <a href="https://ibuildingsnl.github.io/qa-tools/docs/ubiquitous-language.html">
+                                    Ubiquitous language
+                                </a>
+                                                            </li>
+                                            </ul>
+                
+            </nav>
+
+        
+        <section id="content" class="col-sm-8 col-lg-9">
+            <div class="page-header"><h1 id="developing-a-qa-tool">Developing a QA tool</h1></div>
+<h2 id="adding-tool-and-configurators">Adding Tool and Configurators</h2>
+<p>One of the QA Tools' objectives is to make it easy to configure tools.</p>
+<p>To create a new tool:</p>
+<ol>
+<li>Create a new directory in the <code>src/Tool</code> directory and give it a descriptive name, preferably the actual name of the tool.</li>
+<li>Create a class with the same name that extends <code>\Ibuildings\QaTools\Core\Tool\AbstractTool</code> in this new directory. </li>
+<li>Add instance of you new class should be added to the <code>\Ibuildings\QaTools\Core\Application\Application::getRegisteredTools()</code> method in order for it to be configurable.</li>
+<li>Specify for what projects the tool may be added in a new file <code>src/Tool/&lt;ToolName&gt;/Resources/config/configurators.yml</code>.</li>
+<li>Create a configurator in <code>\Ibuildings\QaTools\Tool\&lt;ToolName&gt;\Configurator\&lt;ConfiguratorName&gt;</code>.</li>
+<li>Create templates for configuration files in <code>src/Tool/&lt;ToolName&gt;/Resources/templates</code>.</li>
+</ol>
+<p>Fix the tests you broke as a result of creating the new tool:</p>
+<ol>
+<li>Add Composer package stub in <code>tests/composer/packages/&lt;package&gt;/composer.json</code> and add it to the list of repositories in <code>Ibuildings\QaTools\ComposerTest\Composer::mockRepositories()</code>.</li>
+<li>Make sure the question is answered for adding your tool in:
+<ol>
+<li><code>tests/system/specs/000_can-configure-a-php-project.tcl</code></li>
+<li><code>tests/system/specs/010_developer-need-not-reanswer-previously-answered-questions.tcl</code></li>
+<li><code>tests/system/specs/020_aborts-on-composer-dependency-conflict.tcl</code></li>
+</ol></li>
+<li>Test your configurator in <code>tests/unit/Tool/&lt;ToolName&gt;/Configurator/&lt;ToolName&gt;ConfiguratorTest.php</code> take a look at the other tests for examples.</li>
+</ol>
+<p>Configurators are responsible for configuring a tool for a specific project type.
+By default, the tool's configurators are configured in its <code>src/Tool/&lt;ToolName&gt;/Resources/config/configurators.yml</code> file.
+To modify which configuration file is used or to add configuration files for this tool,
+override the inherited <code>getConfigurationFiles</code> method.</p>
+<p>Configurators should be added under the tool's namespace (i.e. <code>\Ibuildings\QaTools\Tool\&lt;ToolName&gt;\Configurator\&lt;ConfiguratorName&gt;</code>) and
+are defined as a service through the tool's <code>configurators.yml</code> file.
+A tag has to be added to the configurator's definition to indicate which project types it supports:</p>
+<pre><code class="language-yaml">services:
+    qa_tools.tool.configurator.&lt;configurator_name&gt;:
+        class: Ibuildings\QaTools\Tool\&lt;ToolName&gt;\Configurator\&lt;ConfiguratorName&gt;
+        tags:
+            - name: qa_tools.tool
+              project_type: &lt;project_type&gt;</code></pre>
+<p>A finite list of supported project types are hard-coded in <code>\Ibuildings\QaTools\Core\Project\ProjectType</code>.
+Which project types apply for a certain project are determined through the interview process using the <code>ProjectConfigurator</code>.</p>
+<p>The configuration process can be defined in the Configurator's <code>configure</code>
+method, in which it can use the <code>Interviewer</code>, <code>TaskDirectory</code> and
+<code>TaskHelperSet</code>. Templating and such are available through the
+<code>TaskHelperSet</code>.
+These can be used to help register requirements with the
+<code>TaskDirectory</code>. A tool's templates should reside under
+<code>src/Tool/&lt;ToolName&gt;/Resources/templates</code>.</p>
+<p>The <code>Interviewer</code> is used for IO interaction.</p>
+<h2 id="interview-api">Interview API</h2>
+<p>The <code>Interviewer</code> is responsible for the interaction with the developer. It can provide the developer with information using the
+<code>tell</code> and <code>warn</code> methods and acquire information from him using the <code>ask</code> method. While the <code>tell</code> and <code>warn</code> methods
+accept strings as their arguments, the <code>ask</code> method is requires a specific <code>Question</code>.</p>
+<h3 id="textualquestion">TextualQuestion</h3>
+<p>A <code>TextualQuestion</code> is an open question that expects a <code>TextualAnswer</code> as a response.
+Optionally, a <code>TextualAnswer</code> can be given as a default answer as a second argument.</p>
+<pre><code class="language-php">$answer = $interviewer-&gt;ask(new TextualQuestion('What is your favorite food?', new TextualAnswer('Pizza'));</code></pre>
+<p>Alternatively, a <code>TextualQuestion</code> can be created as using a factory:</p>
+<pre><code class="language-php">$answer = $interviewer-&gt;ask(Question::create('What is your favorite food?', 'Pizza'));</code></pre>
+<h3 id="yesornoquestion">YesOrNoQuestion</h3>
+<p>A <code>YesOrNoQuestion</code> is a closed question that expects a <code>YesOrNoAnswer</code> as a response.
+Optionally, a <code>YesOrNoAnswer</code> can be given as a default answer as a second argument.
+Since there are only two possible answers, <code>YesOrNoAnswers</code> are created using named constructors. </p>
+<pre><code class="language-php">$answer = $interviewer-&gt;ask(new YesOrNoQuestion('Do you like Mexican food?', YesOrNoAnswer::yes());</code></pre>
+<p>Alternatively, a <code>YesOrNoQuestion</code> can be created as using a factory:</p>
+<pre><code class="language-php">$answer = $interviewer-&gt;ask(Question::createYesOrNo('Do you like Mexican food?', YesOrNoAnswer::YES));</code></pre>
+<h3 id="multiplechoicequestion">MultipleChoiceQuestion</h3>
+<p>A <code>MultipleChoiceQuestion</code> is a closed question that expects a <code>TextualAnswer</code> selected from a list of <code>Choices</code>,
+its second argument, as a response.
+Optionally, a <code>TextualAnswer</code> can be given as a default answer as a third argument.</p>
+<pre><code class="language-php">$answer = $interviewer-&gt;ask(new MultipleChoiceQuestion('What would you like to eat?', 
+    new Choices([
+        new TextualAnswer('Caesar Salad'),
+        new TextualAnswer('Cheese Sandwich'),
+        new TextualAnswer('Chicken Wings')
+    ]),
+    new TextualAnswer('Chicken Wings')
+));</code></pre>
+<p>Alternatively, a <code>MultipleChoiceQuestion</code> can be created as using a factory:</p>
+<pre><code class="language-php">$answer = $interviewer-&gt;ask(Question::createMultipleChoice('What would you like to eat?', [
+    'Caesar Salad',
+    'Cheese Sandwich',
+    'Chicken Wings'
+],
+    'Chicken Wings'
+));</code></pre>
+<h3 id="listchoicequestion">ListChoiceQuestion</h3>
+<p>A <code>ListChoiceQuestion</code> is a closed question that expects <code>Choices</code> selected from a list of <code>Choices</code>,
+its second argument, as a response.
+Optionally, <code>Choices</code> can be given as a default answer as a third argument.</p>
+<pre><code class="language-php">$answer = $interviewer-&gt;ask(new ListChoiceQuestion('Which of the following would you like to eat next?', 
+    new Choices([
+        new TextualAnswer('Caesar Salad'),
+        new TextualAnswer('Cheese Sandwich'),
+        new TextualAnswer('Chicken Wings')
+    ]),
+    new Choices([
+        new TextualAnswer('Caesar Salad'),
+        new TextualAnswer('Cheese Sandwich'),
+    ])
+));</code></pre>
+<p>Alternatively, a <code>ListChoiceQuestion</code> can be created as using a factory:</p>
+<pre><code class="language-php">$answer = $interviewer-&gt;ask(Question::createMultipleChoice('Which of the following would you like to eat next?', [
+    'Caesar Salad',
+    'Cheese Sandwich',
+    'Chicken Wings'
+],
+    'Caesar Salad',
+    'Chick Wings'
+));</code></pre>
+        </section>
+
+    </div>
+</main>
+
+<footer>
+    <div class="container-fluid">
+        <p class="text-muted">
+            website generated with <a href="http://couscous.io" title="Markdown website generator">Couscous</a>
+        </p>
+    </div>
+</footer>
+
+<link rel="stylesheet" href="https://ibuildingsnl.github.io/qa-tools/css/highlight.forest-light.css">
+<script src="https://ibuildingsnl.github.io/qa-tools/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+</body>
+</html>

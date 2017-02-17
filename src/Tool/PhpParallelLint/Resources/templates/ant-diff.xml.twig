@@ -1,7 +1,0 @@
-<target name="{{ targetName }}" description="Perform syntax check of changed sourcecode files in parallel">
-    <exec executable="sh" failonerror="true">
-        <arg value="-c"/>
-        <arg value="git diff --cached --name-only --diff-filter=d -- {% for extension in extensions %} '*.{{ extension|escape('xml') }}'{% endfor %} | vendor/bin/parallel-lint --stdin"/>
-    </exec>
-    <echo message="OK"/>
-</target>

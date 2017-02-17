@@ -1,9 +1,0 @@
-#!/bin/bash
-
-# Absolute path to this script, e.g. /path/to/pre-commit-install
-SCRIPT=$(readlink -f "$0")
-# Absolute path this script is in, thus /path/to
-SCRIPTPATH=$(dirname "$SCRIPT")
-
-ln -is $SCRIPTPATH/pre-commit $SCRIPTPATH/../../.git/hooks/pre-commit
-echo "Pre-commit hook installed!"

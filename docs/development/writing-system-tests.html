@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Ibuildings QA Tools</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://ibuildingsnl.github.io/qa-tools/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://ibuildingsnl.github.io/qa-tools/css/main.css">
+</head>
+<body>
+
+<main class="container">
+
+            <a href="https://github.com/ibuildingsnl/qa-tools">
+            <img style="position: absolute; top: 0; right: 0; border: 0;"
+                 src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67"
+                 alt="Fork me on GitHub"
+                 data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png">
+        </a>
+    
+    <div class="row">
+
+        
+            <nav id="sidebar" class="col-sm-4 col-lg-3" role="navigation">
+                                                                    <ul class="nav nav-pills nav-stacked">
+                                                    <li class="">
+                                <a href="https://ibuildingsnl.github.io/qa-tools/">
+                                    <i class="fa fa-check"></i> Ibuildings QA Tools
+                                </a>
+                                                            </li>
+                                                    <li class="">
+                                <a href="https://github.com/ibuildingsnl/qa-tools">
+                                    <i class="fa fa-github"></i> GitHub
+                                </a>
+                                                            </li>
+                                                    <li class="">
+                                <a href="https://ibuildingsnl.github.io/qa-tools/contributing.html">
+                                    Contributing guidelines
+                                </a>
+                                                            </li>
+                                                    <li class="">
+                                <a href="https://ibuildingsnl.github.io/qa-tools/docs/development.html">
+                                    Development
+                                </a>
+                                                                                        <ul class="nav nav-pills nav-stacked">
+                                                    <li class="">
+                                <a href="https://ibuildingsnl.github.io/qa-tools/docs/development/configuration-process.html">
+                                    Configuration process
+                                </a>
+                                                            </li>
+                                                    <li class="">
+                                <a href="https://ibuildingsnl.github.io/qa-tools/docs/development/task-development.html">
+                                    Task development
+                                </a>
+                                                            </li>
+                                                    <li class="">
+                                <a href="https://ibuildingsnl.github.io/qa-tools/docs/development/tool-development.html">
+                                    Tool development
+                                </a>
+                                                            </li>
+                                                    <li class="">
+                                <a href="https://ibuildingsnl.github.io/qa-tools/docs/development/writing-documentation.html">
+                                    Writing documentation
+                                </a>
+                                                            </li>
+                                                    <li class="">
+                                <a href="https://ibuildingsnl.github.io/qa-tools/docs/development/writing-system-tests.html">
+                                    Writing system tests
+                                </a>
+                                                            </li>
+                                            </ul>
+                
+                                                            </li>
+                                                    <li class="">
+                                <a href="https://ibuildingsnl.github.io/qa-tools/docs/phar.html">
+                                    Phar
+                                </a>
+                                                            </li>
+                                                    <li class="">
+                                <a href="https://ibuildingsnl.github.io/qa-tools/docs/release-process.html">
+                                    Release process
+                                </a>
+                                                            </li>
+                                                    <li class="">
+                                <a href="https://ibuildingsnl.github.io/qa-tools/docs/reporting-a-bug.html">
+                                    Reporting a bug
+                                </a>
+                                                            </li>
+                                                    <li class="">
+                                <a href="https://ibuildingsnl.github.io/qa-tools/docs/ubiquitous-language.html">
+                                    Ubiquitous language
+                                </a>
+                                                            </li>
+                                            </ul>
+                
+            </nav>
+
+        
+        <section id="content" class="col-sm-8 col-lg-9">
+            <div class="page-header"><h1 id="writing-system-tests">Writing system tests</h1></div>
+<p>The QA Tools project employs the <a href="http://linux.die.net/man/1/expect">expect</a> tool to perform system
+testing against the Phar file that is distributed to developers. Contributors
+can describe their expectations of the interactive dialogue with the tool and
+assert what the program results are. Together, these form a <em>specification</em>.</p>
+<p>System specifications consist of two parts, a <em>dialogue expectation</em> and a
+<em>test file</em>. These must be placed in the directory <code>./tests/system/specs</code>.</p>
+<pre><code>.
+├── tests
+│   ├── system
+│   │   ├── specs
+│   │   │   ├── reticulates-splines.php # Assertions
+│   │   │   └── reticulates-splines.tcl # Dialogue expectation</code></pre>
+<p>The specification is executed in a temporary directory. Initially, this
+directory contains symbolic links to the distributable and its public key. This
+is also the directory where QA Tools will generate files.</p>
+<pre><code>/tmp
+├── qa-tools_system5790bd1c4b5c68.27898406
+│   ├── qa-tools
+│   └── qa-tools.pubkey</code></pre>
+<h2 id="the-dialogue-expectation">The dialogue expectation</h2>
+<p>The dialogue expectations are written in <a href="https://en.wikipedia.org/wiki/Tcl">TCL</a>. No comprehensive
+knowledge of TCL is required to write these dialogue expectations.</p>
+<p>First, you indicate what QA Tools subcommand must be executed with which
+arguments. It is important you specify that no ANSI colouring be included in the
+QA Tools' output.</p>
+<pre><code class="language-tcl">test ./qa-tools configure --no-ansi</code></pre>
+<p>For each interactive question, state the expected question text, and the answer
+<code>expect</code> should send in response. The expectation times out after a
+<a href="../../tests/system/harness.tcl">hard-coded</a> 2 seconds.</p>
+<pre><code class="language-tcl">answer "What is the project's name?" with "Wobbly Widdershins"</code></pre>
+<p>The intermediate presence of a string can also be asserted.</p>
+<pre><code class="language-tcl">should_see "Reticulating splines..."</code></pre>
+<p><code>answer</code> and <code>should_see</code> are procedures defined in the
+<a href="../../tests/system/harness.tcl">expectation harness</a> so that expressive dialogue
+expectations can be written.</p>
+<p>Finally, you can assert that the program will end and will exit with a zero
+exit code. If the program does not end within the configured time-out the expect
+script exits with exit code 1. When the program exits with a non-zero exit code,
+the expect script exits with the same exit code.</p>
+<pre><code class="language-tcl">exits_with 0</code></pre>
+<h3 id="pitfalls">Pitfalls</h3>
+<p>One pitfall is the use of brackets in strings; these execute commands. The below
+snippet, expecting a specific multiple-choice answer, attempts to execute <code>0</code>:</p>
+<pre><code class="language-tcl">answer "[0] Symfony 3" with "0"</code></pre>
+<p>The solution is to escape the brackets:</p>
+<pre><code class="language-tcl">answer "\[0\] Symfony 3" with "0"</code></pre>
+<h2 id="the-test-file">The test file</h2>
+<p>The test file contains plain PHP. The expect script is available as the callable
+<code>$expect</code>. This enables you to arrange things before executing QA Tools, like
+adding conflicts to the project's Composer configuration. Note that the test
+file ought to reside in the namespace <code>Ibuildings\QaTools\SystemTest</code>; this
+makes sure PHPUnit's assertion functions are in scope.</p>
+<pre><code class="language-php">&lt;?php
+
+namespace Ibuildings\QaTools\SystemTest;
+
+Composer::initialise();
+
+/** @var callable $expect */
+$expect();
+
+assertFileExists('qa-tools.json');
+Composer::assertPackageIsInstalled('phpmd/phpmd');</code></pre>
+<h2 id="multiple-dialogue-expectations">Multiple dialogue expectations</h2>
+<p>When a specification requires multiple interactions with the QA Tools program,
+you can use multiple dialogue expectations. By passing a <em>chapter</em> to the
+<code>$expect</code> helper callable, different dialogues are executed.</p>
+<pre><code class="language-php">// 050_my-first-test.php
+
+namespace Ibuildings\QaTools\SystemTest;
+
+// Runs dialogue 050_my-first-test_setup.tcl
+$expect('setup');
+// Runs dialogue 050_my-first-test_test.tcl
+$expect('test');</code></pre>
+<h2 id="example-specification">Example specification</h2>
+<pre><code class="language-tcl">spawn ./qa-tools configure --no-ansi
+
+should_see "Configuring the Ibuildings QA Tools"
+
+answer "What is the project's name?" with "Boolean Bust"
+
+answer "Where would you like to store the generated files?" with "./"
+
+should_see "What type of project would you like to configure?"
+answer "\[0\] PHP" with "0"
+
+should_see "What type of project would you like to configure?"
+answer "\[1\] Symfony 3" with "1"
+
+answer "Would you like to integrate Travis in your project?" with "Y"
+
+exits_with 0</code></pre>
+<pre><code class="language-php">&lt;?php
+
+namespace Ibuildings\QaTools\SystemTest;
+
+Composer::initialise();
+
+/** @var callable $expect */
+$expect();
+
+assertFileExists('qa-tools.json');
+Composer::assertPackageIsInstalled('phpmd/phpmd');</code></pre>
+<h2 id="installing-composer-packages">Installing Composer packages</h2>
+<p>Most tools will want to install Composer packages. However, installing these
+packages during testing, both locally as on Travis, makes tests slow and
+brittle. To countermand this, all tests involving Composer (pretty much all
+system tests) work with locally emulated packages. An example of this is
+<code>phpmd/phpmd</code>, emulated in <code>tests/composer/packages/phpmd/phpmd/composer.json</code>.
+These emulated packages are registered with Composer during the bootstrap of the
+test suite in <code>Ibuildings\QaTools\ComposerTest\Composer::mockRepositories()</code>.</p>
+        </section>
+
+    </div>
+</main>
+
+<footer>
+    <div class="container-fluid">
+        <p class="text-muted">
+            website generated with <a href="http://couscous.io" title="Markdown website generator">Couscous</a>
+        </p>
+    </div>
+</footer>
+
+<link rel="stylesheet" href="https://ibuildingsnl.github.io/qa-tools/css/highlight.forest-light.css">
+<script src="https://ibuildingsnl.github.io/qa-tools/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+</body>
+</html>
