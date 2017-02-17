@@ -34,7 +34,7 @@ on GitHub.
  0. Use the tag as release title.
  0. Copy this release's documented changes (see the change log) into the
     description field.
- 0. Attach the Phar `./build/release/qa-tools.phar` to the release.
+ 0. Attach the Phar and its public key to the release. You find these in the `./build/release/`  directory.
  0. Publish the release.
 
 [github-rmt]: https://github.com/liip/RMT
