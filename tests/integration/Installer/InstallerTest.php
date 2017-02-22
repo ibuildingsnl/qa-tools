@@ -8,6 +8,7 @@ use Installer;
 use Mockery;
 use PharValidator;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 use Symfony\Component\Filesystem\Filesystem;
 
 final class InstallerTest extends TestCase
@@ -73,9 +74,7 @@ final class InstallerTest extends TestCase
         $this->filesystem->remove($this->tempDirectory);
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function download_correct_files()
     {
         /** @var Mockery\Mock|HttpClient $httpClient */
@@ -118,18 +117,42 @@ final class InstallerTest extends TestCase
         $installer = new Installer(false, $httpClient, $pharValidator, self::REPOSITORY_OWNER, self::REPOSITORY_NAME);
 
         ob_start();
-        $installer->run(false, $this->tempDirectory, 'qa-tools');
+        $success = $installer->run(false, $this->tempDirectory, 'qa-tools');
         $output = ob_get_clean();
 
+        $this->assertTrue($success);
         $this->assertRegExp(
             '~^QA Tools \(version '.preg_quote(self::VERSION, '~').'\) successfully installed~sm',
             $output
         );
-
         $this->assertFileExists($this->tempDirectory.'/qa-tools');
         $this->assertEquals(self::PHAR_ASSET_CONTENTS, file_get_contents($this->tempDirectory.'/qa-tools'));
-
         $this->assertFileExists($this->tempDirectory.'/qa-tools.pubkey');
         $this->assertEquals(self::PUBKEY_ASSET_CONTENTS, file_get_contents($this->tempDirectory.'/qa-tools.pubkey'));
+    }
+
+    /** @test */
+    public function fails_when_files_cannot_be_downloaded()
+    {
+        /** @var Mockery\Mock|HttpClient $httpClient */
+        $httpClient = Mockery::mock(HttpClient::class);
+        $httpClient->shouldReceive('get')->andThrow(new RuntimeException());
+
+        /** @var Mockery\Mock|PharValidator $pharValidator */
+        $pharValidator = Mockery::mock(PharValidator::class);
+        $pharValidator->shouldReceive('assertPharValid');
+
+        $installer = new Installer(false, $httpClient, $pharValidator, self::REPOSITORY_OWNER, self::REPOSITORY_NAME);
+
+        ob_start();
+        $success = $installer->run(false, $this->tempDirectory, 'qa-tools');
+        $output = ob_get_clean();
+
+        $this->assertFalse($success);
+        $this->assertContains('Unable to download version information from https://', $output);
+        $this->assertContains('The download failed repeatedly, aborting.', $output);
+
+        $this->assertFileNotExists($this->tempDirectory.'/qa-tools');
+        $this->assertFileNotExists($this->tempDirectory.'/qa-tools.pubkey');
     }
 }

@@ -537,7 +537,7 @@ class Installer
             }
         }
 
-        return true;
+        return $success;
     }
 
     /**
