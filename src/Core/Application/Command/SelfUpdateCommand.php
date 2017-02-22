@@ -28,7 +28,7 @@ final class SelfUpdateCommand extends Command implements ContainerAwareInterface
             ->setAliases(['selfupdate'])
             ->setDescription('Updates Ibuildings QA Tools to the latest version')
             ->setHelp('Updates Ibuildings QA Tools to the latest version')
-            ->addOption('rollback', null, InputOption::VALUE_NONE | InputOption::VALUE_OPTIONAL)
+            ->addOption('rollback', null, InputOption::VALUE_NONE)
             ->addOption('allow-unstable', null, InputOption::VALUE_NONE, 'Allow installation of an unstable version');
     }
 
