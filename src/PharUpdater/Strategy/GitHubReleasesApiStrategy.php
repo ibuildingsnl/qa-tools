@@ -18,6 +18,9 @@ class GitHubReleasesApiStrategy implements StrategyInterface
 {
     const URL_RELEASES = 'https://api.github.com/repos/%s/%s/releases';
 
+    const ALLOW_UNSTABLE = true;
+    const DISALLOW_UNSTABLE = false;
+
     /** @var Client */
     private $httpClient;
     /** @var string */
@@ -28,6 +31,8 @@ class GitHubReleasesApiStrategy implements StrategyInterface
     private $repositoryOwner;
     /** @var string */
     private $repositoryName;
+    /** @var bool */
+    private $allowUnstable;
 
     /** @var string|null */
     private $remoteVersion;
@@ -35,14 +40,22 @@ class GitHubReleasesApiStrategy implements StrategyInterface
     private $remoteUrl;
 
     /**
-     * @param Client $httpClient A Guzzle HTTP client to use for talking to the GitHub API
-     * @param string $repositoryOwner
-     * @param string $repositoryName
-     * @param string $releasePharName
-     * @param string $localVersion
+     * @param Client  $httpClient A Guzzle HTTP client to use for talking to the GitHub API
+     * @param string  $repositoryOwner
+     * @param string  $repositoryName
+     * @param string  $releasePharName
+     * @param string  $localVersion
+     * @param boolean $allowUnstable Whether to allow installation of an unstable version. Use one of the *_UNSTABLE
+     *     class constants for clarity.
      */
-    public function __construct(Client $httpClient, $repositoryOwner, $repositoryName, $releasePharName, $localVersion)
-    {
+    public function __construct(
+        Client $httpClient,
+        $repositoryOwner,
+        $repositoryName,
+        $releasePharName,
+        $localVersion,
+        $allowUnstable
+    ) {
         Assertion::nonEmptyString($repositoryOwner, 'The repository owner ought to be a string, got "%s" of type "%s"');
         Assertion::nonEmptyString($repositoryName, 'The repository name ought to be a string, got "%s" of type "%s"');
         Assertion::nonEmptyString(
@@ -50,12 +63,14 @@ class GitHubReleasesApiStrategy implements StrategyInterface
             'The release Phar name ought to be a string, got "%s" of type "%s"'
         );
         Assertion::nonEmptyString($localVersion, 'The local version ought to be a string, got "%s" of type "%s"');
+        Assertion::boolean($allowUnstable, '"Allow unstable" ought to be a boolean, got "%s"');
 
         $this->httpClient = $httpClient;
         $this->repositoryOwner = $repositoryOwner;
         $this->repositoryName = $repositoryName;
         $this->releasePharName = $releasePharName;
         $this->localVersion = $localVersion;
+        $this->allowUnstable = $allowUnstable;
     }
 
     /**
@@ -78,35 +93,44 @@ class GitHubReleasesApiStrategy implements StrategyInterface
             throw new JsonParsingException(sprintf('Error parsing JSON release data: %s', json_last_error_msg()));
         }
 
-        $stableReleasesWithPhar = array_filter(
-            $releases,
+        $indexedReleases = array_combine(array_column($releases, 'tag_name'), $releases);
+        $indexedPharReleases = array_filter(
+            $indexedReleases,
             function (array $release) {
+                if ($release['draft']) {
+                    return false;
+                }
+
                 $pharAssets = array_filter(
                     $release['assets'],
                     function (array $asset) {
                         return $asset['name'] === $this->releasePharName;
                     }
                 );
+                $hasPharAsset = count($pharAssets) > 0;
 
-                return !$release['prerelease'] && !$release['draft'] && count($pharAssets) > 0;
+                return $hasPharAsset;
             }
         );
 
-        if (count($stableReleasesWithPhar) === 0) {
+        if (count($indexedPharReleases) === 0) {
             return false;
         }
 
-        $tagNames = array_column($stableReleasesWithPhar, 'tag_name');
-
+        $tagNames = array_keys($indexedPharReleases);
         $versionParser = new VersionParser($tagNames);
-        $this->remoteVersion = $versionParser->getMostRecentStable();
+
+        if ($this->allowUnstable) {
+            $this->remoteVersion = $versionParser->getMostRecentAll();
+        } else {
+            $this->remoteVersion = $versionParser->getMostRecentStable();
+        }
 
         if (!$this->remoteVersion) {
             return $this->remoteVersion;
         }
 
-        $stableReleasesWithPharIndexedByTagName = array_combine($tagNames, $stableReleasesWithPhar);
-        $release = $stableReleasesWithPharIndexedByTagName[$this->remoteVersion];
+        $release = $indexedPharReleases[$this->remoteVersion];
         $pharAssets = array_filter(
             $release['assets'],
             function (array $asset) {
