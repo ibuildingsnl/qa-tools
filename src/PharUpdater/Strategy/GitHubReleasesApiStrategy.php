@@ -45,7 +45,8 @@ class GitHubReleasesApiStrategy implements StrategyInterface
      * @param string  $repositoryName
      * @param string  $releasePharName
      * @param string  $localVersion
-     * @param boolean $allowUnstable Whether to allow installation of an unstable version.
+     * @param boolean $allowUnstable Whether to allow installation of an unstable version. Use on of the *_UNSTABLE
+     *     class constants for clarity.
      */
     public function __construct(
         Client $httpClient,
