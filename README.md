@@ -56,7 +56,7 @@ The `configure` subcommand will start an interactive questionnaire to help you
 quickly configure various QA tools to your project's testing needs. It remembers
 your answers, so you can easily reconfigure the tools.
 
-![The configure command](docs/configure.png)
+[![asciicast](https://asciinema.org/a/9nlu7mu2dfst8bilsmp825553.png)](https://asciinema.org/a/9nlu7mu2dfst8bilsmp825553)
 
 ## Upgrading
 
