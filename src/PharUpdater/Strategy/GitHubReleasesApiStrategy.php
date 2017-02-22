@@ -92,8 +92,9 @@ class GitHubReleasesApiStrategy implements StrategyInterface
             throw new JsonParsingException(sprintf('Error parsing JSON release data: %s', json_last_error_msg()));
         }
 
-        $releasesWithPhar = array_filter(
-            $releases,
+        $indexedReleases = array_combine(array_column($releases, 'tag_name'), $releases);
+        $indexedPharReleases = array_filter(
+            $indexedReleases,
             function (array $release) {
                 $pharAssets = array_filter(
                     $release['assets'],
@@ -106,11 +107,11 @@ class GitHubReleasesApiStrategy implements StrategyInterface
             }
         );
 
-        if (count($releasesWithPhar) === 0) {
+        if (count($indexedPharReleases) === 0) {
             return false;
         }
 
-        $tagNames = array_column($releasesWithPhar, 'tag_name');
+        $tagNames = array_keys($indexedPharReleases);
         $versionParser = new VersionParser($tagNames);
 
         if ($this->allowUnstable) {
@@ -123,8 +124,7 @@ class GitHubReleasesApiStrategy implements StrategyInterface
             return $this->remoteVersion;
         }
 
-        $releasesWithPharIndexedByTagName = array_combine($tagNames, $releasesWithPhar);
-        $release = $releasesWithPharIndexedByTagName[$this->remoteVersion];
+        $release = $indexedPharReleases[$this->remoteVersion];
         $pharAssets = array_filter(
             $release['assets'],
             function (array $asset) {
