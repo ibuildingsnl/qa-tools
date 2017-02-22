@@ -96,14 +96,19 @@ class GitHubReleasesApiStrategy implements StrategyInterface
         $indexedPharReleases = array_filter(
             $indexedReleases,
             function (array $release) {
+                if ($release['draft']) {
+                    return false;
+                }
+
                 $pharAssets = array_filter(
                     $release['assets'],
                     function (array $asset) {
                         return $asset['name'] === $this->releasePharName;
                     }
                 );
+                $hasPharAsset = count($pharAssets) > 0;
 
-                return !$release['draft'] && count($pharAssets) > 0;
+                return $hasPharAsset;
             }
         );
 
