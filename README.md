@@ -24,7 +24,7 @@ The recommended way to install the QA Tools is by using our installer:
 
 ```
 php -r "copy('https://raw.githubusercontent.com/ibuildingsnl/qa-tools/master/installer.php', 'qa-tools-setup.php');"
-php -r "if (hash_file('SHA384', 'qa-tools-setup.php') === 'cbe46561b2dabe44c600f0ebdf262d73857c7e912bc4c891ee0a571f1df809b0c7881ee34ad13e598e606e35ea36c7f5') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('qa-tools-setup.php'); } echo PHP_EOL;"
+php -r "if (hash_file('SHA384', 'qa-tools-setup.php') === '2f83e895f1fda9e44334f452e9abedfde9152ba1aa95d1ea411eef0d1c96086e8d8c68909ffeaa3ec7d72de420c85287') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('qa-tools-setup.php'); } echo PHP_EOL;"
 php qa-tools-setup.php
 php -r "unlink('qa-tools-setup.php');"
 ```
@@ -56,7 +56,7 @@ The `configure` subcommand will start an interactive questionnaire to help you
 quickly configure various QA tools to your project's testing needs. It remembers
 your answers, so you can easily reconfigure the tools.
 
-![The configure command](docs/configure.png)
+[![asciicast](https://asciinema.org/a/9nlu7mu2dfst8bilsmp825553.png)](https://asciinema.org/a/9nlu7mu2dfst8bilsmp825553)
 
 ## Upgrading
 
