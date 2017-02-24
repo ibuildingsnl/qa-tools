@@ -6,8 +6,8 @@ use Exception;
 use Ibuildings\QaTools\Core\Exception\InvalidArgumentException;
 use Ibuildings\QaTools\Core\Exception\RuntimeException;
 use Ibuildings\QaTools\Core\IO\File\FilesystemFileHandler;
+use Ibuildings\QaTools\Test\MockeryTestCase;
 use Mockery;
-use PHPUnit_Framework_TestCase as TestCase;
 use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -15,7 +15,7 @@ use Symfony\Component\Filesystem\Filesystem;
  * @group IO
  * @group Filesystem
  */
-class FilesystemFileHandlerTest extends TestCase
+class FilesystemFileHandlerTest extends MockeryTestCase
 {
     /**
      * @test

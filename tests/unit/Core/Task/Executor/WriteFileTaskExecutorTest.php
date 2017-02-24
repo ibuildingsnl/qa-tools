@@ -9,16 +9,15 @@ use Ibuildings\QaTools\Core\Task\Executor\WriteFileTaskExecutor;
 use Ibuildings\QaTools\Core\Task\Task;
 use Ibuildings\QaTools\Core\Task\TaskList;
 use Ibuildings\QaTools\Core\Task\WriteFileTask;
+use Ibuildings\QaTools\Test\MockeryTestCase;
 use Mockery;
-use Mockery as m;
 use Mockery\MockInterface;
-use PHPUnit\Framework\TestCase as TestCase;
 
 /**
  * @group Task
  * @group TaskExecutor
  */
-class WriteFileTaskExecutorTest extends TestCase
+class WriteFileTaskExecutorTest extends MockeryTestCase
 {
     /** @var FileHandler|MockInterface */
     private $fileHandler;

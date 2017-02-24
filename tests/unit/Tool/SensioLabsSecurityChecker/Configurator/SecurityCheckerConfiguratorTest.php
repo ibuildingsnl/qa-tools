@@ -12,14 +12,14 @@ use Ibuildings\QaTools\Core\Interviewer\AutomatedResponseInterviewer;
 use Ibuildings\QaTools\Core\Project\Directory;
 use Ibuildings\QaTools\Core\Project\Project;
 use Ibuildings\QaTools\Core\Project\ProjectTypeSet;
+use Ibuildings\QaTools\Test\MockeryTestCase;
 use Ibuildings\QaTools\Tool\SensioLabsSecurityChecker\Configurator\SecurityCheckerConfigurator;
 use Ibuildings\QaTools\UnitTest\AddBuildTaskMatcher;
 use Ibuildings\QaTools\UnitTest\InstallComposerDevDependencyTaskMatcher;
 use Mockery;
 use Mockery\MockInterface;
-use PHPUnit_Framework_TestCase;
 
-class SecurityCheckerConfiguratorTest extends PHPUnit_Framework_TestCase
+class SecurityCheckerConfiguratorTest extends MockeryTestCase
 {
     const TARGET_NAME = 'security-checker';
 

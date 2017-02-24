@@ -7,10 +7,10 @@ use Ibuildings\QaTools\Core\Interviewer\Answer\YesOrNoAnswer;
 use Ibuildings\QaTools\Core\Interviewer\AutomatedResponseInterviewer;
 use Ibuildings\QaTools\Core\IO\File\FileHandler;
 use Ibuildings\QaTools\Core\Project\Directory;
+use Ibuildings\QaTools\Test\MockeryTestCase;
 use Mockery;
-use PHPUnit_Framework_TestCase;
 
-class GitHookInstallerTest extends PHPUnit_Framework_TestCase
+class GitHookInstallerTest extends MockeryTestCase
 {
     const DIRECTORY = '/var/project/';
 

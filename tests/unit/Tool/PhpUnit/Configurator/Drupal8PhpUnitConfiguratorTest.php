@@ -12,14 +12,14 @@ use Ibuildings\QaTools\Core\Interviewer\AutomatedResponseInterviewer;
 use Ibuildings\QaTools\Core\Project\Directory;
 use Ibuildings\QaTools\Core\Project\Project;
 use Ibuildings\QaTools\Core\Project\ProjectTypeSet;
+use Ibuildings\QaTools\Test\MockeryTestCase;
 use Ibuildings\QaTools\Tool\PhpUnit\Configurator\Drupal8PhpUnitConfigurator;
 use Ibuildings\QaTools\UnitTest\AddBuildTaskMatcher;
 use Ibuildings\QaTools\UnitTest\InstallComposerDevDependencyTaskMatcher;
 use Ibuildings\QaTools\UnitTest\WriteFileTaskMatcher;
 use Mockery;
-use PHPUnit_Framework_TestCase;
 
-class Drupal8PhpUnitConfiguratorTest extends PHPUnit_Framework_TestCase
+class Drupal8PhpUnitConfiguratorTest extends MockeryTestCase
 {
     const TARGET_NAME = 'phpunit';
 

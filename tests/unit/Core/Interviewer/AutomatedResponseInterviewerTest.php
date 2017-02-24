@@ -6,13 +6,13 @@ use Ibuildings\QaTools\Core\Exception\RuntimeException;
 use Ibuildings\QaTools\Core\Interviewer\Answer\AnswerFactory;
 use Ibuildings\QaTools\Core\Interviewer\AutomatedResponseInterviewer;
 use Ibuildings\QaTools\Core\Interviewer\Question\QuestionFactory;
+use Ibuildings\QaTools\Test\MockeryTestCase;
 use Ibuildings\QaTools\UnitTest\Diffing;
-use PHPUnit\Framework\TestCase as TestCase;
 
 /**
  * @group Interviewer
  */
-class AutomatedResponseInterviewerTest extends TestCase
+class AutomatedResponseInterviewerTest extends MockeryTestCase
 {
     use Diffing;
 

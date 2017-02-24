@@ -12,10 +12,10 @@ use Ibuildings\QaTools\Core\Project\ProjectTypeSet;
 use Ibuildings\QaTools\Core\Task\Executor\Executor;
 use Ibuildings\QaTools\Core\Task\Executor\ExecutorCollection;
 use Ibuildings\QaTools\Core\Task\Executor\TransactionalTaskDirectoryExecutor;
+use Ibuildings\QaTools\Test\MockeryTestCase;
 use Ibuildings\QaTools\UnitTest\Core\Task\NoopTask;
 use Mockery as m;
 use Mockery\MockInterface;
-use PHPUnit\Framework\TestCase as TestCase;
 
 /**
  * @group TaskExecutor
@@ -25,7 +25,7 @@ use PHPUnit\Framework\TestCase as TestCase;
  *
  * @see Executor
  */
-class TransactionalTaskDirectoryExecutorTest extends TestCase
+class TransactionalTaskDirectoryExecutorTest extends MockeryTestCase
 {
     /** @test */
     public function executes_all_executors_properly()

@@ -2,16 +2,15 @@
 
 namespace Ibuildings\QaTools\IntegrationTest\Installer;
 
-use DirectoryIterator;
 use HttpClient;
+use Ibuildings\QaTools\Test\MockeryTestCase;
 use Installer;
 use Mockery;
 use PharValidator;
-use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use Symfony\Component\Filesystem\Filesystem;
 
-final class InstallerTest extends TestCase
+final class InstallerTest extends MockeryTestCase
 {
     const REPOSITORY_OWNER = 'ibuildingsnl';
     const REPOSITORY_NAME = 'qa-tools';

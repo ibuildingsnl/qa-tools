@@ -6,7 +6,7 @@ use Ibuildings\QaTools\Core\Interviewer\Answer\AnswerFactory;
 use Ibuildings\QaTools\Core\Interviewer\Answer\Choices;
 use Ibuildings\QaTools\Core\Interviewer\Answer\TextualAnswer;
 use Ibuildings\QaTools\Core\Interviewer\Answer\YesOrNoAnswer;
-use PHPUnit_Framework_TestCase as TestCase;
+use Ibuildings\QaTools\Test\MockeryTestCase;
 
 /**
  * @group Interviewer
@@ -15,7 +15,7 @@ use PHPUnit_Framework_TestCase as TestCase;
  * @group Answer
  */
 
-class AnswerFactoryTest extends TestCase
+class AnswerFactoryTest extends MockeryTestCase
 {
     /**
      * @test

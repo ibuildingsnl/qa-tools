@@ -5,9 +5,8 @@ namespace Ibuildings\QaTools\IntegrationTest;
 use Ibuildings\QaTools\Core\Application\Application;
 use Ibuildings\QaTools\Core\Application\CompiledContainer;
 use Ibuildings\QaTools\Core\Application\ContainerLoader;
-use PHPUnit\Framework\TestCase;
 
-abstract class ContainerTestCase extends TestCase
+abstract class ContainerTestCase extends \Ibuildings\QaTools\Test\MockeryTestCase
 {
     /** @var CompiledContainer */
     protected $container;

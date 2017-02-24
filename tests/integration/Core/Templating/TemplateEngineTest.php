@@ -4,7 +4,6 @@ namespace Ibuildings\QaTools\IntegrationTest\Core\Templating;
 
 use Ibuildings\QaTools\Core\Templating\TemplateEngine;
 use Ibuildings\QaTools\IntegrationTest\ContainerTestCase;
-use Mockery as m;
 use Twig_Error_Runtime;
 
 /**

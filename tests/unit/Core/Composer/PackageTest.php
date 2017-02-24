@@ -4,13 +4,13 @@ namespace Ibuildings\QaTools\UnitTest\Core\Composer;
 
 use Ibuildings\QaTools\Core\Composer\Package;
 use Ibuildings\QaTools\Core\Composer\PackageVersionConstraint;
+use Ibuildings\QaTools\Test\MockeryTestCase;
 use Ibuildings\QaTools\UnitTest\Diffing;
-use PHPUnit\Framework\TestCase as TestCase;
 
 /**
  * @group Composer
  */
-class PackageTest extends TestCase
+class PackageTest extends MockeryTestCase
 {
     use Diffing;
 

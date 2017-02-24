@@ -10,7 +10,7 @@ use Ibuildings\QaTools\Core\Interviewer\Question\MultipleChoiceQuestion;
 use Ibuildings\QaTools\Core\Interviewer\Question\TextualQuestion;
 use Ibuildings\QaTools\Core\Interviewer\Question\YesOrNoQuestion;
 use Ibuildings\QaTools\Core\IO\Cli\ConsoleQuestionFormatter;
-use PHPUnit_Framework_TestCase as TestCase;
+use Ibuildings\QaTools\Test\MockeryTestCase;
 
 /**
  * @group Conversation
@@ -19,7 +19,7 @@ use PHPUnit_Framework_TestCase as TestCase;
  * @group Question
  * @group Formatter
  */
-class ConsoleQuestionFormatterTest extends TestCase
+class ConsoleQuestionFormatterTest extends MockeryTestCase
 {
     /**
      * @test

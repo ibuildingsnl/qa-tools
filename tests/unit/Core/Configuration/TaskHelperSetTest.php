@@ -5,10 +5,10 @@ namespace Ibuildings\QaTools\UnitTest;
 use Ibuildings\QaTools\Core\Configuration\TaskHelperSet;
 use Ibuildings\QaTools\Core\Exception\InvalidArgumentException;
 use Ibuildings\QaTools\Core\Templating\TemplateEngine;
+use Ibuildings\QaTools\Test\MockeryTestCase;
 use Mockery;
-use PHPUnit\Framework\TestCase;
 
-final class TaskHelperSetTest extends TestCase
+final class TaskHelperSetTest extends MockeryTestCase
 {
     /**
      * @test

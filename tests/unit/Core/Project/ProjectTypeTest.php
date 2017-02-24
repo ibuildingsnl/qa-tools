@@ -4,12 +4,12 @@ namespace Ibuildings\QaTools\UnitTest\Core\Project;
 
 use Ibuildings\QaTools\Core\Exception\InvalidArgumentException;
 use Ibuildings\QaTools\Core\Project\ProjectType;
-use PHPUnit\Framework\TestCase as TestCase;
+use Ibuildings\QaTools\Test\MockeryTestCase;
 
 /**
  * @group Project
  */
-class ProjectTypeTest extends TestCase
+class ProjectTypeTest extends MockeryTestCase
 {
     /** @test */
     public function equals_instance_of_the_same_project_type()

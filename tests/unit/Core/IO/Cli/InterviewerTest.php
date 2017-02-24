@@ -6,7 +6,7 @@ use Ibuildings\QaTools\Core\Exception\InvalidArgumentException;
 use Ibuildings\QaTools\Core\IO\Cli\ConsoleQuestionFactory;
 use Ibuildings\QaTools\Core\IO\Cli\ConsoleQuestionFormatter;
 use Ibuildings\QaTools\Core\IO\Cli\Interviewer;
-use PHPUnit_Framework_TestCase as TestCase;
+use Ibuildings\QaTools\Test\MockeryTestCase;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Tests\Fixtures\DummyOutput;
@@ -15,7 +15,7 @@ use Symfony\Component\Console\Tests\Fixtures\DummyOutput;
  * @group Conversation
  * @group Interviewer
  */
-class InterviewerTest extends TestCase
+class InterviewerTest extends MockeryTestCase
 {
     /**
      * @test

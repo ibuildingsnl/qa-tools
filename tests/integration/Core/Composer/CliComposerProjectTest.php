@@ -7,17 +7,17 @@ use Ibuildings\QaTools\Core\Composer\Package;
 use Ibuildings\QaTools\Core\Composer\PackageSet;
 use Ibuildings\QaTools\Core\Composer\RuntimeException;
 use Ibuildings\QaTools\SystemTest\Composer;
+use Ibuildings\QaTools\Test\MockeryTestCase;
 use Ibuildings\QaTools\UnitTest\Diffing;
 use Mockery;
 use Mockery\MockInterface;
-use PHPUnit\Framework\TestCase as TestCase;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * @group Composer
  */
-class CliComposerProjectTest extends TestCase
+class CliComposerProjectTest extends MockeryTestCase
 {
     use Diffing;
 

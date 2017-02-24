@@ -4,8 +4,8 @@ namespace Ibuildings\QaTools\UnitTest\Core\Application\Compiler;
 
 use Ibuildings\QaTools\Core\Application\Compiler\RegisterTaskExecutorsCompilerPass;
 use Ibuildings\QaTools\Core\Task\Executor\ExecutorCollection;
+use Ibuildings\QaTools\Test\MockeryTestCase;
 use Mockery;
-use PHPUnit\Framework\TestCase as TestCase;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
@@ -15,7 +15,7 @@ use Symfony\Component\DependencyInjection\Reference;
  * @group Application
  * @group CompilerPass
  */
-class RegisterTaskExecutorsCompilerPassTest extends TestCase
+class RegisterTaskExecutorsCompilerPassTest extends MockeryTestCase
 {
     /** @var Definition */
     private $executorExecutorDefinition;

@@ -4,13 +4,13 @@ namespace Ibuildings\QaTools\UnitTest\Core\Task;
 
 use Ibuildings\QaTools\Core\Task\Task;
 use Ibuildings\QaTools\Core\Task\TaskList;
+use Ibuildings\QaTools\Test\MockeryTestCase;
 use Mockery;
-use PHPUnit_Framework_TestCase as TestCase;
 
 /**
  * @group Task
  */
-class TaskListTest extends TestCase
+class TaskListTest extends MockeryTestCase
 {
     /**
      * @test

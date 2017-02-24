@@ -6,14 +6,14 @@ use Ibuildings\QaTools\Core\Exception\InvalidArgumentException;
 use Ibuildings\QaTools\Core\Interviewer\Answer\NoDefaultAnswer;
 use Ibuildings\QaTools\Core\Interviewer\Answer\YesOrNoAnswer;
 use Ibuildings\QaTools\Core\Interviewer\Question\YesOrNoQuestion;
-use PHPUnit_Framework_TestCase as TestCase;
+use Ibuildings\QaTools\Test\MockeryTestCase;
 
 /**
  * @group Conversation
  * @group Interviewer
  * @group Question
  */
-class YesOrNoQuestionTest extends TestCase
+class YesOrNoQuestionTest extends MockeryTestCase
 {
     /**
      * @test

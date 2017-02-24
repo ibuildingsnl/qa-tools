@@ -3,14 +3,14 @@
 namespace Ibuildings\QaTools\UnitTest\Core\Project;
 
 use Ibuildings\QaTools\Core\Project\Directory;
+use Ibuildings\QaTools\Test\MockeryTestCase;
 use Ibuildings\QaTools\UnitTest\Diffing;
-use PHPUnit\Framework\TestCase as TestCase;
 
 /**
  * @group Project
  * @group Directory
  */
-class DirectoryTest extends TestCase
+class DirectoryTest extends MockeryTestCase
 {
     use Diffing;
 

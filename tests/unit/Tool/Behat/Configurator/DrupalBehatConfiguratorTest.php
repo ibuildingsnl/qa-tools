@@ -12,14 +12,14 @@ use Ibuildings\QaTools\Core\Interviewer\AutomatedResponseInterviewer;
 use Ibuildings\QaTools\Core\Project\Directory;
 use Ibuildings\QaTools\Core\Project\Project;
 use Ibuildings\QaTools\Core\Project\ProjectTypeSet;
+use Ibuildings\QaTools\Test\MockeryTestCase;
 use Ibuildings\QaTools\Tool\Behat\Configurator\DrupalBehatConfigurator;
 use Ibuildings\QaTools\UnitTest\AddBuildTaskMatcher;
 use Ibuildings\QaTools\UnitTest\InstallComposerDevDependencyTaskMatcher;
 use Ibuildings\QaTools\UnitTest\WriteFileTaskMatcher;
 use Mockery;
-use PHPUnit_Framework_TestCase;
 
-class DrupalBehatConfiguratorTest extends PHPUnit_Framework_TestCase
+class DrupalBehatConfiguratorTest extends MockeryTestCase
 {
     const TARGET_NAME = 'behat';
 

@@ -2,15 +2,14 @@
 
 namespace Ibuildings\QaTools\IntegrationTest\Core\Tool;
 
-use Ibuildings\QaTools\Core\Application\Basedir;
 use Ibuildings\QaTools\IntegrationTest\Core\Tool\Hammer\Hammer;
-use PHPUnit\Framework\TestCase as TestCase;
+use Ibuildings\QaTools\Test\MockeryTestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 /**
  * @group Tool
  */
-class AbstractToolTest extends TestCase
+class AbstractToolTest extends MockeryTestCase
 {
     /** @test */
     public function resource_path_is_a_relative_path()

@@ -16,18 +16,18 @@ use Ibuildings\QaTools\Core\Task\Executor\InstallComposerDevDependencyTaskExecut
 use Ibuildings\QaTools\Core\Task\InstallComposerDevDependencyTask;
 use Ibuildings\QaTools\Core\Task\Task;
 use Ibuildings\QaTools\Core\Task\TaskList;
+use Ibuildings\QaTools\Test\MockeryTestCase;
 use Ibuildings\QaTools\UnitTest\ValueObject;
 use Mockery;
 use Mockery as m;
 use Mockery\Matcher\MatcherAbstract;
 use Mockery\MockInterface;
-use PHPUnit\Framework\TestCase as TestCase;
 
 /**
  * @group Task
  * @group TaskExecutor
  */
-class InstallComposerDevDependencyTaskExecutorTest extends TestCase
+class InstallComposerDevDependencyTaskExecutorTest extends MockeryTestCase
 {
     /** @var ComposerProjectFactory|MockInterface */
     private $composerProjectFactory;

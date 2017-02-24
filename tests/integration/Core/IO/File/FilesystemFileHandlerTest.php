@@ -5,14 +5,14 @@ namespace Ibuildings\QaTools\IntegrationTest\Core\IO\File;
 use Ibuildings\QaTools\Core\Exception\InvalidArgumentException;
 use Ibuildings\QaTools\Core\Exception\RuntimeException;
 use Ibuildings\QaTools\Core\IO\File\FilesystemFileHandler;
-use PHPUnit_Framework_TestCase as TestCase;
+use Ibuildings\QaTools\Test\MockeryTestCase;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * @group IO
  * @group Filesystem
  */
-class FilesystemFileHandlerTest extends TestCase
+class FilesystemFileHandlerTest extends MockeryTestCase
 {
     /** @var string */
     private $workingDirectory;

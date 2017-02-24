@@ -4,9 +4,9 @@ namespace Ibuildings\QaTools\IntegrationTest\Core\Task\Executor;
 
 use Ibuildings\QaTools\Core\Exception\RuntimeException;
 use Ibuildings\QaTools\Core\Task\Executor\Sigints;
-use PHPUnit\Framework\TestCase as TestCase;
+use Ibuildings\QaTools\Test\MockeryTestCase;
 
-class SigintsTest extends TestCase
+class SigintsTest extends MockeryTestCase
 {
     protected function tearDown()
     {

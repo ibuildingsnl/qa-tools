@@ -4,15 +4,15 @@ namespace Ibuildings\QaTools\UnitTest\Core\Interviewer\Answer;
 
 use Ibuildings\QaTools\Core\Interviewer\Answer\Choices;
 use Ibuildings\QaTools\Core\Interviewer\Answer\TextualAnswer;
+use Ibuildings\QaTools\Test\MockeryTestCase;
 use InvalidArgumentException;
-use PHPUnit_Framework_TestCase as TestCase;
 
 /**
  * @group Conversation
  * @group Interviewer
  * @group Answer
  */
-class ChoicesTest extends TestCase
+class ChoicesTest extends MockeryTestCase
 {
     /**
      * @test

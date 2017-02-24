@@ -11,14 +11,14 @@ use Ibuildings\QaTools\Core\Interviewer\Question\MultipleChoiceQuestion;
 use Ibuildings\QaTools\Core\Interviewer\Question\QuestionFactory;
 use Ibuildings\QaTools\Core\Interviewer\Question\TextualQuestion;
 use Ibuildings\QaTools\Core\Interviewer\Question\YesOrNoQuestion;
-use PHPUnit_Framework_TestCase as TestCase;
+use Ibuildings\QaTools\Test\MockeryTestCase;
 
 /**
  * @group Interviewer
  * @group Conversation
  * @group Question
  */
-class QuestionFactoryTest extends TestCase
+class QuestionFactoryTest extends MockeryTestCase
 {
     /**
      * @test

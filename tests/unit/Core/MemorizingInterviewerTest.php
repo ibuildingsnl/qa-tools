@@ -8,16 +8,16 @@ use Ibuildings\QaTools\Core\Configuration\QuestionId;
 use Ibuildings\QaTools\Core\Interviewer\Answer\TextualAnswer;
 use Ibuildings\QaTools\Core\Interviewer\Interviewer;
 use Ibuildings\QaTools\Core\Interviewer\Question\TextualQuestion;
+use Ibuildings\QaTools\Test\MockeryTestCase;
 use Mockery;
 use Mockery\Matcher\MatcherAbstract;
 use Mockery\MockInterface;
-use PHPUnit_Framework_TestCase as TestCase;
 
 /**
  * @group Interviewer
  * @group Configuration
  */
-class MemorizingInterviewerTest extends TestCase
+class MemorizingInterviewerTest extends MockeryTestCase
 {
     /**
      * @test

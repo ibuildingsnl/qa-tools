@@ -4,12 +4,12 @@ namespace Ibuildings\QaTools\UnitTest\Core\Assert;
 
 use Ibuildings\QaTools\Core\Assert\Assertion;
 use Ibuildings\QaTools\Core\Exception\InvalidArgumentException;
-use PHPUnit_Framework_TestCase as TestCase;
+use Ibuildings\QaTools\Test\MockeryTestCase;
 
 /**
  * @group Assertion
  */
-class AssertionTest extends TestCase
+class AssertionTest extends MockeryTestCase
 {
     /**
      * @test

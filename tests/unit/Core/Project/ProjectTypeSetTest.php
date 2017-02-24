@@ -4,12 +4,12 @@ namespace Ibuildings\QaTools\UnitTest\Core\Project;
 
 use Ibuildings\QaTools\Core\Project\ProjectType;
 use Ibuildings\QaTools\Core\Project\ProjectTypeSet;
-use PHPUnit\Framework\TestCase;
+use Ibuildings\QaTools\Test\MockeryTestCase;
 
 /**
  * @group Value
  */
-class ProjectTypeSetTest extends TestCase
+class ProjectTypeSetTest extends MockeryTestCase
 {
     /**
      * @test
