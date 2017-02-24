@@ -33,6 +33,8 @@ If you want, you can use the `--install-dir` option for `qa-tool-setup.php` to i
 should be installed. E.g., `php qa-tools-setup.php --install-dir=/usr/local/bin`. It is recommended you
 download QA tools to either your project directory or to some location that is in your [PATH][path].
 
+A specific version can be installed by specifying the `--version` option: `php qa-tools-setup.php --version=3.0.0-alpha2`. This is useful when installing unstable versions of QA Tools.
+
 To see all the options of the installer, run `php qa-tools-setup.php --help`.
 
 Read why we release the QA Tools as a Phar [here](docs/phar.md).
