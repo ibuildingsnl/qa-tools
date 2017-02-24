@@ -3,4 +3,5 @@ VERSION 3  FIRST ALPHA RELEASE FOR INTERNAL QUALITY CHECKING
 ============================================================
 
    Version 3.0 - First alpha release for internal quality checking
+      24/02/2017 09:57  3.0.0-alpha2  Make installation and updating more robust
       17/02/2017 14:23  3.0.0-alpha  initial release
