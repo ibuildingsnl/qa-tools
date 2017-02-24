@@ -1,0 +1,23 @@
+{
+    "projectName": "QA Tools",
+    "configurationFilesLocation": ".\/",
+    "projectTypes": [
+        "php.other"
+    ],
+    "travisEnabled": false,
+    "answers": {
+        "4c6702ea73cad3d4fbeb1a275b6dbb4a": "QA Tools",
+        "82191a2f54943a61240ff714d692663d": ".\/",
+        "64d5c97247c332c17b131abdde8c873a": "Other PHP Project",
+        "4735c10b621d2c15142ff92e6ec0a9a9": true,
+        "1f73d735e7d5a37ff6e8a9c30311a00a": true,
+        "97016cab401f3bbfaf10dfa47ec8cbd8": true,
+        "80a50eef71a0a84f0779597a5185008e": true,
+        "743bcf201e8b6c07fbad359c2bdf79ac": "PSR2",
+        "be2a788ae62f9166970c6de91c828c53": "Warn when \u003E120. Fail when \u003E150",
+        "6dd3ae893178cd90a45edaaeceab33f5": false,
+        "809d51753d308ccf218c0217c00c779d": false,
+        "5c08b9b1487086e2e506013f8e3fc65f": true,
+        "c8214ea1830f49699c20dc2b42c4c190": false
+    }
+}

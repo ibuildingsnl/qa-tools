@@ -17,6 +17,10 @@ use Ibuildings\QaTools\Core\Task\InstallComposerDevDependencyTask;
 use Ibuildings\QaTools\Core\Task\WriteFileTask;
 use Ibuildings\QaTools\Tool\PhpUnit\PhpUnit;
 
+/**
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects) -- Due to wide-spread value object usage a higher coupling is
+ *     acceptable
+ */
 final class PhpUnitConfigurator implements Configurator
 {
     /**

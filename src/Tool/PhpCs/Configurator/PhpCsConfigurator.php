@@ -17,6 +17,10 @@ use Ibuildings\QaTools\Core\Task\InstallComposerDevDependencyTask;
 use Ibuildings\QaTools\Core\Task\WriteFileTask;
 use Ibuildings\QaTools\Tool\PhpCs\PhpCs;
 
+/**
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects) -- Due to wide-spread value object usage a higher coupling is
+ *     acceptable
+ */
 final class PhpCsConfigurator implements Configurator
 {
     const RULESET_SYMFONY = 'Symfony';

@@ -6,6 +6,9 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Process\ProcessBuilder;
 
+/**
+ * @group system
+ */
 final class SystemTest extends TestCase
 {
     /**
