@@ -122,15 +122,13 @@ final class InstallerTest extends TestCase
 
         $this->assertTrue($success);
         $this->assertRegExp(
-            '~^QA Tools \(version ' . preg_quote(self::VERSION, '~') . '\) successfully installed~sm',
+            '~^QA Tools \(version '.preg_quote(self::VERSION, '~').'\) successfully installed~sm',
             $output
         );
-
-        $this->assertFileExists($this->tempDirectory . '/qa-tools');
-        $this->assertEquals(self::PHAR_ASSET_CONTENTS, file_get_contents($this->tempDirectory . '/qa-tools'));
-
-        $this->assertFileExists($this->tempDirectory . '/qa-tools.pubkey');
-        $this->assertEquals(self::PUBKEY_ASSET_CONTENTS, file_get_contents($this->tempDirectory . '/qa-tools.pubkey'));
+        $this->assertFileExists($this->tempDirectory.'/qa-tools');
+        $this->assertEquals(self::PHAR_ASSET_CONTENTS, file_get_contents($this->tempDirectory.'/qa-tools'));
+        $this->assertFileExists($this->tempDirectory.'/qa-tools.pubkey');
+        $this->assertEquals(self::PUBKEY_ASSET_CONTENTS, file_get_contents($this->tempDirectory.'/qa-tools.pubkey'));
     }
 
     /** @test */
