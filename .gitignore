@@ -6,4 +6,5 @@
 /var/cache/*
 /bin/box
 /box.json
+/build.xml
 /signing-key-*.pem

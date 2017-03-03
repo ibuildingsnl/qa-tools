@@ -8,15 +8,15 @@ use Ibuildings\QaTools\Core\Project\Project;
 use Ibuildings\QaTools\Core\Project\ProjectTypeSet;
 use Ibuildings\QaTools\Core\Task\Executor\ArrayExecutorCollection;
 use Ibuildings\QaTools\Core\Task\Executor\Executor;
+use Ibuildings\QaTools\Test\MockeryTestCase;
 use Ibuildings\QaTools\UnitTest\Core\Task\NoopTask;
 use Mockery as m;
 use Mockery\MockInterface;
-use PHPUnit\Framework\TestCase as TestCase;
 
 /**
  * @group TaskExecutor
  */
-class ArrayExecutorCollectionTest extends TestCase
+class ArrayExecutorCollectionTest extends MockeryTestCase
 {
     /** @var MockInterface|Executor */
     private $supportingExecutorA;

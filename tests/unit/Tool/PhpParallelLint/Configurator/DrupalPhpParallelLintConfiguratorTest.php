@@ -12,19 +12,19 @@ use Ibuildings\QaTools\Core\Interviewer\AutomatedResponseInterviewer;
 use Ibuildings\QaTools\Core\Project\Directory;
 use Ibuildings\QaTools\Core\Project\Project;
 use Ibuildings\QaTools\Core\Project\ProjectTypeSet;
+use Ibuildings\QaTools\Test\MockeryTestCase;
 use Ibuildings\QaTools\Tool\PhpParallelLint\Configurator\DrupalPhpParallelLintConfigurator;
 use Ibuildings\QaTools\Tool\PhpParallelLint\PhpParallelLint;
 use Ibuildings\QaTools\UnitTest\AddBuildTaskMatcher;
 use Ibuildings\QaTools\UnitTest\InstallComposerDevDependencyTaskMatcher;
 use Mockery;
 use Mockery\MockInterface;
-use PHPUnit\Framework\TestCase as TestCase;
 
 /**
  * @group Tool
  * @group Phplint
  */
-class DrupalPhpParallelLintConfiguratorTest extends TestCase
+class DrupalPhpParallelLintConfiguratorTest extends MockeryTestCase
 {
     /** @var AutomatedResponseInterviewer */
     private $interviewer;

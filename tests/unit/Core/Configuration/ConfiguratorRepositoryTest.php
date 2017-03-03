@@ -5,12 +5,12 @@ namespace Ibuildings\QaTools\UnitTest\Core\Configuration;
 use Ibuildings\QaTools\Core\Configurator\ConfiguratorRepository;
 use Ibuildings\QaTools\Core\Exception\LogicException;
 use Ibuildings\QaTools\Core\Project\ProjectType;
-use PHPUnit\Framework\TestCase as TestCase;
+use Ibuildings\QaTools\Test\MockeryTestCase;
 
 /**
  * @group Configuration
  */
-class ConfiguratorRepositoryTest extends TestCase
+class ConfiguratorRepositoryTest extends MockeryTestCase
 {
     /** @test */
     public function a_configurator_can_be_registered()

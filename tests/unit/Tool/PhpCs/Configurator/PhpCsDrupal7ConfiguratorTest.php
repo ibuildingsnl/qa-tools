@@ -13,6 +13,7 @@ use Ibuildings\QaTools\Core\Project\Directory;
 use Ibuildings\QaTools\Core\Project\Project;
 use Ibuildings\QaTools\Core\Project\ProjectType;
 use Ibuildings\QaTools\Core\Project\ProjectTypeSet;
+use Ibuildings\QaTools\Test\MockeryTestCase;
 use Ibuildings\QaTools\Tool\PhpCs\Configurator\PhpCsDrupal7Configurator;
 use Ibuildings\QaTools\Tool\PhpCs\PhpCs;
 use Ibuildings\QaTools\UnitTest\AddBuildTaskMatcher;
@@ -20,13 +21,12 @@ use Ibuildings\QaTools\UnitTest\InstallComposerDevDependencyTaskMatcher;
 use Ibuildings\QaTools\UnitTest\WriteFileTaskMatcher;
 use Mockery;
 use Mockery\MockInterface;
-use PHPUnit\Framework\TestCase as TestCase;
 
 /**
  * @group Tool
  * @group PhpCs
  */
-class PhpCsDrupal7ConfiguratorTest extends TestCase
+class PhpCsDrupal7ConfiguratorTest extends MockeryTestCase
 {
     /** @var AutomatedResponseInterviewer */
     private $interviewer;

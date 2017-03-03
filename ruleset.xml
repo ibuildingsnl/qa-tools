@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<ruleset name="Project ruleset">
+    <description>Enforce coding standards</description>
+
+    <rule ref="PSR2"/>
+
+
+    <!-- Lines can be a little bit longer before they break the build -->
+    <rule ref="Generic.Files.LineLength">
+        <properties>
+            <property name="lineLimit" value="120"/>
+            <property name="absoluteLineLimit" value="150"/>
+        </properties>
+    </rule>
+
+
+
+</ruleset>

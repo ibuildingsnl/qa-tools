@@ -14,16 +14,15 @@ use Ibuildings\QaTools\Core\Task\Executor\AddBuildTaskExecutor;
 use Ibuildings\QaTools\Core\Task\Task;
 use Ibuildings\QaTools\Core\Task\TaskList;
 use Ibuildings\QaTools\Core\Templating\TemplateEngine;
+use Ibuildings\QaTools\Test\MockeryTestCase;
 use Mockery;
-use Mockery as m;
 use Mockery\MockInterface;
-use PHPUnit\Framework\TestCase as TestCase;
 
 /**
  * @group Task
  * @group TaskExecutor
  */
-class AddBuildTaskExecutorTest extends TestCase
+class AddBuildTaskExecutorTest extends MockeryTestCase
 {
     /** @var TemplateEngine|MockInterface */
     private $templateEngine;

@@ -5,7 +5,7 @@ namespace Ibuildings\QaTools\UnitTest\Core\IO\Cli\Validator;
 use Ibuildings\QaTools\Core\Exception\InvalidAnswerGivenException;
 use Ibuildings\QaTools\Core\Exception\InvalidArgumentException;
 use Ibuildings\QaTools\Core\IO\Cli\Validator\YesOrNoAnswerValidator;
-use PHPUnit_Framework_TestCase as TestCase;
+use Ibuildings\QaTools\Test\MockeryTestCase;
 
 /**
  * @group Interviewer
@@ -14,7 +14,7 @@ use PHPUnit_Framework_TestCase as TestCase;
  * @group Console
  * @group Validator
  */
-class YesOrNoAnswerValidatorTest extends TestCase
+class YesOrNoAnswerValidatorTest extends MockeryTestCase
 {
     /**
      * @test

@@ -3,19 +3,14 @@
 namespace Ibuildings\QaTools\UnitTest\Installer;
 
 use HttpClient;
+use Ibuildings\QaTools\Test\MockeryTestCase;
 use Installer;
 use Mockery;
 use org\bovigo\vfs\vfsStream;
 use PharValidator;
-use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
-define('TESTING_QA_TOOLS_INSTALLER', true);
-define('QA_TOOLS_INSTALLER_ANSI', false);
-
-require __DIR__.'/../../../installer.php';
-
-final class InstallerTest extends TestCase
+final class InstallerTest extends MockeryTestCase
 {
     const REPOSITORY_OWNER = 'ibuildingsnl';
     const REPOSITORY_NAME = 'qa-tools';
@@ -27,6 +22,29 @@ final class InstallerTest extends TestCase
 
     /** @var Mockery\Mock|PharValidator */
     private $pharValidator;
+
+    public static function setUpBeforeClass()
+    {
+        if (!defined('TESTING_QA_TOOLS_INSTALLER')) {
+            define('TESTING_QA_TOOLS_INSTALLER', true);
+        } elseif (!TESTING_QA_TOOLS_INSTALLER) {
+            self::fail(
+                'Cannot execute Installer unit tests; ' .
+                "TESTING_QA_TOOLS_INSTALLER constant already defined and is false, rather than true"
+            );
+        }
+
+        if (!defined('QA_TOOLS_INSTALLER_ANSI')) {
+            define('QA_TOOLS_INSTALLER_ANSI', false);
+        } elseif (QA_TOOLS_INSTALLER_ANSI) {
+            self::fail(
+                'Cannot execute Installer unit tests; ' .
+                "QA_TOOLS_INSTALLER_ANSI constant already defined and is true, rather than false"
+            );
+        }
+
+        require_once __DIR__.'/../../../installer.php';
+    }
 
     public function setUp()
     {

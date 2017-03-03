@@ -5,13 +5,13 @@ namespace Ibuildings\QaTools\UnitTest\Core\Composer;
 use Ibuildings\QaTools\Core\Composer\Package;
 use Ibuildings\QaTools\Core\Composer\PackageName;
 use Ibuildings\QaTools\Core\Composer\PackageSet;
+use Ibuildings\QaTools\Test\MockeryTestCase;
 use Ibuildings\QaTools\UnitTest\Diffing;
-use PHPUnit\Framework\TestCase as TestCase;
 
 /**
  * @group Value
  */
-class PackageSetTest extends TestCase
+class PackageSetTest extends MockeryTestCase
 {
     use Diffing;
 

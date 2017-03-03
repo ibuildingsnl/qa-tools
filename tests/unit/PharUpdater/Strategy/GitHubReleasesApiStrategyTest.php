@@ -10,10 +10,10 @@ use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use Humbug\SelfUpdate\Updater;
 use Ibuildings\QaTools\PharUpdater\Strategy\GitHubReleasesApiStrategy;
+use Ibuildings\QaTools\Test\MockeryTestCase;
 use Mockery as m;
-use PHPUnit\Framework\TestCase;
 
-class GitHubReleasesApiStrategyTest extends TestCase
+class GitHubReleasesApiStrategyTest extends MockeryTestCase
 {
     /** @test */
     public function can_determine_the_current_stable_remote_version_from_two_stable_versions()

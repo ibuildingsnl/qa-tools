@@ -5,12 +5,12 @@ namespace Ibuildings\QaTools\UnitTest\Core\Configuration;
 use Ibuildings\QaTools\Core\Configuration\Configuration;
 use Ibuildings\QaTools\Core\Configuration\InMemoryConfigurationRepository;
 use Ibuildings\QaTools\Core\Exception\RuntimeException;
-use PHPUnit\Framework\TestCase as TestCase;
+use Ibuildings\QaTools\Test\MockeryTestCase;
 
 /**
  * @group Configuration
  */
-class InMemoryConfigurationRepositoryTest extends TestCase
+class InMemoryConfigurationRepositoryTest extends MockeryTestCase
 {
     /** @test */
     public function has_no_configuration_in_memory_on_construction()

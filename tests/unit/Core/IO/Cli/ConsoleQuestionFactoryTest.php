@@ -13,8 +13,8 @@ use Ibuildings\QaTools\Core\Interviewer\Question\TextualQuestion;
 use Ibuildings\QaTools\Core\Interviewer\Question\YesOrNoQuestion;
 use Ibuildings\QaTools\Core\IO\Cli\ConsoleQuestionFactory;
 use Ibuildings\QaTools\Core\IO\Cli\ConsoleQuestionFormatter;
+use Ibuildings\QaTools\Test\MockeryTestCase;
 use Mockery;
-use PHPUnit_Framework_TestCase as TestCase;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\Question;
 
@@ -24,7 +24,7 @@ use Symfony\Component\Console\Question\Question;
  * @group Console
  * @group Question
  */
-class ConsoleQuestionFactoryTest extends TestCase
+class ConsoleQuestionFactoryTest extends MockeryTestCase
 {
     /**
      * @test

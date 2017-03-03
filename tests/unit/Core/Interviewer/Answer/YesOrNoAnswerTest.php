@@ -3,14 +3,14 @@
 namespace Ibuildings\QaTools\UnitTest\Core\Interviewer\Answer;
 
 use Ibuildings\QaTools\Core\Interviewer\Answer\YesOrNoAnswer;
-use PHPUnit_Framework_TestCase as TestCase;
+use Ibuildings\QaTools\Test\MockeryTestCase;
 
 /**
  * @group Conversation
  * @group Interviewer
  * @group Answer
  */
-class YesOrNoAnswerTest extends TestCase
+class YesOrNoAnswerTest extends MockeryTestCase
 {
     /**
      * @test

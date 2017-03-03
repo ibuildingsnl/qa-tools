@@ -35,8 +35,7 @@ test: test-unit test-integration test-system-dev code-metrics clean build-test t
 test-fast: test-unit test-integration test-system-dev code-metrics verify-readme-installer-hash
 
 coverage:
-	vendor/bin/phpunit -c . --testsuite unit,integration --coverage-text
-
+	vendor/bin/phpunit --coverage-text --bootstrap tests/bootstrap.php --exclude-group system
 
 test-unit: phpunit-unit
 test-integration: phpunit-integration
@@ -48,21 +47,21 @@ verify-build: test-no-absolute-paths-in-container
 
 
 phpunit-unit:
-	vendor/bin/phpunit -c . --testsuite unit
+	vendor/bin/phpunit tests/unit --bootstrap tests/bootstrap.php
 phpunit-integration:
-	vendor/bin/phpunit -c . --testsuite integration
+	vendor/bin/phpunit tests/integration --bootstrap tests/bootstrap.php
 phpunit-system-dev:
-	vendor/bin/phpunit -c . --testsuite system
+	vendor/bin/phpunit tests/system --bootstrap tests/bootstrap.php
 phpunit-system-phar:
-	QA_TOOLS_BIN=phar vendor/bin/phpunit -c . --testsuite system
+	QA_TOOLS_BIN=phar vendor/bin/phpunit tests/system --bootstrap tests/bootstrap.php
 phplint:
-	vendor/bin/parallel-lint -e php --exclude vendor .
+	vendor/bin/parallel-lint --exclude vendor -e php .
 phpcs:
 	# Blank line is needed to provide STDIN input to phpcs when phpcs is called from the Git pre-push hook context
 	# See https://github.com/squizlabs/PHP_CodeSniffer/issues/993
-	echo '' | vendor/bin/phpcs --runtime-set ignore_warnings_on_exit 1 --standard=phpcs.xml --extensions=php --report=full src
+	echo '' | vendor/bin/phpcs --runtime-set ignore_warnings_on_exit 1 --report=full --standard=ruleset.xml --extensions=php/php src
 phpmd:
-	vendor/bin/phpmd src text phpmd.xml
+	vendor/bin/phpmd src text phpmd.xml --suffixes php
 
 
 verify-test-build-is-signed: build-test

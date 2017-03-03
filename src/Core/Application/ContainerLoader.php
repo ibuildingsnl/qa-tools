@@ -14,6 +14,10 @@ use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\Filesystem\Filesystem;
 
+/**
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects) -- Due to wide-spread value object usage a higher coupling is
+ *     acceptable
+ */
 final class ContainerLoader
 {
     /**

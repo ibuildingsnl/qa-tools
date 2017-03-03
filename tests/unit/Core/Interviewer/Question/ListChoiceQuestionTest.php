@@ -7,15 +7,15 @@ use Ibuildings\QaTools\Core\Interviewer\Answer\Choices;
 use Ibuildings\QaTools\Core\Interviewer\Answer\NoDefaultAnswer;
 use Ibuildings\QaTools\Core\Interviewer\Answer\TextualAnswer;
 use Ibuildings\QaTools\Core\Interviewer\Question\ListChoiceQuestion;
+use Ibuildings\QaTools\Test\MockeryTestCase;
 use InvalidArgumentException;
-use PHPUnit_Framework_TestCase as TestCase;
 
 /**
  * @group Conversation
  * @group Interviewer
  * @group Question
  */
-class ListChoiceQuestionTest extends TestCase
+class ListChoiceQuestionTest extends MockeryTestCase
 {
     /**
      * @test

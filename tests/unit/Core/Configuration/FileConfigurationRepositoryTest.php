@@ -12,17 +12,17 @@ use Ibuildings\QaTools\Core\Project\Directory;
 use Ibuildings\QaTools\Core\Project\Project;
 use Ibuildings\QaTools\Core\Project\ProjectType;
 use Ibuildings\QaTools\Core\Project\ProjectTypeSet;
+use Ibuildings\QaTools\Test\MockeryTestCase;
 use Ibuildings\QaTools\UnitTest\Diffing;
 use Mockery;
 use Mockery\Matcher\MatcherAbstract;
 use Mockery\MockInterface;
-use PHPUnit\Framework\TestCase as TestCase;
 use PHPUnit_Framework_Assert as Assert;
 
 /**
  * @group Configuration
  */
-class FileConfigurationRepositoryTest extends TestCase
+class FileConfigurationRepositoryTest extends MockeryTestCase
 {
     use Diffing;
 
