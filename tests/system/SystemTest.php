@@ -76,9 +76,36 @@ final class SystemTest extends TestCase
 
         $expectStdout = preg_replace('~^~', '  ', $process->getOutput());
         $expectStderr = preg_replace('~^~', '  ', $process->getErrorOutput());
+
+        $message = <<<MESSAGE
+▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒
+
+QA Tools distributable terminated with non-zero exit code %d.
+
+Possible causes:
+  1. QA Tools did not output the expected text within a certain amount of time. Check the output of QA Tools below.
+  2. A Composer package could not be installed.
+     Maybe you forgot to:
+       - Add a composer.json fixture for the package to 'tests/composer/packages'
+       - Add the package to '\\Ibuildings\\QaTools\\SystemTest\\Composer::initialise'
+     Composer packages are mocked. Please read the documentation on why, and how to mock yours: docs/development/writing-system-tests.md.
+
+CWD:
+%s
+
+STDOUT:
+%s
+
+STDERR:
+%s
+
+▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒
+
+MESSAGE;
+
         $this->fail(
             sprintf(
-                "QA Tools distributable terminated with non-zero exit code %d.\n\nCWD:\n  %s\nSTDOUT:\n%s\nSTDERR:\n%s",
+                $message,
                 $process->getExitCode(),
                 getcwd(),
                 $expectStdout,

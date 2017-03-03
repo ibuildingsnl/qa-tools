@@ -125,14 +125,9 @@ final class CliComposerProject implements Project
         if ($process->run() !== 0) {
             $packageNames = join("\n - ", $packages->getDescriptors());
 
-            $this->logger->error(
-                "Failed to require development dependencies\n" .
-                "One of these packages could not be installed (from inside $this->directory):\n" .
-                " - $packageNames\n" .
-                "Maybe you forgot to:\n" .
-                " - add a composer.json fixture for the package to 'tests/composer/packages'\n" .
-                " - add the package to '\\Ibuildings\\QaTools\\SystemTest\\Composer::initialise'"
-            );
+            $this->logger->error("Failed to require development dependencies");
+            $this->logger->error("One of these packages could not be installed (from inside $this->directory):");
+            $this->logger->error(" - $packageNames");
 
             throw new RuntimeException(
                 'Failed to require development dependencies',
