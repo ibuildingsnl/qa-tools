@@ -10,6 +10,8 @@ class SigintsTest extends MockeryTestCase
 {
     protected function tearDown()
     {
+        parent::tearDown();
+
         try {
             Sigints::resetTrap();
         } catch (RuntimeException $e) {

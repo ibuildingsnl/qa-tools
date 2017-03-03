@@ -85,6 +85,8 @@ final class InstallerTest extends MockeryTestCase
 
     public function tearDown()
     {
+        parent::tearDown();
+
         $this->filesystem->remove($this->tempDirectory);
     }
 
