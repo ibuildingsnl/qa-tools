@@ -5,8 +5,9 @@ namespace Ibuildings\QaTools\IntegrationTest;
 use Ibuildings\QaTools\Core\Application\Application;
 use Ibuildings\QaTools\Core\Application\CompiledContainer;
 use Ibuildings\QaTools\Core\Application\ContainerLoader;
+use Ibuildings\QaTools\Test\MockeryTestCase;
 
-abstract class ContainerTestCase extends \Ibuildings\QaTools\Test\MockeryTestCase
+abstract class ContainerTestCase extends MockeryTestCase
 {
     /** @var CompiledContainer */
     protected $container;
