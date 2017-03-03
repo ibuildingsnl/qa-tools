@@ -184,6 +184,7 @@ final class CliComposerProject implements Project
     {
         return file_put_contents('composer.json', $json);
     }
+
     /**
      * Writes the given string to the Composer lock file in the current working directory.
      *
