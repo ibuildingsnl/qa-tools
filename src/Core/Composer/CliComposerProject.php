@@ -138,12 +138,12 @@ final class CliComposerProject implements Project
 
     public function restoreConfiguration(Configuration $configuration)
     {
-        $this->writeComposerJson($configuration->getComposerJson());
+        file_put_contents('composer.json', $configuration->getComposerJson());
 
         if ($configuration->hasLockedDependencies()) {
-            $this->writeComposerLockJson($configuration->getComposerLockJson());
+            file_put_contents('composer.lock', $configuration->getComposerLockJson());
         } elseif (file_exists('composer.lock')) {
-            $this->removeComposerLock();
+            unlink('composer.lock');
         }
 
         $options = ['--no-interaction'];
@@ -160,32 +160,5 @@ final class CliComposerProject implements Project
                 $process->getErrorOutput()
             );
         }
-    }
-
-    /**
-     * Writes the given string to the Composer file in the current working directory.
-     *
-     * @param string $json
-     * @return string
-     */
-    private function writeComposerJson($json)
-    {
-        return file_put_contents('composer.json', $json);
-    }
-
-    /**
-     * Writes the given string to the Composer lock file in the current working directory.
-     *
-     * @param string $json
-     * @return string
-     */
-    private function writeComposerLockJson($json)
-    {
-        return file_put_contents('composer.lock', $json);
-    }
-
-    private function removeComposerLock()
-    {
-        unlink('composer.lock');
     }
 }
