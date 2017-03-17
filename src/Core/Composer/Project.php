@@ -34,19 +34,18 @@ interface Project
     public function requireDevDependencies(PackageSet $packages);
 
     /**
-     * Backs up the current Composer configuration for later restoration.
+     * Returns the current Composer configuration for later restoration.
      *
-     * @return void
+     * @return Configuration
      * @throws RuntimeException
      */
-    public function backUpConfiguration();
+    public function readConfiguration();
 
     /**
-     * Restores the backed up Composer configuration and installs the locked
-     * dependencies. The backup is not cleared after restoration.
+     * Restores the given Composer configuration and installs the locked dependencies.
      *
+     * @param Configuration $configuration
      * @return void
-     * @throws RuntimeException
      */
-    public function restoreConfiguration();
+    public function restoreConfiguration(Configuration $configuration);
 }

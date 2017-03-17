@@ -3,6 +3,7 @@
 namespace Ibuildings\QaTools\IntegrationTest\Core\Composer;
 
 use Ibuildings\QaTools\Core\Composer\CliComposerProject;
+use Ibuildings\QaTools\Core\Composer\Configuration;
 use Ibuildings\QaTools\Core\Composer\Package;
 use Ibuildings\QaTools\Core\Composer\PackageSet;
 use Ibuildings\QaTools\Core\Composer\RuntimeException;
@@ -72,16 +73,44 @@ class CliComposerProjectTest extends MockeryTestCase
     }
 
     /** @test */
+    public function can_read_the_current_composer_configuration_with_locked_dependencies()
+    {
+        $composerJson = '{"name": "pkg/pkg"}';
+        $composerLockJson = '{"content-hash":"fae3"}';
+
+        file_put_contents('composer.json', $composerJson);
+        file_put_contents('composer.lock', $composerLockJson);
+
+        $expectedConfiguration = Configuration::withLockedDependencies($composerJson, $composerLockJson);
+        $actualConfiguration = $this->project->readConfiguration();
+
+        $this->assertTrue($actualConfiguration->equals($expectedConfiguration));
+    }
+
+    /** @test */
+    public function can_read_the_current_composer_configuration_without_locked_dependencies()
+    {
+        $composerJson = '{"name": "pkg/pkg"}';
+
+        file_put_contents('composer.json', $composerJson);
+
+        $expectedConfiguration = Configuration::withoutLockedDependencies($composerJson);
+        $actualConfiguration = $this->project->readConfiguration();
+
+        $this->assertTrue($actualConfiguration->equals($expectedConfiguration));
+    }
+
+    /** @test */
     public function can_restore_a_composer_configuration()
     {
         Composer::initialise();
 
-        $this->project->backUpConfiguration();
+        $backup = $this->project->readConfiguration();
 
         $this->project->requireDevDependencies(new PackageSet([Package::of('phpmd/phpmd', '^2.0')]));
         $this->assertFileExists('vendor/phpmd/phpmd/composer.json');
 
-        $this->project->restoreConfiguration();
+        $this->project->restoreConfiguration($backup);
 
         $this->assertFileNotExists('vendor/phpmd/phpmd/composer.json');
     }

@@ -19,11 +19,6 @@ final class CliComposerProject implements Project
     private $composerBinary;
 
     /**
-     * @var Configuration|null
-     */
-    private $configurationBackup;
-
-    /**
      * @var LoggerInterface
      */
     private $logger;
@@ -76,7 +71,7 @@ final class CliComposerProject implements Project
         try {
             $this->requireDevDependencies($packages);
         } finally {
-            $this->installConfiguration($configuration);
+            $this->restoreConfiguration($configuration);
         }
     }
 
@@ -104,14 +99,49 @@ final class CliComposerProject implements Project
         }
     }
 
-    public function backUpConfiguration()
+    /**
+     * Returns the Composer configuration currently on disk.
+     *
+     * @return Configuration
+     */
+    public function readConfiguration()
     {
-        $this->configurationBackup = $this->readConfiguration();
+        if (file_exists('composer.lock')) {
+            $backup = Configuration::withLockedDependencies(
+                file_get_contents('composer.json'),
+                file_get_contents('composer.lock')
+            );
+        } else {
+            $backup = Configuration::withoutLockedDependencies(file_get_contents('composer.json'));
+        }
+
+        return $backup;
     }
 
-    public function restoreConfiguration()
+    public function restoreConfiguration(Configuration $configuration)
     {
-        $this->installConfiguration($this->configurationBackup);
+        $this->writeComposerJson($configuration->getComposerJson());
+
+        if ($configuration->hasLockedDependencies()) {
+            $this->writeComposerLockJson($configuration->getComposerLockJson());
+        } elseif (file_exists('composer.lock')) {
+            $this->removeComposerLock();
+        }
+
+        $options = ['--no-interaction'];
+        $arguments = array_merge([$this->composerBinary, 'install'], $options);
+        $process = ProcessBuilder::create($arguments)
+            ->setWorkingDirectory($this->directory)
+            ->setEnv('COMPOSER_HOME', getenv('COMPOSER_HOME'))
+            ->setTimeout(null)
+            ->getProcess();
+
+        if ($process->run() !== 0) {
+            throw new RuntimeException(
+                'Failed to install Composer dependencies',
+                $process->getErrorOutput()
+            );
+        }
     }
 
     /**
@@ -139,56 +169,5 @@ final class CliComposerProject implements Project
     private function removeComposerLock()
     {
         unlink('composer.lock');
-    }
-
-    /**
-     * Returns the Composer configuration currently on disk.
-     *
-     * @return Configuration
-     */
-    private function readConfiguration()
-    {
-        if (file_exists('composer.lock')) {
-            $backup = Configuration::withLockedDependencies(
-                file_get_contents('composer.json'),
-                file_get_contents('composer.lock')
-            );
-        } else {
-            $backup = Configuration::withoutLockedDependencies(file_get_contents('composer.json'));
-        }
-
-        return $backup;
-    }
-
-    /**
-     * Writes the given Composer configuration to disk and installs the locked dependencies.
-     *
-     * @param Configuration $configuration
-     * @return void
-     */
-    private function installConfiguration(Configuration $configuration)
-    {
-        $this->writeComposerJson($configuration->getComposerJson());
-
-        if ($configuration->hasLockedDependencies()) {
-            $this->writeComposerLockJson($configuration->getComposerLockJson());
-        } elseif (file_exists('composer.lock')) {
-            $this->removeComposerLock();
-        }
-
-        $options = ['--no-interaction'];
-        $arguments = array_merge([$this->composerBinary, 'install'], $options);
-        $process = ProcessBuilder::create($arguments)
-            ->setWorkingDirectory($this->directory)
-            ->setEnv('COMPOSER_HOME', getenv('COMPOSER_HOME'))
-            ->setTimeout(null)
-            ->getProcess();
-
-        if ($process->run() !== 0) {
-            throw new RuntimeException(
-                'Failed to install Composer dependencies',
-                $process->getErrorOutput()
-            );
-        }
     }
 }

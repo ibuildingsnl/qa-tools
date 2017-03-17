@@ -2,6 +2,7 @@
 
 namespace Ibuildings\QaTools\UnitTest\Core\Task\Executor;
 
+use Ibuildings\QaTools\Core\Composer\Configuration;
 use Ibuildings\QaTools\Core\Composer\Package;
 use Ibuildings\QaTools\Core\Composer\PackageSet;
 use Ibuildings\QaTools\Core\Composer\Project as ComposerProject;
@@ -121,6 +122,10 @@ class InstallComposerDevDependencyTaskExecutorTest extends MockeryTestCase
     public function requires_the_dependencies()
     {
         $this->composerProject->shouldReceive('isInitialised')->andReturn(true);
+        $this->composerProject
+            ->shouldReceive('readConfiguration')
+            ->withNoArgs()
+            ->andReturn(Configuration::withoutLockedDependencies('{}'));
 
         $tasks = new TaskList([new InstallComposerDevDependencyTask('rambunctious/rake', '3')]);
 
@@ -128,10 +133,6 @@ class InstallComposerDevDependencyTaskExecutorTest extends MockeryTestCase
         $this->executor->execute($tasks, $this->project, $this->interviewer);
 
         $expectedPackages = new PackageSet([Package::of('rambunctious/rake', '3')]);
-        $this->composerProject
-            ->shouldHaveReceived('backUpConfiguration')
-            ->with()
-            ->once();
         $this->composerProject
             ->shouldHaveReceived('requireDevDependencies')
             ->with(ValueObject::equals($expectedPackages))
@@ -153,7 +154,13 @@ class InstallComposerDevDependencyTaskExecutorTest extends MockeryTestCase
     /** @test */
     public function rolls_back_the_required_dependencies()
     {
+        $originalComposerConfiguration = Configuration::withoutLockedDependencies('{}');
+
         $this->composerProject->shouldReceive('isInitialised')->andReturn(true);
+        $this->composerProject
+            ->shouldReceive('readConfiguration')
+            ->withNoArgs()
+            ->andReturn($originalComposerConfiguration);
 
         $tasks = new TaskList([new InstallComposerDevDependencyTask('ergonomic/effigy', '4')]);
 
@@ -163,7 +170,7 @@ class InstallComposerDevDependencyTaskExecutorTest extends MockeryTestCase
 
         $this->composerProject
             ->shouldHaveReceived('restoreConfiguration')
-            ->with()
+            ->with(ValueObject::equals($originalComposerConfiguration))
             ->once();
     }
 
