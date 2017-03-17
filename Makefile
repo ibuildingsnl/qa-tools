@@ -12,8 +12,9 @@ release: clean
 	@vendor/bin/RMT release
 	@echo "\n\033[32mBuilding release build...\033[0m\n"
 	@make build-release
-	@echo "\n\n    \033[32mA release build is available in \033[33mbuild/release/\033[32m.\033[0m"
-	@echo "\n    \033[32mPlease follow the \033[33mRelease process (docs/release-process.md)\033[32m to distribute the release build!\033[0m\n"
+	@echo "\n\n  \033[32mA release build is available in \033[33mbuild/release/\033[32m.\033[0m"
+	@echo "\n  \033[32mPlease follow the following instructions to distribute the release build:\033[0m"
+	@echo "\n  \033[33m  https://ibuildingsnl.github.io/qa-tools-v3/docs/release-process.html#distributing-the-release-build\033[0m\n"
 
 clean:
 	@rm -f box.json \
