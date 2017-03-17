@@ -24,6 +24,11 @@ final class CliComposerProject implements Project
     private $logger;
 
     /**
+     * @var RequireCache
+     */
+    private $successfulRequires;
+
+    /**
      * @param string          $directory
      * @param string          $composerBinary
      * @param LoggerInterface $logger
@@ -36,6 +41,8 @@ final class CliComposerProject implements Project
         $this->directory = $directory;
         $this->composerBinary = $composerBinary;
         $this->logger = $logger;
+
+        $this->successfulRequires = new RequireCache();
     }
 
     /**
@@ -66,17 +73,33 @@ final class CliComposerProject implements Project
 
     public function verifyDevDependenciesWillNotConflict(PackageSet $packages)
     {
-        $configuration = $this->readConfiguration();
+        $targetConfiguration = $this->readConfiguration();
 
         try {
             $this->requireDevDependencies($packages);
+
+            $newConfiguration = $this->readConfiguration();
+            $this->successfulRequires->storeConfiguration($targetConfiguration, $packages, $newConfiguration);
         } finally {
-            $this->restoreConfiguration($configuration);
+            $this->restoreConfiguration($targetConfiguration);
         }
     }
 
     public function requireDevDependencies(PackageSet $packages)
     {
+        $targetConfiguration = $this->readConfiguration();
+
+        // This optimises repeated requests for new requirements. For example, this happens
+        // when first calling `verifyDevDependenciesWillNotConflict()`, and then
+        // `requireDevDependencies()`, like done in InstallComposerDevDependencyTaskExecutor.
+        if ($this->successfulRequires->containsConfiguration($targetConfiguration, $packages)) {
+            $newConfiguration = $this->successfulRequires->getConfiguration($targetConfiguration, $packages);
+
+            $this->restoreConfiguration($newConfiguration);
+
+            return;
+        }
+
         $options = ['--dev', '--no-interaction'];
         $arguments = array_merge([$this->composerBinary, 'require'], $options, $packages->getDescriptors());
         $process = ProcessBuilder::create($arguments)
