@@ -19,14 +19,14 @@ final class CliComposerProject implements Project
     private $composerBinary;
 
     /**
-     * @var Configuration|null
-     */
-    private $configurationBackup;
-
-    /**
      * @var LoggerInterface
      */
     private $logger;
+
+    /**
+     * @var RequireCache
+     */
+    private $successfulRequires;
 
     /**
      * @param string          $directory
@@ -41,6 +41,8 @@ final class CliComposerProject implements Project
         $this->directory = $directory;
         $this->composerBinary = $composerBinary;
         $this->logger = $logger;
+
+        $this->successfulRequires = new RequireCache();
     }
 
     /**
@@ -71,49 +73,33 @@ final class CliComposerProject implements Project
 
     public function verifyDevDependenciesWillNotConflict(PackageSet $packages)
     {
-        $this->backUpConfiguration();
+        $targetConfiguration = $this->readConfiguration();
 
-        $options = ['--dev', '--no-update', '--no-interaction'];
-        $arguments = array_merge([$this->composerBinary, 'require'], $options, $packages->getDescriptors());
-        $process = ProcessBuilder::create($arguments)
-            ->setWorkingDirectory($this->directory)
-            ->setEnv('COMPOSER_HOME', getenv('COMPOSER_HOME'))
-            ->setTimeout(null)
-            ->getProcess();
+        try {
+            $this->requireDevDependencies($packages);
 
-        if ($process->run() !== 0) {
-            // Restore the old JSON in case Composer wrote to the Composer file anyway.
-            $this->restoreConfiguration();
-
-            throw new RuntimeException(
-                'Failed to add development packages to Composer file',
-                $process->getErrorOutput()
-            );
+            $newConfiguration = $this->readConfiguration();
+            $this->successfulRequires->storeConfiguration($targetConfiguration, $packages, $newConfiguration);
+        } finally {
+            $this->restoreConfiguration($targetConfiguration);
         }
-
-        $options = ['--dry-run', '--no-interaction'];
-        $arguments = array_merge([$this->composerBinary, 'install'], $options);
-        $process = ProcessBuilder::create($arguments)
-            ->setWorkingDirectory($this->directory)
-            ->setEnv('COMPOSER_HOME', getenv('COMPOSER_HOME'))
-            ->setTimeout(null)
-            ->getProcess();
-
-        if ($process->run() !== 0) {
-            $this->restoreConfiguration();
-
-            throw new RuntimeException(
-                'Failed to dry-run Composer packages installation',
-                $process->getErrorOutput()
-            );
-        }
-
-        // Restore the old JSON to remove the added development dependencies.
-        $this->restoreConfiguration();
     }
 
     public function requireDevDependencies(PackageSet $packages)
     {
+        $targetConfiguration = $this->readConfiguration();
+
+        // This optimises repeated requests for new requirements. For example, this happens
+        // when first calling `verifyDevDependenciesWillNotConflict()`, and then
+        // `requireDevDependencies()`, like done in InstallComposerDevDependencyTaskExecutor.
+        if ($this->successfulRequires->containsConfiguration($targetConfiguration, $packages)) {
+            $newConfiguration = $this->successfulRequires->getConfiguration($targetConfiguration, $packages);
+
+            $this->restoreConfiguration($newConfiguration);
+
+            return;
+        }
+
         $options = ['--dev', '--no-interaction'];
         $arguments = array_merge([$this->composerBinary, 'require'], $options, $packages->getDescriptors());
         $process = ProcessBuilder::create($arguments)
@@ -136,26 +122,28 @@ final class CliComposerProject implements Project
         }
     }
 
-    public function backUpConfiguration()
+    public function readConfiguration()
     {
         if (file_exists('composer.lock')) {
-            $this->configurationBackup = Configuration::withLockedDependencies(
+            $backup = Configuration::withLockedDependencies(
                 file_get_contents('composer.json'),
                 file_get_contents('composer.lock')
             );
         } else {
-            $this->configurationBackup = Configuration::withoutLockedDependencies(file_get_contents('composer.json'));
+            $backup = Configuration::withoutLockedDependencies(file_get_contents('composer.json'));
         }
+
+        return $backup;
     }
 
-    public function restoreConfiguration()
+    public function restoreConfiguration(Configuration $configuration)
     {
-        $this->writeComposerJson($this->configurationBackup->getComposerJson());
+        file_put_contents('composer.json', $configuration->getComposerJson());
 
-        if ($this->configurationBackup->hasLockedDependencies()) {
-            $this->writeComposerLockJson($this->configurationBackup->getComposerLockJson());
+        if ($configuration->hasLockedDependencies()) {
+            file_put_contents('composer.lock', $configuration->getComposerLockJson());
         } elseif (file_exists('composer.lock')) {
-            $this->removeComposerLock();
+            unlink('composer.lock');
         }
 
         $options = ['--no-interaction'];
@@ -172,32 +160,5 @@ final class CliComposerProject implements Project
                 $process->getErrorOutput()
             );
         }
-    }
-
-    /**
-     * Writes the given string to the Composer file in the current working directory.
-     *
-     * @param string $json
-     * @return string
-     */
-    private function writeComposerJson($json)
-    {
-        return file_put_contents('composer.json', $json);
-    }
-
-    /**
-     * Writes the given string to the Composer lock file in the current working directory.
-     *
-     * @param string $json
-     * @return string
-     */
-    private function writeComposerLockJson($json)
-    {
-        return file_put_contents('composer.lock', $json);
-    }
-
-    private function removeComposerLock()
-    {
-        unlink('composer.lock');
     }
 }

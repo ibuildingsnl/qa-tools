@@ -60,4 +60,23 @@ final class Composer
     {
         assertFileNotExists(sprintf('vendor/%s', $packageName));
     }
+
+    /**
+     * @param string $packageName
+     */
+    public static function assertPackageIsNotRequiredAsDevDependency($packageName)
+    {
+        assertFileExists('composer.json');
+
+        $composerConfiguration = json_decode(file_get_contents('composer.json'), true);
+
+        if (!array_key_exists('require-dev', $composerConfiguration)) {
+            return;
+        }
+        if (!array_key_exists($packageName, $composerConfiguration['require-dev'])) {
+            return;
+        }
+
+        fail(sprintf('Package "%s" is required as a development dependency', $packageName));
+    }
 }

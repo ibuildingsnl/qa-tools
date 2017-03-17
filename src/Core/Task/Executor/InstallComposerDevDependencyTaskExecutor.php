@@ -2,6 +2,7 @@
 
 namespace Ibuildings\QaTools\Core\Task\Executor;
 
+use Ibuildings\QaTools\Core\Composer\Configuration;
 use Ibuildings\QaTools\Core\Composer\Package;
 use Ibuildings\QaTools\Core\Composer\PackageSet;
 use Ibuildings\QaTools\Core\Composer\Project as ComposerProject;
@@ -15,12 +16,18 @@ use Ibuildings\QaTools\Core\Task\InstallComposerDevDependencyTask;
 use Ibuildings\QaTools\Core\Task\Task;
 use Ibuildings\QaTools\Core\Task\TaskList;
 
+/**
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects) -- Due to wide-spread value object usage a higher coupling is
+ *     acceptable
+ */
 final class InstallComposerDevDependencyTaskExecutor implements Executor
 {
     /** @var ComposerProjectFactory */
     private $composerProjectFactory;
     /** @var ComposerProject|null */
     private $composerProject;
+    /** @var Configuration|null */
+    private $configurationBackup;
 
     public function __construct(ComposerProjectFactory $composerProjectFactory)
     {
@@ -94,7 +101,7 @@ final class InstallComposerDevDependencyTaskExecutor implements Executor
 
         $packages = $this->getPackagesToAddAsDevDependency($tasks);
 
-        $this->composerProject->backUpConfiguration();
+        $this->configurationBackup = $this->composerProject->readConfiguration();
         $this->composerProject->requireDevDependencies($packages);
     }
 
@@ -105,7 +112,8 @@ final class InstallComposerDevDependencyTaskExecutor implements Executor
     public function rollBack(TaskList $tasks, Project $project, Interviewer $interviewer)
     {
         $interviewer->notice(" * Restoring Composer configuration...");
-        $this->composerProject->restoreConfiguration();
+
+        $this->composerProject->restoreConfiguration($this->configurationBackup);
     }
 
     /**
