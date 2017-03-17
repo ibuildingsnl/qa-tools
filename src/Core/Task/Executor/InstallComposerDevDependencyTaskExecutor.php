@@ -86,7 +86,17 @@ final class InstallComposerDevDependencyTaskExecutor implements Executor
 
             $indentedCause = preg_replace('/^/m', '  ', $e->getCause());
             $interviewer->giveDetails($indentedCause);
+            $interviewer->giveDetails('');
 
+            $escapedRequirements = join(' ', array_map('escapeshellarg', $packages->getDescriptors()));
+            $interviewer->notice(
+                'QA Tools will be unable to installed the require development dependencies. Most ' .
+                'likely one of the requirements conflicts with your currently installed ' .
+                'dependencies. To help you resolve the situation, you can execute the following ' .
+                'command to reproduce the error:'
+            );
+            $interviewer->giveDetails('');
+            $interviewer->giveDetails(sprintf('  composer require --dev %s', $escapedRequirements));
             $interviewer->giveDetails('');
 
             return false;
