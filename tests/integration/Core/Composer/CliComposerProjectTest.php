@@ -114,9 +114,11 @@ class CliComposerProjectTest extends MockeryTestCase
 
             $this->fail(sprintf('No exception of type "%s" was thrown', RuntimeException::class));
         } catch (RuntimeException $e) {
-            $this->assertContains('Failed to dry-run Composer packages installation', $e->getMessage());
+            $this->assertContains('Failed to require development dependencies', $e->getMessage());
             $this->assertContains('Your requirements could not be resolved to an installable set of packages.', $e->getCause());
         }
+
+        Composer::assertPackageIsNotRequiredAsDevDependency('phpmd/phpmd');
     }
 
     /** @test */

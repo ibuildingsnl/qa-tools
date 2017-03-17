@@ -2417,3 +2417,18 @@ function throwException(\Exception $exception)
         func_get_args()
     );
 }
+
+/**
+ * Fails a test with the given message.
+ *
+ * @param string $message
+ *
+ * @throws PHPUnit_Framework_AssertionFailedError
+ */
+function fail($message = '')
+{
+    return call_user_func_array(
+        'PHPUnit_Framework_Assert::fail',
+        func_get_args()
+    );
+}

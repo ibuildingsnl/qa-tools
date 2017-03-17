@@ -73,43 +73,11 @@ final class CliComposerProject implements Project
     {
         $this->backUpConfiguration();
 
-        $options = ['--dev', '--no-update', '--no-interaction'];
-        $arguments = array_merge([$this->composerBinary, 'require'], $options, $packages->getDescriptors());
-        $process = ProcessBuilder::create($arguments)
-            ->setWorkingDirectory($this->directory)
-            ->setEnv('COMPOSER_HOME', getenv('COMPOSER_HOME'))
-            ->setTimeout(null)
-            ->getProcess();
-
-        if ($process->run() !== 0) {
-            // Restore the old JSON in case Composer wrote to the Composer file anyway.
+        try {
+            $this->requireDevDependencies($packages);
+        } finally {
             $this->restoreConfiguration();
-
-            throw new RuntimeException(
-                'Failed to add development packages to Composer file',
-                $process->getErrorOutput()
-            );
         }
-
-        $options = ['--dry-run', '--no-interaction'];
-        $arguments = array_merge([$this->composerBinary, 'install'], $options);
-        $process = ProcessBuilder::create($arguments)
-            ->setWorkingDirectory($this->directory)
-            ->setEnv('COMPOSER_HOME', getenv('COMPOSER_HOME'))
-            ->setTimeout(null)
-            ->getProcess();
-
-        if ($process->run() !== 0) {
-            $this->restoreConfiguration();
-
-            throw new RuntimeException(
-                'Failed to dry-run Composer packages installation',
-                $process->getErrorOutput()
-            );
-        }
-
-        // Restore the old JSON to remove the added development dependencies.
-        $this->restoreConfiguration();
     }
 
     public function requireDevDependencies(PackageSet $packages)
