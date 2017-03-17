@@ -6,10 +6,11 @@ use Ibuildings\QaTools\Core\Assert\Assertion;
 use Ibuildings\QaTools\Core\Tool\Tool;
 use Ibuildings\QaTools\Tool\Behat\Behat;
 use Ibuildings\QaTools\Tool\PhpCs\PhpCs;
-use Ibuildings\QaTools\Tool\PhpParallelLint\PhpParallelLint;
 use Ibuildings\QaTools\Tool\PhpMd\PhpMd;
+use Ibuildings\QaTools\Tool\PhpParallelLint\PhpParallelLint;
 use Ibuildings\QaTools\Tool\PhpUnit\PhpUnit;
 use Ibuildings\QaTools\Tool\SensioLabsSecurityChecker\SensioLabsSecurityChecker;
+use Psr\Log\LogLevel;
 use Symfony\Component\Console\Application as ConsoleApplication;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -92,7 +93,19 @@ final class Application extends ConsoleApplication
 
     public function doRun(InputInterface $input, OutputInterface $output)
     {
-        $this->container->set('logger', new ConsoleLogger($output));
+        // Only output logs when verbosity flags are passed to the application.
+        $verbosityLevelMap = [
+            LogLevel::EMERGENCY => OutputInterface::VERBOSITY_VERBOSE,
+            LogLevel::ALERT     => OutputInterface::VERBOSITY_VERBOSE,
+            LogLevel::CRITICAL  => OutputInterface::VERBOSITY_VERBOSE,
+            LogLevel::ERROR     => OutputInterface::VERBOSITY_VERBOSE,
+            LogLevel::WARNING   => OutputInterface::VERBOSITY_VERBOSE,
+            LogLevel::NOTICE    => OutputInterface::VERBOSITY_VERBOSE,
+            LogLevel::INFO      => OutputInterface::VERBOSITY_VERY_VERBOSE,
+            LogLevel::DEBUG     => OutputInterface::VERBOSITY_DEBUG,
+        ];
+        $consoleLogger = new ConsoleLogger($output, $verbosityLevelMap);
+        $this->container->set('logger', $consoleLogger);
 
         return parent::doRun($input, $output);
     }
