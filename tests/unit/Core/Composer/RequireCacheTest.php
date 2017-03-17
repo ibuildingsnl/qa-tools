@@ -14,7 +14,6 @@ class RequireCacheTest extends TestCase
     /** @test */
     public function stores_successful_requires()
     {
-
         $targetConfiguration = Configuration::withoutLockedDependencies('"target"');
         $requiredPackages = new PackageSet([Package::of('phpmd/phpmd', '^2')]);
         $newConfiguration = Configuration::withoutLockedDependencies('"new"');
@@ -27,7 +26,6 @@ class RequireCacheTest extends TestCase
     /** @test */
     public function stores_successful_requires_of_0_packages()
     {
-
         $targetConfiguration = Configuration::withoutLockedDependencies('"target"');
         $requiredPackages = new PackageSet();
         $newConfiguration = Configuration::withoutLockedDependencies('"new"');
