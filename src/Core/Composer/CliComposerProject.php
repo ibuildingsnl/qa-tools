@@ -122,11 +122,6 @@ final class CliComposerProject implements Project
         }
     }
 
-    /**
-     * Returns the Composer configuration currently on disk.
-     *
-     * @return Configuration
-     */
     public function readConfiguration()
     {
         if (file_exists('composer.lock')) {
