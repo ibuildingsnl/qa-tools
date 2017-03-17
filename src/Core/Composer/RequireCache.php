@@ -86,6 +86,6 @@ final class RequireCache
             ? $targetConfiguration->getComposerLockJson()
             : '';
 
-        return sha1(join(':', array_filter([$packageDescriptors, $composerJson, $composerLockJson])));
+        return sha1(join(':', [$packageDescriptors, $composerJson, $composerLockJson]));
     }
 }
