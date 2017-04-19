@@ -69,7 +69,10 @@ verify-test-build-is-signed: build-test
 	bin/box verify build/test/qa-tools.phar
 
 check-security-advisories:
-	vendor/bin/security-checker security:check
+    # (Temporary) fix for travis, see:
+    # https://github.com/travis-ci/travis-ci/issues/6339
+    # and https://github.com/sensiolabs/security-checker/pull/77#issuecomment-290733113
+	vendor/bin/security-checker security:check --end-point=http://security.sensiolabs.org/check_lock
 
 test-no-absolute-paths-in-container:
 	@! grep -q $(CURDIR) var/cache/container.php \
